@@ -1,0 +1,183 @@
+{
+  "navigation": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "academy": "Academy",
+    "blog": "Blog",
+    "contact": "Contact",
+    "letsTalk": "Let's Talk"
+  },
+  "heroSection": {
+    "badge": "Leading Regional Software Company",
+    "headline": "We Build",
+    "highlight": "Digital Futures",
+    "subheadline": "Mobile Apps · Web · AI · UI/UX Design · E-Commerce",
+    "cta": "Explore Our Work",
+    "ctaSecondary": "Get In Touch",
+    "tagline": "Code · AI · Future"
+  },
+  "about": {
+    "badge": "About Us",
+    "title": "APEX — Peak Technical Excellence",
+    "subtitle": "A software company building integrated digital solutions powered by cutting-edge AI",
+    "description": "At APEX we believe technology should be accessible to everyone. We combine technical creativity with strategic vision to deliver digital solutions that make a real difference in our clients' businesses.",
+    "stats": [
+      { "value": "24+", "label": "Projects Delivered" },
+      { "value": "100+", "label": "Tech Articles" },
+      { "value": "5", "label": "Specializations" },
+      { "value": "∞", "label": "AI Possibilities" }
+    ],
+    "checks": [
+      "Design that tells your story",
+      "Code that lasts for years",
+      "AI that multiplies your potential"
+    ],
+    "visionTitle": "Our Vision",
+    "visionText": "We aspire for APEX to be the first name that comes to mind when searching for integrated regional tech solutions.",
+    "cards": {
+      "innovation": {
+        "title": "Innovation",
+        "text": "We design and build modern digital experiences using the latest technologies."
+      },
+      "quality": {
+        "title": "Quality",
+        "text": "Every product we deliver is crafted with attention to performance and detail."
+      },
+      "partnership": {
+        "title": "Partnership",
+        "text": "We work closely with clients to turn ideas into scalable digital products."
+      }
+    }
+  },
+  "services": {
+    "badge": "Our Services",
+    "title": "Integrated Digital Solutions",
+    "subtitle": "From concept to final product — partnering with you every step",
+    "learnMore": "Learn more",
+    "items": [
+      {
+        "icon": "🌐",
+        "title": "Web Development",
+        "description": "Websites and web apps with cutting-edge technology, exceptional performance, and unforgettable UX"
+      },
+      {
+        "icon": "📱",
+        "title": "Mobile Apps",
+        "description": "Native and hybrid iOS & Android apps with modern designs and superior performance"
+      },
+      {
+        "icon": "🤖",
+        "title": "Artificial Intelligence",
+        "description": "Integrate AI into your products, automate processes, and analyze data with next-gen tools"
+      },
+      {
+        "icon": "🎨",
+        "title": "UI/UX Design",
+        "description": "Professional designs with in-depth case studies ensuring an exceptional user experience"
+      },
+      {
+        "icon": "🛒",
+        "title": "E-Commerce",
+        "description": "Full commercial platforms with payment gateways, inventory management, and sales analytics"
+      },
+      {
+        "icon": "🎬",
+        "title": "Content Creation",
+        "description": "Professional videos, reels, and AI-powered designs that captivate your audience"
+      }
+    ]
+  },
+  "portfolio": {
+    "badge": "Portfolio",
+    "title": "Projects That Prove Excellence",
+    "subtitle": "From mobile games to learning platforms — every project a success story",
+    "viewAll": "View All Work",
+    "viewProject": "View Project",
+    "projects": [
+      {
+        "title": "Full-Featured E-Commerce Platform",
+        "category": "E-Commerce",
+        "tag": "E-Commerce",
+        "emoji": "🛒"
+      },
+      {
+        "title": "Interactive Educational App",
+        "category": "Mobile App",
+        "tag": "Education",
+        "emoji": "📚"
+      },
+      {
+        "title": "AI-Designed Video Series",
+        "category": "AI Content",
+        "tag": "AI",
+        "emoji": "🎬"
+      },
+      {
+        "title": "Professional Mobile Game",
+        "category": "Mobile Game",
+        "tag": "Gaming",
+        "emoji": "🎮"
+      },
+      {
+        "title": "Advanced Tech Website",
+        "category": "Web Dev",
+        "tag": "Web",
+        "emoji": "💻"
+      },
+      {
+        "title": "Business Management App",
+        "category": "Mobile App",
+        "tag": "Productivity",
+        "emoji": "📊"
+      }
+    ]
+  },
+  "testimonials": {
+    "badge": "Client Testimonials",
+    "title": "Real Success Partners",
+    "subtitle": "Our clients' words are our greatest credential",
+    "items": [
+      {
+        "name": "Ahmed Al-Shammari",
+        "role": "E-Commerce Owner",
+        "text": "APEX completely transformed my business. The store they built increased my sales by 300% in the first three months. Exceptional professionalism and outstanding after-delivery service.",
+        "initial": "A"
+      },
+      {
+        "name": "Sarah Al-Mutairi",
+        "role": "Training Center Director",
+        "text": "The educational app they developed for our center exceeded all expectations. Easy interface, excellent performance, and always-available technical support. Highly recommended.",
+        "initial": "S"
+      },
+      {
+        "name": "Khalid Al-Balawi",
+        "role": "Independent Game Developer",
+        "text": "I collaborated with APEX on a mobile game project and it was an amazing experience. A specialized team that understands your requirements and transforms them into something better than imagined.",
+        "initial": "K"
+      }
+    ]
+  },
+  "contact": {
+    "badge": "Contact Us",
+    "title": "Have a Project? Let's Talk",
+    "description": "We're just one message away — we'll respond within hours",
+    "available": "Available Now — Reply within 2 hours",
+    "email": "Send an Email",
+    "whatsapp": "Chat on WhatsApp"
+  },
+  "footer": {
+    "tagline": "Code · AI · Future",
+    "description": "Building digital futures with lasting code and endless innovation.",
+    "rights": "All rights reserved.",
+    "quickLinks": "Quick Links",
+    "quickContact": "Quick Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "links": [
+      { "label": "Home", "path": "" },
+      { "label": "Portfolio", "path": "portfolio" },
+      { "label": "Academy", "path": "academy" },
+      { "label": "Blog", "path": "blog" }
+    ]
+  }
+}

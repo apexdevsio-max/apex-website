@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://apex-tech.sa/sitemap.xml

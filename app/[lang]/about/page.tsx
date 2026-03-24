@@ -1,0 +1,184 @@
+// file: app/[lang]/about/page.tsx
+import { notFound }      from "next/navigation";
+import type { Metadata } from "next";
+import Link              from "next/link";
+
+import { AboutSection }  from "@/components/sections/AboutSection";
+import { getDictionary } from "@/lib/i18n/i18n";
+import { isLocale }      from "@/lib/i18n/locale";
+
+type Props = { params: Promise<{ lang: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  const isAr = lang === "ar";
+  return {
+    title: isAr ? "من نحن — APEX" : "About Us — APEX",
+    description: isAr
+      ? "تعرّف على شركة APEX للبرمجيات — رؤيتنا، قيمنا، وفريقنا."
+      : "Learn about APEX Software — our vision, values, and team.",
+  };
+}
+
+export default async function AboutPage({ params }: Props) {
+  const { lang: langParam } = await params;
+  if (!isLocale(langParam)) notFound();
+
+  const lang       = langParam;
+  const dictionary = await getDictionary(lang);
+  const isAr       = lang === "ar";
+
+  const VALUES = isAr
+    ? [
+        { emoji:"🚀", title:"الابتكار",  desc:"نستخدم أحدث التقنيات لنبني منتجات تتجاوز توقعات عملائنا." },
+        { emoji:"💎", title:"الجودة",    desc:"كل سطر كود نكتبه يمر بمراجعة دقيقة لضمان أعلى معايير الأداء." },
+        { emoji:"🤝", title:"الشراكة",  desc:"علاقتنا مع عملائنا لا تنتهي عند التسليم — نحن شركاء طويل الأمد." },
+        { emoji:"⚡", title:"السرعة",    desc:"نلتزم بالمواعيد ونسلّم مشاريع عالية الجودة في الوقت المحدد." },
+        { emoji:"🔒", title:"الأمان",    desc:"نبني بنية تحتية آمنة وموثوقة تحمي بيانات عملائك." },
+        { emoji:"🌍", title:"الانتشار", desc:"نخدم عملاء في المنطقة العربية ونطمح للوصول العالمي." },
+      ]
+    : [
+        { emoji:"🚀", title:"Innovation",  desc:"We use cutting-edge tech to build products that exceed client expectations." },
+        { emoji:"💎", title:"Quality",     desc:"Every line of code goes through careful review to ensure top performance standards." },
+        { emoji:"🤝", title:"Partnership", desc:"Our relationship with clients doesn't end at delivery — we're long-term partners." },
+        { emoji:"⚡", title:"Speed",       desc:"We commit to deadlines and deliver high-quality projects on time." },
+        { emoji:"🔒", title:"Security",    desc:"We build secure, reliable infrastructure that protects your users' data." },
+        { emoji:"🌍", title:"Reach",       desc:"We serve clients across the Arab region and aspire for global reach." },
+      ];
+
+  const TEAM = isAr
+    ? [
+        { name:"فريق التطوير",          role:"مطورو ويب وموبايل",          emoji:"👨‍💻", count:"5+" },
+        { name:"فريق التصميم",          role:"مصممو UI/UX",               emoji:"🎨", count:"3+" },
+        { name:"فريق الذكاء الاصطناعي", role:"متخصصو AI وبيانات",          emoji:"🤖", count:"2+" },
+        { name:"فريق المحتوى",          role:"منتجو محتوى رقمي",           emoji:"🎬", count:"3+" },
+      ]
+    : [
+        { name:"Dev Team",     role:"Web & Mobile Developers",  emoji:"👨‍💻", count:"5+" },
+        { name:"Design Team",  role:"UI/UX Designers",          emoji:"🎨", count:"3+" },
+        { name:"AI Team",      role:"AI & Data Specialists",    emoji:"🤖", count:"2+" },
+        { name:"Content Team", role:"Digital Content Creators", emoji:"🎬", count:"3+" },
+      ];
+
+  const hoverStyles = `
+    .apex-value-card { transition:transform 0.25s ease,border-color 0.25s ease,box-shadow 0.25s ease; }
+    .apex-value-card:hover { transform:translateY(-4px); border-color:var(--color-primary) !important; box-shadow:0 16px 40px color-mix(in srgb,var(--color-primary) 14%,transparent); }
+    .apex-team-card  { transition:transform 0.25s ease,border-color 0.25s ease; }
+    .apex-team-card:hover  { transform:translateY(-3px); border-color:var(--color-primary) !important; }
+    .apex-cta-btn:hover { opacity:0.92; transform:translateY(-2px); }
+    .apex-btn-outline:hover { background:color-mix(in srgb,var(--color-primary) 10%,transparent); }
+  `;
+
+  return (
+    <main style={{ background:"var(--color-background)" }}>
+      <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
+
+      {/* ── About section (stats + vision) ──────────────── */}
+      <AboutSection lang={lang} dictionary={dictionary} />
+
+      {/* ── Values ──────────────────────────────────────── */}
+      <section className="py-20 px-6" dir={isAr?"rtl":"ltr"}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="apex-section-label gold">{isAr?"قيمنا":"Our Values"}</span>
+            <div className="apex-divider reverse" />
+            <h2 className={`mt-5 font-bold ${isAr?"font-ar":"font-en"}`}
+              style={{ fontSize:"clamp(22px,3vw,38px)", color:"var(--color-primary-text)" }}>
+              {isAr?"المبادئ التي نبني عليها":"The Principles We Build On"}
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {VALUES.map((v, i) => (
+              <div key={i} className="apex-value-card rounded-2xl border p-7"
+                style={{ background:"var(--color-card)", borderColor:"var(--color-border)" }}
+                dir={isAr?"rtl":"ltr"}>
+                <div className="text-4xl mb-4">{v.emoji}</div>
+                <h3 className={`font-bold mb-2 ${isAr?"font-ar":"font-en"}`}
+                  style={{ fontSize:"16px", color:"var(--color-primary-text)" }}>
+                  {v.title}
+                </h3>
+                <p className={`text-sm leading-relaxed ${isAr?"font-ar":"font-en"}`}
+                  style={{ color:"var(--color-secondary-text)" }}>
+                  {v.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Team ────────────────────────────────────────── */}
+      <section className="py-20 px-6"
+        style={{ background:"color-mix(in srgb,var(--color-primary) 3%,var(--color-background))" }}
+        dir={isAr?"rtl":"ltr"}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="apex-section-label">{isAr?"فريقنا":"Our Team"}</span>
+            <div className="apex-divider" />
+            <h2 className={`mt-5 font-bold ${isAr?"font-ar":"font-en"}`}
+              style={{ fontSize:"clamp(22px,3vw,38px)", color:"var(--color-primary-text)" }}>
+              {isAr?"العقول خلف APEX":"The Minds Behind APEX"}
+            </h2>
+            <p className={`mt-3 mx-auto text-sm leading-relaxed ${isAr?"font-ar":"font-en"}`}
+              style={{ maxWidth:"420px", color:"var(--color-secondary-text)" }}>
+              {isAr
+                ? "فريق متخصص من المطورين والمصممين وخبراء الذكاء الاصطناعي"
+                : "A specialized team of developers, designers, and AI experts"}
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {TEAM.map((member, i) => (
+              <div key={i} className="apex-team-card rounded-2xl border p-6 text-center"
+                style={{ background:"var(--color-card)", borderColor:"var(--color-border)" }}>
+                <div className="text-5xl mb-3">{member.emoji}</div>
+                <div className="font-bold text-lg mb-0.5 font-en"
+                  style={{ color:"var(--color-primary)" }}>
+                  {member.count}
+                </div>
+                <h3 className={`font-bold mb-1 ${isAr?"font-ar":"font-en"}`}
+                  style={{ fontSize:"14px", color:"var(--color-primary-text)" }}>
+                  {member.name}
+                </h3>
+                <p className={`text-xs ${isAr?"font-ar":"font-en"}`}
+                  style={{ color:"var(--color-secondary-text)" }}>
+                  {member.role}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ─────────────────────────────────────────── */}
+      <section className="py-20 px-6" dir={isAr?"rtl":"ltr"}>
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="text-5xl mb-5">🤝</div>
+          <h2 className={`font-bold mb-4 ${isAr?"font-ar":"font-en"}`}
+            style={{ fontSize:"clamp(22px,3vw,36px)", color:"var(--color-primary-text)" }}>
+            {isAr?"هل أنت مستعد للعمل معنا؟":"Ready to Work With Us?"}
+          </h2>
+          <p className={`mb-8 leading-relaxed ${isAr?"font-ar":"font-en"}`}
+            style={{ color:"var(--color-secondary-text)", fontSize:"15px" }}>
+            {isAr
+              ? "نحن دائماً نبحث عن مشاريع جديدة وتحديات مثيرة. لنبني شيئاً رائعاً معاً."
+              : "We're always looking for new projects and exciting challenges. Let's build something great together."}
+          </p>
+          <div className={`flex flex-wrap gap-4 justify-center ${isAr?"flex-row-reverse":""}`}>
+            <Link href={`/${lang}/contact`}
+              className="apex-cta-btn inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-white transition-all"
+              style={{ background:"linear-gradient(135deg,var(--color-primary),var(--color-accent))",
+                boxShadow:"0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)" }}>
+              {dictionary.contact.title}
+              <span style={{ display:"inline-block", transform:isAr?"rotate(180deg)":"none" }}>→</span>
+            </Link>
+            <Link href={`/${lang}/portfolio`}
+              className="apex-btn-outline inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm border-2 transition-all"
+              style={{ color:"var(--color-primary)", borderColor:"var(--color-primary)" }}>
+              {isAr?"شاهد أعمالنا":"See Our Work"}
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

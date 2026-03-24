@@ -1,0 +1,8 @@
+﻿export const socialLinks = {
+  email: "apex.devs.io@gmail.com",
+  whatsapp: "+963991313929",
+  instagram: "",
+  linkedin: "",
+  twitter: "",
+} as const;
+
