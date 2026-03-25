@@ -1,4 +1,4 @@
-/// <reference lib="webworker" />
+
 
 interface Particle {
   x: number;

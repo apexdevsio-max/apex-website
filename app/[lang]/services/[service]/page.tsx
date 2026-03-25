@@ -1,12 +1,13 @@
-// file: app/[lang]/services/[service]/page.tsx
+
 import Link              from "next/link";
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 
 import { getServiceBySlug, getServices } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale }   from "@/lib/i18n/locale";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
-/* ─── Mock service detail content ───────────────────────── */
+
 const MOCK_SERVICES: Record<string, {
   emoji: string; accentColor: string; gradient: string;
   ar: { title: string; summary: string; ctaLabel: string; features: string[]; process: string[]; result: string };
@@ -80,7 +81,7 @@ const MOCK_SERVICES: Record<string, {
   },
 };
 
-/* ─── Static params ─────────────────────────────────────── */
+
 export async function generateStaticParams() {
   const seen = new Set<string>();
   const params: { lang: string; service: string }[] = [];
@@ -102,14 +103,19 @@ export async function generateMetadata({
   params,
 }: { params: Promise<{ lang: string; service: string }> }): Promise<Metadata> {
   const { lang, service: slug } = await params;
-  const mock    = MOCK_SERVICES[slug]?.[lang as "ar"|"en"];
-  return {
-    title: mock ? `${mock.title} — APEX` : `${slug} — APEX`,
-    description: mock?.summary ?? "",
-  };
+  const locale = isLocale(lang) ? lang : "ar";
+  const mdx = await getServiceBySlug(locale, slug).catch(() => null);
+  const mock = MOCK_SERVICES[slug]?.[locale as "ar"|"en"];
+  const title = `${mdx?.title ?? mock?.title ?? slug} — APEX`;
+  const description = mdx?.summary ?? mock?.summary ?? "";
+  return buildPageMeta(locale, {
+    title,
+    description,
+    path: `/${lang}/services/${slug}`,
+  });
 }
 
-/* ─── Page ──────────────────────────────────────────────── */
+
 export default async function ServiceDetailsPage({
   params,
 }: { params: Promise<{ lang: string; service: string }> }) {
@@ -148,7 +154,7 @@ export default async function ServiceDetailsPage({
 
       <div className="max-w-4xl mx-auto">
 
-        {/* Back */}
+        {}
         <Link href={`/${lang}/services`}
           className={`apex-back inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-colors ${isAr?"font-ar flex-row-reverse":"font-en"}`}
           style={{ color:"var(--color-secondary-text)" }}>
@@ -156,7 +162,7 @@ export default async function ServiceDetailsPage({
           {isAr?"العودة للخدمات":"Back to Services"}
         </Link>
 
-        {/* Hero */}
+        
         <div className="relative rounded-3xl overflow-hidden mb-10"
           style={{ height:"clamp(200px,26vw,320px)", background:gradient }}>
           <div className="absolute inset-0 opacity-15" style={{
@@ -173,7 +179,7 @@ export default async function ServiceDetailsPage({
           </div>
         </div>
 
-        {/* Title + summary */}
+        
         <h1 className={`font-bold mb-4 leading-tight ${isAr?"font-ar":"font-en"}`}
           style={{ fontSize:"clamp(24px,3.5vw,42px)", color:"var(--color-primary-text)" }}>
           {title}
@@ -183,7 +189,7 @@ export default async function ServiceDetailsPage({
           {summary}
         </p>
 
-        {/* MDX description if exists */}
+        
         {description && (
           <div className={`rounded-2xl border p-8 mb-10 leading-loose whitespace-pre-line ${isAr?"font-ar":"font-en"}`}
             style={{ background:"var(--color-card)", borderColor:"var(--color-border)",
@@ -192,11 +198,11 @@ export default async function ServiceDetailsPage({
           </div>
         )}
 
-        {/* Two columns: features + process */}
+        
         {(features.length > 0 || process.length > 0) && (
           <div className="grid md:grid-cols-2 gap-8 mb-10">
 
-            {/* Features */}
+            
             {features.length > 0 && (
               <div>
                 <h2 className={`font-bold mb-5 ${isAr?"font-ar":"font-en"}`}
@@ -220,7 +226,7 @@ export default async function ServiceDetailsPage({
               </div>
             )}
 
-            {/* Process */}
+            
             {process.length > 0 && (
               <div>
                 <h2 className={`font-bold mb-5 ${isAr?"font-ar":"font-en"}`}
@@ -248,7 +254,7 @@ export default async function ServiceDetailsPage({
           </div>
         )}
 
-        {/* Result card */}
+        
         {result && (
           <div className="rounded-2xl p-7 mb-10 border"
             style={{ background:`color-mix(in srgb,${accentColor} 7%,var(--color-card))`,
@@ -269,7 +275,7 @@ export default async function ServiceDetailsPage({
           </div>
         )}
 
-        {/* CTAs */}
+        
         <div className={`flex flex-wrap gap-4 ${isAr?"flex-row-reverse":""}`}>
           <Link href={`/${lang}/contact`}
             className="apex-cta-btn inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-white transition-all"

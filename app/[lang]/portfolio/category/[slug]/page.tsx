@@ -1,4 +1,4 @@
-// file: app/[lang]/portfolio/category/[slug]/page.tsx
+
 import Link              from "next/link";
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
@@ -8,8 +8,9 @@ import {
   getPortfolioItems,
 } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
-/* ─── Mock data ─────────────────────────────────────────── */
+
 const MOCK_DETAIL: Record<string, {
   emoji: string; gradient: string; accentColor: string; tags: string[]; category: string;
   ar: { title: string; summary: string; description: string };
@@ -64,6 +65,21 @@ const MOCK_DETAIL: Record<string, {
     en:{ title:"Banking App UI/UX Design",         summary:"Comprehensive design case study for a banking app.", description:"We conducted a comprehensive design case study including:\n\n• User research with 50+ in-depth interviews\n• User Journey mapping\n• Interactive Wireframes and Prototypes\n• Usability testing with focus groups\n• Design System documentation\n\nResult: Reduced app abandonment rate by 45%." } },
 };
 
+const CATEGORIES_AR = [
+  { key: "all",       label: "الكل" },
+  { key: "web",       label: "تطوير ويب" },
+  { key: "mobile",    label: "تطبيقات موبايل" },
+  { key: "ecommerce", label: "متاجر إلكترونية" },
+  { key: "ai",        label: "ذكاء اصطناعي" },
+];
+const CATEGORIES_EN = [
+  { key: "all",       label: "All" },
+  { key: "web",       label: "Web Dev" },
+  { key: "mobile",    label: "Mobile Apps" },
+  { key: "ecommerce", label: "E-Commerce" },
+  { key: "ai",        label: "AI Content" },
+];
+
 const FALLBACK_DATA = (slug: string, lang: string) => ({
   emoji: "🚀", gradient: "linear-gradient(135deg,#0a0a0a,#1a1a2e)",
   accentColor: "#00BCD4", tags: ["APEX"],
@@ -73,7 +89,7 @@ const FALLBACK_DATA = (slug: string, lang: string) => ({
   description: lang === "ar" ? "تفاصيل المشروع قريباً."     : "Project details coming soon.",
 });
 
-/* ─── Static params ─────────────────────────────────────── */
+
 export async function generateStaticParams() {
   const seen = new Set<string>();
   const params: { lang: string; slug: string }[] = [];
@@ -94,19 +110,22 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ lang: string; slug: string }>;
-}): Promise<Metadata> {
+}: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
   const { lang, slug } = await params;
-  const mock    = MOCK_DETAIL[slug];
-  const content = mock?.[lang as "ar" | "en"];
-  return {
-    title:       content ? `${content.title} — APEX` : `${slug} — APEX`,
-    description: content?.summary ?? "",
-  };
+  const isAr = lang === "ar";
+  const category = (isAr ? CATEGORIES_AR : CATEGORIES_EN).find((c) => c.key === slug);
+  const title = category ? `${category.label} — APEX` : `${slug} — APEX`;
+  const description = isAr
+    ? "استكشف أعمال APEX ضمن هذا التصنيف."
+    : "Explore APEX projects in this category.";
+  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+    title,
+    description,
+    path: `/${lang}/portfolio/category/${slug}`,
+  });
 }
 
-/* ─── Page ──────────────────────────────────────────────── */
+
 export default async function PortfolioCategoryPage({
   params,
 }: {
@@ -117,7 +136,7 @@ export default async function PortfolioCategoryPage({
 
   const isAr = lang === "ar";
 
-  /* Resolve data — prefer MDX, fallback to mock */
+  
   const mdxItem     = await getPortfolioItemBySlug(lang, slug);
   const mock        = MOCK_DETAIL[slug];
   const mockContent = mock?.[lang as "ar" | "en"];
@@ -132,7 +151,7 @@ export default async function PortfolioCategoryPage({
   const tags        = mock?.tags        ?? fb.tags;
   const category    = mock?.category    ?? fb.category;
 
-  /* CSS-only hover classes injected via style tag — avoids event handlers */
+  
   const hoverStyles = `
     .apex-back-link:hover { color: var(--color-primary) !important; }
     .apex-tag-chip        { background: color-mix(in srgb,var(--color-primary) 12%,transparent); color:var(--color-primary); border:1px solid color-mix(in srgb,var(--color-primary) 28%,transparent); }
@@ -144,7 +163,7 @@ export default async function PortfolioCategoryPage({
     .apex-result-item:last-child { border-bottom:none; }
   `;
 
-  /* Parse description into bullet list for nicer rendering */
+  
   const lines = description.split("\n").filter(l => l.trim() !== "");
 
   return (
@@ -157,7 +176,7 @@ export default async function PortfolioCategoryPage({
 
       <div className="max-w-4xl mx-auto">
 
-        {/* ── Back ────────────────────────────────────────── */}
+        {}
         <Link
           href={`/${lang}/portfolio`}
           className={`apex-back-link inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-colors ${isAr ? "font-ar flex-row-reverse" : "font-en"}`}
@@ -167,25 +186,25 @@ export default async function PortfolioCategoryPage({
           {isAr ? "العودة لجميع الأعمال" : "Back to Portfolio"}
         </Link>
 
-        {/* ── Hero thumbnail ──────────────────────────────── */}
+        
         <div className="relative rounded-3xl overflow-hidden mb-10"
           style={{ height:"clamp(240px,30vw,380px)", background: gradient }}>
-          {/* Grid lines */}
+          
           <div className="absolute inset-0 opacity-15" style={{
             backgroundImage:`linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)`,
             backgroundSize:"28px 28px",
           }} aria-hidden="true" />
-          {/* Glow orb */}
+          
           <div className="absolute rounded-full pointer-events-none"
             style={{ width:"300px",height:"300px",top:"50%",left:"50%",transform:"translate(-50%,-50%)",
               background:`radial-gradient(circle,${accentColor}35 0%,transparent 70%)` }}
             aria-hidden="true" />
-          {/* Emoji */}
+          
           <div className="absolute inset-0 flex items-center justify-center"
             style={{ fontSize:"96px", filter:"drop-shadow(0 0 30px rgba(255,255,255,0.35))" }}>
             {emoji}
           </div>
-          {/* Category badge */}
+          
           <div className="absolute top-4 px-4 py-1.5 rounded-full text-xs font-bold"
             style={{
               [isAr ? "left":"right"]:"16px",
@@ -198,7 +217,7 @@ export default async function PortfolioCategoryPage({
           </div>
         </div>
 
-        {/* ── Tech tags ───────────────────────────────────── */}
+        
         <div className={`flex flex-wrap gap-2 mb-5 ${isAr ? "flex-row-reverse" : ""}`}>
           {tags.map(t => (
             <span key={t} className="apex-tag-chip text-xs font-bold px-3 py-1 rounded-full">
@@ -207,7 +226,7 @@ export default async function PortfolioCategoryPage({
           ))}
         </div>
 
-        {/* ── Title & summary ─────────────────────────────── */}
+        
         <h1 className={`font-bold mb-4 leading-tight ${isAr ? "font-ar" : "font-en"}`}
           style={{ fontSize:"clamp(24px,3.5vw,42px)", color:"var(--color-primary-text)" }}>
           {title}
@@ -218,7 +237,7 @@ export default async function PortfolioCategoryPage({
           {summary}
         </p>
 
-        {/* ── Description ─────────────────────────────────── */}
+        
         <div
           className="rounded-2xl border p-8 mb-12"
           style={{ background:"var(--color-card)", borderColor:"var(--color-border)" }}
@@ -254,7 +273,7 @@ export default async function PortfolioCategoryPage({
           })}
         </div>
 
-        {/* ── CTAs ────────────────────────────────────────── */}
+        
         <div className={`flex flex-wrap gap-4 ${isAr ? "flex-row-reverse" : ""}`}>
           <Link
             href={`/${lang}/contact`}

@@ -1,12 +1,13 @@
-// file: app/[lang]/blog/[slug]/page.tsx
+
 import Link              from "next/link";
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale }     from "@/lib/i18n/locale";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
-/* ─── Mock post content ─────────────────────────────────── */
+
 const MOCK_POSTS: Record<string, {
   emoji: string; accentColor: string; category: string; readTime: number;
   ar: { title: string; excerpt: string; date: string; content: string };
@@ -217,7 +218,7 @@ const FALLBACK = (slug: string, lang: string) => ({
   content: lang==="ar" ? "المحتوى قريباً." : "Content coming soon.",
 });
 
-/* ─── Static params ─────────────────────────────────────── */
+
 export async function generateStaticParams() {
   const seen = new Set<string>();
   const params: { lang: string; slug: string }[] = [];
@@ -239,13 +240,20 @@ export async function generateMetadata({
   params,
 }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
   const { lang, slug } = await params;
-  const mock    = MOCK_POSTS[slug]?.[lang as "ar"|"en"];
-  const mdxPost = await getBlogPostBySlug(lang as any, slug).catch(() => null);
-  const title   = mdxPost?.title ?? mock?.title ?? slug;
-  return { title:`${title} — APEX`, description: mdxPost?.excerpt ?? mock?.excerpt ?? "" };
+  const locale = isLocale(lang) ? lang : "ar";
+  const mdxPost = await getBlogPostBySlug(locale, slug).catch(() => null);
+  const mock = MOCK_POSTS[slug]?.[locale as "ar" | "en"];
+  const baseTitle = mdxPost?.title ?? mock?.title ?? slug;
+  const description = mdxPost?.excerpt ?? mock?.excerpt ?? "";
+  const title = `${baseTitle} — APEX`;
+  return buildPageMeta(locale, {
+    title,
+    description,
+    path: `/${lang}/blog/${slug}`,
+  });
 }
 
-/* ─── Page ──────────────────────────────────────────────── */
+
 export default async function BlogPostPage({
   params,
 }: { params: Promise<{ lang: string; slug: string }> }) {
@@ -266,19 +274,17 @@ export default async function BlogPostPage({
   const accentColor = mock?.accentColor ?? fb.accentColor;
   const category    = mock?.category   ?? fb.category;
 
-  /* Parse content into sections */
+  
   const rawContent  = mdxPost?.content ?? mockC?.content ?? fb.content;
   const contentLines = rawContent.split("\n");
 
   const hoverStyles = `
     .apex-back:hover { color: var(--color-primary) !important; }
-    .apex-prose-h2 { font-size:18px; font-weight:700; color:var(--color-primary-text); margin:1.8rem 0 0.8rem; padding-bottom:6px; border-bottom:1px solid var(--color-border); }
-    .apex-prose-p  { font-size:15px; line-height:1.9; color:var(--color-secondary-text); margin-bottom:0.6rem; }
     .apex-prose-bullet { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
     .apex-related:hover { border-color:var(--color-primary) !important; transform:translateY(-3px); }
   `;
 
-  /* Related posts (other mock posts, max 3) */
+  
   const relatedSlugs = Object.keys(MOCK_POSTS).filter(s => s !== slug).slice(0, 3);
 
   return (
@@ -288,7 +294,7 @@ export default async function BlogPostPage({
 
       <div className="max-w-3xl mx-auto">
 
-        {/* Back */}
+        {}
         <Link href={`/${lang}/blog`}
           className={`apex-back inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-colors ${isAr?"font-ar flex-row-reverse":"font-en"}`}
           style={{ color:"var(--color-secondary-text)" }}>
@@ -296,7 +302,7 @@ export default async function BlogPostPage({
           {isAr?"العودة للمدونة":"Back to Blog"}
         </Link>
 
-        {/* Hero */}
+        
         <div className="relative rounded-3xl overflow-hidden mb-10"
           style={{ height:"clamp(200px,26vw,320px)", background:"linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}>
           <div className="absolute inset-0 opacity-15" style={{
@@ -318,7 +324,7 @@ export default async function BlogPostPage({
           </div>
         </div>
 
-        {/* Meta */}
+        
         <div className={`flex items-center gap-3 mb-4 text-xs ${isAr?"flex-row-reverse":""}`}
           style={{ color:"var(--color-secondary-text)" }}>
           {date && <span>{date}</span>}
@@ -326,19 +332,19 @@ export default async function BlogPostPage({
           <span>{readTime} {isAr?"دقائق قراءة":"min read"}</span>
         </div>
 
-        {/* Title */}
+        
         <h1 className={`font-bold mb-4 leading-tight ${isAr?"font-ar":"font-en"}`}
           style={{ fontSize:"clamp(22px,3.5vw,40px)", color:"var(--color-primary-text)" }}>
           {title}
         </h1>
 
-        {/* Excerpt */}
+        
         <p className={`text-lg mb-10 leading-relaxed pb-8 border-b ${isAr?"font-ar":"font-en"}`}
           style={{ color:"var(--color-secondary-text)", borderColor:"var(--color-border)" }}>
           {excerpt}
         </p>
 
-        {/* Content */}
+        
         <article className="mb-14">
           {contentLines.map((line, i) => {
             if (!line.trim()) return <div key={i} style={{ height:"8px" }} />;
@@ -346,6 +352,21 @@ export default async function BlogPostPage({
               <h2 key={i} className={`apex-prose-h2 ${isAr?"font-ar":"font-en"}`}>
                 {line.replace("## ","")}
               </h2>
+            );
+            if (line.startsWith("### ")) return (
+              <h3 key={i} className={`apex-prose-h3 ${isAr?"font-ar":"font-en"}`}>
+                {line.replace("### ","")}
+              </h3>
+            );
+            if (line.startsWith("> ")) return (
+              <blockquote key={i} className={`apex-prose-quote ${isAr?"font-ar":"font-en"}`}>
+                {line.replace("> ","")}
+              </blockquote>
+            );
+            if (line.startsWith("- ")) return (
+              <ul key={i} className={`apex-prose-list ${isAr?"font-ar":"font-en"}`}>
+                <li>{line.replace("- ","")}</li>
+              </ul>
             );
             if (line.startsWith("• ")) return (
               <div key={i} className="apex-prose-bullet">
@@ -364,7 +385,7 @@ export default async function BlogPostPage({
           })}
         </article>
 
-        {/* CTA */}
+        
         <div className="rounded-2xl p-8 text-center border mb-14"
           style={{ background:"color-mix(in srgb,var(--color-primary) 6%,var(--color-card))",
             borderColor:"color-mix(in srgb,var(--color-primary) 20%,transparent)" }}>
@@ -381,7 +402,7 @@ export default async function BlogPostPage({
           </Link>
         </div>
 
-        {/* Related */}
+        
         <div>
           <h3 className={`font-bold mb-6 ${isAr?"font-ar":"font-en"}`}
             style={{ fontSize:"18px", color:"var(--color-primary-text)" }}>

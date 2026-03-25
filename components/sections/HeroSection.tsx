@@ -321,18 +321,18 @@ export function HeroSection({
         الروبوت دائماً على اليمين، والنص دائماً على اليسار.
         اتجاه النص (RTL/LTR) يُطبّق فقط على عنصر النص الداخلي.
       */}
-      <section dir="ltr" className="relative min-h-screen flex items-center overflow-hidden" aria-label="Hero">
+      <section
+        dir="ltr"
+        className="relative min-h-screen flex items-center overflow-hidden"
+        style={{ backgroundImage: "none" }}
+        aria-label="Hero"
+      >
 
       {/* BG */}
       <div className="absolute inset-0 z-0" aria-hidden="true"
-        style={{ background:"linear-gradient(135deg,var(--color-background) 0%,color-mix(in srgb,var(--color-primary) 8%,var(--color-background)) 100%)" }} />
-
-      {/* Grid */}
-      <div className="absolute inset-0 z-10 pointer-events-none" aria-hidden="true"
         style={{
-          backgroundImage:`linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)`,
-          backgroundSize:"60px 60px",
-          animation:"apex-grid-breathe 6s ease-in-out infinite",
+          background:"linear-gradient(135deg,var(--color-background) 0%,color-mix(in srgb,var(--color-primary) 8%,var(--color-background)) 100%)",
+          backgroundImage:"none",
         }} />
 
       {/* Orbs */}
@@ -362,6 +362,7 @@ export function HeroSection({
       {/* Particles */}
       <canvas ref={particlesCanvasRef}
         className="absolute inset-0 w-full h-full z-30 pointer-events-none opacity-70"
+        style={{ backgroundImage:"none", backgroundColor:"transparent" }}
         aria-hidden="true" />
 
       {/* Source video — hidden, feeds WebGL */}

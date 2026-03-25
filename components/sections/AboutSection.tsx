@@ -1,33 +1,12 @@
-// file: components/sections/AboutSection.tsx
-"use client";
 
-import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { Reveal } from "@/components/ui/Reveal";
 
 function StatCounter({ value, label }: { value: string; label: string }) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.4 }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <div
-      ref={ref}
-      className="text-center transition-all duration-700"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(16px)",
-      }}
+      className="text-center"
     >
       <div
         className="font-bold leading-none"
@@ -81,17 +60,14 @@ export function AboutSection({
           <span className="apex-section-label">{about.badge}</span>
           <div className="apex-divider" />
           <h2
-            className={`apex-glow mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
-            style={{ fontSize: "clamp(26px, 3.8vw, 48px)", color: "var(--color-primary-text)" }}
+            className={`apex-glow apex-section-title mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
           >
             {about.title}
           </h2>
           <p
-            className={`mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
             style={{
               maxWidth: "580px",
-              fontSize: "clamp(14px, 1.6vw, 17px)",
-              color: "var(--color-secondary-text)",
             }}
           >
             {about.subtitle}
@@ -99,13 +75,7 @@ export function AboutSection({
         </Reveal>
 
         <Reveal delay={100} threshold={0.12} offsetY={24} durationMs={700}>
-          <div
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 rounded-3xl p-10 mb-20 border"
-            style={{
-              background: "var(--color-card)",
-              borderColor: "var(--color-border)",
-            }}
-          >
+          <div className="apex-card-base grid grid-cols-2 md:grid-cols-4 gap-8 rounded-3xl p-10 mb-20">
             {about.stats.map((s: { value: string; label: string }, i: number) => (
               <StatCounter key={i} value={s.value} label={s.label} />
             ))}

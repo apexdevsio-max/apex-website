@@ -1,4 +1,4 @@
-// file: components/sections/ServicesGrid.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -28,7 +28,7 @@ const MOCK_SERVICES = [
     en:{ title:"Content Creation",      summary:"Professional videos, reels, and AI-powered designs that captivate your audience.", ctaLabel:"Create Great Content" } },
 ];
 
-/* ─── Reveal ────────────────────────────────────────────── */
+
 function Reveal({ children, delay = 0, className = "" }: {
   children: React.ReactNode; delay?: number; className?: string;
 }) {
@@ -61,9 +61,8 @@ function ServiceCard({ service, lang, learnMore }: {
 
   return (
     <Link href={`/${lang}/services/${service.slug}`}
-      className="flex flex-col rounded-2xl overflow-hidden border transition-all duration-300"
+      className="apex-card-base flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
       style={{
-        background:     "var(--color-card)",
         borderColor:    hov ? service.accentColor : "var(--color-border)",
         transform:      hov ? "translateY(-6px)" : "translateY(0)",
         boxShadow:      hov ? `0 20px 50px color-mix(in srgb,${service.accentColor} 18%,transparent)` : "none",
@@ -72,7 +71,7 @@ function ServiceCard({ service, lang, learnMore }: {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
-      {/* Thumbnail */}
+      
       <div className="relative flex items-center justify-center"
         style={{ height:"156px", background:service.gradient }}>
         <div className="absolute inset-0 opacity-15" style={{
@@ -89,7 +88,7 @@ function ServiceCard({ service, lang, learnMore }: {
         </span>
       </div>
 
-      {/* Body */}
+      
       <div className="flex flex-col flex-1 p-6" dir={isAr?"rtl":"ltr"}>
         <h2 className={`font-bold mb-2 ${isAr?"font-ar":"font-en"}`}
           style={{ fontSize:"16px", color:"var(--color-primary-text)" }}>
@@ -99,10 +98,9 @@ function ServiceCard({ service, lang, learnMore }: {
           style={{ color:"var(--color-secondary-text)" }}>
           {content.summary}
         </p>
-        <div className={`flex items-center gap-2 font-bold text-sm border-t pt-4 ${isAr?"flex-row-reverse":""}`}
+        <div className={`flex items-center gap-2 font-bold text-sm border-t pt-4 apex-arrow ${hov ? "apex-arrow-shift" : ""} ${isAr?"flex-row-reverse":""}`}
           style={{ color:service.accentColor, borderColor:"var(--color-border)" }}>
           {learnMore}
-          <span className={`transition-transform duration-200 ${hov?(isAr?"-translate-x-1":"translate-x-1"):""} ${isAr?"rotate-180 inline-block":""}`}>→</span>
         </div>
       </div>
     </Link>
@@ -138,7 +136,7 @@ export function ServicesGrid({ lang, dictionary, mdxItems }: {
       style={{ background:"var(--color-background)" }} dir={isAr?"rtl":"ltr"}>
       <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
+        
         <Reveal className="text-center mb-16">
           <span className="apex-section-label gold">{dictionary.services.badge}</span>
           <div className="apex-divider reverse" />
@@ -152,7 +150,7 @@ export function ServicesGrid({ lang, dictionary, mdxItems }: {
           </p>
         </Reveal>
 
-        {/* Grid */}
+        
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {services.map((s, i) => (
             <Reveal key={s.slug} delay={i * 70}>
@@ -161,7 +159,7 @@ export function ServicesGrid({ lang, dictionary, mdxItems }: {
           ))}
         </div>
 
-        {/* Process */}
+        
         <Reveal delay={80}>
           <div className="rounded-3xl border p-10 mb-16"
             style={{ background:"color-mix(in srgb,var(--color-primary) 4%,var(--color-card))",
@@ -193,18 +191,15 @@ export function ServicesGrid({ lang, dictionary, mdxItems }: {
           </div>
         </Reveal>
 
-        {/* CTA */}
+        
         <Reveal delay={100} className="text-center">
           <p className={`mb-6 text-lg font-medium ${isAr?"font-ar":"font-en"}`}
             style={{ color:"var(--color-secondary-text)" }}>
             {isAr?"مشروعك يستحق أفضل فريق":"Your project deserves the best team"}
           </p>
           <Link href={`/${lang}/contact`}
-            className="apex-btn inline-flex items-center gap-3 px-10 py-3.5 rounded-full font-bold text-sm text-white"
-            style={{ background:"linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-              boxShadow:"0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)" }}>
+            className="apex-btn apex-btn-primary apex-arrow inline-flex items-center gap-3 px-10 py-3.5 rounded-full font-bold text-sm text-white">
             {isAr?"ابدأ مشروعك الآن":"Start Your Project Now"}
-            <span className={isAr?"rotate-180 inline-block":""}>→</span>
           </Link>
         </Reveal>
       </div>

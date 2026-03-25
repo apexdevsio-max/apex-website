@@ -1,4 +1,4 @@
-// file: app/[lang]/not-found.tsx  (أو app/not-found.tsx)
+
 "use client";
 
 import Link from "next/link";
@@ -17,7 +17,7 @@ export default function NotFoundPage() {
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
-      {/* Ambient glow */}
+      {}
       <div className="absolute rounded-full pointer-events-none" aria-hidden="true"
         style={{
           width:"500px", height:"500px",
@@ -25,7 +25,7 @@ export default function NotFoundPage() {
           background:"radial-gradient(circle,color-mix(in srgb,var(--color-primary) 8%,transparent) 0%,transparent 70%)",
         }} />
 
-      {/* Grid */}
+      {}
       <div className="absolute inset-0 pointer-events-none opacity-40" aria-hidden="true"
         style={{
           backgroundImage:`linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)`,
@@ -34,7 +34,7 @@ export default function NotFoundPage() {
 
       <section className="relative z-1 text-center max-w-lg">
 
-        {/* 404 — giant decorative */}
+        {}
         <div className="font-bold leading-none mb-2 select-none font-en"
           style={{
             fontSize:"clamp(120px,22vw,180px)",
@@ -46,22 +46,22 @@ export default function NotFoundPage() {
           404
         </div>
 
-        {/* Icon */}
+        
         <div className="text-6xl -mt-10 mb-6">🔍</div>
 
-        {/* Label */}
+        {}
         <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3 font-en"
           style={{ color:"var(--color-primary)" }}>
           Error 404
         </p>
 
-        {/* Heading */}
+        
         <h1 className={`font-bold mb-4 leading-tight ${isAr?"font-ar":"font-en"}`}
           style={{ fontSize:"clamp(24px,4vw,40px)", color:"var(--color-primary-text)" }}>
           {isAr ? "الصفحة غير موجودة" : "Page Not Found"}
         </h1>
 
-        {/* Description */}
+        {}
         <p className={`mb-10 leading-relaxed ${isAr?"font-ar":"font-en"}`}
           style={{ color:"var(--color-secondary-text)", fontSize:"15px" }}>
           {isAr
@@ -69,7 +69,7 @@ export default function NotFoundPage() {
             : "The page you're looking for doesn't exist or has been moved."}
         </p>
 
-        {/* CTAs */}
+        
         <div className={`flex flex-wrap gap-3 justify-center ${isAr?"flex-row-reverse":""}`}>
           <Link href={`/${lang}`}
             className="apex-btn inline-flex items-center gap-2 px-7 py-3 rounded-full font-bold text-sm text-white"
@@ -88,7 +88,7 @@ export default function NotFoundPage() {
           </Link>
         </div>
 
-        {/* Quick links */}
+        
         <div className="mt-10 pt-8 border-t" style={{ borderColor:"var(--color-border)" }}>
           <p className={`text-xs mb-4 ${isAr?"font-ar":"font-en"}`}
             style={{ color:"var(--color-secondary-text)" }}>

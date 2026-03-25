@@ -1,4 +1,4 @@
-// file: app/[lang]/about/page.tsx
+
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 import Link              from "next/link";
@@ -6,18 +6,20 @@ import Link              from "next/link";
 import { AboutSection }  from "@/components/sections/AboutSection";
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale }      from "@/lib/i18n/locale";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ lang: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return {
+  return buildPageMeta(lang === "ar" ? "ar" : "en", {
     title: isAr ? "من نحن — APEX" : "About Us — APEX",
     description: isAr
       ? "تعرّف على شركة APEX للبرمجيات — رؤيتنا، قيمنا، وفريقنا."
       : "Learn about APEX Software — our vision, values, and team.",
-  };
+    path: `/${lang}/about`,
+  });
 }
 
 export default async function AboutPage({ params }: Props) {
@@ -73,10 +75,10 @@ export default async function AboutPage({ params }: Props) {
     <main style={{ background:"var(--color-background)" }}>
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
 
-      {/* ── About section (stats + vision) ──────────────── */}
+      {}
       <AboutSection lang={lang} dictionary={dictionary} />
 
-      {/* ── Values ──────────────────────────────────────── */}
+      {}
       <section className="py-20 px-6" dir={isAr?"rtl":"ltr"}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -107,7 +109,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── Team ────────────────────────────────────────── */}
+      
       <section className="py-20 px-6"
         style={{ background:"color-mix(in srgb,var(--color-primary) 3%,var(--color-background))" }}
         dir={isAr?"rtl":"ltr"}>
@@ -149,7 +151,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── CTA ─────────────────────────────────────────── */}
+      
       <section className="py-20 px-6" dir={isAr?"rtl":"ltr"}>
         <div className="max-w-2xl mx-auto text-center">
           <div className="text-5xl mb-5">🤝</div>
@@ -165,11 +167,8 @@ export default async function AboutPage({ params }: Props) {
           </p>
           <div className={`flex flex-wrap gap-4 justify-center ${isAr?"flex-row-reverse":""}`}>
             <Link href={`/${lang}/contact`}
-              className="apex-cta-btn inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-white transition-all"
-              style={{ background:"linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-                boxShadow:"0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)" }}>
+              className="apex-cta-btn apex-btn-primary apex-arrow inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-white transition-all">
               {dictionary.contact.title}
-              <span style={{ display:"inline-block", transform:isAr?"rotate(180deg)":"none" }}>→</span>
             </Link>
             <Link href={`/${lang}/portfolio`}
               className="apex-btn-outline inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm border-2 transition-all"

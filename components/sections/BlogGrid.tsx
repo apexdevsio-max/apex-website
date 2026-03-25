@@ -1,4 +1,4 @@
-// file: components/sections/BlogGrid.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -7,7 +7,7 @@ import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale }     from "@/lib/i18n/locale";
 import type { BlogPost }   from "@/lib/content/content-loader";
 
-/* ─── Mock posts ────────────────────────────────────────── */
+
 const MOCK_POSTS = [
   {
     slug: "nextjs-vs-remix-2025",
@@ -132,7 +132,7 @@ const CATS_EN = [
   { key: "ai",     label: "AI" },
 ];
 
-/* ─── Reveal ────────────────────────────────────────────── */
+
 function Reveal({ children, delay = 0, className = "" }: {
   children: React.ReactNode; delay?: number; className?: string;
 }) {
@@ -161,9 +161,8 @@ function FeaturedCard({ post, lang }: {
 
   return (
     <Link href={`/${lang}/blog/${post.slug}`}
-      className="group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden border transition-all duration-300"
+      className="apex-card-base group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden transition-all duration-300"
       style={{
-        background:   "var(--color-card)",
         borderColor:  hov ? post.accentColor : "var(--color-border)",
         transform:    hov ? "translateY(-4px)" : "translateY(0)",
         boxShadow:    hov ? `0 20px 50px color-mix(in srgb,${post.accentColor} 18%,transparent)` : "none",
@@ -172,7 +171,7 @@ function FeaturedCard({ post, lang }: {
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       dir={isAr ? "rtl" : "ltr"}
     >
-      {/* Visual side */}
+      
       <div className="relative shrink-0 flex items-center justify-center"
         style={{ width: "100%", maxWidth: "340px", minHeight: "220px",
           background: `linear-gradient(135deg,#0f0c29,#302b63)` }}>
@@ -187,7 +186,7 @@ function FeaturedCard({ post, lang }: {
           transition:"transform 0.3s",transform:hov?"scale(1.1)":"scale(1)" }}>
           {post.emoji}
         </span>
-        {/* Featured badge */}
+        
         <div className="absolute top-3 px-3 py-1 rounded-full text-xs font-bold"
           style={{ [isAr?"left":"right"]:"12px", background:`color-mix(in srgb,${post.accentColor} 22%,rgba(0,0,0,0.5))`,
             border:`1px solid ${post.accentColor}55`, color:post.accentColor, backdropFilter:"blur(8px)" }}>
@@ -195,7 +194,7 @@ function FeaturedCard({ post, lang }: {
         </div>
       </div>
 
-      {/* Content side */}
+      
       <div className="flex flex-col justify-center p-8 flex-1">
         <div className={`flex items-center gap-3 mb-4 ${isAr?"flex-row-reverse":""}`}>
           <span className="apex-tag">{isAr ? CATS_AR.find(c=>c.key===post.category)?.label : CATS_EN.find(c=>c.key===post.category)?.label}</span>
@@ -211,10 +210,9 @@ function FeaturedCard({ post, lang }: {
           style={{ fontSize:"14px", color:"var(--color-secondary-text)" }}>
           {content.excerpt}
         </p>
-        <div className={`flex items-center gap-2 font-bold text-sm ${isAr?"flex-row-reverse":""}`}
+        <div className={`flex items-center gap-2 font-bold text-sm apex-arrow ${hov?"apex-arrow-shift":""} ${isAr?"flex-row-reverse":""}`}
           style={{ color:post.accentColor }}>
           {isAr ? "قراءة المقال" : "Read Article"}
-          <span className={`transition-transform duration-200 ${hov?(isAr?"-translate-x-1":"translate-x-1"):""} ${isAr?"rotate-180 inline-block":""}`}>→</span>
         </div>
       </div>
     </Link>
@@ -229,9 +227,8 @@ function PostCard({ post, lang }: { post: typeof MOCK_POSTS[0]; lang: Locale }) 
 
   return (
     <Link href={`/${lang}/blog/${post.slug}`}
-      className="flex flex-col rounded-2xl overflow-hidden border transition-all duration-300"
+      className="apex-card-base flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
       style={{
-        background:   "var(--color-card)",
         borderColor:  hov ? post.accentColor : "var(--color-border)",
         transform:    hov ? "translateY(-5px)" : "translateY(0)",
         boxShadow:    hov ? `0 16px 40px color-mix(in srgb,${post.accentColor} 16%,transparent)` : "none",
@@ -239,7 +236,7 @@ function PostCard({ post, lang }: { post: typeof MOCK_POSTS[0]; lang: Locale }) 
       }}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
     >
-      {/* Thumbnail */}
+      
       <div className="relative flex items-center justify-center"
         style={{ height:"160px", background:`linear-gradient(135deg,#0a0a0a,#1a1a2e)` }}>
         <div className="absolute inset-0 opacity-15" style={{
@@ -260,7 +257,7 @@ function PostCard({ post, lang }: { post: typeof MOCK_POSTS[0]; lang: Locale }) 
         </div>
       </div>
 
-      {/* Body */}
+      
       <div className="flex flex-col flex-1 p-6" dir={isAr?"rtl":"ltr"}>
         <div className={`flex items-center gap-2 mb-3 text-xs ${isAr?"flex-row-reverse":""}`}
           style={{ color:"var(--color-secondary-text)" }}>
@@ -276,10 +273,9 @@ function PostCard({ post, lang }: { post: typeof MOCK_POSTS[0]; lang: Locale }) 
           style={{ color:"var(--color-secondary-text)" }}>
           {content.excerpt}
         </p>
-        <div className={`flex items-center gap-2 font-bold text-sm mt-auto ${isAr?"flex-row-reverse":""}`}
+        <div className={`flex items-center gap-2 font-bold text-sm mt-auto apex-arrow ${hov?"apex-arrow-shift":""} ${isAr?"flex-row-reverse":""}`}
           style={{ color:post.accentColor }}>
           {isAr?"قراءة المقال":"Read Article"}
-          <span className={`transition-transform duration-200 ${hov?(isAr?"-translate-x-1":"translate-x-1"):""} ${isAr?"rotate-180 inline-block":""}`}>→</span>
         </div>
       </div>
     </Link>
@@ -316,7 +312,7 @@ export function BlogGrid({
       style={{ background:"var(--color-background)" }} dir={isAr?"rtl":"ltr"}>
       <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
+        
         <Reveal className="text-center mb-14">
           <span className="apex-section-label gold">{isAr?"المدونة":"Blog"}</span>
           <div className="apex-divider reverse" />
@@ -332,14 +328,14 @@ export function BlogGrid({
           </p>
         </Reveal>
 
-        {/* Featured post */}
+        
         {featured && (
           <Reveal delay={80} className="mb-10">
             <FeaturedCard post={featured} lang={lang} />
           </Reveal>
         )}
 
-        {/* Filter tabs */}
+        
         <Reveal delay={100}>
           <div className="flex flex-wrap gap-2 justify-center mb-10">
             {cats.map(cat => (
@@ -359,7 +355,7 @@ export function BlogGrid({
           </div>
         </Reveal>
 
-        {/* Grid */}
+        
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((p, i) => (
             <Reveal key={p.slug} delay={i * 60}>
@@ -368,7 +364,7 @@ export function BlogGrid({
           ))}
         </div>
 
-        {/* Empty */}
+        
         {filtered.length === 0 && (
           <div className="text-center py-20" style={{ color:"var(--color-secondary-text)" }}>
             <div className="text-5xl mb-4">📭</div>
@@ -378,7 +374,7 @@ export function BlogGrid({
           </div>
         )}
 
-        {/* Newsletter CTA */}
+        
         <Reveal delay={120}>
           <div className="mt-20 rounded-3xl p-10 text-center border relative overflow-hidden"
             style={{ background:"color-mix(in srgb,var(--color-primary) 6%,var(--color-card))", borderColor:"color-mix(in srgb,var(--color-primary) 20%,transparent)" }}>
@@ -399,11 +395,8 @@ export function BlogGrid({
                   : "Follow us on social media for the latest technical articles"}
               </p>
               <Link href={`/${lang}/contact`}
-                className="apex-btn inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white"
-                style={{ background:"linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-                  boxShadow:"0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)" }}>
+                className="apex-btn apex-btn-primary inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white">
                 {isAr ? "تواصل معنا" : "Get In Touch"}
-                <span className={isAr?"rotate-180 inline-block":""}>→</span>
               </Link>
             </div>
           </div>

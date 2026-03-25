@@ -1,5 +1,3 @@
-// file: components/sections/PortfolioPreview.tsx
-"use client";
 
 import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -22,8 +20,7 @@ export function PortfolioPreview({ lang, dictionary }: { lang: Locale; dictionar
   return (
     <section
       id="portfolio"
-      className="relative py-28 md:py-36 px-6"
-      style={{ background: "color-mix(in srgb, var(--color-background) 85%, var(--color-card))" }}
+      className="relative py-28 md:py-36 px-6 apex-section-alt"
     >
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-16">
@@ -47,10 +44,7 @@ export function PortfolioPreview({ lang, dictionary }: { lang: Locale; dictionar
           {portfolio.projects.map(
             (p: { title: string; category: string; tag: string; emoji: string }, i: number) => (
               <Reveal key={i} delay={i * 70}>
-                <div
-                  className="apex-card-hover rounded-2xl overflow-hidden border flex flex-col"
-                  style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
-                >
+                <div className="apex-card-base apex-card-hover rounded-2xl overflow-hidden flex flex-col">
                   <div
                     className="relative flex items-center justify-center"
                     style={{ height: "176px", background: GRADIENTS[i % GRADIENTS.length] }}
@@ -77,11 +71,10 @@ export function PortfolioPreview({ lang, dictionary }: { lang: Locale; dictionar
                       {p.title}
                     </h3>
                     <div
-                      className={`flex items-center gap-2 font-semibold text-sm ${isAr ? "font-ar flex-row-reverse justify-end" : ""}`}
+                      className={`flex items-center gap-2 font-semibold text-sm apex-arrow ${isAr ? "font-ar flex-row-reverse justify-end" : ""}`}
                       style={{ color: "var(--color-primary)" }}
                     >
                       {portfolio.viewProject}
-                      <span className={isAr ? "rotate-180" : ""}>→</span>
                     </div>
                   </div>
                 </div>
@@ -93,14 +86,9 @@ export function PortfolioPreview({ lang, dictionary }: { lang: Locale; dictionar
         <Reveal className="text-center">
           <Link
             href={`/${lang}/portfolio`}
-            className="apex-btn inline-flex items-center gap-3 px-10 py-3.5 rounded-full font-bold text-sm text-white"
-            style={{
-              background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-              boxShadow: "0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent)",
-            }}
+            className="apex-btn apex-btn-primary apex-arrow inline-flex items-center gap-3 px-10 py-3.5 rounded-full font-bold text-sm text-white"
           >
             {portfolio.viewAll}
-            <span className={isAr ? "rotate-180" : ""}>→</span>
           </Link>
         </Reveal>
       </div>

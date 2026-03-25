@@ -1,10 +1,8 @@
 @import "tailwindcss";
 
-/* ═══════════════════════════════════════════════
-   APEX DESIGN TOKENS
-═══════════════════════════════════════════════ */
+
 :root {
-  /* ── Light theme ─────────────────────────────── */
+  
   --color-background:      #ffffff;
   --color-card:            #f8f9fa;
   --color-primary-text:    #1b1b1b;
@@ -17,20 +15,21 @@
   --color-gold:            #ffbf00;
   --shadow:                0 2px 40px rgba(0,0,0,0.08);
 
-  /* ── Footer tokens — Light mode ──────────────────
-     الـ footer داكن دائماً في light mode
-     لكن نجعله أخف قليلاً من dark mode ليبدو متناسقاً
-  ──────────────────────────────────────────────── */
+  
   --color-footer-bg:           #111111;
   --color-footer-heading:      #eeeeee;
   --color-footer-text:         #cccccc;
   --color-footer-text-muted:   #aaaaaa;
   --color-footer-border:       #2a2a2a;
-  --color-footer-primary:      #7986cb;   /* نسخة فاتحة من --color-primary تناسب الخلفية الداكنة */
+  --color-footer-primary:      #7986cb;   
+
+  --color-lang-pill-text:      #1b1b1b;
+  --color-lang-pill-border:    #c7a600;
+  --color-lang-pill-bg:        #fff4bf;
 }
 
 .dark {
-  /* ── Dark theme ──────────────────────────────── */
+  
   --color-background:      #121212;
   --color-card:            #1e1e1e;
   --color-primary-text:    #e0e0e0;
@@ -43,22 +42,20 @@
   --color-gold:            #ffbf00;
   --shadow:                0 2px 40px rgba(0,0,0,0.5);
 
-  /* ── Footer tokens — Dark mode ───────────────────
-     في dark mode الـ footer يصبح أكثر اندماجاً مع
-     باقي الصفحة لأن الكل داكن — لكن تبقى النصوص
-     واضحة وذات تباين عالٍ
-  ──────────────────────────────────────────────── */
+  
   --color-footer-bg:           #0a0a0a;
   --color-footer-heading:      #f5f5f5;
   --color-footer-text:         #d4d4d4;
   --color-footer-text-muted:   #9e9e9e;
   --color-footer-border:       #1e1e1e;
-  --color-footer-primary:      #00bcd4;  /* يتطابق مع --color-primary في dark */
+  --color-footer-primary:      #00bcd4;  
+
+  --color-lang-pill-text:      #ffbf00;
+  --color-lang-pill-border:    #806200;
+  --color-lang-pill-bg:        #2a2200;
 }
 
-/* ═══════════════════════════════════════════════
-   BASE
-═══════════════════════════════════════════════ */
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
@@ -74,69 +71,101 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Scrollbar */
+
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-background); }
 ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 3px; }
 
-/* Selection */
+
 ::selection {
   background: color-mix(in srgb, var(--color-primary) 25%, transparent);
   color: var(--color-primary-text);
 }
 
-/* ═══════════════════════════════════════════════
-   TYPOGRAPHY
-═══════════════════════════════════════════════ */
+
 .font-ar { font-family: var(--font-ar), serif; }
 .font-en { font-family: var(--font-en), serif; }
 
-/* ═══════════════════════════════════════════════
-   SHARED ANIMATIONS
-═══════════════════════════════════════════════ */
-@keyframes apex-fade-up {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0);    }
+.apex-section-bg { background: var(--color-background); }
+.apex-section-alt { background: color-mix(in srgb, var(--color-background) 92%, var(--color-card)); }
+.apex-card-base {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
 }
 
-@keyframes apex-float {
-  0%, 100% { transform: translateY(0px);   }
-  50%       { transform: translateY(-16px); }
+.apex-section-title {
+  font-size: clamp(28px, 3.9vw, 52px);
+  color: var(--color-primary-text);
 }
 
-@keyframes apex-shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
+.apex-section-subtitle {
+  font-size: clamp(14px, 1.6vw, 17px);
+  color: var(--color-secondary-text);
 }
 
-@keyframes apex-pulse-ring {
-  0%   { transform: scale(1);    opacity: 0.55; }
-  100% { transform: scale(1.85); opacity: 0;    }
+.apex-btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent);
+}
+.apex-btn-primary-strong {
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--color-primary) 42%, transparent);
 }
 
-@keyframes apex-grid-breathe {
-  0%, 100% { opacity: 0.06; }
-  50%       { opacity: 0.13; }
+.apex-prose-h2 {
+  font-size: clamp(18px, 2.2vw, 26px);
+  margin-top: 22px;
+  margin-bottom: 10px;
+  color: var(--color-primary-text);
+}
+.apex-prose-h3 {
+  font-size: clamp(16px, 1.9vw, 22px);
+  margin-top: 18px;
+  margin-bottom: 8px;
+  color: var(--color-primary-text);
+}
+.apex-prose-p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-secondary-text);
 }
 
-@keyframes apex-dot-blink {
-  0%, 100% { opacity: 1;   }
-  50%       { opacity: 0.3; }
+.apex-prose-list {
+  margin: 12px 0 18px;
+  padding-inline-start: 18px;
+  color: var(--color-secondary-text);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.apex-prose-list li { margin: 6px 0; }
+
+.apex-prose-quote {
+  margin: 16px 0;
+  padding: 10px 14px;
+  border-inline-start: 3px solid var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  color: var(--color-primary-text);
+  font-style: italic;
 }
 
-@keyframes apex-slide-in-rtl {
-  from { opacity: 0; transform: translateX(30px);  }
-  to   { opacity: 1; transform: translateX(0);     }
+.apex-contact-bg {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-background) 88%, var(--color-primary)),
+    color-mix(in srgb, var(--color-background) 92%, var(--color-gold))
+  );
+}
+.apex-contact-dots {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 9%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.6;
+}
+.apex-contact-glow {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%);
 }
 
-@keyframes apex-slide-in-ltr {
-  from { opacity: 0; transform: translateX(-30px); }
-  to   { opacity: 1; transform: translateX(0);     }
-}
 
-/* ═══════════════════════════════════════════════
-   RTL SUPPORT
-═══════════════════════════════════════════════ */
+
+
 [dir="rtl"] {
   text-align: right;
   direction: rtl;
@@ -146,127 +175,23 @@ html, body {
 [dir="rtl"] .flex-row-reverse { flex-direction: row;         }
 [dir="rtl"] .rotate-180       { transform: rotate(0deg) !important; }
 
-/* Icon flip for RTL */
+
 [dir="rtl"] [dir="ltr"]                          { direction: ltr; unicode-bidi: embed; }
 [dir="rtl"] svg:not([dir="ltr"]):not(.no-flip)   { transform: scaleX(-1); }
 [dir="rtl"] .lucide:not(.no-flip)                { transform: scaleX(-1); }
 
-/* Logical properties fallback */
+
 [dir="rtl"] .ms-auto { margin-right: auto    !important; margin-left: initial  !important; }
 [dir="rtl"] .me-auto { margin-left:  auto    !important; margin-right: initial !important; }
 
-/* ═══════════════════════════════════════════════
-   UTILITY CLASSES
-═══════════════════════════════════════════════ */
-
-/* Shimmer gradient text */
-.apex-shimmer-text {
-  background: linear-gradient(
-    90deg,
-    var(--color-primary-light),
-    var(--color-gold),
-    var(--color-accent),
-    var(--color-primary-light)
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: apex-shimmer 4s linear infinite;
+.apex-arrow::after {
+  content: "→";
+  display: inline-block;
+  margin-inline-start: 6px;
+  transition: transform 0.2s ease;
 }
-
-/* Glow text shadow */
-.apex-glow {
-  text-shadow:
-    0 0 40px color-mix(in srgb, var(--color-primary) 45%, transparent),
-    0 0 80px color-mix(in srgb, var(--color-primary) 22%, transparent);
-}
-
-/* Section label */
-.apex-section-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--color-primary);
-  text-align: center;
-}
-.apex-section-label.gold { color: var(--color-gold); }
-
-/* Section divider */
-.apex-divider {
-  width: 80px;
-  height: 3px;
-  border-radius: 2px;
-  margin: 10px auto 0;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-gold));
-}
-.apex-divider.reverse {
-  background: linear-gradient(90deg, var(--color-gold), var(--color-primary));
-}
-
-/* Card hover */
-.apex-card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.apex-card-hover:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 60px color-mix(in srgb, var(--color-primary) 18%, transparent);
-  border-color: var(--color-primary) !important;
-}
-
-/* Button shimmer sweep */
-.apex-btn {
-  position: relative;
-  overflow: hidden;
-}
-.apex-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent 40%,
-    rgba(255,255,255,0.18) 60%,
-    transparent 80%
-  );
-  transform: translateX(-100%);
-  transition: transform 0.55s ease;
-}
-.apex-btn:hover::after { transform: translateX(100%); }
-
-/* Staggered fade-up */
-.apex-fade-up { animation: apex-fade-up 0.75s ease both; }
-.apex-delay-1 { animation-delay: 0.10s; }
-.apex-delay-2 { animation-delay: 0.25s; }
-.apex-delay-3 { animation-delay: 0.40s; }
-.apex-delay-4 { animation-delay: 0.55s; }
-.apex-delay-5 { animation-delay: 0.70s; }
-
-/* Float */
-.apex-float { animation: apex-float 4s ease-in-out infinite; }
-
-/* Tag chip */
-.apex-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
-  color: var(--color-primary);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
-}
-
-/* Online badge dot */
-.apex-online-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px #22c55e;
-  animation: apex-dot-blink 2.5s ease-in-out infinite;
-  flex-shrink: 0;
-}
+[dir="rtl"] .apex-arrow::after { content: "←"; }
+.apex-arrow-shift::after { transform: translateX(4px); }
+[dir="rtl"] .apex-arrow-shift::after { transform: translateX(-4px); }
+.group:hover .apex-arrow-group::after { transform: translateX(4px); }
+[dir="rtl"] .group:hover .apex-arrow-group::after { transform: translateX(-4px); }

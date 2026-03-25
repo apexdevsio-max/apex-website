@@ -1,39 +1,50 @@
-// file: app/[lang]/academy/[course]/page.tsx
+
 import Link              from "next/link";
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 
-import { getAcademyCourseBySlug, getAcademyCourses } from "@/lib/content/content-loader";
+import { getAcademyCourseBySlug, getAcademyCourses, getAcademyLessonBySlugs } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale }               from "@/lib/i18n/locale";
 import { MOCK_COURSES }                              from "@/lib/mock/academy-data";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
-type Props = { params: Promise<{ lang: string; course: string }> };
+type Props = { params: Promise<{ lang: string; course: string; lesson: string }> };
 
 export async function generateStaticParams() {
   const seen = new Set<string>();
-  const params: { lang: string; course: string }[] = [];
+  const params: { lang: string; course: string; lesson: string }[] = [];
   for (const lang of SUPPORTED_LOCALES) {
     const mdx = await getAcademyCourses(lang);
     for (const c of mdx) {
-      const k = `${lang}:${c.slug}`;
-      if (!seen.has(k)) { seen.add(k); params.push({ lang, course: c.slug }); }
+      for (const l of c.lessons) {
+        const k = `${lang}:${c.slug}:${l.slug}`;
+        if (!seen.has(k)) { seen.add(k); params.push({ lang, course: c.slug, lesson: l.slug }); }
+      }
     }
     for (const c of MOCK_COURSES) {
-      const k = `${lang}:${c.slug}`;
-      if (!seen.has(k)) { seen.add(k); params.push({ lang, course: c.slug }); }
+      for (const l of c.lessons) {
+        const k = `${lang}:${c.slug}:${l.slug}`;
+        if (!seen.has(k)) { seen.add(k); params.push({ lang, course: c.slug, lesson: l.slug }); }
+      }
     }
   }
   return params;
 }
 
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang, course: courseSlug } = await params;
-  const mock    = MOCK_COURSES.find(c => c.slug === courseSlug);
-  const content = mock?.[lang as "ar"|"en"];
-  return {
-    title: content ? `${content.title} — APEX Academy` : `${courseSlug} — APEX Academy`,
-    description: content?.summary ?? "",
-  };
+  const { lang, course, lesson } = await params;
+  const locale = isLocale(lang) ? lang : "ar";
+  const mdx = await getAcademyLessonBySlugs(locale, course, lesson).catch(() => null);
+  const title = `${mdx?.lesson.title ?? (locale === "ar" ? "درس من الأكاديمية" : "Academy Lesson")} — APEX`;
+  const description = mdx?.lesson.summary ?? (locale === "ar"
+    ? "درس تدريبي من أكاديمية APEX."
+    : "Training lesson from APEX Academy.");
+  return buildPageMeta(locale, {
+    title,
+    description,
+    path: `/${lang}/academy/${course}/${lesson}`,
+  });
 }
 
 const LEVEL_COLORS: Record<string, string> = {

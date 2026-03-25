@@ -1,4 +1,4 @@
-// file: app/[lang]/blog/page.tsx
+
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 
@@ -6,18 +6,20 @@ import { getDictionary } from "@/lib/i18n/i18n";
 import { getBlogPosts }  from "@/lib/content/content-loader";
 import { isLocale }      from "@/lib/i18n/locale";
 import { BlogGrid }      from "@/components/sections/BlogGrid";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ lang: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return {
+  return buildPageMeta(lang === "ar" ? "ar" : "en", {
     title: isAr ? "المدونة — APEX" : "Blog — APEX",
     description: isAr
-      ? "مقالات تقنية متخصصة في تطوير الويب والموبايل والذكاء الاصطناعي."
-      : "Technical articles on web development, mobile, and AI.",
-  };
+      ? "مقالات تقنية وخبرات من فريق APEX."
+      : "Technical articles and insights from the APEX team.",
+    path: `/${lang}/blog`,
+  });
 }
 
 export default async function BlogPage({ params }: Props) {

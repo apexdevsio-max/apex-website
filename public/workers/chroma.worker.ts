@@ -1,4 +1,4 @@
-/// <reference lib="webworker" />
+
 
 self.onmessage = async (e: MessageEvent) => {
   const { type, canvas } = e.data as {
@@ -9,7 +9,7 @@ self.onmessage = async (e: MessageEvent) => {
   if (type === 'processFrame') {
     const gl = canvas.getContext('webgl2')!;
     
-    // Vertex Shader
+    
     const vsSource = `
       attribute vec2 position;
       void main() {
@@ -17,7 +17,7 @@ self.onmessage = async (e: MessageEvent) => {
       }
     `;
     
-    // Fragment Shader - HSV Chroma Key GLSL
+    
     const fsSource = `
       precision mediump float;
       
@@ -77,7 +77,7 @@ self.onmessage = async (e: MessageEvent) => {
       }
     `;
     
-    // Compile shaders
+    
     const vs = gl.createShader(gl.VERTEX_SHADER)!;
     gl.shaderSource(vs, vsSource);
     gl.compileShader(vs);
@@ -92,7 +92,7 @@ self.onmessage = async (e: MessageEvent) => {
     gl.linkProgram(program);
     gl.useProgram(program);
     
-    // Quad geometry
+    
     const positionLocation = gl.getAttribLocation(program, 'position');
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -104,18 +104,18 @@ self.onmessage = async (e: MessageEvent) => {
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
     
-    // Uniforms
+    
     const texLocation = gl.getUniformLocation(program, 'u_texture');
     const keyColorLoc = gl.getUniformLocation(program, 'u_keyColor');
     const simLoc = gl.getUniformLocation(program, 'u_similarity');
     const smoothLoc = gl.getUniformLocation(program, 'u_smoothness');
     
     gl.uniform1i(texLocation, 0);
-    gl.uniform3f(keyColorLoc, 0.125, 0.55, 0.18); // Green HSV
+    gl.uniform3f(keyColorLoc, 0.125, 0.55, 0.18); 
     gl.uniform1f(simLoc, 0.18);
     gl.uniform1f(smoothLoc, 0.08);
     
-    // Render loop handler
+    
     const renderFrame = (videoTexture: WebGLTexture) => {
       gl.uniform1i(gl.getUniformLocation(program, 'u_texture'), 0);
       gl.activeTexture(gl.TEXTURE0);
@@ -128,7 +128,7 @@ self.onmessage = async (e: MessageEvent) => {
     
     self.postMessage({ type: 'workerReady' });
     
-    // Listen for video frames from main
+    
     self.onmessage = (msg) => {
       if (msg.data.type === 'renderVideo') {
         const videoBitmap = msg.data.bitmap;

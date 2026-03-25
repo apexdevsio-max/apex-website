@@ -1,4 +1,4 @@
-// file: components/sections/PortfolioGrid.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -7,7 +7,7 @@ import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale }     from "@/lib/i18n/locale";
 import type { PortfolioItem } from "@/lib/content/content-loader";
 
-/* ─── Mock projects (used when no MDX content exists) ────── */
+
 const MOCK_PROJECTS = [
   {
     slug:        "ecommerce-fashion",
@@ -107,7 +107,7 @@ const MOCK_PROJECTS = [
   },
 ];
 
-/* Mock project titles + summaries per lang */
+
 const MOCK_META: Record<string, { ar: { title: string; summary: string }; en: { title: string; summary: string } }> = {
   "ecommerce-fashion":   { ar:{ title:"منصة متجر أزياء متكاملة",    summary:"متجر إلكتروني احترافي مع إدارة مخزون وبوابة دفع آمنة وتجربة تسوق سلسة." }, en:{ title:"Full Fashion E-Commerce Platform",    summary:"Professional online store with inventory management, secure payment gateway, and seamless shopping experience." } },
   "edu-app-ios":         { ar:{ title:"تطبيق تعليمي تفاعلي iOS",     summary:"تطبيق موبايل للتعليم بمحتوى تفاعلي ومتابعة تقدم الطالب وشهادات رقمية." }, en:{ title:"Interactive iOS Educational App",     summary:"Mobile learning app with interactive content, student progress tracking, and digital certificates." } },
@@ -138,7 +138,7 @@ const CATEGORIES_EN = [
   { key: "ai",        label: "AI Content" },
 ];
 
-/* ─── Reveal wrapper ────────────────────────────────────── */
+
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const [vis, setVis] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -168,9 +168,8 @@ function ProjectCard({
   return (
     <Link
       href={`/${lang}/portfolio/category/${slug}`}
-      className="group flex flex-col rounded-2xl overflow-hidden border transition-all duration-300"
+      className="apex-card-base group flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
       style={{
-        background:   "var(--color-card)",
         borderColor:  hovered ? accentColor : "var(--color-border)",
         transform:    hovered ? "translateY(-6px)" : "translateY(0)",
         boxShadow:    hovered ? `0 20px 50px color-mix(in srgb,${accentColor} 20%,transparent)` : "none",
@@ -179,15 +178,15 @@ function ProjectCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Thumbnail */}
+      
       <div className="relative overflow-hidden" style={{ height: "200px", background: gradient }}>
-        {/* Animated grid lines inside card */}
+        
         <div className="absolute inset-0 opacity-20" style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)`,
           backgroundSize: "24px 24px",
         }} aria-hidden="true" />
 
-        {/* Glow orb */}
+        
         <div className="absolute rounded-full transition-all duration-500 pointer-events-none"
           style={{
             width: hovered ? "220px" : "160px",
@@ -197,13 +196,13 @@ function ProjectCard({
             background: `radial-gradient(circle,${accentColor}30 0%,transparent 70%)`,
           }} aria-hidden="true" />
 
-        {/* Emoji */}
+        
         <div className="absolute inset-0 flex items-center justify-center"
           style={{ fontSize: "64px", filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))", transition: "transform 0.3s ease", transform: hovered ? "scale(1.12)" : "scale(1)" }}>
           {emoji}
         </div>
 
-        {/* Category tag */}
+        
         <div className="absolute top-3 px-3 py-1 rounded-full text-xs font-bold"
           style={{
             [isAr ? "left" : "right"]: "12px",
@@ -216,9 +215,9 @@ function ProjectCard({
         </div>
       </div>
 
-      {/* Body */}
+      
       <div className="flex flex-col flex-1 p-6" dir={isAr ? "rtl" : "ltr"}>
-        {/* Tech tags */}
+        
         <div className={`flex flex-wrap gap-1.5 mb-3 ${isAr ? "flex-row-reverse" : ""}`}>
           {tags.map(t => (
             <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
@@ -242,13 +241,10 @@ function ProjectCard({
           {summary}
         </p>
 
-        {/* CTA */}
-        <div className={`mt-5 flex items-center gap-2 font-bold text-sm transition-all ${isAr ? "flex-row-reverse justify-end" : ""}`}
+        
+        <div className={`mt-5 flex items-center gap-2 font-bold text-sm transition-all apex-arrow ${hovered ? "apex-arrow-shift" : ""} ${isAr ? "flex-row-reverse justify-end" : ""}`}
           style={{ color: accentColor }}>
           {ctaLabel}
-          <span className={`transition-transform duration-200 ${hovered ? (isAr ? "-translate-x-1" : "translate-x-1") : ""} ${isAr ? "rotate-180 inline-block" : ""}`}>
-            →
-          </span>
         </div>
       </div>
     </Link>
@@ -295,7 +291,7 @@ export function PortfolioGrid({
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* ── Header ──────────────────────────────────────── */}
+        
         <Reveal>
           <div className="text-center mb-14">
             <span className="apex-section-label">{dictionary.portfolio.badge}</span>
@@ -311,7 +307,7 @@ export function PortfolioGrid({
           </div>
         </Reveal>
 
-        {/* ── Filter tabs ─────────────────────────────────── */}
+        
         <Reveal delay={80}>
           <div className={`flex flex-wrap gap-2 justify-center mb-12`}>
             {categories.map(cat => (
@@ -337,7 +333,7 @@ export function PortfolioGrid({
           </div>
         </Reveal>
 
-        {/* ── Grid ────────────────────────────────────────── */}
+        
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((p, i) => (
             <Reveal key={p.slug} delay={i * 60}>
@@ -357,7 +353,7 @@ export function PortfolioGrid({
           ))}
         </div>
 
-        {/* Empty state */}
+        
         {filtered.length === 0 && (
           <div className="text-center py-20" style={{ color: "var(--color-secondary-text)" }}>
             <div className="text-5xl mb-4">🔍</div>
@@ -367,7 +363,7 @@ export function PortfolioGrid({
           </div>
         )}
 
-        {/* ── Stats bar ───────────────────────────────────── */}
+        
         <Reveal delay={100}>
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 rounded-2xl p-8 border"
             style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}>
@@ -389,7 +385,7 @@ export function PortfolioGrid({
           </div>
         </Reveal>
 
-        {/* ── CTA ─────────────────────────────────────────── */}
+        
         <Reveal delay={120}>
           <div className="mt-14 text-center">
             <p className={`mb-6 text-lg font-medium ${isAr ? "font-ar" : "font-en"}`}
@@ -398,14 +394,9 @@ export function PortfolioGrid({
             </p>
             <Link
               href={`/${lang}/contact`}
-              className="apex-btn inline-flex items-center gap-3 px-10 py-3.5 rounded-full font-bold text-sm text-white"
-              style={{
-                background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-                boxShadow:  "0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)",
-              }}
+              className="apex-btn apex-btn-primary inline-flex items-center gap-3 px-10 py-3.5 rounded-full font-bold text-sm text-white"
             >
               {isAr ? "ابدأ مشروعك معنا" : "Start Your Project"}
-              <span className={isAr ? "rotate-180 inline-block" : ""}>→</span>
             </Link>
           </div>
         </Reveal>

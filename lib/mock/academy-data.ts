@@ -1,5 +1,5 @@
-// file: lib/mock/academy-data.ts
-// Shared mock data — importable from both Server and Client components
+
+
 
 export const MOCK_COURSES = [
   {

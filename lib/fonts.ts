@@ -13,6 +13,8 @@ export const reemKufi = localFont({
       style: "normal",
     },
   ],
+  fallback: ["Arial", "system-ui", "sans-serif"],
+  adjustFontFallback: "Arial",
   variable: "--font-ar",
   display: "swap",
 });
@@ -30,6 +32,8 @@ export const ibmPlexSerif = localFont({
       style: "normal",
     },
   ],
+  fallback: ["Times New Roman", "serif"],
+  adjustFontFallback: "Times New Roman",
   variable: "--font-en",
   display: "swap",
 });

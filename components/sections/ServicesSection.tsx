@@ -1,5 +1,3 @@
-// file: components/sections/ServicesSection.tsx
-"use client";
 
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
@@ -16,7 +14,7 @@ export function ServicesSection({
   const { services } = dictionary;
 
   return (
-    <section id="services" className="relative py-28 md:py-36 px-6" style={{ background: "var(--color-background)" }}>
+    <section id="services" className="relative py-28 md:py-36 px-6 apex-section-alt">
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-16">
           <span className="apex-section-label gold">{services.badge}</span>
@@ -43,8 +41,8 @@ export function ServicesSection({
           {services.items.map((item: { icon: string; title: string; description: string }, i: number) => (
             <Reveal key={i} delay={i * 80}>
               <div
-                className="apex-card-hover group relative rounded-2xl p-8 border h-full flex flex-col"
-                style={{ background: "var(--color-card)", borderColor: "var(--color-border)", overflow: "hidden" }}
+                className="apex-card-base apex-card-hover group relative rounded-2xl p-8 h-full flex flex-col"
+                style={{ overflow: "hidden" }}
               >
                 <div
                   className="absolute top-0 end-0 w-20 h-20 rounded-bs-full pointer-events-none"
@@ -70,9 +68,8 @@ export function ServicesSection({
                   {item.description}
                 </p>
 
-                <div className="mt-5 flex items-center gap-2 font-semibold text-sm" style={{ color: "var(--color-primary)" }}>
+                <div className="mt-5 flex items-center gap-2 font-semibold text-sm apex-arrow apex-arrow-group" style={{ color: "var(--color-primary)" }}>
                   {services.learnMore}
-                  <span className={`transition-transform group-hover:translate-x-1 ${isAr ? "rotate-180" : ""}`}>→</span>
                 </div>
               </div>
             </Reveal>

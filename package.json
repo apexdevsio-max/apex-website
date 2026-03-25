@@ -30,5 +30,19 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.2.1",
     "typescript": "^5"
+  },
+  "browserslist": {
+    "production": [
+      "last 2 Chrome versions",
+      "last 2 Edge versions",
+      "last 2 Safari versions",
+      "last 2 Firefox versions"
+    ],
+    "development": [
+      "last 1 Chrome version",
+      "last 1 Edge version",
+      "last 1 Safari version",
+      "last 1 Firefox version"
+    ]
   }
 }

@@ -1,5 +1,3 @@
-// file: components/sections/ContactSection.tsx
-"use client";
 
 import { Mail, MessageCircle } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -16,36 +14,26 @@ type Props = {
 export function ContactSection({ lang, dictionary, email, whatsapp }: Props) {
   const isAr = lang === "ar";
   const { contact } = dictionary;
+  const whatsappNumber = whatsapp.replace(/[^0-9]/g, "");
 
   return (
     <section
       id="contact"
-      className="relative py-28 md:py-36 px-6 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(135deg, color-mix(in srgb, var(--color-background) 88%, var(--color-primary)), color-mix(in srgb, var(--color-background) 92%, var(--color-gold)))",
-      }}
+      className="relative py-28 md:py-36 px-6 overflow-hidden apex-contact-bg"
     >
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(color-mix(in srgb, var(--color-primary) 9%, transparent) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-          opacity: 0.6,
-        }}
+        className="absolute inset-0 pointer-events-none apex-contact-dots"
         aria-hidden="true"
       />
 
       <div
-        className="absolute rounded-full pointer-events-none"
+        className="absolute rounded-full pointer-events-none apex-contact-glow"
         style={{
           top: "30%",
           left: "50%",
           transform: "translateX(-50%)",
           width: "500px",
           height: "500px",
-          background: "radial-gradient(circle, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -55,17 +43,14 @@ export function ContactSection({ lang, dictionary, email, whatsapp }: Props) {
           <span className="apex-section-label">{contact.badge}</span>
           <div className="apex-divider" />
           <h2
-            className={`mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
-            style={{ fontSize: "clamp(26px, 3.8vw, 48px)", color: "var(--color-primary-text)" }}
+            className={`apex-section-title mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
           >
             {contact.title}
           </h2>
           <p
-            className={`mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
             style={{
               maxWidth: "480px",
-              fontSize: "clamp(14px, 1.5vw, 16px)",
-              color: "var(--color-secondary-text)",
             }}
           >
             {contact.description}
@@ -75,7 +60,7 @@ export function ContactSection({ lang, dictionary, email, whatsapp }: Props) {
         <Reveal delay={120}>
           <div className="grid sm:grid-cols-2 gap-5 mt-14 mb-10">
             <a
-              href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+              href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
               className="apex-btn apex-card-hover flex flex-col items-center gap-3 rounded-2xl p-8 text-white font-bold transition-transform hover:-translate-y-1"

@@ -1,6 +1,7 @@
 ﻿import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/locale";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -29,10 +30,14 @@ const CONTENT = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  if (!isLocale(lang)) return {};
-  return {
-    title: CONTENT[lang].title,
-  };
+  const isAr = lang === "ar";
+  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+    title: isAr ? "الشروط والأحكام — APEX" : "Terms & Conditions — APEX",
+    description: isAr
+      ? "الشروط والأحكام الخاصة بخدمات APEX للبرمجيات."
+      : "Terms and conditions for APEX Software services.",
+    path: `/${lang}/terms`,
+  });
 }
 
 export default async function TermsPage({ params }: Props) {

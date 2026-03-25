@@ -1,4 +1,4 @@
-// file: lib/i18n.ts
+
 
 import "server-only";
 import type { Dictionary } from "@/lib/i18n/i18n-types";

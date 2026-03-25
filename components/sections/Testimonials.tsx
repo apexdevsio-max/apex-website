@@ -1,5 +1,3 @@
-// file: components/sections/Testimonials.tsx
-"use client";
 
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
@@ -12,8 +10,7 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
   return (
     <section
       id="testimonials"
-      className="relative py-28 md:py-36 px-6 overflow-hidden"
-      style={{ background: "var(--color-background)" }}
+      className="relative py-28 md:py-36 px-6 overflow-hidden apex-section-alt"
     >
       <div
         className="absolute inset-0 pointer-events-none"
@@ -29,14 +26,13 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
           <span className="apex-section-label gold">{testimonials.badge}</span>
           <div className="apex-divider reverse" />
           <h2
-            className={`mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
-            style={{ fontSize: "clamp(26px, 3.8vw, 48px)", color: "var(--color-primary-text)" }}
+            className={`apex-section-title mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
           >
             {testimonials.title}
           </h2>
           <p
-            className={`mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-            style={{ maxWidth: "480px", fontSize: "clamp(14px, 1.5vw, 16px)", color: "var(--color-secondary-text)" }}
+            className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            style={{ maxWidth: "480px" }}
           >
             {testimonials.subtitle}
           </p>
@@ -47,8 +43,7 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
             (item: { name: string; role: string; text: string; initial: string }, i: number) => (
               <Reveal key={i} delay={i * 100}>
                 <div
-                  className="apex-card-hover relative rounded-2xl p-8 border h-full flex flex-col"
-                  style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
+                  className="apex-card-base apex-card-hover relative rounded-2xl p-8 h-full flex flex-col"
                   dir={isAr ? "rtl" : "ltr"}
                 >
                   <div

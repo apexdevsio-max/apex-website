@@ -1,4 +1,4 @@
-// file: components/sections/AcademyGrid.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -57,9 +57,8 @@ function CourseCard({ course, lang }: {
 
   return (
     <Link href={`/${lang}/academy/${course.slug}`}
-      className="flex flex-col rounded-2xl overflow-hidden border transition-all duration-300"
+      className="apex-card-base flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
       style={{
-        background:"var(--color-card)",
         borderColor:    hov ? course.accentColor : "var(--color-border)",
         transform:      hov ? "translateY(-6px)" : "translateY(0)",
         boxShadow:      hov ? `0 20px 50px color-mix(in srgb,${course.accentColor} 18%,transparent)` : "none",
@@ -127,10 +126,9 @@ function CourseCard({ course, lang }: {
           )}
         </div>
 
-        <div className={`flex items-center gap-2 font-bold text-sm mt-auto border-t pt-4 ${isAr?"flex-row-reverse":""}`}
+        <div className={`flex items-center gap-2 font-bold text-sm mt-auto border-t pt-4 apex-arrow ${hov ? "apex-arrow-shift" : ""} ${isAr?"flex-row-reverse":""}`}
           style={{ color:course.accentColor, borderColor:"var(--color-border)" }}>
           {isAr?"ابدأ الدورة":"Start Course"}
-          <span className={`transition-transform duration-200 ${hov?(isAr?"-translate-x-1":"translate-x-1"):""} ${isAr?"rotate-180 inline-block":""}`}>→</span>
         </div>
       </div>
     </Link>
@@ -254,11 +252,8 @@ export function AcademyGrid({
                   : "We design custom training programs tailored to your technical team's needs"}
               </p>
               <Link href={`/${lang}/contact`}
-                className="apex-btn inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white"
-                style={{ background:"linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-                  boxShadow:"0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)" }}>
+                className="apex-btn apex-btn-primary inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white">
                 {isAr?"تواصل معنا":"Get In Touch"}
-                <span className={isAr?"rotate-180 inline-block":""}>→</span>
               </Link>
             </div>
           </div>

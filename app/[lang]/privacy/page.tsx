@@ -1,6 +1,7 @@
 ﻿import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/locale";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -29,10 +30,14 @@ const CONTENT = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  if (!isLocale(lang)) return {};
-  return {
-    title: CONTENT[lang].title,
-  };
+  const isAr = lang === "ar";
+  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+    title: isAr ? "سياسة الخصوصية — APEX" : "Privacy Policy — APEX",
+    description: isAr
+      ? "سياسة الخصوصية الخاصة بشركة APEX للبرمجيات."
+      : "APEX Software privacy policy.",
+    path: `/${lang}/privacy`,
+  });
 }
 
 export default async function PrivacyPage({ params }: Props) {

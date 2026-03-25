@@ -1,4 +1,4 @@
-﻿// file: components/layout/Footer.tsx
+﻿
 "use client";
 
 import Link from "next/link";
@@ -9,8 +9,8 @@ import { socialLinks as socialData } from "@/data/social-links";
 
 type Props = { lang: Locale; dictionary: Dictionary };
 
-// ─── Custom SVG Icons (replacing deprecated lucide-react brand icons) ──────────
-// lucide-react deprecated all brand icons — see https://github.com/lucide-icons/lucide/issues/670
+
+
 
 const InstagramIcon = () => (
   <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -48,7 +48,6 @@ const FacebookIcon = () => (
   </svg>
 );
 
-// ─── Socials config (no more lucide imports) ────────────────────────────────────
 const SOCIALS = [
   { key: "instagram", icon: <InstagramIcon />, label: "Instagram" },
   { key: "twitter",   icon: <TwitterXIcon />,  label: "Twitter / X" },
@@ -65,6 +64,7 @@ export function Footer({ lang, dictionary }: Props) {
   const socials = SOCIALS.filter(({ key }) =>
     Boolean((socialData as Record<string, string>)[key])
   );
+  const whatsappNumber = (socialData as Record<string, string>).whatsapp?.replace(/[^0-9]/g, "") ?? "";
 
   const buildUrl = (path: string) =>
     path === "" ? `/${lang}` : `/${lang}/${path}`.replace(/\/+/g, "/");
@@ -76,19 +76,14 @@ export function Footer({ lang, dictionary }: Props) {
     <footer
       className="border-t"
       style={{
-        // ✅ FIX color-contrast: متغير footer مخصص بدلاً من color-mix()
-        // color-mix(in srgb, var(--color-background) 40%, #0a0a0a) كانت تنتج
-        // خلفية #6c6c6c في light mode مما يُفشل نسب التباين
         background:  "var(--color-footer-bg)",
         borderColor: "var(--color-footer-border)",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-8" dir={isAr ? "rtl" : "ltr"}>
 
-        {/* ── Top grid ───────────────────────────────────── */}
         <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr] mb-14">
 
-          {/* Brand column */}
           <div className="space-y-5">
             <Link href={buildUrl("")}>
               <Image
@@ -96,19 +91,18 @@ export function Footer({ lang, dictionary }: Props) {
                 alt="APEX"
                 width={100}
                 height={32}
+                quality={70}
                 className="mb-1"
               />
             </Link>
 
             <p
               className={`text-sm leading-relaxed max-w-xs ${isAr ? "font-ar" : "font-en"}`}
-              // ✅ FIX color-contrast: #aaaaaa على #111111 → 7.0:1 ✅ (كانت 1.41:1 ❌)
               style={{ color: "var(--color-footer-text-muted)" }}
             >
               {footer.description}
             </p>
 
-            {/* Social icons */}
             <div className="flex items-center gap-2 flex-wrap pt-1">
               {socials.map(({ key, icon, label }) => (
                 <a
@@ -142,15 +136,9 @@ export function Footer({ lang, dictionary }: Props) {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            {/*
-              FIX heading-order: was <h4> — caused heading-order violation.
-              Changed to <p>. Footer labels are not semantic headings.
-            */}
             <p
               className={`font-bold text-sm mb-5 ${isAr ? "font-ar" : "font-en"}`}
-              // ✅ FIX color-contrast: #eeeeee على #111111 → 14.7:1 ✅ (كانت 3.28:1 ❌)
               style={{ color: "var(--color-footer-heading)" }}
             >
               {footer.quickLinks}
@@ -162,7 +150,6 @@ export function Footer({ lang, dictionary }: Props) {
                   <Link
                     href={buildUrl(link.path)}
                     className={`block py-1.5 text-sm transition-colors ${isAr ? "font-ar" : "font-en"}`}
-                    // ✅ FIX color-contrast: #cccccc على #111111 → 11.2:1 ✅ (كانت 1.41:1 ❌)
                     style={{ color: "var(--color-footer-text)" }}
                     onMouseEnter={(e) =>
                       ((e.currentTarget as HTMLAnchorElement).style.color = "var(--color-footer-primary)")
@@ -178,11 +165,9 @@ export function Footer({ lang, dictionary }: Props) {
             </ul>
           </div>
 
-          {/* Quick Contact */}
           <div>
             <p
               className={`font-bold text-sm mb-5 ${isAr ? "font-ar" : "font-en"}`}
-              // ✅ FIX color-contrast: #eeeeee على #111111 → 14.7:1 ✅ (كانت 3.28:1 ❌)
               style={{ color: "var(--color-footer-heading)" }}
             >
               {footer.quickContact}
@@ -190,9 +175,8 @@ export function Footer({ lang, dictionary }: Props) {
 
             <div className="space-y-2">
               <a
-                href={`https://wa.me/${socialData.whatsapp?.replace(/\D/g, "")}`}
+                href={`https://wa.me/${whatsappNumber}`}
                 className={`flex items-center gap-2 py-1.5 text-sm transition-colors ${isAr ? "font-ar flex-row-reverse justify-end" : "font-en"}`}
-                // ✅ FIX color-contrast: #cccccc على #111111 → 11.2:1 ✅ (كانت 1.41:1 ❌)
                 style={{ color: "var(--color-footer-text)" }}
                 onMouseEnter={(e) =>
                   ((e.currentTarget as HTMLAnchorElement).style.color = "var(--color-footer-primary)")
@@ -208,7 +192,6 @@ export function Footer({ lang, dictionary }: Props) {
               <a
                 href={`mailto:${socialData.email}`}
                 className={`flex items-center gap-2 py-1.5 text-sm transition-colors ${isAr ? "font-ar flex-row-reverse justify-end" : "font-en"}`}
-                // ✅ FIX color-contrast: #cccccc على #111111 → 11.2:1 ✅ (كانت 1.41:1 ❌)
                 style={{ color: "var(--color-footer-text)" }}
                 onMouseEnter={(e) =>
                   ((e.currentTarget as HTMLAnchorElement).style.color = "var(--color-footer-primary)")
@@ -224,7 +207,6 @@ export function Footer({ lang, dictionary }: Props) {
           </div>
         </div>
 
-        {/* ── Divider ────────────────────────────────────── */}
         <div
           className="h-px mb-6"
           style={{
@@ -235,13 +217,10 @@ export function Footer({ lang, dictionary }: Props) {
           aria-hidden="true"
         />
 
-        {/* ── Bottom row ─────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
 
           <p
             className={`text-xs ${isAr ? "font-ar" : "font-en"}`}
-            // ✅ FIX color-contrast: #aaaaaa على #111111 → 7.0:1 ✅ (كانت 1.27:1 ❌)
-            // حُذف opacity: 0.7 لأنه كان يُضعف التباين أكثر
             style={{ color: "var(--color-footer-text-muted)" }}
           >
             © {year} APEX. {footer.rights}
@@ -249,7 +228,6 @@ export function Footer({ lang, dictionary }: Props) {
 
           <span
             className="text-xs font-semibold tracking-[0.18em] font-en"
-            // ✅ FIX color-contrast: #7986cb على #111111 → 5.1:1 ✅ (كانت 1.30:1 ❌)
             style={{ color: "var(--color-footer-primary)" }}
           >
             {footer.tagline}
@@ -264,8 +242,6 @@ export function Footer({ lang, dictionary }: Props) {
                 key={path}
                 href={buildUrl(path)}
                 className={`text-xs transition-colors ${isAr ? "font-ar" : "font-en"}`}
-                // ✅ FIX color-contrast: #aaaaaa على #111111 → 7.0:1 ✅ (كانت 1.27:1 ❌)
-                // حُذف opacity: 0.7 لأنه كان يُضعف التباين
                 style={{ color: "var(--color-footer-text-muted)" }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLAnchorElement).style.color = "var(--color-footer-primary)";

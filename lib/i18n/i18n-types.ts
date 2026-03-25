@@ -1,37 +1,21 @@
-// ═══════════════════════════════════════════════════════════
-//  HOW TO FIX — lib/i18n/i18n-types.ts
-//
-//  Find the contact block inside your Dictionary type and
-//  replace it with the version below.
-//  Also add the other new sections if they're missing.
-// ═══════════════════════════════════════════════════════════
 
-// ── FIND this (old) ────────────────────────────────────────
-/*
-contact: {
-  title:       string;
-  description: string;
-  email:       string;
-  whatsapp:    string;
-};
-*/
 
-// ── REPLACE with this (new) ────────────────────────────────
-/*
-contact: {
-  badge:       string;   // ← add
-  title:       string;
-  description: string;
-  available:   string;   // ← add
-  email:       string;
-  whatsapp:    string;
-};
-*/
 
-// ═══════════════════════════════════════════════════════════
-//  FULL Dictionary type — paste this entire block if you
-//  prefer to replace the whole type at once.
-// ═══════════════════════════════════════════════════════════
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export type Dictionary = {
   navigation: {
@@ -107,12 +91,12 @@ export type Dictionary = {
     }>;
   };
 
-  // ── THE FIX IS HERE ──────────────────────────────────────
+  
   contact: {
-    badge:       string;   // ← was missing
+    badge:       string;   
     title:       string;
     description: string;
-    available:   string;   // ← was missing
+    available:   string;   
     email:       string;
     whatsapp:    string;
   };

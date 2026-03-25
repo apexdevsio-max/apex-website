@@ -1,4 +1,4 @@
-// file: components/layout/Header.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -12,7 +12,7 @@ import { navigationItems } from "@/data/navigation";
 
 type Props = { lang: Locale; dictionary: Dictionary };
 
-/* ── Theme sync ──────────────────────────────────────────── */
+
 const THEME_EVENT = "apex-theme-change";
 
 function subscribeTheme(cb: () => void) {
@@ -30,7 +30,7 @@ function subscribeTheme(cb: () => void) {
 const getDark = () =>
   typeof document !== "undefined" && document.documentElement.classList.contains("dark");
 
-/* ── Component ───────────────────────────────────────────── */
+
 export function Header({ lang, dictionary }: Props) {
   const pathname   = usePathname() || `/${lang}`;
   const searchParams = useSearchParams();
@@ -38,17 +38,17 @@ export function Header({ lang, dictionary }: Props) {
   const [open, setOpen]       = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  /* scroll detection */
+  
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 56);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  /* close mobile menu on route change */
+  
   useEffect(() => { setOpen(false); }, [pathname]);
 
-  /* theme */
+  
   const isClient = useSyncExternalStore(() => () => {}, () => true, () => false);
   const darkMode  = useSyncExternalStore(subscribeTheme, getDark, () => false);
 
@@ -59,7 +59,7 @@ export function Header({ lang, dictionary }: Props) {
     window.dispatchEvent(new Event(THEME_EVENT));
   };
 
-  /* URL helpers */
+  
   const buildUrl = (path: string) =>
     path === "/" || path === ""
       ? `/${lang}`
@@ -116,7 +116,7 @@ export function Header({ lang, dictionary }: Props) {
         style={{ height: "70px" }}
         dir={isAr ? "rtl" : "ltr"}
       >
-        {/* ── Logo ───────────────────────────────────────── */}
+        {}
         <Link href={buildUrl("/")} className="shrink-0 flex items-center gap-2">
           <Image
             src="/images/Apex_logo.png"
@@ -124,6 +124,7 @@ export function Header({ lang, dictionary }: Props) {
             width={110}
             height={36}
             priority
+            quality={70}
             style={{
               filter: darkMode
                 ? "drop-shadow(0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent))"
@@ -132,7 +133,7 @@ export function Header({ lang, dictionary }: Props) {
           />
         </Link>
 
-        {/* ── Desktop Nav ────────────────────────────────── */}
+        
         <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
           {navLinks.map((l) => (
             <Link
@@ -146,7 +147,7 @@ export function Header({ lang, dictionary }: Props) {
               }}
             >
               {l.label}
-              {/* Animated underline */}
+              
               <span
                 className="absolute -bottom-0.5 left-0 right-0 h-px rounded-full transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
                 style={{
@@ -158,9 +159,9 @@ export function Header({ lang, dictionary }: Props) {
           ))}
         </nav>
 
-        {/* ── Controls ───────────────────────────────────── */}
+        {}
         <div className="flex items-center gap-2">
-          {/* CTA button — desktop */}
+          {}
           <Link
             href={buildUrl("contact")}
             className="apex-btn hidden md:inline-flex items-center px-5 py-2 rounded-full text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
@@ -172,7 +173,7 @@ export function Header({ lang, dictionary }: Props) {
             {dictionary.navigation.letsTalk}
           </Link>
 
-          {/* Theme toggle */}
+          
           {isClient && (
             <button
               onClick={toggleTheme}
@@ -187,21 +188,21 @@ export function Header({ lang, dictionary }: Props) {
             </button>
           )}
 
-          {/* Language switch */}
+          
           <Link
             href={switchedHref}
             className="px-3 py-1.5 text-xs font-bold rounded-full border transition-all"
             style={{
-              color: "var(--color-gold)",
-              borderColor: "color-mix(in srgb, var(--color-gold) 40%, transparent)",
-              background: "color-mix(in srgb, var(--color-gold) 10%, transparent)",
+              color: "var(--color-lang-pill-text)",
+              borderColor: "var(--color-lang-pill-border)",
+              background: "var(--color-lang-pill-bg)",
             }}
             aria-label="Switch language"
           >
             {lang === "ar" ? "EN" : "عربي"}
           </Link>
 
-          {/* Mobile hamburger */}
+          {}
           <button
             className="md:hidden p-2 rounded-md transition-colors"
             onClick={() => setOpen((s) => !s)}
@@ -215,7 +216,7 @@ export function Header({ lang, dictionary }: Props) {
         </div>
       </div>
 
-      {/* ── Mobile Menu ────────────────────────────────────── */}
+      
       {open && (
         <div
           id="mobile-menu"

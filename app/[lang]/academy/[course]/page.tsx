@@ -1,4 +1,4 @@
-// file: app/[lang]/academy/[course]/page.tsx
+
 import Link              from "next/link";
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { getAcademyCourseBySlug, getAcademyCourses } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale }               from "@/lib/i18n/locale";
 import { MOCK_COURSES }                              from "@/lib/mock/academy-data";
+import { buildPageMeta } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ lang: string; course: string }> };
 
@@ -27,13 +28,18 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang, course: courseSlug } = await params;
-  const mock    = MOCK_COURSES.find(c => c.slug === courseSlug);
-  const content = mock?.[lang as "ar"|"en"];
-  return {
-    title: content ? `${content.title} — APEX Academy` : `${courseSlug} — APEX Academy`,
-    description: content?.summary ?? "",
-  };
+  const { lang, course } = await params;
+  const locale = isLocale(lang) ? lang : "ar";
+  const mdx = await getAcademyCourseBySlug(locale, course).catch(() => null);
+  const title = `${mdx?.title ?? (locale === "ar" ? "تفاصيل الدورة" : "Course Details")} — APEX`;
+  const description = mdx?.summary ?? (locale === "ar"
+    ? "تفاصيل دورة تقنية من أكاديمية APEX."
+    : "Technical course details from APEX Academy.");
+  return buildPageMeta(locale, {
+    title,
+    description,
+    path: `/${lang}/academy/${course}`,
+  });
 }
 
 const LEVEL_COLORS: Record<string, string> = {
