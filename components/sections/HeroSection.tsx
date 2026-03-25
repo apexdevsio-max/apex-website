@@ -2,19 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { useRtl } from "@/hooks/useRtl";
 
-/* ═══════════════════════════════════════════════════════════
-   CHROMA KEY — v7 WebGL (GPU Accelerated, Direct on Main Thread)
-   
-   Uses WebGL2 directly on the visible canvas for green-screen removal.
-   The robot is metallic (cyan/blue tones) — green background is cleanly keyed.
-═══════════════════════════════════════════════════════════ */
 
-/* ─── Particles (Neural Network Background) ──────────────── */
+
+
 function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -87,11 +82,12 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   }, [canvasRef]);
 }
 
-/* ─── WebGL Chroma Key Hook ─────────────────────────────── */
+
 function useWebGLChroma(
   videoRef: React.RefObject<HTMLVideoElement | null>,
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   onReady: () => void,
+  onUnsupported: () => void,
 ) {
   useEffect(() => {
     const video  = videoRef.current;
@@ -107,7 +103,7 @@ function useWebGLChroma(
     let stopped = false;
     let initialized = false;
 
-    /* ── GLSL shaders ── */
+    
     const VS = `#version 300 es
       in vec2 a_position;
       out vec2 v_uv;
@@ -118,7 +114,7 @@ function useWebGLChroma(
       }
     `;
 
-    // Green screen chroma key — preserves metallic cyan/blue robot tones
+    
     const FS = `#version 300 es
       precision highp float;
       uniform sampler2D u_tex;
@@ -184,7 +180,7 @@ function useWebGLChroma(
     function initGL() {
       if (!canvas) return false;
       gl = canvas.getContext("webgl2", { premultipliedAlpha: false, alpha: true }) as WebGL2RenderingContext | null;
-      if (!gl) { console.warn("WebGL2 not supported"); return false; }
+      if (!gl) { console.warn("WebGL2 not supported"); onUnsupported(); return false; }
 
       const vs = compileShader(gl, gl.VERTEX_SHADER, VS);
       const fs = compileShader(gl, gl.FRAGMENT_SHADER, FS);
@@ -194,11 +190,12 @@ function useWebGLChroma(
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         console.error("Program link error:", gl.getProgramInfoLog(program));
+        onUnsupported();
         return false;
       }
       gl.useProgram(program);
 
-      // Full-screen quad
+      
       const buf = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, buf);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -209,7 +206,7 @@ function useWebGLChroma(
       gl.enableVertexAttribArray(loc);
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
-      // Texture
+      
       texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -290,11 +287,11 @@ function useWebGLChroma(
       stop();
       window.removeEventListener("resize", resizeCanvas);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  
+  }, [videoRef, canvasRef, onReady, onUnsupported]);
 }
 
-/* ─── Component ─────────────────────────────────────────── */
+
 export function HeroSection({
   lang,
   dictionary,
@@ -309,25 +306,41 @@ export function HeroSection({
   const chromaCanvasRef    = useRef<HTMLCanvasElement>(null);
   const particlesCanvasRef = useRef<HTMLCanvasElement>(null);
   const [chromaReady, setChromaReady] = useState(false);
+  const [chromaSupported, setChromaSupported] = useState(true);
+  // Debug logs
+  useEffect(() => {
+    console.log('Hero Debug:', { isDesktop, chromaReady, chromaSupported });
+  }, [isDesktop, chromaReady, chromaSupported]);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const handleChromaReady = useCallback(() => setChromaReady(true), []);
+  const handleChromaUnsupported = useCallback(() => setChromaSupported(false), []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useParticles(particlesCanvasRef);
-  useWebGLChroma(sourceVideoRef, chromaCanvasRef, () => setChromaReady(true));
+  useWebGLChroma(
+    sourceVideoRef,
+    chromaCanvasRef,
+    handleChromaReady,
+    handleChromaUnsupported,
+  );
 
   return (
     <>
-      {/* 
-        dir="ltr" مثبّت على الـ section دائماً بغض النظر عن اللغة.
-        هذا يضمن أن right/left في CSS تعمل بالاتجاه المطلق الصحيح:
-        الروبوت دائماً على اليمين، والنص دائماً على اليسار.
-        اتجاه النص (RTL/LTR) يُطبّق فقط على عنصر النص الداخلي.
-      */}
+      {}
       <section dir="ltr" className="relative min-h-screen flex items-center overflow-hidden" aria-label="Hero">
 
-      {/* BG */}
+      {}
       <div className="absolute inset-0 z-0" aria-hidden="true"
         style={{ background:"linear-gradient(135deg,var(--color-background) 0%,color-mix(in srgb,var(--color-primary) 8%,var(--color-background)) 100%)" }} />
 
-      {/* Grid */}
+      {}
       <div className="absolute inset-0 z-10 pointer-events-none" aria-hidden="true"
         style={{
           backgroundImage:`linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)`,
@@ -335,7 +348,7 @@ export function HeroSection({
           animation:"apex-grid-breathe 6s ease-in-out infinite",
         }} />
 
-      {/* Orbs */}
+      {}
       <div className="absolute pointer-events-none z-20" aria-hidden="true"
         style={{ top:"5%",right:"2%",width:"min(560px,50vw)",height:"min(560px,50vw)",borderRadius:"50%",
           background:"radial-gradient(circle,color-mix(in srgb,var(--color-primary) 14%,transparent) 0%,transparent 70%)" }} />
@@ -343,9 +356,9 @@ export function HeroSection({
         style={{ bottom:"0",left:"45%",width:"min(380px,40vw)",height:"min(380px,40vw)",borderRadius:"50%",
           background:"radial-gradient(circle,color-mix(in srgb,var(--color-gold) 10%,transparent) 0%,transparent 70%)" }} />
 
-      {/* LCP anchor */}
+      {}
       <div
-        className="absolute z-20 pointer-events-none"
+        className="hidden md:block absolute z-20 pointer-events-none"
         style={{ top:"10%",left:"6%",width:"min(360px,40vw)",height:"min(140px,16vw)",opacity:0.08,filter:"blur(0.2px)" }}
         aria-hidden="true"
       >
@@ -354,58 +367,82 @@ export function HeroSection({
           alt=""
           fill
           priority
-          sizes="(min-width: 768px) 360px, 220px"
+          sizes="(min-width: 1024px) 320px, (min-width: 768px) 260px, 140px"
+          quality={60}
           style={{ objectFit:"contain" }}
         />
       </div>
 
-      {/* Particles */}
+      
       <canvas ref={particlesCanvasRef}
         className="absolute inset-0 w-full h-full z-30 pointer-events-none opacity-70"
         aria-hidden="true" />
 
-      {/* Source video — hidden, feeds WebGL */}
-      <video ref={sourceVideoRef} autoPlay loop muted playsInline preload="auto"
-        className="hidden" aria-hidden="true">
-        <source src="/videos/robot_welcome.mp4" type="video/mp4" />
-      </video>
+      {}
+      {isDesktop && (
+        <video
+          ref={sourceVideoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="absolute z-30 pointer-events-none transition-opacity duration-700 opacity-100"
+</xai:function_call
+>
 
-      {/* ─── WebGL Chroma canvas ─────────────────────────────────
-          مثبّت على اليمين تماماً، عرضه 50% من الشاشة.
-          z-4 يجعله فوق الجسيمات لكن تحت النص (z-10).
-          pointer-events-none حتى لا يحجب الروابط.
-      ──────────────────────────────────────────────────────── */}
-      <canvas
-        ref={chromaCanvasRef}
-        className={`hidden md:block absolute z-40 pointer-events-none transition-opacity duration-700 ${chromaReady ? "opacity-100" : "opacity-0"}`}
-        style={{
-          top: 0,
-          right: 0,
-          width: "50%",   /* نصف الشاشة الأيمن */
-          height: "100%",
-          filter: "brightness(1.03) contrast(1.05) saturate(1.08)",
-        }}
-        aria-hidden="true"
-      />
+<xai:function_call name="edit_file">
+<parameter name="path">components/sections/HeroSection.tsx
+          style={{
+            top: 0,
+            right: 0,
+            width: "50%",
+            height: "100%",
+            objectFit: "contain",
+            filter: "brightness(1.03) contrast(1.05) saturate(1.08)",
+          }}
+          aria-hidden="true"
+        >
+          <source src="/videos/robot_welcome.mp4" type="video/mp4" />
+        </video>
+      )}
+      {isDesktop && chromaSupported && (
+        <canvas
+          ref={chromaCanvasRef}
+          className={`absolute z-40 pointer-events-none transition-opacity duration-700 ${chromaSupported && chromaReady ? "opacity-100" : "opacity-0"}`}
+</xai:function_call
+>
 
-      {/* Mobile fallback */}
-      <div className="md:hidden absolute bottom-0 inset-e-0 w-[55%] z-40 pointer-events-none opacity-25" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/robot_mascot.png" alt="" className="w-full h-auto object-contain object-bottom" loading="lazy" />
+<xai:function_call name="edit_file">
+<parameter name="path">components/sections/HeroSection.tsx
+          style={{
+            top: 0,
+            right: 0,
+            width: "50%",
+            height: "100%",
+            filter: "brightness(1.03) contrast(1.05) saturate(1.08)",
+          }}
+          aria-hidden="true"
+        />
+      )}
+
+      {}
+      <div className="md:hidden absolute bottom-0 inset-e-0 w-[55%] z-40 pointer-events-none opacity-30" aria-hidden="true">
+        <Image
+          src="/images/robot_mascot.png"
+          alt=""
+          width={360}
+          height={640}
+          priority
+          sizes="(max-width: 768px) 55vw, 360px"
+          quality={60}
+          style={{ width:"100%", height:"auto", objectFit:"contain", objectPosition:"bottom" }}
+        />
       </div>
 
-      {/* ─── Text Block ──────────────────────────────────────────
-          max-w-[45%] يضمن أن الكتابة تبقى في النصف الأيسر
-          ولا تمتد نحو منطقة الروبوت (النصف الأيمن).
-          z-10 يضعها فوق كل شيء بما في ذلك الـ canvas.
-      ──────────────────────────────────────────────────────── */}
+      
       <div className="relative z-50 w-full max-w-7xl mx-auto px-6 md:px-10 pt-24 pb-16">
-        {/*
-          dir يُطبّق هنا فقط على حاوية النص.
-          النص العربي سيُعرض بـ RTL داخلياً (محاذاة يمين، ترتيب كلمات)
-          لكن موضع هذا الـ div في الصفحة يبقى على اليسار دائماً
-          لأن الـ section الأب مثبّت على dir="ltr".
-        */}
+        
         <div
           dir={rtl.dirAttr}
           className={rtl.textAlign}
@@ -439,10 +476,8 @@ export function HeroSection({
 
           <div className={`apex-fade-up apex-delay-4 mt-10 flex flex-wrap gap-4 ${rtl.flexRev}`}>
             <Link href={`/${lang}/portfolio`}
-              className="apex-btn inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-white text-sm transition-transform hover:-translate-y-0.5"
-              style={{ background:"linear-gradient(135deg,var(--color-primary),var(--color-accent))",boxShadow:"0 8px 28px color-mix(in srgb,var(--color-primary) 42%,transparent)" }}>
+              className="apex-btn apex-btn-primary apex-btn-primary-strong apex-arrow inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-white text-sm transition-transform hover:-translate-y-0.5">
               {heroSection.cta}
-              <span className={`${rtl.arrowRotate} inline-block`}>→</span>
             </Link>
             <Link href="#contact"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm border-2 transition-all"
@@ -463,7 +498,7 @@ export function HeroSection({
         </div>
       </div>
 
-      {/* Scroll Indicator */}
+      
       <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 opacity-40 pointer-events-none" aria-hidden="true">
         <span className="text-[10px] tracking-[0.2em] font-semibold" style={{ color:"var(--color-secondary-text)" }}>SCROLL</span>
         <div style={{ width:"1px",height:"36px",background:"linear-gradient(to bottom,var(--color-primary),transparent)" }} />
