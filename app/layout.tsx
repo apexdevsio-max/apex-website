@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { ibmPlexSerif, reemKufi } from "@/lib/fonts";
 import { metadataBase } from "@/lib/seo/metadata";
@@ -38,6 +39,7 @@ export default async function RootLayout({
       </head>
       <body className={`${reemKufi.variable} ${ibmPlexSerif.variable} antialiased`}>
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
