@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
 import { openGraph } from "./openGraph";
 
 export const siteUrl = "https://apex-tech.sa";
@@ -12,14 +14,58 @@ type PageMetaInput = {
   image?: string;
 };
 
-export function buildBaseMetadata(lang: "ar" | "en"): Metadata {
-  const url = `${siteUrl}/${lang}`;
+function normalizePath(path: string): string {
+  if (!path) return "/";
+
+  const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
+  const normalized = withLeadingSlash.replace(/\/+/g, "/");
+
+  return normalized.length > 1 && normalized.endsWith("/")
+    ? normalized.slice(0, -1)
+    : normalized;
+}
+
+function buildLocalizedPath(path: string, locale: Locale): string {
+  const normalizedPath = normalizePath(path);
+  const segments = normalizedPath.split("/").filter(Boolean);
+
+  if (segments.length === 0) {
+    return `/${locale}`;
+  }
+
+  if (SUPPORTED_LOCALES.includes(segments[0] as Locale)) {
+    segments[0] = locale;
+    return `/${segments.join("/")}`;
+  }
+
+  return `/${locale}${normalizedPath === "/" ? "" : normalizedPath}`;
+}
+
+function buildAlternates(path: string) {
+  const canonicalPath = normalizePath(path);
+  const languages = Object.fromEntries(
+    SUPPORTED_LOCALES.map((locale) => [
+      locale,
+      `${siteUrl}${buildLocalizedPath(canonicalPath, locale)}`,
+    ])
+  ) as Record<Locale, string>;
+
+  return {
+    canonical: `${siteUrl}${canonicalPath}`,
+    languages: {
+      ...languages,
+      "x-default": languages.en,
+    },
+  };
+}
+
+export function buildBaseMetadata(lang: Locale): Metadata {
+  const path = `/${lang}`;
+  const url = `${siteUrl}${path}`;
+
   return {
     metadataBase,
-    alternates: {
-      canonical: url,
-      languages: { ar: `${siteUrl}/ar`, en: `${siteUrl}/en` },
-    },
+    alternates: buildAlternates(path),
     openGraph: {
       ...openGraph,
       url,
@@ -42,19 +88,18 @@ export function buildBaseMetadata(lang: "ar" | "en"): Metadata {
   };
 }
 
-export function buildPageMeta(lang: "ar" | "en", input: PageMetaInput): Metadata {
+export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
   const base = buildBaseMetadata(lang);
   const image = input.image ?? "/images/Apex_logo.png";
-  const url = `${siteUrl}${input.path}`;
+  const path = normalizePath(input.path);
+  const url = `${siteUrl}${path}`;
+
   return {
     ...base,
     title: input.title,
     description: input.description,
     keywords: input.keywords,
-    alternates: {
-      ...(base.alternates ?? {}),
-      canonical: url,
-    },
+    alternates: buildAlternates(path),
     openGraph: {
       ...(base.openGraph ?? {}),
       title: input.title,
@@ -78,37 +123,35 @@ export function buildPageMeta(lang: "ar" | "en", input: PageMetaInput): Metadata
   };
 }
 
-export function buildPageMetadata(lang: "ar" | "en"): Metadata {
+export function buildPageMetadata(lang: Locale): Metadata {
   const isAr = lang === "ar";
+
   return buildPageMeta(lang, {
     title: isAr
-      ? "APEX — شركة برمجيات | تطبيقات، ويب، ذكاء اصطناعي"
-      : "APEX — Software Company | Apps, Web & AI Solutions",
+      ? "APEX - شركة برمجيات | تطبيقات، ويب، وذكاء اصطناعي"
+      : "APEX - Software Company | Apps, Web, and AI Solutions",
     description: isAr
-      ? "شركة APEX للبرمجيات — نبني تطبيقات موبايل، مواقع ويب، حلول ذكاء اصطناعي، ومتاجر إلكترونية. شريكك التقني الإقليمي."
-      : "APEX Software Company — we build mobile apps, websites, AI solutions, and e-commerce platforms. Your regional tech partner.",
+      ? "شركة APEX للبرمجيات تبني تطبيقات موبايل ومواقع ويب وحلول ذكاء اصطناعي ومتاجر إلكترونية لفرق تبحث عن تنفيذ احترافي ونمو واضح."
+      : "APEX builds mobile apps, websites, AI solutions, and e-commerce platforms for teams that need thoughtful execution and measurable growth.",
     keywords: isAr
       ? [
-          "برمجة",
-          "تطبيق",
-          "مبرمج",
           "شركة برمجيات",
+          "تطوير تطبيقات",
+          "تطوير ويب",
           "ذكاء اصطناعي",
-          "AI",
           "متجر إلكتروني",
-          "SEO",
-          "صناعة محتوى",
-          "APEX",
+          "تصميم UI UX",
+          "شركة تقنية",
+          "APEX"
         ]
       : [
           "APEX",
           "software company",
-          "mobile app",
+          "mobile app development",
           "web development",
-          "AI",
-          "e-commerce",
-          "SEO",
-          "content creation",
+          "AI solutions",
+          "e-commerce development",
+          "UI UX design"
         ],
     path: `/${lang}`,
   });

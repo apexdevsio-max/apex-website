@@ -1,10 +1,11 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+
 import { SUPPORTED_LOCALES } from "@/lib/i18n/locale";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/api")) {
@@ -27,11 +28,8 @@ function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.pathname = `/en${pathname === "/" ? "" : pathname}`;
 
-  // 308 = permanent redirect — المتصفح يحفظه ولا يكرر الطلب
   return NextResponse.redirect(url, { status: 308 });
 }
-
-export default middleware;
 
 export const config = {
   matcher: [

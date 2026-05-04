@@ -1,56 +1,62 @@
-
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore, useEffect } from "react";
-import { Menu, X, Sun, Moon } from "lucide-react";
-import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
-import type { Dictionary } from "@/lib/i18n/i18n-types";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
+
 import { navigationItems } from "@/data/navigation";
+import type { Dictionary } from "@/lib/i18n/i18n-types";
+import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
 
-type Props = { lang: Locale; dictionary: Dictionary };
-
+type Props = {
+  lang: Locale;
+  dictionary: Dictionary;
+};
 
 const THEME_EVENT = "apex-theme-change";
 
-function subscribeTheme(cb: () => void) {
+function subscribeTheme(callback: () => void) {
   if (typeof window === "undefined") return () => {};
+
   const media = window.matchMedia("(prefers-color-scheme: dark)");
-  window.addEventListener(THEME_EVENT, cb);
-  window.addEventListener("storage", cb);
-  media.addEventListener("change", cb);
+  window.addEventListener(THEME_EVENT, callback);
+  window.addEventListener("storage", callback);
+  media.addEventListener("change", callback);
+
   return () => {
-    window.removeEventListener(THEME_EVENT, cb);
-    window.removeEventListener("storage", cb);
-    media.removeEventListener("change", cb);
+    window.removeEventListener(THEME_EVENT, callback);
+    window.removeEventListener("storage", callback);
+    media.removeEventListener("change", callback);
   };
 }
-const getDark = () =>
-  typeof document !== "undefined" && document.documentElement.classList.contains("dark");
 
+function getDarkMode() {
+  return (
+    typeof document !== "undefined" &&
+    document.documentElement.classList.contains("dark")
+  );
+}
 
 export function Header({ lang, dictionary }: Props) {
-  const pathname   = usePathname() || `/${lang}`;
+  const pathname = usePathname() || `/${lang}`;
   const searchParams = useSearchParams();
-
-  const [open, setOpen]       = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 56);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
+    const handleScroll = () => setScrolled(window.scrollY > 56);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  
-  useEffect(() => { setOpen(false); }, [pathname]);
-
-  
-  const isClient = useSyncExternalStore(() => () => {}, () => true, () => false);
-  const darkMode  = useSyncExternalStore(subscribeTheme, getDark, () => false);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+  const darkMode = useSyncExternalStore(subscribeTheme, getDarkMode, () => false);
 
   const toggleTheme = () => {
     const nextDark = !document.documentElement.classList.contains("dark");
@@ -59,40 +65,45 @@ export function Header({ lang, dictionary }: Props) {
     window.dispatchEvent(new Event(THEME_EVENT));
   };
 
-  
   const buildUrl = (path: string) =>
     path === "/" || path === ""
       ? `/${lang}`
       : `/${lang}/${path}`.replace(/\/+/g, "/");
 
-  const normPath = (p: string) => (p.endsWith("/") && p.length > 1 ? p.slice(0, -1) : p);
+  const normalizePath = (value: string) =>
+    value.endsWith("/") && value.length > 1 ? value.slice(0, -1) : value;
 
   const isActive = (path: string) => {
-    const full    = normPath(buildUrl(path));
-    const current = normPath(pathname);
+    const full = normalizePath(buildUrl(path));
+    const current = normalizePath(pathname);
     if (full === `/${lang}`) return current === full;
-    return current === full || current.startsWith(full + "/");
+    return current === full || current.startsWith(`${full}/`);
   };
 
   const switchedHref = useMemo(() => {
-    const target   = lang === "ar" ? "en" : "ar";
+    const target = lang === "ar" ? "en" : "ar";
     const segments = pathname.split("/");
+
     if (segments.length > 1 && SUPPORTED_LOCALES.includes(segments[1] as Locale)) {
       segments[1] = target;
     } else {
       segments.splice(1, 0, target);
     }
-    const next  = segments.join("/").replace(/\/+/g, "/");
+
+    const next = segments.join("/").replace(/\/+/g, "/");
     const query = searchParams.toString();
     return query ? `${next}?${query}` : next;
   }, [lang, pathname, searchParams]);
 
   const navLinks = useMemo(
-    () => navigationItems.map((item) => ({
-      key:   item.key,
-      path:  item.path,
-      label: dictionary.navigation[item.key as keyof typeof dictionary.navigation] ?? item.key,
-    })),
+    () =>
+      navigationItems.map((item) => ({
+        key: item.key,
+        path: item.path,
+        label:
+          dictionary.navigation[item.key as keyof typeof dictionary.navigation] ??
+          item.key,
+      })),
     [dictionary]
   );
 
@@ -116,7 +127,6 @@ export function Header({ lang, dictionary }: Props) {
         style={{ height: "70px" }}
         dir={isAr ? "rtl" : "ltr"}
       >
-        {}
         <Link href={buildUrl("/")} className="shrink-0 flex items-center gap-2">
           <Image
             src="/images/Apex_logo.png"
@@ -133,35 +143,33 @@ export function Header({ lang, dictionary }: Props) {
           />
         </Link>
 
-        
         <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
-          {navLinks.map((l) => (
+          {navLinks.map((link) => (
             <Link
-              key={l.key}
-              href={buildUrl(l.path)}
-              className={`text-sm font-medium transition-colors duration-200 relative group ${isAr ? "font-ar" : "font-en"}`}
+              key={link.key}
+              href={buildUrl(link.path)}
+              className={`text-sm font-medium transition-colors duration-200 relative group ${
+                isAr ? "font-ar" : "font-en"
+              }`}
               style={{
-                color: isActive(l.path)
+                color: isActive(link.path)
                   ? "var(--color-primary)"
                   : "var(--color-primary-text)",
               }}
             >
-              {l.label}
-              
+              {link.label}
               <span
                 className="absolute -bottom-0.5 left-0 right-0 h-px rounded-full transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
                 style={{
                   background: "var(--color-primary)",
-                  transform: isActive(l.path) ? "scaleX(1)" : undefined,
+                  transform: isActive(link.path) ? "scaleX(1)" : undefined,
                 }}
               />
             </Link>
           ))}
         </nav>
 
-        {}
         <div className="flex items-center gap-2">
-          {}
           <Link
             href={buildUrl("contact")}
             className="apex-btn hidden md:inline-flex items-center px-5 py-2 rounded-full text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
@@ -173,7 +181,6 @@ export function Header({ lang, dictionary }: Props) {
             {dictionary.navigation.letsTalk}
           </Link>
 
-          
           {isClient && (
             <button
               onClick={toggleTheme}
@@ -188,7 +195,6 @@ export function Header({ lang, dictionary }: Props) {
             </button>
           )}
 
-          
           <Link
             href={switchedHref}
             className="px-3 py-1.5 text-xs font-bold rounded-full border transition-all"
@@ -202,10 +208,9 @@ export function Header({ lang, dictionary }: Props) {
             {lang === "ar" ? "EN" : "عربي"}
           </Link>
 
-          {}
           <button
             className="md:hidden p-2 rounded-md transition-colors"
-            onClick={() => setOpen((s) => !s)}
+            onClick={() => setOpen((value) => !value)}
             aria-label="Toggle menu"
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -216,7 +221,6 @@ export function Header({ lang, dictionary }: Props) {
         </div>
       </div>
 
-      
       {open && (
         <div
           id="mobile-menu"
@@ -229,20 +233,24 @@ export function Header({ lang, dictionary }: Props) {
           dir={isAr ? "rtl" : "ltr"}
         >
           <div className="px-5 py-6 flex flex-col gap-2">
-            {navLinks.map((l) => (
+            {navLinks.map((link) => (
               <Link
-                key={l.key}
-                href={buildUrl(l.path)}
-                className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isAr ? "font-ar" : "font-en"}`}
+                key={link.key}
+                href={buildUrl(link.path)}
+                className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                  isAr ? "font-ar" : "font-en"
+                }`}
                 style={{
-                  color: isActive(l.path) ? "var(--color-primary)" : "var(--color-primary-text)",
-                  background: isActive(l.path)
+                  color: isActive(link.path)
+                    ? "var(--color-primary)"
+                    : "var(--color-primary-text)",
+                  background: isActive(link.path)
                     ? "color-mix(in srgb, var(--color-primary) 10%, transparent)"
                     : "transparent",
                 }}
                 onClick={() => setOpen(false)}
               >
-                {l.label}
+                {link.label}
               </Link>
             ))}
 
@@ -262,4 +270,3 @@ export function Header({ lang, dictionary }: Props) {
     </header>
   );
 }
-

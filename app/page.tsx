@@ -1,7 +1,1 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-
-export default async function RootPage(): Promise<never> {
-  await headers();
-  redirect("/en");
-}
+import { headers } from "next/headers"; import { redirect } from "next/navigation";  export default async function RootPage(): Promise<never> {   await headers();   redirect("/en"); }

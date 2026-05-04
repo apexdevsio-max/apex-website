@@ -1,151 +1,160 @@
-
-
-
 export const MOCK_COURSES = [
   {
     slug: "nextjs-fullstack",
-    emoji: "⚡",
+    emoji: "\u26a1",
     accentColor: "#00BCD4",
     level: "intermediate",
     lessonsCount: 12,
     duration: { ar: "6 ساعات", en: "6 hours" },
     ar: {
       title: "Next.js Full-Stack من الصفر للاحتراف",
-      summary: "تعلّم بناء تطبيقات ويب متكاملة بـ Next.js 14 مع App Router وServer Components وقواعد البيانات.",
+      summary:
+        "تعلّم بناء تطبيقات ويب متكاملة باستخدام Next.js مع App Router وServer Components وقواعد البيانات.",
       level: "متوسط",
     },
     en: {
       title: "Next.js Full-Stack from Zero to Pro",
-      summary: "Learn to build complete web applications with Next.js 14, App Router, Server Components, and databases.",
+      summary:
+        "Learn to build complete web applications with Next.js, App Router, Server Components, and databases.",
       level: "Intermediate",
     },
     lessons: [
-      { slug: "intro-nextjs",      ar: "مقدمة في Next.js 14",               en: "Introduction to Next.js 14" },
-      { slug: "app-router",        ar: "App Router والـ File-based Routing",  en: "App Router & File-based Routing" },
-      { slug: "server-components", ar: "Server Components vs Client",         en: "Server vs Client Components" },
-      { slug: "data-fetching",     ar: "جلب البيانات وcaching",               en: "Data Fetching & Caching" },
+      { slug: "intro-nextjs", ar: "مقدمة في Next.js", en: "Introduction to Next.js" },
+      { slug: "app-router", ar: "App Router ونظام المسارات", en: "App Router & File-based Routing" },
+      { slug: "server-components", ar: "Server Components وClient Components", en: "Server vs Client Components" },
+      { slug: "data-fetching", ar: "جلب البيانات والتخزين المؤقت", en: "Data Fetching & Caching" },
     ],
   },
   {
     slug: "react-native-mobile",
-    emoji: "📱",
+    emoji: "\ud83d\udcf1",
     accentColor: "#FFBF00",
     level: "beginner",
     lessonsCount: 10,
     duration: { ar: "5 ساعات", en: "5 hours" },
     ar: {
       title: "React Native — بناء تطبيقات iOS وAndroid",
-      summary: "ابنِ تطبيقات موبايل احترافية لـ iOS وAndroid بكود واحد باستخدام React Native وExpo.",
+      summary:
+        "ابنِ تطبيقات موبايل احترافية لـ iOS وAndroid بكود واحد باستخدام React Native وExpo.",
       level: "مبتدئ",
     },
     en: {
       title: "React Native — Build iOS & Android Apps",
-      summary: "Build professional iOS and Android apps with a single codebase using React Native and Expo.",
+      summary:
+        "Build professional iOS and Android apps with a single codebase using React Native and Expo.",
       level: "Beginner",
     },
     lessons: [
-      { slug: "setup-expo",      ar: "إعداد بيئة التطوير مع Expo",       en: "Setup Development Environment with Expo" },
+      { slug: "setup-expo", ar: "إعداد بيئة التطوير مع Expo", en: "Setup Development Environment with Expo" },
       { slug: "core-components", ar: "المكونات الأساسية في React Native", en: "Core Components in React Native" },
-      { slug: "navigation",      ar: "التنقل بين الشاشات",               en: "Screen Navigation" },
-      { slug: "api-integration", ar: "التكامل مع APIs الخارجية",          en: "External API Integration" },
+      { slug: "navigation", ar: "التنقل بين الشاشات", en: "Screen Navigation" },
+      { slug: "api-integration", ar: "التكامل مع APIs الخارجية", en: "External API Integration" },
     ],
   },
   {
     slug: "ai-for-developers",
-    emoji: "🤖",
+    emoji: "\ud83e\udd16",
     accentColor: "#4DD0E1",
     level: "advanced",
     lessonsCount: 8,
     duration: { ar: "4 ساعات", en: "4 hours" },
     ar: {
       title: "الذكاء الاصطناعي للمطورين — دليل عملي",
-      summary: "تعلّم دمج أدوات الذكاء الاصطناعي في مشاريعك: OpenAI، LangChain، وبناء Chatbots ذكية.",
+      summary:
+        "تعلّم دمج أدوات الذكاء الاصطناعي في مشاريعك مثل OpenAI وLangChain وبناء Chatbots ذكية.",
       level: "متقدم",
     },
     en: {
       title: "AI for Developers — Practical Guide",
-      summary: "Learn to integrate AI tools into your projects: OpenAI, LangChain, and building intelligent chatbots.",
+      summary:
+        "Learn to integrate AI tools into your projects like OpenAI, LangChain, and intelligent chatbots.",
       level: "Advanced",
     },
     lessons: [
-      { slug: "openai-api",     ar: "استخدام OpenAI API",   en: "Using the OpenAI API" },
-      { slug: "langchain-basics",ar: "مقدمة في LangChain",  en: "LangChain Basics" },
-      { slug: "build-chatbot",  ar: "بناء Chatbot ذكي",     en: "Building an Intelligent Chatbot" },
-      { slug: "ai-image-gen",   ar: "توليد الصور بالـ AI",  en: "AI Image Generation" },
+      { slug: "openai-api", ar: "استخدام OpenAI API", en: "Using the OpenAI API" },
+      { slug: "langchain-basics", ar: "مقدمة في LangChain", en: "LangChain Basics" },
+      { slug: "build-chatbot", ar: "بناء Chatbot ذكي", en: "Building an Intelligent Chatbot" },
+      { slug: "ai-image-gen", ar: "توليد الصور بالذكاء الاصطناعي", en: "AI Image Generation" },
     ],
   },
   {
     slug: "tailwind-ui-design",
-    emoji: "🎨",
+    emoji: "\ud83c\udfa8",
     accentColor: "#5C6BC0",
     level: "beginner",
     lessonsCount: 9,
     duration: { ar: "4.5 ساعات", en: "4.5 hours" },
     ar: {
       title: "Tailwind CSS — تصميم واجهات احترافية",
-      summary: "أتقن Tailwind CSS من الصفر وابنِ واجهات مستخدم جميلة وسريعة بدون كتابة CSS يدوي.",
+      summary:
+        "أتقن Tailwind CSS من الصفر وابنِ واجهات مستخدم جميلة وسريعة دون كتابة CSS يدوي.",
       level: "مبتدئ",
     },
     en: {
       title: "Tailwind CSS — Professional UI Design",
-      summary: "Master Tailwind CSS from scratch and build beautiful, fast user interfaces without writing manual CSS.",
+      summary:
+        "Master Tailwind CSS from scratch and build beautiful, fast user interfaces without writing manual CSS.",
       level: "Beginner",
     },
     lessons: [
-      { slug: "tailwind-setup",    ar: "إعداد Tailwind في مشروعك", en: "Setting Up Tailwind in Your Project" },
-      { slug: "utility-classes",   ar: "فهم الـ Utility Classes",   en: "Understanding Utility Classes" },
-      { slug: "responsive-design", ar: "التصميم المتجاوب",          en: "Responsive Design" },
-      { slug: "dark-mode",         ar: "إضافة Dark Mode",           en: "Adding Dark Mode" },
+      { slug: "tailwind-setup", ar: "إعداد Tailwind في مشروعك", en: "Setting Up Tailwind in Your Project" },
+      { slug: "utility-classes", ar: "فهم Utility Classes", en: "Understanding Utility Classes" },
+      { slug: "responsive-design", ar: "التصميم المتجاوب", en: "Responsive Design" },
+      { slug: "dark-mode", ar: "إضافة Dark Mode", en: "Adding Dark Mode" },
     ],
   },
   {
     slug: "typescript-mastery",
-    emoji: "🔷",
+    emoji: "\ud83d\udd37",
     accentColor: "#00BCD4",
     level: "intermediate",
     lessonsCount: 11,
     duration: { ar: "5.5 ساعات", en: "5.5 hours" },
     ar: {
       title: "TypeScript — من المبتدئ للمحترف",
-      summary: "أتقن TypeScript وتعلّم كتابة كود أكثر أماناً وقابلية للصيانة في مشاريع JavaScript الكبيرة.",
+      summary:
+        "أتقن TypeScript وتعلّم كتابة كود أكثر أمانًا وقابلية للصيانة في المشاريع الكبيرة.",
       level: "متوسط",
     },
     en: {
       title: "TypeScript — From Beginner to Pro",
-      summary: "Master TypeScript and learn to write safer, more maintainable code for large JavaScript projects.",
+      summary:
+        "Master TypeScript and learn to write safer, more maintainable code for large JavaScript projects.",
       level: "Intermediate",
     },
     lessons: [
-      { slug: "ts-basics",      ar: "أساسيات TypeScript",  en: "TypeScript Basics" },
-      { slug: "types-interfaces",ar: "Types وInterfaces",   en: "Types & Interfaces" },
-      { slug: "generics",       ar: "الـ Generics",         en: "Generics" },
-      { slug: "ts-with-react",  ar: "TypeScript مع React",  en: "TypeScript with React" },
+      { slug: "ts-basics", ar: "أساسيات TypeScript", en: "TypeScript Basics" },
+      { slug: "types-interfaces", ar: "Types وInterfaces", en: "Types & Interfaces" },
+      { slug: "generics", ar: "الـ Generics", en: "Generics" },
+      { slug: "ts-with-react", ar: "TypeScript مع React", en: "TypeScript with React" },
     ],
   },
   {
     slug: "ecommerce-development",
-    emoji: "🛒",
+    emoji: "\ud83d\uded2",
     accentColor: "#FFBF00",
     level: "advanced",
     lessonsCount: 14,
     duration: { ar: "7 ساعات", en: "7 hours" },
     ar: {
       title: "بناء متجر إلكتروني متكامل من الصفر",
-      summary: "تعلّم بناء متجر إلكتروني احترافي مع بوابة دفع وإدارة مخزون وتحليلات مبيعات.",
+      summary:
+        "تعلّم بناء متجر إلكتروني احترافي مع بوابة دفع وإدارة مخزون وتحليلات مبيعات.",
       level: "متقدم",
     },
     en: {
       title: "Build a Complete E-Commerce Store from Scratch",
-      summary: "Learn to build a professional e-commerce store with payment gateway, inventory management, and sales analytics.",
+      summary:
+        "Learn to build a professional e-commerce store with payments, inventory management, and sales analytics.",
       level: "Advanced",
     },
     lessons: [
-      { slug: "store-architecture", ar: "هيكلة المتجر الإلكتروني",  en: "Store Architecture" },
-      { slug: "product-catalog",    ar: "كتالوج المنتجات والفلاتر", en: "Product Catalog & Filters" },
-      { slug: "stripe-payments",    ar: "تكامل Stripe للمدفوعات",   en: "Stripe Payment Integration" },
-      { slug: "admin-dashboard",    ar: "لوحة تحكم الإدارة",        en: "Admin Dashboard" },
+      { slug: "store-architecture", ar: "هيكلة المتجر الإلكتروني", en: "Store Architecture" },
+      { slug: "product-catalog", ar: "كتالوج المنتجات والفلاتر", en: "Product Catalog & Filters" },
+      { slug: "stripe-payments", ar: "تكامل Stripe للمدفوعات", en: "Stripe Payment Integration" },
+      { slug: "admin-dashboard", ar: "لوحة تحكم الإدارة", en: "Admin Dashboard" },
     ],
   },
-];
+] as const;
 
-export type MockCourse = typeof MOCK_COURSES[0];
+export type MockCourse = (typeof MOCK_COURSES)[number];

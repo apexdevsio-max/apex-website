@@ -1,4 +1,5 @@
 
+/* Path: app/[lang]/academy/page.tsx */
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 
@@ -14,10 +15,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "الأكاديمية — APEX" : "Academy — APEX",
+    title: isAr ? "الأكاديمية - APEX" : "Academy - APEX",
     description: isAr
-      ? "أكاديمية APEX لتعلّم تطوير الويب والموبايل والذكاء الاصطناعي."
-      : "APEX Academy for learning web, mobile, and AI development.",
+      ? "أكاديمية APEX لتعلم تطوير الويب والموبايل والذكاء الاصطناعي." : "APEX Academy for learning web, mobile, and AI development.",
     path: `/${lang}/academy`,
   });
 }

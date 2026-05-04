@@ -18,9 +18,9 @@
   },
   "about": {
     "badge": "About Us",
-    "title": "APEX — Peak Technical Excellence",
-    "subtitle": "A software company building integrated digital solutions powered by cutting-edge AI",
-    "description": "At APEX we believe technology should be accessible to everyone. We combine technical creativity with strategic vision to deliver digital solutions that make a real difference in our clients' businesses.",
+    "title": "APEX - Peak Technical Excellence",
+    "subtitle": "A software company building integrated digital solutions powered by modern AI.",
+    "description": "At APEX, we believe technology should be accessible and practical. We combine engineering depth with product thinking to deliver digital solutions that create measurable business value.",
     "stats": [
       { "value": "24+", "label": "Projects Delivered" },
       { "value": "100+", "label": "Tech Articles" },
@@ -30,129 +30,129 @@
     "checks": [
       "Design that tells your story",
       "Code that lasts for years",
-      "AI that multiplies your potential"
+      "AI that expands your potential"
     ],
     "visionTitle": "Our Vision",
-    "visionText": "We aspire for APEX to be the first name that comes to mind when searching for integrated regional tech solutions.",
+    "visionText": "We want APEX to be the first name teams think of when they need integrated regional technology solutions.",
     "cards": {
       "innovation": {
         "title": "Innovation",
-        "text": "We design and build modern digital experiences using the latest technologies."
+        "text": "We design and build modern digital experiences using current technology with purpose."
       },
       "quality": {
         "title": "Quality",
-        "text": "Every product we deliver is crafted with attention to performance and detail."
+        "text": "Every product we deliver is shaped with care for performance, stability, and detail."
       },
       "partnership": {
         "title": "Partnership",
-        "text": "We work closely with clients to turn ideas into scalable digital products."
+        "text": "We work closely with clients to turn ideas into scalable products that can grow."
       }
     }
   },
   "services": {
     "badge": "Our Services",
     "title": "Integrated Digital Solutions",
-    "subtitle": "From concept to final product — partnering with you every step",
-    "learnMore": "Learn more",
+    "subtitle": "From concept to launch, we work with you through every stage.",
+    "learnMore": "Learn More",
     "items": [
       {
         "icon": "🌐",
         "title": "Web Development",
-        "description": "Websites and web apps with cutting-edge technology, exceptional performance, and unforgettable UX"
+        "description": "Fast, modern websites and web apps with polished UX and strong performance."
       },
       {
         "icon": "📱",
         "title": "Mobile Apps",
-        "description": "Native and hybrid iOS & Android apps with modern designs and superior performance"
+        "description": "Native and cross-platform iOS and Android apps built for reliability and growth."
       },
       {
         "icon": "🤖",
         "title": "Artificial Intelligence",
-        "description": "Integrate AI into your products, automate processes, and analyze data with next-gen tools"
+        "description": "Practical AI integrations, automation, and data-driven product experiences."
       },
       {
         "icon": "🎨",
         "title": "UI/UX Design",
-        "description": "Professional designs with in-depth case studies ensuring an exceptional user experience"
+        "description": "Thoughtful interfaces shaped by research, usability, and visual clarity."
       },
       {
         "icon": "🛒",
         "title": "E-Commerce",
-        "description": "Full commercial platforms with payment gateways, inventory management, and sales analytics"
+        "description": "Commerce platforms with payments, inventory workflows, and conversion-focused journeys."
       },
       {
         "icon": "🎬",
         "title": "Content Creation",
-        "description": "Professional videos, reels, and AI-powered designs that captivate your audience"
+        "description": "Video and visual content designed to support modern digital marketing."
       }
     ]
   },
   "portfolio": {
     "badge": "Portfolio",
     "title": "Projects That Prove Excellence",
-    "subtitle": "From mobile games to learning platforms — every project a success story",
+    "subtitle": "From education platforms to commerce and mobile products, every project tells a success story.",
     "viewAll": "View All Work",
     "viewProject": "View Project",
     "projects": [
       {
-        "title": "Full-Featured E-Commerce Platform",
+        "title": "Full E-Commerce Platform",
         "category": "E-Commerce",
-        "tag": "E-Commerce",
+        "tag": "Store",
         "emoji": "🛒"
       },
       {
-        "title": "Interactive Educational App",
+        "title": "Interactive Learning App",
         "category": "Mobile App",
         "tag": "Education",
         "emoji": "📚"
       },
       {
-        "title": "AI-Designed Video Series",
+        "title": "AI-Powered Video Series",
         "category": "AI Content",
         "tag": "AI",
         "emoji": "🎬"
       },
       {
-        "title": "Professional Mobile Game",
-        "category": "Mobile Game",
-        "tag": "Gaming",
-        "emoji": "🎮"
-      },
-      {
-        "title": "Advanced Tech Website",
-        "category": "Web Dev",
-        "tag": "Web",
+        "title": "Analytics SaaS Dashboard",
+        "category": "Web Platform",
+        "tag": "SaaS",
         "emoji": "💻"
       },
       {
-        "title": "Business Management App",
+        "title": "Real Estate Platform",
+        "category": "Web Platform",
+        "tag": "Real Estate",
+        "emoji": "🏠"
+      },
+      {
+        "title": "Food Delivery App",
         "category": "Mobile App",
-        "tag": "Productivity",
-        "emoji": "📊"
+        "tag": "Delivery",
+        "emoji": "🍔"
       }
     ]
   },
   "testimonials": {
     "badge": "Client Testimonials",
     "title": "Real Success Partners",
-    "subtitle": "Our clients' words are our greatest credential",
+    "subtitle": "Our clients' words are our strongest proof.",
     "items": [
       {
         "name": "Ahmed Al-Shammari",
         "role": "E-Commerce Owner",
-        "text": "APEX completely transformed my business. The store they built increased my sales by 300% in the first three months. Exceptional professionalism and outstanding after-delivery service.",
+        "text": "APEX helped transform our online business. The team was responsive, structured, and focused on outcomes from day one.",
         "initial": "A"
       },
       {
         "name": "Sarah Al-Mutairi",
         "role": "Training Center Director",
-        "text": "The educational app they developed for our center exceeded all expectations. Easy interface, excellent performance, and always-available technical support. Highly recommended.",
+        "text": "The education product they delivered exceeded expectations in usability and technical quality, with strong support after launch.",
         "initial": "S"
       },
       {
         "name": "Khalid Al-Balawi",
-        "role": "Independent Game Developer",
-        "text": "I collaborated with APEX on a mobile game project and it was an amazing experience. A specialized team that understands your requirements and transforms them into something better than imagined.",
+        "role": "Digital Product Lead",
+        "text": "Working with APEX felt like working with a real product partner. They understood the vision quickly and executed with care.",
         "initial": "K"
       }
     ]
@@ -160,14 +160,14 @@
   "contact": {
     "badge": "Contact Us",
     "title": "Have a Project? Let's Talk",
-    "description": "We're just one message away — we'll respond within hours",
-    "available": "Available Now — Reply within 2 hours",
+    "description": "We are one message away and usually reply quickly.",
+    "available": "Available now - usually within 2 hours",
     "email": "Send an Email",
     "whatsapp": "Chat on WhatsApp"
   },
   "footer": {
     "tagline": "Code · AI · Future",
-    "description": "Building digital futures with lasting code and endless innovation.",
+    "description": "Building digital futures with lasting code and focused innovation.",
     "rights": "All rights reserved.",
     "quickLinks": "Quick Links",
     "quickContact": "Quick Contact",

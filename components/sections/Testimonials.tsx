@@ -1,9 +1,14 @@
-
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { Reveal } from "@/components/ui/Reveal";
 
-export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: Dictionary }) {
+export function Testimonials({
+  lang,
+  dictionary,
+}: {
+  lang: Locale;
+  dictionary: Dictionary;
+}) {
   const isAr = lang === "ar";
   const { testimonials } = dictionary;
 
@@ -26,12 +31,16 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
           <span className="apex-section-label gold">{testimonials.badge}</span>
           <div className="apex-divider reverse" />
           <h2
-            className={`apex-section-title mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
+            className={`apex-section-title mt-5 font-bold leading-tight ${
+              isAr ? "font-ar" : "font-en"
+            }`}
           >
             {testimonials.title}
           </h2>
           <p
-            className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${
+              isAr ? "font-ar" : "font-en"
+            }`}
             style={{ maxWidth: "480px" }}
           >
             {testimonials.subtitle}
@@ -40,8 +49,11 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.items.map(
-            (item: { name: string; role: string; text: string; initial: string }, i: number) => (
-              <Reveal key={i} delay={i * 100}>
+            (
+              item: { name: string; role: string; text: string; initial: string },
+              index: number
+            ) => (
+              <Reveal key={index} delay={index * 100}>
                 <div
                   className="apex-card-base apex-card-hover relative rounded-2xl p-8 h-full flex flex-col"
                   dir={isAr ? "rtl" : "ltr"}
@@ -56,17 +68,24 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
                     }}
                     aria-hidden="true"
                   >
-                    "
+                    &ldquo;
                   </div>
 
                   <div className="flex gap-1 mb-5" aria-label="5 stars">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <span key={j} style={{ color: "var(--color-gold)", fontSize: "16px" }}>★</span>
+                    {Array.from({ length: 5 }).map((_, starIndex) => (
+                      <span
+                        key={starIndex}
+                        style={{ color: "var(--color-gold)", fontSize: "16px" }}
+                      >
+                        ★
+                      </span>
                     ))}
                   </div>
 
                   <p
-                    className={`leading-relaxed flex-1 italic mb-7 ${isAr ? "font-ar" : "font-en"}`}
+                    className={`leading-relaxed flex-1 italic mb-7 ${
+                      isAr ? "font-ar" : "font-en"
+                    }`}
                     style={{ fontSize: "13px", color: "var(--color-secondary-text)" }}
                   >
                     {item.text}
@@ -76,7 +95,8 @@ export function Testimonials({ lang, dictionary }: { lang: Locale; dictionary: D
                     <div
                       className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center font-bold text-base text-white"
                       style={{
-                        background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
+                        background:
+                          "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
                       }}
                       aria-hidden="true"
                     >
