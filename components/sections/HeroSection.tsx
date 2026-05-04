@@ -2,13 +2,50 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useRtl } from "@/hooks/useRtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 
+function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
+  const sizeRef = useRef({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
+  const dprRef = useRef(1);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const updateSize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      sizeRef.current = {
+        width: Math.floor(rect.width * dpr),
+        height: Math.floor(rect.height * dpr),
+        cssWidth: rect.width,
+        cssHeight: rect.height
+      canvas.width = sizeRef.current.width;
+      canvas.height = sizeRef.current.height;
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+    };
+
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(canvas);
+
+    updateSize();
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [canvasRef]);
+
+  return { sizeRef, dprRef };
+}
+
 function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
+  const { sizeRef, dprRef } = useCanvasSize(canvasRef as React.RefObject<HTMLCanvasElement>);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -24,13 +61,10 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
     let nodes: Particle[] = [];
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
+      const dpr = dprRef.current;
+      const s = sizeRef.current;
+      const w = s.cssWidth;
+      const h = s.cssHeight;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const count = Math.max(24, Math.min(60, Math.floor(w / 30)));
@@ -45,15 +79,16 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
     const draw = () => {
       if (stopped) return;
 
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, w, h);
+      const s = sizeRef.current;
+      ctx.clearRect(0, 0, s.width, s.height);
 
       for (let i = 0; i < nodes.length; i += 1) {
         const p = nodes[i];
         p.x += p.vx;
         p.y += p.vy;
 
+        const w = s.cssWidth;
+        const h = s.cssHeight;
         if (p.x <= 0 || p.x >= w) p.vx *= -1;
         if (p.y <= 0 || p.y >= h) p.vy *= -1;
 
@@ -90,10 +125,10 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
     const stop = () => {
       stopped = true;
       cancelAnimationFrame(raf);
-      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+      const s = sizeRef.current;
+      ctx.clearRect(0, 0, s.width, s.height);
     };
 
-    const handleResize = () => resize();
     const handleMotionChange = () => {
       if (rm.matches) {
         stop();
@@ -102,13 +137,11 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
       }
     };
 
-    window.addEventListener("resize", handleResize);
     rm.addEventListener("change", handleMotionChange);
     start();
 
     return () => {
       stop();
-      window.removeEventListener("resize", handleResize);
       rm.removeEventListener("change", handleMotionChange);
     };
   }, [canvasRef]);
@@ -120,6 +153,8 @@ function useWebGLChroma(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   onReady: () => void,
 ) {
+  const { sizeRef, dprRef } = useCanvasSize(canvasRef as React.RefObject<HTMLCanvasElement>);
+
   useEffect(() => {
     const primaryVideo = primaryVideoRef.current;
     const secondaryVideo = secondaryVideoRef.current;
@@ -268,16 +303,9 @@ function useWebGLChroma(
       return true;
     }
 
-    function resizeCanvas() {
-      const rect = heroCanvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      const w = Math.max(1, Math.floor(rect.width * dpr));
-      const h = Math.max(1, Math.floor(rect.height * dpr));
-
-      if (heroCanvas.width !== w || heroCanvas.height !== h) {
-        heroCanvas.width = w;
-        heroCanvas.height = h;
-      }
+function resizeCanvas() {
+      const s = sizeRef.current;
+      gl.viewport(0, 0, s.width, s.height);
     }
 
     function applyCropUniform() {
@@ -401,11 +429,10 @@ function useWebGLChroma(
         return;
       }
 
-      resizeCanvas();
-      gl.viewport(0, 0, heroCanvas.width, heroCanvas.height);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      applyCropUniform();
+    resizeCanvas();
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    applyCropUniform();
 
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -463,20 +490,19 @@ function useWebGLChroma(
     };
 
     const start = async () => {
-      if (!md.matches || rm.matches) {
-        stop();
-        return;
-      }
+    if (!md.matches || rm.matches) {
+      stop();
+      return;
+    }
 
-      stopped = false;
-      if (!gl && !initGL()) return;
-      resizeCanvas();
-      await seekVideo(primaryVideo, loopTrimStart);
-      await seekVideo(secondaryVideo, loopTrimStart);
-      activeVideo = primaryVideo;
-      standbyVideo = secondaryVideo;
-      standbyPrimed = false;
-      primingStandby = false;
+    stopped = false;
+    if (!gl && !initGL()) return;
+    await seekVideo(primaryVideo, loopTrimStart);
+    await seekVideo(secondaryVideo, loopTrimStart);
+    activeVideo = primaryVideo;
+    standbyVideo = secondaryVideo;
+    standbyPrimed = false;
+    primingStandby = false;
 
       // ─── FIX: سجّل الـ ended listener على الفيديو النشط ───
       primaryVideo.removeEventListener("ended", handleVideoEnded);
@@ -496,12 +522,10 @@ function useWebGLChroma(
       }
     };
 
-    const handleResize = () => resizeCanvas();
     const handleMediaChange = () => {
       void start();
     };
 
-    window.addEventListener("resize", handleResize);
     md.addEventListener("change", handleMediaChange);
     rm.addEventListener("change", handleMediaChange);
     void start();
@@ -510,7 +534,6 @@ function useWebGLChroma(
       stop();
       resetVideo(primaryVideo);
       resetVideo(secondaryVideo);
-      window.removeEventListener("resize", handleResize);
       md.removeEventListener("change", handleMediaChange);
       rm.removeEventListener("change", handleMediaChange);
     };
