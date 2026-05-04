@@ -17,7 +17,7 @@ const themeScript = `
         document.documentElement.classList.add("dark");
       } else if (stored === "light") {
         document.documentElement.classList.remove("dark");
-      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      } else {
         document.documentElement.classList.add("dark");
       }
     } catch (e) {}

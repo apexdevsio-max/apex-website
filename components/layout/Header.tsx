@@ -129,7 +129,7 @@ export function Header({ lang, dictionary }: Props) {
       >
         <Link href={buildUrl("/")} className="shrink-0 flex items-center gap-2">
           <Image
-            src="/images/Apex_logo.png"
+            src="/images/Apex_logo.webp"
             alt="APEX"
             width={110}
             height={36}

@@ -595,7 +595,7 @@ export function HeroSection({
         aria-hidden="true"
       >
         <Image
-          src="/images/Apex_logo.png"
+          src="/images/Apex_logo.webp"
           alt=""
           fill
           priority
@@ -655,7 +655,7 @@ export function HeroSection({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/robot_mascot.png"
+          src="/images/robot_mascot.webp"
           alt=""
           className="h-auto w-full object-contain object-bottom"
           loading="lazy"
