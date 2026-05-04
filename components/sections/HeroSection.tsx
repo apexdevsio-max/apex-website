@@ -24,6 +24,8 @@ function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
         height: Math.floor(rect.height * dpr),
         cssWidth: rect.width,
         cssHeight: rect.height
+      };
+      dprRef.current = dpr;
       canvas.width = sizeRef.current.width;
       canvas.height = sizeRef.current.height;
       canvas.style.width = `${rect.width}px`;
@@ -304,8 +306,10 @@ function useWebGLChroma(
     }
 
 function resizeCanvas() {
-      const s = sizeRef.current;
-      gl.viewport(0, 0, s.width, s.height);
+      if (gl) {
+        const s = sizeRef.current;
+        gl.viewport(0, 0, s.width, s.height);
+      }
     }
 
     function applyCropUniform() {
