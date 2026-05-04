@@ -35,6 +35,8 @@ export default async function RootLayout({
   return (
     <html suppressHydrationWarning lang={lang}>
       <head>
+        <link rel="preload" href="/_next/static/css/fb398caf5d919735.css" as="style" />
+        <link rel="preload" href="/videos/robot_welcome.mp4" as="video" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={`${reemKufi.variable} ${ibmPlexSerif.variable} antialiased`}>
