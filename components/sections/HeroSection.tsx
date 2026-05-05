@@ -624,10 +624,12 @@ export function HeroSection({
         <Image
           src="/images/Apex_logo.webp"
           alt=""
-          fill
+          width={384}
+          height={142}
           priority
-          sizes="(min-width: 768px) 360px, 220px"
-          style={{ objectFit: "contain" }}
+          sizes="(max-width: 768px) 220px, 360px"
+          quality={60}
+          className="h-full w-full object-contain"
         />
       </div>
 
