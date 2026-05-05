@@ -136,7 +136,7 @@ export function Header({ lang, dictionary }: Props) {
               width={110}
               height={36}
               priority
-              quality={70}
+              quality={65}
               style={{
                 filter: darkMode
                   ? "drop-shadow(0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent))"

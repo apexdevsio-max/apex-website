@@ -8,16 +8,26 @@ const images = ['Apex_logo.png', 'robot_mascot.png'];
 // Add aggressive optimization for hero logo
 async function optimizeHeroLogo() {
   const inputPath = path.join(imagesDir, 'Apex_logo.png');
-  const outputPath = path.join(imagesDir, 'Apex_logo.webp');
   
+  // WebP optimized
   await sharp(inputPath)
     .resize(384, 142, { 
       kernel: sharp.kernel.lanczos3,
       withoutEnlargement: true 
     })
-    .webp({ quality: 60, effort: 6 })
-    .toFile(outputPath);
-  console.log('Optimized Apex_logo.webp to 384x142 @60q');
+    .webp({ quality: 50, effort: 6 })
+    .toFile(path.join(imagesDir, 'Apex_logo.webp'));
+  console.log('Optimized Apex_logo.webp: 384x142 @50q');
+  
+  // AVIF for max savings
+  await sharp(inputPath)
+    .resize(384, 142, { 
+      kernel: sharp.kernel.lanczos3,
+      withoutEnlargement: true 
+    })
+    .avif({ quality: 45, effort: 6 })
+    .toFile(path.join(imagesDir, 'Apex_logo.avif'));
+  console.log('Optimized Apex_logo.avif: 384x142 @45q');
 }
 
 async function optimizeImage(imageName) {
@@ -26,17 +36,17 @@ async function optimizeImage(imageName) {
   const avifPath = path.join(imagesDir, imageName.replace('.png', '.avif'));
 
   try {
-    // تحويل إلى WebP مع ضغط أعلى
+    // WebP for hero mascot
     await sharp(inputPath)
-      .webp({ quality: 85, effort: 6 })
+      .webp({ quality: 60, effort: 6 })
       .toFile(webpPath);
-    console.log(`Converted ${imageName} to WebP`);
+    console.log(`Optimized ${imageName} to WebP @60q`);
 
-    // تحويل إلى AVIF لتوفير أكبر
+    // AVIF
     await sharp(inputPath)
-      .avif({ quality: 80, effort: 6 })
+      .avif({ quality: 55, effort: 6 })
       .toFile(avifPath);
-    console.log(`Converted ${imageName} to AVIF`);
+    console.log(`Optimized ${imageName} to AVIF @55q`);
   } catch (error) {
     console.error(`Error converting ${imageName}:`, error);
   }

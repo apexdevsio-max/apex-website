@@ -609,7 +609,7 @@ export function HeroSection({
         }}
       />
 
-      <div
+<div
         className="absolute z-20 pointer-events-none"
         style={{
           top: "10%",
@@ -624,12 +624,11 @@ export function HeroSection({
         <Image
           src="/images/Apex_logo.webp"
           alt=""
-          width={384}
-          height={142}
+          fill
           priority
           sizes="(max-width: 768px) 220px, 360px"
-          quality={60}
-          className="h-full w-full object-contain"
+          quality={50}
+          className="object-contain"
         />
       </div>
 
@@ -679,15 +678,16 @@ export function HeroSection({
       />
 
       <div
-        className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden"
+        className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden relative"
         aria-hidden="true"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/images/robot_mascot.webp"
           alt=""
-          className="h-auto w-full object-contain object-bottom"
-          loading="lazy"
+          fill
+          quality={60}
+          sizes="(max-width: 768px) 55vw, 25vw"
+          className="object-contain object-bottom"
         />
       </div>
 
