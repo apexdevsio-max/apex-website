@@ -678,7 +678,7 @@ export function HeroSection({
       />
 
       <div
-        className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden relative"
+        className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden"
         aria-hidden="true"
       >
         <Image
