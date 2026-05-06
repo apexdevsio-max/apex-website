@@ -1,6 +1,5 @@
-const sharp = require('sharp');
-const fs = require('fs');
-const path = require('path');
+import sharp from 'sharp';
+import path from 'path';
 
 const imagesDir = path.join(__dirname, 'public', 'images');
 const images = ['Apex_logo.png', 'robot_mascot.png'];

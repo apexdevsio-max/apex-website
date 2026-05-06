@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useRtl } from "@/hooks/useRtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -10,7 +10,6 @@ import type { Locale } from "@/lib/i18n/locale";
 
 function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
   const sizeRef = useRef({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
-  const dprRef = useRef(1);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -23,9 +22,8 @@ function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
         width: Math.floor(rect.width * dpr),
         height: Math.floor(rect.height * dpr),
         cssWidth: rect.width,
-        cssHeight: rect.height
+        cssHeight: rect.height,
       };
-      dprRef.current = dpr;
       canvas.width = sizeRef.current.width;
       canvas.height = sizeRef.current.height;
       canvas.style.width = `${rect.width}px`;
@@ -42,11 +40,13 @@ function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
     };
   }, [canvasRef]);
 
-  return { sizeRef, dprRef };
+  return { sizeRef };
 }
 
 function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
-  const { sizeRef, dprRef } = useCanvasSize(canvasRef as React.RefObject<HTMLCanvasElement>);
+  const { sizeRef } = useCanvasSize(
+    canvasRef as React.RefObject<HTMLCanvasElement>
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -63,7 +63,7 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
     let nodes: Particle[] = [];
 
     const resize = () => {
-      const dpr = dprRef.current;
+      const dpr = window.devicePixelRatio || 1;
       const s = sizeRef.current;
       const w = s.cssWidth;
       const h = s.cssHeight;
@@ -146,7 +146,7 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
       stop();
       rm.removeEventListener("change", handleMotionChange);
     };
-  }, [canvasRef]);
+  }, [canvasRef, sizeRef]);
 }
 
 function useWebGLChroma(
@@ -155,7 +155,7 @@ function useWebGLChroma(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   onReady: () => void,
 ) {
-  const { sizeRef, dprRef } = useCanvasSize(canvasRef as React.RefObject<HTMLCanvasElement>);
+  const { sizeRef } = useCanvasSize(canvasRef as React.RefObject<HTMLCanvasElement>);
 
   useEffect(() => {
     const primaryVideo = primaryVideoRef.current;
