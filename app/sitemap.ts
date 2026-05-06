@@ -8,7 +8,7 @@ import {
 } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
 
-const BASE_URL = "https://apex-tech.sa";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://apex-tech.sa";
 
 const STATIC_ROUTES = [
   { route: "", changeFrequency: "weekly", priority: 1 },
