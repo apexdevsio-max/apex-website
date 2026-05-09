@@ -48,16 +48,21 @@ export function Footer({
               {footer.quickLinks}
             </h4>
             <ul className="space-y-2">
-              {Object.entries(dictionary.navigation || {}).map(([key, label]) => (
-                <li key={key}>
-                  <Link 
-                    href={`/${lang}${key === 'home' ? '' : `/${key.replace(/^[a-z]+/, '')}`}`}
-                    className="text-sm transition-colors hover:text-apex-primary block py-1"
-                  >
-                    {label as string}
-                  </Link>
-                </li>
-              ))}
+              {(Object.entries(dictionary.navigation || {}) as [string, string][])
+                .filter(([key]) => key !== "letsTalk")
+                .map(([key, label]) => {
+                  const path = key === "home" ? "" : key;
+                  return (
+                    <li key={key}>
+                      <Link
+                        href={`/${lang}${path ? `/${path}` : ""}`}
+                        className="text-sm transition-colors hover:text-apex-primary block py-1"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
 

@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
 import { buildPageMeta } from "@/lib/seo/metadata";
-import { FALLBACK_POST, MOCK_POSTS, MOCK_POST_SLUGS } from "@/lib/mock/blog-data";
+import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, MOCK_POST_SLUGS } from "@/lib/mock/blog-data";
 
 export async function generateStaticParams() {
   const seen = new Set<string>();
@@ -87,7 +87,8 @@ export default async function BlogPostPage({
   const readTime = mock?.readTime ?? fallback.readTime;
   const emoji = mock?.emoji ?? fallback.emoji;
   const accentColor = mock?.accentColor ?? fallback.accentColor;
-  const category = mock?.category ?? fallback.category;
+  const categoryKey = mock?.category ?? fallback.category;
+  const category = CATEGORY_LABELS[categoryKey]?.[lang] ?? categoryKey;
   const rawContent = mdxPost?.content ?? mockContent?.content ?? fallback.content;
   const contentLines = rawContent.split("\n");
   const relatedSlugs = MOCK_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);

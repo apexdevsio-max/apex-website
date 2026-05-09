@@ -10,17 +10,24 @@ import { MOCK_POSTS } from "@/lib/mock/blog-data";
 
 const CATS_AR = [
   { key: "all", label: "الكل" },
-  { key: "web", label: "تطوير ويب" },
-  { key: "mobile", label: "موبايل" },
-  { key: "ai", label: "ذكاء اصطناعي" },
+  { key: "lang-framework", label: "لغات برمجة و أطر عمل" },
+  { key: "mobile", label: "برمجة الموبايل" },
+  { key: "web", label: "برمجة الويب" },
+  { key: "comparisons", label: "تقييمات و مقارنات" },
+  { key: "selected", label: "مواضيع منتقاة" },
+  { key: "practical", label: "تجارب عملية" },
 ];
 
 const CATS_EN = [
   { key: "all", label: "All" },
-  { key: "web", label: "Web Dev" },
-  { key: "mobile", label: "Mobile" },
-  { key: "ai", label: "AI" },
+  { key: "lang-framework", label: "Languages & Frameworks" },
+  { key: "mobile", label: "Mobile Programming" },
+  { key: "web", label: "Web Programming" },
+  { key: "comparisons", label: "Reviews & Comparisons" },
+  { key: "selected", label: "Selected Topics" },
+  { key: "practical", label: "Practical Experiences" },
 ];
+
 
 function Reveal({
   children,
@@ -299,8 +306,7 @@ export function BlogGrid({
 
   const fallbackPosts = Object.entries(MOCK_POSTS).map(([slug, post], index) => ({
     slug,
-    category:
-      post.category === "Web Dev" ? "web" : post.category === "Mobile" ? "mobile" : "ai",
+    category: post.category,
     emoji: post.emoji,
     readTime: post.readTime,
     accentColor: post.accentColor,

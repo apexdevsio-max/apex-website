@@ -11,7 +11,7 @@ export const MOCK_POSTS: Record<string, MockPost> = {
   "nextjs-vs-remix-2025": {
     emoji: "\u26a1",
     accentColor: "#00BCD4",
-    category: "Web Dev",
+    category: "comparisons",
     readTime: 8,
     ar: {
       title: "Next.js مقابل Remix في 2025 — أيهما تختار؟",
@@ -81,7 +81,7 @@ For most projects in 2025, Next.js remains the safest and most widely supported 
   "react-native-expo-guide": {
     emoji: "\ud83d\udcf1",
     accentColor: "#FFBF00",
-    category: "Mobile",
+    category: "mobile",
     readTime: 12,
     ar: {
       title: "دليل React Native + Expo الشامل للمبتدئين",
@@ -153,7 +153,7 @@ If you're a web developer looking to enter mobile, React Native + Expo is one of
   "ai-tools-developers-2025": {
     emoji: "\ud83e\udd16",
     accentColor: "#4DD0E1",
-    category: "AI",
+    category: "selected",
     readTime: 6,
     ar: {
       title: "أفضل أدوات الذكاء الاصطناعي للمطورين في 2025",
@@ -215,6 +215,15 @@ A developer who masters these tools can work far more efficiently than one who i
 };
 
 export const MOCK_POST_SLUGS = Object.keys(MOCK_POSTS);
+
+export const CATEGORY_LABELS: Record<string, { ar: string; en: string }> = {
+  "lang-framework": { ar: "لغات برمجة و أطر عمل", en: "Languages & Frameworks" },
+  mobile: { ar: "برمجة الموبايل", en: "Mobile Programming" },
+  web: { ar: "برمجة الويب", en: "Web Programming" },
+  comparisons: { ar: "تقييمات و مقارنات", en: "Reviews & Comparisons" },
+  selected: { ar: "مواضيع منتقاة", en: "Selected Topics" },
+  practical: { ar: "تجارب عملية", en: "Practical Experiences" },
+};
 
 export const FALLBACK_POST = (slug: string, lang: string) => ({
   emoji: "\ud83d\udcdd",
