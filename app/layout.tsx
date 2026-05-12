@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-import { ibmPlexSerif, reemKufi } from "@/lib/fonts";
+import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
 import { metadataBase } from "@/lib/seo/metadata";
 
 import "./globals.css";
@@ -37,7 +37,7 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${reemKufi.variable} ${ibmPlexSerif.variable} antialiased`}>
+      <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
         {children}
         <SpeedInsights />
       </body>

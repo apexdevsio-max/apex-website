@@ -1,15 +1,20 @@
 import localFont from "next/font/local";
 
-export const reemKufi = localFont({
+export const ibmPlexSansArabic = localFont({
   src: [
     {
-      path: "../fonts/ReemKufi-Regular.ttf",
+      path: "../fonts/arabic/IBMPlexSansArabic-Regular.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../fonts/ReemKufi-Bold.ttf",
+      path: "../fonts/arabic/IBMPlexSansArabic-Bold.ttf",
       weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../fonts/arabic/IBMPlexSansArabic-Medium.ttf",
+      weight: "500",
       style: "normal",
     },
   ],
@@ -22,12 +27,12 @@ export const reemKufi = localFont({
 export const ibmPlexSerif = localFont({
   src: [
     {
-      path: "../fonts/IBMPlexSerif-Regular.ttf",
+      path: "../fonts/english/IBMPlexSerif-Regular.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../fonts/IBMPlexSerif-Bold.ttf",
+      path: "../fonts/english/IBMPlexSerif-Bold.ttf",
       weight: "700",
       style: "normal",
     },

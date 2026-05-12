@@ -5,7 +5,7 @@ import { SUPPORTED_LOCALES } from "@/lib/i18n/locale";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/api")) {

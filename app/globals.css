@@ -83,7 +83,7 @@ html, body {
 }
 
 
-.font-ar { font-family: var(--font-ar), serif; }
+.font-ar { font-family: var(--font-ar), sans-serif; }
 .font-en { font-family: var(--font-en), serif; }
 
 .apex-section-bg { background: var(--color-background); }

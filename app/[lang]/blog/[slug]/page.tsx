@@ -34,6 +34,13 @@ export async function generateStaticParams() {
   return params;
 }
 
+const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
+  flutter: {
+    ar: ["Flutter", "دارت", "تطوير تطبيقات", "تطبيقات متعددة المنصات", "Google Flutter", "تطوير الموبايل"],
+    en: ["Flutter", "Dart", "cross-platform", "mobile development", "Google Flutter", "app development"],
+  },
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -53,6 +60,7 @@ export async function generateMetadata({
     title: `${mdxPost?.title ?? mock?.title ?? slug} - APEX`,
     description: mdxPost?.excerpt ?? mock?.excerpt ?? "",
     path: `/${lang}/blog/${slug}`,
+    keywords: POST_KEYWORDS[slug]?.[locale],
   });
 }
 
@@ -93,12 +101,40 @@ export default async function BlogPostPage({
   const contentLines = rawContent.split("\n");
   const relatedSlugs = MOCK_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);
 
+  const siteUrl = "https://apex-tech.sa";
+
   return (
     <main
       className="min-h-screen pt-24 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: title,
+            description: excerpt,
+            url: `${siteUrl}/${lang}/blog/${slug}`,
+            datePublished: date || undefined,
+            author: {
+              "@type": "Organization",
+              name: "APEX",
+              url: siteUrl,
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "APEX",
+              logo: `${siteUrl}/images/Apex_logo.png`,
+            },
+            image: `${siteUrl}/images/Apex_logo.png`,
+            inLanguage: isAr ? "ar" : "en",
+          }),
+        }}
+      />
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-3xl mx-auto">
         <Link
@@ -212,6 +248,10 @@ export default async function BlogPostPage({
               );
             }
 
+            if (line === "---") {
+              return <hr key={index} className="my-10 border-apex-border" style={{ opacity: 0.4 }} />;
+            }
+
             if (line.startsWith("> ")) {
               return (
                 <blockquote
@@ -245,6 +285,21 @@ export default async function BlogPostPage({
                     {line.replace("• ", "")}
                   </span>
                 </div>
+              );
+            }
+
+            const imgMatch = /^!\[(.*)\]\((.*)\)$/.exec(line);
+            if (imgMatch) {
+              return (
+                <figure key={index} className="my-8">
+                  <img
+                    src={imgMatch[2]}
+                    alt={imgMatch[1]}
+                    className="w-full rounded-2xl shadow-lg"
+                    loading="lazy"
+                    style={{ background: "var(--color-card)" }}
+                  />
+                </figure>
               );
             }
 

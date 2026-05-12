@@ -212,6 +212,24 @@ If you're a web developer looking to enter mobile, React Native + Expo is one of
 A developer who masters these tools can work far more efficiently than one who ignores them.`,
     },
   },
+  "flutter": {
+    emoji: "\ud83d\udc99",
+    accentColor: "#54C5F8",
+    category: "lang-framework",
+    readTime: 15,
+    ar: {
+      title: "ما هو Flutter؟ دليل شامل لتطوير التطبيقات متعددة المنصات",
+      excerpt: "دليل شامل لإطار Flutter من Google لبناء تطبيقات Android و iOS والويب من قاعدة كود واحدة.",
+      date: "12 مايو 2026",
+      content: "",
+    },
+    en: {
+      title: "What is Flutter? A Complete Guide to Cross-Platform App Development",
+      excerpt: "A comprehensive guide to Flutter — Google's UI framework for building Android, iOS, web, and desktop apps from a single codebase.",
+      date: "May 12, 2026",
+      content: "",
+    },
+  },
 };
 
 export const MOCK_POST_SLUGS = Object.keys(MOCK_POSTS);
