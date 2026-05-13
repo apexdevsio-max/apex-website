@@ -64,6 +64,13 @@ export async function generateMetadata({
   });
 }
 
+function renderMarkdownLinks(text: string): string {
+  return text.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer" class="font-semibold underline decoration-1 underline-offset-2 transition-colors" style="color:var(--color-primary)">$1</a>'
+  );
+}
+
 const hoverStyles = `
   .apex-back:hover { color: var(--color-primary) !important; }
   .apex-prose-bullet { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
@@ -235,7 +242,7 @@ export default async function BlogPostPage({
             if (line.startsWith("## ")) {
               return (
                 <h2 key={index} className={`apex-prose-h2 ${isAr ? "font-ar" : "font-en"}`}>
-                  {line.replace("## ", "")}
+                  <span dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("## ", "")) }} />
                 </h2>
               );
             }
@@ -243,7 +250,7 @@ export default async function BlogPostPage({
             if (line.startsWith("### ")) {
               return (
                 <h3 key={index} className={`apex-prose-h3 ${isAr ? "font-ar" : "font-en"}`}>
-                  {line.replace("### ", "")}
+                  <span dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("### ", "")) }} />
                 </h3>
               );
             }
@@ -257,16 +264,15 @@ export default async function BlogPostPage({
                 <blockquote
                   key={index}
                   className={`apex-prose-quote ${isAr ? "font-ar" : "font-en"}`}
-                >
-                  {line.replace("> ", "")}
-                </blockquote>
+                  dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("> ", "")) }}
+                />
               );
             }
 
             if (line.startsWith("- ")) {
               return (
                 <ul key={index} className={`apex-prose-list ${isAr ? "font-ar" : "font-en"}`}>
-                  <li>{line.replace("- ", "")}</li>
+                  <li dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("- ", "")) }} />
                 </ul>
               );
             }
@@ -281,9 +287,8 @@ export default async function BlogPostPage({
                   <span
                     className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`}
                     style={{ margin: 0 }}
-                  >
-                    {line.replace("• ", "")}
-                  </span>
+                    dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("• ", "")) }}
+                  />
                 </div>
               );
             }
@@ -304,9 +309,11 @@ export default async function BlogPostPage({
             }
 
             return (
-              <p key={index} className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`}>
-                {line}
-              </p>
+              <p
+                key={index}
+                className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`}
+                dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line) }}
+              />
             );
           })}
         </article>
