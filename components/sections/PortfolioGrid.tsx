@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ExternalLink } from "lucide-react";
 
 import type { PortfolioItem } from "@/lib/content/content-loader";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -15,9 +17,21 @@ type ProjectVisual = {
   gradient: string;
   accentColor: string;
   tags: string[];
+  thumbnail?: string;
+  driveUrl?: string;
 };
 
 const PROJECT_VISUALS: ProjectVisual[] = [
+  {
+    slug: "dental-clinic-motion",
+    category: "content",
+    emoji: "🦷",
+    gradient: "linear-gradient(135deg,#0d1b2a,#1b263b)",
+    accentColor: "#4DD0E1",
+    tags: ["After Effects", "Motion Graphics", "Premiere Pro"],
+    thumbnail: "/images/portfolio/dental-clinic-motion-1.jpg",
+    driveUrl: "https://drive.google.com/drive/folders/139gHCMfTflVlcHP4E9K3MKdI_VoGaEKK",
+  },
   {
     slug: "ecommerce-fashion",
     category: "ecommerce",
@@ -36,11 +50,23 @@ const PROJECT_VISUALS: ProjectVisual[] = [
   },
   {
     slug: "ai-video-series",
-    category: "ai",
+    category: "content",
     emoji: "🎬",
     gradient: "linear-gradient(135deg,#1a1a2e,#0d0d1a)",
     accentColor: "#4DD0E1",
     tags: ["Sora", "After Effects", "Midjourney"],
+    thumbnail: "/images/portfolio/ai-video-series.svg",
+    driveUrl: "https://drive.google.com/drive/folders/1x",
+  },
+  {
+    slug: "ai-design-brand",
+    category: "content",
+    emoji: "🎨",
+    gradient: "linear-gradient(135deg,#0d0d1a,#1a0533)",
+    accentColor: "#00BCD4",
+    tags: ["Midjourney", "Figma", "Canva AI"],
+    thumbnail: "/images/portfolio/ai-design-brand.svg",
+    driveUrl: "https://drive.google.com/drive/folders/1x",
   },
   {
     slug: "saas-dashboard",
@@ -59,6 +85,7 @@ const CATEGORY_LABELS = {
     mobile: "تطبيقات موبايل",
     ecommerce: "تجارة إلكترونية",
     ai: "ذكاء اصطناعي",
+    content: "صناعة المحتوى",
   },
   en: {
     all: "All",
@@ -66,16 +93,18 @@ const CATEGORY_LABELS = {
     mobile: "Mobile Apps",
     ecommerce: "E-Commerce",
     ai: "AI",
+    content: "Content Creation",
   },
 } as const;
 
-function normalizeCategory(category: string): "web" | "mobile" | "ecommerce" | "ai" {
+function normalizeCategory(category: string): "web" | "mobile" | "ecommerce" | "ai" | "content" {
   const normalized = category.toLowerCase();
 
   if (normalized.includes("commerce")) return "ecommerce";
   if (normalized.includes("mobile") || normalized.includes("app") || normalized.includes("game")) {
     return "mobile";
   }
+  if (normalized.includes("content") || normalized.includes("creation")) return "content";
   if (normalized.includes("ai")) return "ai";
   return "web";
 }
@@ -127,6 +156,8 @@ function ProjectCard({
   tags,
   lang,
   ctaLabel,
+  thumbnail,
+  driveUrl,
 }: {
   slug: string;
   title: string;
@@ -138,74 +169,88 @@ function ProjectCard({
   tags: string[];
   lang: Locale;
   ctaLabel: string;
+  thumbnail?: string;
+  driveUrl?: string;
 }) {
   const isAr = lang === "ar";
   const [hovered, setHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
-    <Link
-      href={`/${lang}/portfolio/${slug}`}
-      className="apex-card-base group flex flex-col overflow-hidden rounded-2xl transition-all duration-300"
+    <div className="apex-card-base group flex flex-col overflow-hidden rounded-2xl transition-all duration-300"
       style={{
         borderColor: hovered ? accentColor : "var(--color-border)",
         transform: hovered ? "translateY(-6px)" : "translateY(0)",
         boxShadow: hovered
           ? `0 20px 50px color-mix(in srgb,${accentColor} 20%,transparent)`
           : "none",
-        textDecoration: "none",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative overflow-hidden" style={{ height: "200px", background: gradient }}>
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-          aria-hidden="true"
-        />
+      <Link href={`/${lang}/portfolio/${slug}`} className="block" style={{ textDecoration: "none" }}>
+        <div className="relative overflow-hidden" style={{ height: "200px", background: gradient }}>
+          {thumbnail && !imgError ? (
+            <Image
+              src={thumbnail}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover transition-transform duration-500"
+              style={{ transform: hovered ? "scale(1.08)" : "scale(1)" }}
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <>
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+                  backgroundSize: "24px 24px",
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="pointer-events-none absolute rounded-full transition-all duration-500"
+                style={{
+                  width: hovered ? "220px" : "160px",
+                  height: hovered ? "220px" : "160px",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-50%)",
+                  background: `radial-gradient(circle,${accentColor}30 0%,transparent 70%)`,
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  fontSize: "64px",
+                  filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
+                  transition: "transform 0.3s ease",
+                  transform: hovered ? "scale(1.12)" : "scale(1)",
+                }}
+              >
+                {emoji}
+              </div>
+            </>
+          )}
 
-        <div
-          className="pointer-events-none absolute rounded-full transition-all duration-500"
-          style={{
-            width: hovered ? "220px" : "160px",
-            height: hovered ? "220px" : "160px",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: `radial-gradient(circle,${accentColor}30 0%,transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
-
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            fontSize: "64px",
-            filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
-            transition: "transform 0.3s ease",
-            transform: hovered ? "scale(1.12)" : "scale(1)",
-          }}
-        >
-          {emoji}
+          <div
+            className="absolute top-3 rounded-full px-3 py-1 text-xs font-bold"
+            style={{
+              [isAr ? "left" : "right"]: "12px",
+              background: `color-mix(in srgb,${accentColor} 20%,rgba(0,0,0,0.5))`,
+              border: `1px solid ${accentColor}50`,
+              color: accentColor,
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {categoryLabel}
+          </div>
         </div>
-
-        <div
-          className="absolute top-3 rounded-full px-3 py-1 text-xs font-bold"
-          style={{
-            [isAr ? "left" : "right"]: "12px",
-            background: `color-mix(in srgb,${accentColor} 20%,rgba(0,0,0,0.5))`,
-            border: `1px solid ${accentColor}50`,
-            color: accentColor,
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          {categoryLabel}
-        </div>
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col p-6" dir={isAr ? "rtl" : "ltr"}>
         <div className={`mb-3 flex flex-wrap gap-1.5 ${isAr ? "flex-row-reverse" : ""}`}>
@@ -238,16 +283,34 @@ function ProjectCard({
           {summary}
         </p>
 
-        <div
-          className={`mt-5 flex items-center gap-2 text-sm font-bold ${
-            isAr ? "flex-row-reverse justify-end" : ""
-          }`}
-          style={{ color: accentColor }}
-        >
-          {ctaLabel}
+        <div className={`mt-auto flex flex-wrap items-center gap-3 pt-4 ${isAr ? "flex-row-reverse" : ""}`}>
+          <Link
+            href={`/${lang}/portfolio/${slug}`}
+            className="flex items-center gap-2 text-sm font-bold transition-colors hover:opacity-80"
+            style={{ color: accentColor }}
+          >
+            {ctaLabel}
+          </Link>
+
+          {driveUrl && (
+            <a
+              href={driveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all hover:opacity-85"
+              style={{
+                background: `color-mix(in srgb,${accentColor} 14%,transparent)`,
+                color: accentColor,
+                border: `1px solid color-mix(in srgb,${accentColor} 30%,transparent)`,
+              }}
+            >
+              <ExternalLink size={12} />
+              {isAr ? "مشاهدة" : "Watch"}
+            </a>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -269,6 +332,7 @@ export function PortfolioGrid({
     { key: "web", label: categoryLabels.web },
     { key: "mobile", label: categoryLabels.mobile },
     { key: "ecommerce", label: categoryLabels.ecommerce },
+    { key: "content", label: categoryLabels.content },
     { key: "ai", label: categoryLabels.ai },
   ];
 
@@ -285,6 +349,8 @@ export function PortfolioGrid({
           gradient: visual.gradient,
           accentColor: visual.accentColor,
           tags: visual.tags,
+          thumbnail: (item.images?.[0]) ?? item.thumbnail ?? visual.thumbnail,
+          driveUrl: item.driveUrl ?? visual.driveUrl,
           title: item.title,
           summary: item.summary,
         };
@@ -300,6 +366,8 @@ export function PortfolioGrid({
         gradient: item.gradient || visual.gradient,
         accentColor: item.accentColor || visual.accentColor,
         tags: item.tags.length > 0 ? item.tags : visual.tags,
+        thumbnail: visual.thumbnail,
+        driveUrl: visual.driveUrl,
         title: item[lang].title,
         summary: item[lang].summary,
       };
@@ -387,6 +455,8 @@ export function PortfolioGrid({
                 tags={project.tags}
                 lang={lang}
                 ctaLabel={dictionary.portfolio.viewProject}
+                thumbnail={project.thumbnail}
+                driveUrl={project.driveUrl}
               />
             </Reveal>
           ))}

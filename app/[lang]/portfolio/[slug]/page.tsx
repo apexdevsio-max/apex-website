@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 
 import {
@@ -112,6 +114,9 @@ export default async function PortfolioItemPage({
   const accentColor = mock?.accentColor ?? fallback.accentColor;
   const tags = mock?.tags ?? fallback.tags;
   const category = mock?.category ?? fallback.category;
+  const images = mdxItem?.images;
+  const thumbnail = images?.[0] ?? mdxItem?.thumbnail;
+  const driveUrl = mdxItem?.driveUrl;
 
   const lines = description.split("\n").filter((line) => line.trim() !== "");
 
@@ -145,36 +150,49 @@ export default async function PortfolioItemPage({
           className="relative rounded-3xl overflow-hidden mb-10"
           style={{ height: "clamp(240px,30vw,380px)", background: gradient }}
         >
-          <div
-            className="absolute inset-0 opacity-15"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
-            aria-hidden="true"
-          />
-          <div
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              width: "300px",
-              height: "300px",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%,-50%)",
-              background: `radial-gradient(circle,${accentColor}35 0%,transparent 70%)`,
-            }}
-            aria-hidden="true"
-          />
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{
-              fontSize: "96px",
-              filter: "drop-shadow(0 0 30px rgba(255,255,255,0.35))",
-            }}
-          >
-            {emoji}
-          </div>
+          {thumbnail ? (
+            <Image
+              src={thumbnail}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, 800px"
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <>
+              <div
+                className="absolute inset-0 opacity-15"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+                  backgroundSize: "28px 28px",
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  width: "300px",
+                  height: "300px",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-50%)",
+                  background: `radial-gradient(circle,${accentColor}35 0%,transparent 70%)`,
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  fontSize: "96px",
+                  filter: "drop-shadow(0 0 30px rgba(255,255,255,0.35))",
+                }}
+              >
+                {emoji}
+              </div>
+            </>
+          )}
           <div
             className="absolute top-4 px-4 py-1.5 rounded-full text-xs font-bold"
             style={{
@@ -261,6 +279,53 @@ export default async function PortfolioItemPage({
             );
           })}
         </div>
+
+        {images && images.length > 1 && (
+          <div className="mb-10">
+            <h2
+              className={`font-bold mb-5 ${isAr ? "font-ar" : "font-en"}`}
+              style={{ fontSize: "17px", color: "var(--color-primary-text)" }}
+            >
+              {isAr ? "معرض الصور" : "Gallery"}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {images.map((src, i) => (
+                <div
+                  key={i}
+                  className="relative rounded-2xl overflow-hidden"
+                  style={{ aspectRatio: "16 / 9", background: "var(--color-card)" }}
+                >
+                  <Image
+                    src={src}
+                    alt={`${title} - ${i + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {driveUrl && (
+          <a
+            href={driveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-8 flex items-center justify-center gap-3 rounded-2xl border-2 p-5 transition-all hover:opacity-85"
+            style={{
+              borderColor: `color-mix(in srgb,${accentColor} 35%,transparent)`,
+              background: `color-mix(in srgb,${accentColor} 8%,var(--color-card))`,
+              color: accentColor,
+            }}
+          >
+            <ExternalLink size={20} />
+            <span className={`text-sm font-bold ${isAr ? "font-ar" : "font-en"}`}>
+              {isAr ? "شاهد المشروع على Google Drive" : "View Project on Google Drive"}
+            </span>
+          </a>
+        )}
 
         <div className={`flex flex-wrap gap-4 ${isAr ? "flex-row-reverse" : ""}`}>
           <Link

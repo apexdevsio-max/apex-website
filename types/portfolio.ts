@@ -6,5 +6,8 @@ export type PortfolioProject = {
   category?: string;
   tags?: string[];
   url?: string;
+  thumbnail?: string;
+  images?: string[];
+  driveUrl?: string;
   updatedAt?: Date;
 };

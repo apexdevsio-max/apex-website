@@ -25,6 +25,9 @@ export type PortfolioItem = {
   title: string;
   summary: string;
   description: string;
+  thumbnail?: string;
+  images?: string[];
+  driveUrl?: string;
   updatedAt?: Date;
 };
 
@@ -204,6 +207,9 @@ async function loadPortfolioItems(locale: Locale): Promise<PortfolioItem[]> {
         title: data.title as string,
         summary: data.summary as string,
         description: (data.description as string) ?? body,
+        thumbnail: data.thumbnail as string | undefined,
+        images: data.images as string[] | undefined,
+        driveUrl: data.driveUrl as string | undefined,
         updatedAt,
       } satisfies PortfolioItem;
     })
