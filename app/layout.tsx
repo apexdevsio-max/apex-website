@@ -25,16 +25,21 @@ export const metadata: Metadata = { metadataBase };
 `;
 
 const cssDeferScript = `
-  (function() {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-    for (var i = 0; i < links.length; i++) {
-      var m = links[i].media || 'all';
-      links[i].media = 'print';
-      links[i].onload = function() { this.media = m; };
-      if (links[i].addEventListener) {
-        links[i].addEventListener('load', function() { this.media = m; });
-      }
-    }
+  (function(){
+    var d=document;
+    var o=new MutationObserver(function(m){
+      m.forEach(function(mut){
+        mut.addedNodes.forEach(function(n){
+          if(n.tagName==="LINK"&&n.rel==="stylesheet"){
+            var m=n.media||"all";
+            n.media="print";
+            n.onload=function(){this.media=m};
+            if(n.addEventListener)n.addEventListener("load",function(){this.media=m});
+          }
+        });
+      });
+    });
+    if(d.head)o.observe(d.head,{childList:true});
   })();
 `;
 

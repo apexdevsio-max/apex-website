@@ -35,6 +35,7 @@ export function Footer({
                 alt="Apex"
                 width={120}
                 height={40}
+                quality={40}
                 className="h-10 w-auto"
               />
             </Link>

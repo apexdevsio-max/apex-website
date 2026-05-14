@@ -136,7 +136,7 @@ export function Header({ lang, dictionary }: Props) {
               width={110}
               height={36}
               priority
-              quality={65}
+              quality={40}
               style={{
                 filter: darkMode
                   ? "drop-shadow(0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent))"
@@ -200,7 +200,7 @@ export function Header({ lang, dictionary }: Props) {
 
           <Link
             href={switchedHref}
-            className="px-3 py-1.5 text-xs font-bold rounded-full border transition-all"
+            className="px-3 py-1.5 text-xs font-bold rounded-full border transition-all w-[60px] text-center"
             style={{
               color: "var(--color-lang-pill-text)",
               borderColor: "var(--color-lang-pill-border)",

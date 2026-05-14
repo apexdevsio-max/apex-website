@@ -626,8 +626,9 @@ export function HeroSection({
           alt=""
           fill
           priority
+          fetchPriority="high"
           sizes="(max-width: 768px) 220px, 360px"
-          quality={50}
+          quality={20}
           className="object-contain"
         />
       </div>
