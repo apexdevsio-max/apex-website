@@ -200,7 +200,7 @@ export function Header({ lang, dictionary }: Props) {
 
           <Link
             href={switchedHref}
-            className="px-3 py-1.5 text-xs font-bold rounded-full border transition-all w-[60px] text-center"
+            className="px-3 py-1.5 text-xs font-bold rounded-full border transition-all min-w-[65px] text-center"
             style={{
               color: "var(--color-lang-pill-text)",
               borderColor: "var(--color-lang-pill-border)",

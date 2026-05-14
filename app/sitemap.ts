@@ -7,11 +7,16 @@ import {
   getServices,
 } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
+import { siteUrl } from "@/lib/seo/metadata";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://apex-tech.sa";
+type StaticRoute = {
+  route: string;
+  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
+  priority: number;
+};
 
-const STATIC_ROUTES = [
-  { route: "", changeFrequency: "weekly", priority: 1 },
+const STATIC_ROUTES: StaticRoute[] = [
+  { route: "", changeFrequency: "weekly", priority: 1.0 },
   { route: "about", changeFrequency: "monthly", priority: 0.8 },
   { route: "services", changeFrequency: "monthly", priority: 0.8 },
   { route: "portfolio", changeFrequency: "monthly", priority: 0.8 },
@@ -20,56 +25,42 @@ const STATIC_ROUTES = [
   { route: "contact", changeFrequency: "monthly", priority: 0.7 },
   { route: "privacy", changeFrequency: "yearly", priority: 0.3 },
   { route: "terms", changeFrequency: "yearly", priority: 0.3 },
-] as const satisfies ReadonlyArray<{
-  route: string;
-  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
-  priority: number;
-}>;
+];
 
-function localizedPath(locale: Locale, route: string): string {
-  return route ? `/${locale}/${route}` : `/${locale}`;
-}
-
-function buildLanguages(pathByLocale: Record<Locale, string>) {
+function buildPathByLocale(route: string): Record<Locale, string> {
   return Object.fromEntries(
-    SUPPORTED_LOCALES.map((locale) => [locale, `${BASE_URL}${pathByLocale[locale]}`])
-  );
+    SUPPORTED_LOCALES.map((locale) => [
+      locale,
+      route ? `/${locale}/${route}` : `/${locale}`,
+    ])
+  ) as Record<Locale, string>;
 }
 
-function buildLocalizedEntry(options: {
-  pathByLocale: Record<Locale, string>;
-  currentLocale: Locale;
-  lastModified?: Date;
-  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
-  priority: number;
-}): MetadataRoute.Sitemap[number] {
+function buildLocalizedEntry(
+  pathByLocale: Record<Locale, string>,
+  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>,
+  priority: number,
+  lastModified?: Date
+): MetadataRoute.Sitemap[number] {
+  const languages = Object.fromEntries(
+    SUPPORTED_LOCALES.map((locale) => [locale, `${siteUrl}${pathByLocale[locale]}`])
+  ) as Record<Locale, string> & { "x-default"?: string };
+
   return {
-    url: `${BASE_URL}${options.pathByLocale[options.currentLocale]}`,
-    ...(options.lastModified ? { lastModified: options.lastModified } : {}),
-    changeFrequency: options.changeFrequency,
-    priority: options.priority,
+    url: `${siteUrl}${pathByLocale.en}`,
+    ...(lastModified ? { lastModified: lastModified.toISOString() } : {}),
+    changeFrequency,
+    priority,
     alternates: {
-      languages: buildLanguages(options.pathByLocale),
+      languages: {
+        ...languages,
+        "x-default": languages.en,
+      },
     },
   };
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.flatMap(
-    ({ route, changeFrequency, priority }) =>
-      SUPPORTED_LOCALES.map((locale) =>
-        buildLocalizedEntry({
-          currentLocale: locale,
-          pathByLocale: {
-            en: localizedPath("en", route),
-            ar: localizedPath("ar", route),
-          },
-          changeFrequency,
-          priority,
-        })
-      )
-  );
-
+async function loadDynamicEntries(): Promise<MetadataRoute.Sitemap> {
   const [servicesByLocale, postsByLocale, portfolioByLocale, coursesByLocale] =
     await Promise.all([
       Promise.all(
@@ -111,84 +102,89 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     coursesByLocale.map(({ locale, items }) => [locale, items] as const)
   );
 
-  const dynamicEntries: MetadataRoute.Sitemap = [];
+  const entries: MetadataRoute.Sitemap = [];
 
   for (const locale of SUPPORTED_LOCALES) {
     for (const service of serviceMap.get(locale) ?? []) {
-      dynamicEntries.push(
-        buildLocalizedEntry({
-          currentLocale: locale,
-          pathByLocale: {
+      entries.push(
+        buildLocalizedEntry(
+          {
             en: `/en/services/${service.slug}`,
             ar: `/ar/services/${service.slug}`,
           },
-          lastModified: service.updatedAt,
-          changeFrequency: "monthly",
-          priority: 0.7,
-        })
+          "monthly",
+          0.7,
+          service.updatedAt
+        )
       );
     }
 
     for (const post of postMap.get(locale) ?? []) {
-      dynamicEntries.push(
-        buildLocalizedEntry({
-          currentLocale: locale,
-          pathByLocale: {
+      entries.push(
+        buildLocalizedEntry(
+          {
             en: `/en/blog/${post.slug}`,
             ar: `/ar/blog/${post.slug}`,
           },
-          lastModified: post.updatedAt,
-          changeFrequency: "weekly",
-          priority: 0.7,
-        })
+          "weekly",
+          0.7,
+          post.updatedAt
+        )
       );
     }
 
     for (const item of portfolioMap.get(locale) ?? []) {
-      dynamicEntries.push(
-        buildLocalizedEntry({
-          currentLocale: locale,
-          pathByLocale: {
+      entries.push(
+        buildLocalizedEntry(
+          {
             en: `/en/portfolio/${item.slug}`,
             ar: `/ar/portfolio/${item.slug}`,
           },
-          lastModified: item.updatedAt,
-          changeFrequency: "monthly",
-          priority: 0.7,
-        })
+          "monthly",
+          0.7,
+          item.updatedAt
+        )
       );
     }
 
     for (const course of courseMap.get(locale) ?? []) {
-      dynamicEntries.push(
-        buildLocalizedEntry({
-          currentLocale: locale,
-          pathByLocale: {
+      entries.push(
+        buildLocalizedEntry(
+          {
             en: `/en/academy/${course.slug}`,
             ar: `/ar/academy/${course.slug}`,
           },
-          lastModified: course.updatedAt,
-          changeFrequency: "monthly",
-          priority: 0.7,
-        })
+          "monthly",
+          0.7,
+          course.updatedAt
+        )
       );
 
       for (const lesson of course.lessons) {
-        dynamicEntries.push(
-          buildLocalizedEntry({
-            currentLocale: locale,
-            pathByLocale: {
+        entries.push(
+          buildLocalizedEntry(
+            {
               en: `/en/academy/${course.slug}/${lesson.slug}`,
               ar: `/ar/academy/${course.slug}/${lesson.slug}`,
             },
-            lastModified: lesson.updatedAt,
-            changeFrequency: "monthly",
-            priority: 0.6,
-          })
+            "monthly",
+            0.6,
+            lesson.updatedAt
+          )
         );
       }
     }
   }
+
+  return entries;
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ route, changeFrequency, priority }) =>
+    buildLocalizedEntry(buildPathByLocale(route), changeFrequency, priority)
+  );
+
+  const dynamicEntries = await loadDynamicEntries();
 
   return [...staticEntries, ...dynamicEntries];
 }

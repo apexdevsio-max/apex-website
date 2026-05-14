@@ -4,6 +4,8 @@ import { useRtl } from "@/hooks/useRtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 
+const FOOTER_SERVICE_SLUGS = ["web-development", "mobile-apps", "ai-solutions"] as const;
+
 export function Footer({
   lang,
   dictionary,
@@ -12,7 +14,7 @@ export function Footer({
   dictionary: Dictionary;
 }) {
   const rtl = useRtl(lang);
-  const { footer } = dictionary;
+  const { footer, services } = dictionary;
   const isAr = lang === "ar";
 
   const year = new Date().getFullYear();
@@ -69,24 +71,19 @@ export function Footer({
 
           <div>
             <h4 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
-              Services
+              {services.title}
             </h4>
             <ul className="space-y-2">
-              <li>
-                <Link href={`/${lang}/services`} className="text-sm transition-colors hover:text-apex-primary block py-1">
-                  Web Development
-                </Link>
-              </li>
-              <li>
-                <Link href={`/${lang}/services`} className="text-sm transition-colors hover:text-apex-primary block py-1">
-                  Mobile Apps
-                </Link>
-              </li>
-              <li>
-                <Link href={`/${lang}/services`} className="text-sm transition-colors hover:text-apex-primary block py-1">
-                  AI Solutions
-                </Link>
-              </li>
+              {services.items.slice(0, 3).map((item, i) => (
+                <li key={item.title}>
+                  <Link
+                    href={`/${lang}/services/${FOOTER_SERVICE_SLUGS[i]}`}
+                    className="text-sm transition-colors hover:text-apex-primary block py-1"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -102,7 +99,7 @@ export function Footer({
               className="inline-flex items-center gap-2 text-sm font-bold transition-all px-4 py-2.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
             >
               Get Quote
-              <span className={`${rtl.arrowRotate || ''}`}>→</span>
+              <span className={`${rtl.arrowRotate}`}>→</span>
             </Link>
           </div>
         </div>

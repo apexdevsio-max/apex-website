@@ -8,15 +8,20 @@ import { useRtl } from "@/hooks/useRtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 
-function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
-  const sizeRef = useRef({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
+type ElementSize = { width: number; height: number; cssWidth: number; cssHeight: number };
+
+function useElementSize<T extends HTMLElement>(
+  ref: React.RefObject<T | null>,
+  onResize?: (size: ElementSize) => void
+) {
+  const sizeRef = useRef<ElementSize>({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const el = ref.current;
+    if (!el) return;
 
     const updateSize = () => {
-      const rect = canvas.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       sizeRef.current = {
         width: Math.floor(rect.width * dpr),
@@ -24,29 +29,28 @@ function useCanvasSize(canvasRef: React.RefObject<HTMLCanvasElement>) {
         cssWidth: rect.width,
         cssHeight: rect.height,
       };
-      canvas.width = sizeRef.current.width;
-      canvas.height = sizeRef.current.height;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      onResize?.(sizeRef.current);
     };
 
-    const resizeObserver = new ResizeObserver(updateSize);
-    resizeObserver.observe(canvas);
-
+    const ro = new ResizeObserver(updateSize);
+    ro.observe(el);
     updateSize();
 
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [canvasRef]);
+    return () => ro.disconnect();
+  }, [ref, onResize]);
 
   return { sizeRef };
 }
 
 function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
-  const { sizeRef } = useCanvasSize(
-    canvasRef as React.RefObject<HTMLCanvasElement>
-  );
+  const { sizeRef } = useElementSize(canvasRef, (size) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.width = size.width;
+    canvas.height = size.height;
+    canvas.style.width = `${size.cssWidth}px`;
+    canvas.style.height = `${size.cssHeight}px`;
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -155,7 +159,14 @@ function useWebGLChroma(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   onReady: () => void,
 ) {
-  const { sizeRef } = useCanvasSize(canvasRef as React.RefObject<HTMLCanvasElement>);
+  const { sizeRef } = useElementSize(canvasRef, (size) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.width = size.width;
+    canvas.height = size.height;
+    canvas.style.width = `${size.cssWidth}px`;
+    canvas.style.height = `${size.cssHeight}px`;
+  });
 
   useEffect(() => {
     const primaryVideo = primaryVideoRef.current;
@@ -541,6 +552,7 @@ function resizeCanvas() {
       md.removeEventListener("change", handleMediaChange);
       rm.removeEventListener("change", handleMediaChange);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef, onReady, primaryVideoRef, secondaryVideoRef]);
 }
 
@@ -646,7 +658,7 @@ export function HeroSection({
         muted
         playsInline
         preload="auto"
-        className="pointer-events-none absolute -left-2499.75 top-0 h-px w-px opacity-0"
+        className="pointer-events-none absolute top-0 h-px w-px opacity-0"
         aria-hidden="true"
       >
         <source src="/videos/robot_welcome.mp4" type="video/mp4" />
@@ -657,7 +669,7 @@ export function HeroSection({
         muted
         playsInline
         preload="auto"
-        className="pointer-events-none absolute -left-2499.75 top-0 h-px w-px opacity-0"
+        className="pointer-events-none absolute top-0 h-px w-px opacity-0"
         aria-hidden="true"
       >
         <source src="/videos/robot_welcome.mp4" type="video/mp4" />
