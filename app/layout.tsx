@@ -34,7 +34,7 @@ const themeScript = `
 `;
 
 const cssDeferScript = `
-(function(){var d=document;var o=new MutationObserver(function(m){m.forEach(function(mut){mut.addedNodes.forEach(function(n){if(n.tagName==="LINK"&&n.rel==="stylesheet"){var m=n.media||"all";n.media="print";n.onload=function(){this.media=m};if(n.addEventListener)n.addEventListener("load",function(){this.media=m})}})})});if(d.head)o.observe(d.head,{childList:true})})();
+(function(){var h=document.head;function d(l){var m=l.media||"all";l.media="print";l.onload=function(){this.media=m};l.addEventListener("load",function(){this.media=m})}var a=h.appendChild.bind(h);h.appendChild=function(n){if(n.tagName==="LINK"&&n.rel==="stylesheet")d(n);return a(n)};var i=h.insertBefore.bind(h);h.insertBefore=function(n,r){if(n.tagName==="LINK"&&n.rel==="stylesheet")d(n);return i(n,r)};var o=new MutationObserver(function(m){m.forEach(function(mut){mut.addedNodes.forEach(function(n){if(n.tagName==="LINK"&&n.rel==="stylesheet")d(n)})})});o.observe(h,{childList:true})})();
 `;
 
 export default async function RootLayout({
