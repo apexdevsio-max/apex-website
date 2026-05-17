@@ -72,6 +72,46 @@ const PROJECT_VISUALS: ProjectVisual[] = [
     thumbnail: "/images/portfolio/ai-design-brand.svg",
     driveUrl: "https://drive.google.com/drive/folders/1x",
   },
+  {
+    slug: "wifaq-qatar-ai",
+    category: "content",
+    emoji: "🤝",
+    gradient: "linear-gradient(135deg,#0a1628,#1a2a4a)",
+    accentColor: "#4DD0E1",
+    tags: ["AI Video", "Motion Graphics", "Humanitarian"],
+    thumbnail: "/images/portfolio/wifaq-qatar-ai-1.jpg",
+    driveUrl: "https://drive.google.com/drive/folders/1kTAL_eSGDdBfdBtwIF7Q3xQM6yxFNxi3-F",
+  },
+  {
+    slug: "fatiha-family-ai",
+    category: "content",
+    emoji: "📖",
+    gradient: "linear-gradient(135deg,#1a0f00,#3d2b1a)",
+    accentColor: "#FFB74D",
+    tags: ["AI Video", "Motion Graphics", "Educational", "Family"],
+    thumbnail: "/images/portfolio/fatiha-family-ai-1.jpg",
+    driveUrl: "https://drive.google.com/drive/folders/1GvP9I9mL6P3Ke90Rv2EHnnnNjvot3B1M",
+  },
+  {
+    slug: "arnoub-adventure-ai",
+    category: "content",
+    emoji: "🐰",
+    gradient: "linear-gradient(135deg,#1a0033,#3d1a5e)",
+    accentColor: "#CE93D8",
+    tags: ["2D Animation", "AI Video", "Children's Content", "Storytelling"],
+    thumbnail: "/images/portfolio/arnoub-adventure-ai-1.jpg",
+    driveUrl: "https://drive.google.com/drive/folders/1QPzncgp0YwVZAWpTASKXTWrV3Yf04pzw",
+  },
+  {
+    slug: "tajweed-kids-ai",
+    category: "content",
+    emoji: "📿",
+    gradient: "linear-gradient(135deg,#0a1f0a,#1a3d1a)",
+    accentColor: "#66BB6A",
+    tags: ["AI Video", "Educational", "Children's Content", "Motion Graphics"],
+    thumbnail: "/images/portfolio/tajweed-kids-ai-1.jpg",
+    driveUrl: "https://drive.google.com/file/d/1Dilf9f9a81YmbA91bPR_iVrULK7QOXk6/view?usp=sharing",
+  },
 ];
 
 const CATEGORY_LABELS = {
@@ -97,11 +137,9 @@ function normalizeCategory(category: string): "web" | "mobile" | "ecommerce" | "
   const normalized = category.toLowerCase();
 
   if (normalized.includes("commerce")) return "ecommerce";
-  if (normalized.includes("mobile") || normalized.includes("app") || normalized.includes("game")) {
-    return "mobile";
-  }
-  if (normalized.includes("content") || normalized.includes("creation")) return "content";
-  if (normalized.includes("ai")) return "ai";
+  if (/\b(mobile|app|apps|game|games)\b/.test(normalized)) return "mobile";
+  if (/\b(content|creation)\b/.test(normalized)) return "content";
+  if (/\b(ai)\b/.test(normalized)) return "ai";
   return "web";
 }
 
