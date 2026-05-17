@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -7,8 +7,39 @@ import { metadataBase, siteUrl } from "@/lib/seo/metadata";
 
 import "./globals.css";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#121212" },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase,
+  title: {
+    default: "APEX — Software Company | Apps, Web, and AI Solutions",
+    template: "%s — APEX",
+  },
+  description:
+    "APEX builds mobile apps, websites, AI solutions, and e-commerce platforms for teams that need thoughtful execution and measurable growth.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/images/Apex_logo.png",
+    shortcut: "/images/Apex_logo.png",
+    apple: "/images/Apex_logo.png",
+  },
   alternates: {
     languages: {
       en: `${siteUrl}/en`,

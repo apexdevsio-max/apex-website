@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import type { AcademyCourse } from "@/lib/content/content-loader";
-import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { MOCK_COURSES } from "@/lib/mock/academy-data";
 
@@ -148,7 +147,7 @@ function CourseCard({ course, lang }: { course: GridCourse; lang: Locale }) {
           {course.emoji}
         </span>
         <div
-          className="absolute top-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold"
+          className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
           style={{
             [isAr ? "left" : "right"]: "10px",
             background: `color-mix(in srgb,${levelColor} 18%,rgba(0,0,0,0.55))`,
@@ -229,14 +228,11 @@ function CourseCard({ course, lang }: { course: GridCourse; lang: Locale }) {
 
 export function AcademyGrid({
   lang,
-  dictionary: _dictionary,
   mdxCourses,
 }: {
   lang: Locale;
-  dictionary: Dictionary;
   mdxCourses: AcademyCourse[];
 }) {
-  void _dictionary;
   const isAr = lang === "ar";
   const cats = isAr ? CATS_AR : CATS_EN;
   const [activeFilter, setActiveFilter] = useState("all");
@@ -323,7 +319,7 @@ export function AcademyGrid({
               <button
                 key={cat.key}
                 onClick={() => setActiveFilter(cat.key)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
+                className={`px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
                 style={
                   activeFilter === cat.key
                     ? {
@@ -365,7 +361,7 @@ export function AcademyGrid({
 
         <Reveal delay={100}>
           <div
-            className="mt-16 rounded-3xl p-10 text-center border relative overflow-hidden"
+            className="mt-16 rounded-3xl p-6 md:p-10 text-center border relative overflow-hidden"
             style={{
               background: "color-mix(in srgb,var(--color-primary) 5%,var(--color-card))",
               borderColor: "color-mix(in srgb,var(--color-primary) 18%,transparent)",

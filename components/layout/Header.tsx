@@ -51,6 +51,18 @@ export function Header({ lang, dictionary }: Props) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open]);
+
   const isClient = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -212,7 +224,7 @@ export function Header({ lang, dictionary }: Props) {
           </Link>
 
           <button
-            className="md:hidden p-2 rounded-md transition-colors"
+            className="md:hidden p-3 rounded-md transition-colors"
             onClick={() => setOpen((value) => !value)}
             aria-label="Toggle menu"
             aria-expanded={open}
@@ -223,6 +235,15 @@ export function Header({ lang, dictionary }: Props) {
           </button>
         </div>
       </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ background: "rgba(0,0,0,0.25)" }}
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       {open && (
         <div

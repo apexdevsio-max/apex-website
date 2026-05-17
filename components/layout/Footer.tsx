@@ -92,11 +92,11 @@ export function Footer({
               {footer.quickContact}
             </h4>
             <div className="flex gap-4 mb-8">
-              No social links available
+              
             </div>
             <Link 
               href={`/${lang}/contact`}
-              className="inline-flex items-center gap-2 text-sm font-bold transition-all px-4 py-2.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
+              className="inline-flex items-center gap-2 text-sm font-bold transition-all px-4 py-3 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
             >
               Get Quote
               <span className={`${rtl.arrowRotate}`}>→</span>

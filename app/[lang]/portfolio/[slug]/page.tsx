@@ -121,11 +121,26 @@ export default async function PortfolioItemPage({
   const lines = description.split("\n").filter((line) => line.trim() !== "");
 
   return (
-    <main
+    <div
       className="min-h-screen pt-24 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: `${"https://apex-tech.sa"}/${lang}` },
+              { "@type": "ListItem", position: 2, name: isAr ? "أعمالنا" : "Portfolio", item: `${"https://apex-tech.sa"}/${lang}/portfolio` },
+              { "@type": "ListItem", position: 3, name: title },
+            ],
+          }),
+        }}
+      />
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-4xl mx-auto">
         <Link
@@ -360,6 +375,6 @@ export default async function PortfolioItemPage({
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

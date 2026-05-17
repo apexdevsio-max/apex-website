@@ -258,9 +258,7 @@ function useWebGLChroma(
       const shader = glCtx.createShader(type)!;
       glCtx.shaderSource(shader, src);
       glCtx.compileShader(shader);
-      if (!glCtx.getShaderParameter(shader, glCtx.COMPILE_STATUS)) {
-        console.error("Shader error:", glCtx.getShaderInfoLog(shader));
-      }
+      if (!glCtx.getShaderParameter(shader, glCtx.COMPILE_STATUS)) {}
       return shader;
     }
 
@@ -270,10 +268,7 @@ function useWebGLChroma(
         alpha: true,
       }) as WebGL2RenderingContext | null;
 
-      if (!gl) {
-        console.warn("WebGL2 not supported");
-        return false;
-      }
+      if (!gl) return false;
 
       const vs = compileShader(gl, gl.VERTEX_SHADER, VS);
       const fs = compileShader(gl, gl.FRAGMENT_SHADER, FS);
@@ -282,10 +277,7 @@ function useWebGLChroma(
       gl.attachShader(program, fs);
       gl.linkProgram(program);
 
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error("Program link error:", gl.getProgramInfoLog(program));
-        return false;
-      }
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
 
       gl.useProgram(program);
 
@@ -375,7 +367,7 @@ function resizeCanvas() {
         });
       } catch (error) {
         primingStandby = false;
-        console.warn("Standby video prime failed:", error);
+        void error;
       }
     }
 
@@ -412,7 +404,7 @@ function resizeCanvas() {
           await activeVideo.play();
           scheduleNextFrame();
         } catch (e) {
-          console.warn("Loop restart failed:", e);
+          void e;
         }
       }
     }
@@ -533,7 +525,7 @@ function resizeCanvas() {
         }
         renderFrame();
       } catch (error) {
-        console.warn("Video play failed:", error);
+        void error;
       }
     };
 
@@ -658,7 +650,7 @@ export function HeroSection({
         muted
         playsInline
         preload="auto"
-        className="pointer-events-none absolute top-0 h-px w-px opacity-0"
+        className="pointer-events-none absolute top-0 h-px w-px opacity-0 hidden md:block"
         aria-hidden="true"
       >
         <source src="/videos/robot_welcome.mp4" type="video/mp4" />
@@ -669,7 +661,7 @@ export function HeroSection({
         muted
         playsInline
         preload="auto"
-        className="pointer-events-none absolute top-0 h-px w-px opacity-0"
+        className="pointer-events-none absolute top-0 h-px w-px opacity-0 hidden md:block"
         aria-hidden="true"
       >
         <source src="/videos/robot_welcome.mp4" type="video/mp4" />
@@ -707,8 +699,8 @@ export function HeroSection({
       <div className="relative z-50 mx-auto w-full max-w-7xl px-6 pb-16 pt-24 md:px-10">
         <div
           dir={rtl.dirAttr}
-          className={rtl.textAlign}
-          style={{ maxWidth: "45%", marginRight: "auto" }}
+          className={`${rtl.textAlign} md:max-w-[45%]`}
+          style={{ marginRight: "auto" }}
         >
           <div
             className="apex-fade-up apex-delay-1 mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5"

@@ -291,7 +291,7 @@ function ProjectCard({
           {tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+               className="rounded-full px-2 py-0.5 text-xs font-semibold"
               style={{
                 background: "color-mix(in srgb,var(--color-primary) 10%,transparent)",
                 color: "var(--color-primary)",
@@ -449,7 +449,7 @@ export function PortfolioGrid({
               <button
                 key={category.key}
                 onClick={() => setActiveFilter(category.key)}
-                className={`rounded-full border px-5 py-2 text-sm font-bold transition-all duration-200 ${
+                className={`rounded-full border px-5 py-3 text-sm font-bold transition-all duration-200 ${
                   isAr ? "font-ar" : "font-en"
                 }`}
                 style={

@@ -13,18 +13,21 @@ type StaticRoute = {
   route: string;
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
   priority: number;
+  lastModified?: Date;
 };
 
+const LAST_UPDATED = new Date("2026-05-17");
+
 const STATIC_ROUTES: StaticRoute[] = [
-  { route: "", changeFrequency: "weekly", priority: 1.0 },
-  { route: "about", changeFrequency: "monthly", priority: 0.8 },
-  { route: "services", changeFrequency: "monthly", priority: 0.8 },
-  { route: "portfolio", changeFrequency: "monthly", priority: 0.8 },
-  { route: "blog", changeFrequency: "weekly", priority: 0.8 },
-  { route: "academy", changeFrequency: "monthly", priority: 0.8 },
-  { route: "contact", changeFrequency: "monthly", priority: 0.7 },
-  { route: "privacy", changeFrequency: "yearly", priority: 0.3 },
-  { route: "terms", changeFrequency: "yearly", priority: 0.3 },
+  { route: "", changeFrequency: "weekly", priority: 1.0, lastModified: LAST_UPDATED },
+  { route: "about", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
+  { route: "services", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
+  { route: "portfolio", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
+  { route: "blog", changeFrequency: "weekly", priority: 0.8, lastModified: LAST_UPDATED },
+  { route: "academy", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
+  { route: "contact", changeFrequency: "monthly", priority: 0.7, lastModified: LAST_UPDATED },
+  { route: "privacy", changeFrequency: "yearly", priority: 0.3, lastModified: LAST_UPDATED },
+  { route: "terms", changeFrequency: "yearly", priority: 0.3, lastModified: LAST_UPDATED },
 ];
 
 function buildPathByLocale(route: string): Record<Locale, string> {
@@ -180,8 +183,8 @@ async function loadDynamicEntries(): Promise<MetadataRoute.Sitemap> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ route, changeFrequency, priority }) =>
-    buildLocalizedEntry(buildPathByLocale(route), changeFrequency, priority)
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ route, changeFrequency, priority, lastModified }) =>
+    buildLocalizedEntry(buildPathByLocale(route), changeFrequency, priority, lastModified)
   );
 
   const dynamicEntries = await loadDynamicEntries();

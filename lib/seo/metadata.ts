@@ -74,7 +74,7 @@ export function buildBaseMetadata(lang: Locale): Metadata {
       type: "website",
       images: [
         {
-          url: "/images/Apex_logo.png",
+          url: `${siteUrl}/images/Apex_logo.png`,
           width: 1200,
           height: 630,
           alt: "APEX",
@@ -83,14 +83,16 @@ export function buildBaseMetadata(lang: Locale): Metadata {
     },
     twitter: {
       card: "summary_large_image",
-      images: ["/images/Apex_logo.png"],
+      site: "@apex_tech",
+      creator: "@apex_tech",
+      images: [`${siteUrl}/images/Apex_logo.png`],
     },
   };
 }
 
 export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
   const base = buildBaseMetadata(lang);
-  const image = input.image ?? "/images/Apex_logo.png";
+  const image = input.image ?? `${siteUrl}/images/Apex_logo.png`;
   const path = normalizePath(input.path);
   const url = `${siteUrl}${path}`;
 
@@ -157,15 +159,4 @@ export function buildPageMetadata(lang: Locale): Metadata {
   });
 }
 
-export const metadata: Metadata = {
-  title: "APEX",
-  description: "APEX Digital Studio",
-  metadataBase,
-  openGraph,
-  twitter: {
-    card: "summary_large_image",
-    title: "APEX",
-    description: "APEX Digital Studio",
-    images: ["/images/Apex_logo.png"],
-  },
-};
+

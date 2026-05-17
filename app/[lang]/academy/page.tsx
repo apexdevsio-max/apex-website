@@ -3,7 +3,6 @@
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
 
-import { getDictionary }      from "@/lib/i18n/i18n";
 import { getAcademyCourses }  from "@/lib/content/content-loader";
 import { isLocale }           from "@/lib/i18n/locale";
 import { AcademyGrid }        from "@/components/sections/AcademyGrid";
@@ -27,8 +26,7 @@ export default async function AcademyPage({ params }: Props) {
   if (!isLocale(langParam)) notFound();
 
   const lang       = langParam;
-  const dictionary = await getDictionary(lang);
   const mdxCourses = await getAcademyCourses(lang);
 
-  return <AcademyGrid lang={lang} dictionary={dictionary} mdxCourses={mdxCourses} />;
+  return <AcademyGrid lang={lang} mdxCourses={mdxCourses} />;
 }

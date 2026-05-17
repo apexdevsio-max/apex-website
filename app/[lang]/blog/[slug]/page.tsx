@@ -111,11 +111,26 @@ export default async function BlogPostPage({
   const siteUrl = "https://apex-tech.sa";
 
   return (
-    <main
+    <div
       className="min-h-screen pt-24 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: `${siteUrl}/${lang}` },
+              { "@type": "ListItem", position: 2, name: isAr ? "المدونة" : "Blog", item: `${siteUrl}/${lang}/blog` },
+              { "@type": "ListItem", position: 3, name: title },
+            ],
+          }),
+        }}
+      />
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -381,6 +396,6 @@ export default async function BlogPostPage({
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

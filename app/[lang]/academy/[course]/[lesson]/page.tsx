@@ -131,7 +131,7 @@ export default async function LessonPage({ params }: Props) {
   const contentLines = lessonContent.split("\n");
 
   return (
-    <main
+    <div
       className="min-h-screen pt-24 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
@@ -412,6 +412,6 @@ export default async function LessonPage({ params }: Props) {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

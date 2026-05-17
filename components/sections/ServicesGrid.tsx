@@ -340,7 +340,7 @@ export function ServicesGrid({
 
         <Reveal delay={80}>
           <div
-            className="mb-16 rounded-3xl border p-10"
+            className="mb-16 rounded-3xl border p-6 md:p-10"
             style={{
               background:
                 "color-mix(in srgb,var(--color-primary) 4%,var(--color-card))",

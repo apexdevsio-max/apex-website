@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import type { BlogPost } from "@/lib/content/content-loader";
-import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { MOCK_POSTS } from "@/lib/mock/blog-data";
 
@@ -244,7 +243,7 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
           {post.emoji}
         </span>
         <div
-          className="absolute top-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold"
+          className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
           style={{
             [isAr ? "left" : "right"]: "10px",
             background: `color-mix(in srgb,${post.accentColor} 20%,rgba(0,0,0,0.5))`,
@@ -292,14 +291,11 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
 
 export function BlogGrid({
   lang,
-  dictionary: _dictionary,
   mdxPosts,
 }: {
   lang: Locale;
-  dictionary: Dictionary;
   mdxPosts: BlogPost[];
 }) {
-  void _dictionary;
   const isAr = lang === "ar";
   const cats = isAr ? CATS_AR : CATS_EN;
   const [activeFilter, setActiveFilter] = useState("all");
@@ -423,7 +419,7 @@ export function BlogGrid({
 
         <Reveal delay={120}>
           <div
-            className="mt-20 rounded-3xl p-10 text-center border relative overflow-hidden"
+            className="mt-20 rounded-3xl p-6 md:p-10 text-center border relative overflow-hidden"
             style={{
               background: "color-mix(in srgb,var(--color-primary) 6%,var(--color-card))",
               borderColor: "color-mix(in srgb,var(--color-primary) 20%,transparent)",

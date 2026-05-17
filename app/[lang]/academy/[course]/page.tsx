@@ -113,7 +113,7 @@ export default async function CoursePage({ params }: Props) {
       }));
 
   return (
-    <main
+    <div
       className="min-h-screen pt-24 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
@@ -303,6 +303,6 @@ export default async function CoursePage({ params }: Props) {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

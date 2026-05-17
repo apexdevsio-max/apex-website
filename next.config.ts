@@ -6,11 +6,11 @@ const projectRoot = path.resolve(process.cwd());
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 86400,
     deviceSizes: [320, 640, 750, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
+    contentDispositionType: 'inline',
   },
   outputFileTracingRoot: projectRoot,
   experimental: {

@@ -3,6 +3,8 @@ export const navigationItems = [
   { key: "portfolio", path: "portfolio" },
   { key: "academy", path: "academy" },
   { key: "blog", path: "blog" },
+  { key: "about", path: "about" },
+  { key: "services", path: "services" },
 ] as const;
 
-export type NavigationKey = (typeof navigationItems)[number]["key"];
+

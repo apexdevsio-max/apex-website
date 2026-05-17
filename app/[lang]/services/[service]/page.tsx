@@ -95,7 +95,7 @@ export default async function ServiceDetailsPage({
   const result = mockContent?.result ?? "";
 
   return (
-    <main
+    <div
       className="min-h-screen pt-24 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
@@ -314,6 +314,6 @@ export default async function ServiceDetailsPage({
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
