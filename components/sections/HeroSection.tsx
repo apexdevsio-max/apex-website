@@ -154,8 +154,7 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
 }
 
 function useWebGLChroma(
-  primaryVideoRef: React.RefObject<HTMLVideoElement | null>,
-  secondaryVideoRef: React.RefObject<HTMLVideoElement | null>,
+  videoRef: React.RefObject<HTMLVideoElement | null>,
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   onReady: () => void,
 ) {
@@ -169,11 +168,11 @@ function useWebGLChroma(
   });
 
   useEffect(() => {
-    const primaryVideo = primaryVideoRef.current;
-    const secondaryVideo = secondaryVideoRef.current;
-    const canvas = canvasRef.current;
-    if (!primaryVideo || !secondaryVideo || !canvas) return;
-    const heroCanvas = canvas;
+    const video = videoRef.current;
+    const el = canvasRef.current;
+    if (!video || !el) return;
+    const heroCanvas: HTMLCanvasElement = el;
+    const heroVideo: HTMLVideoElement = video;
 
     const md = window.matchMedia("(min-width: 768px)");
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -181,20 +180,14 @@ function useWebGLChroma(
     let program: WebGLProgram | null = null;
     let texture: WebGLTexture | null = null;
     let rafId = 0;
-    let videoFrameId: number | null = null;
     let stopped = false;
     let initialized = false;
-    const loopTrimStart = 0.06;
-    const loopPrimeAt = 0.18;
-    const switchAt = 0.045;
     const cropY = 0.028;
     const cropX = 0.004;
-    let activeVideo = primaryVideo;
-    let standbyVideo = secondaryVideo;
-    let standbyPrimed = false;
-    let primingStandby = false;
-    let hasStarted = false;
+    const loopTrimStart = 0.06;
     let cropLocation: WebGLUniformLocation | null = null;
+    let positionBuffer: WebGLBuffer | null = null;
+    let positionLoc = 0;
 
     const VS = `#version 300 es
       in vec2 a_position;
@@ -258,7 +251,6 @@ function useWebGLChroma(
       const shader = glCtx.createShader(type)!;
       glCtx.shaderSource(shader, src);
       glCtx.compileShader(shader);
-      if (!glCtx.getShaderParameter(shader, glCtx.COMPILE_STATUS)) {}
       return shader;
     }
 
@@ -276,22 +268,13 @@ function useWebGLChroma(
       gl.attachShader(program, vs);
       gl.attachShader(program, fs);
       gl.linkProgram(program);
-
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
-
       gl.useProgram(program);
 
-      const buffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-      gl.bufferData(
-        gl.ARRAY_BUFFER,
-        new Float32Array([-1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, 1]),
-        gl.STATIC_DRAW,
-      );
-
-      const loc = gl.getAttribLocation(program, "a_position");
-      gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      positionBuffer = gl.createBuffer();
+      positionLoc = gl.getAttribLocation(program, "a_position");
+      gl.enableVertexAttribArray(positionLoc);
+      gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
 
       texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -308,142 +291,53 @@ function useWebGLChroma(
       return true;
     }
 
-function resizeCanvas() {
-      if (gl) {
-        const s = sizeRef.current;
-        gl.viewport(0, 0, s.width, s.height);
-      }
-    }
-
-    function applyCropUniform() {
-      if (!gl || !cropLocation) return;
-      gl.uniform4f(cropLocation, cropX, cropY, cropX, cropY);
-    }
-
-    function seekVideo(video: HTMLVideoElement, time: number) {
-      return new Promise<void>((resolve) => {
-        if (Math.abs(video.currentTime - time) < 0.001) {
-          resolve();
-          return;
-        }
-
-        const complete = () => resolve();
-        video.addEventListener("seeked", complete, { once: true });
-        video.currentTime = time;
-      });
-    }
-
-    function resetVideo(video: HTMLVideoElement) {
-      video.pause();
-      primingStandby = false;
-      standbyPrimed = false;
-      video.currentTime = loopTrimStart;
-    }
-
-    // ─── FIX: انتظر canplay بدلاً من التحقق الفوري من readyState ───
-    async function primeStandbyVideo() {
-      if (primingStandby || standbyPrimed || stopped) return;
-      primingStandby = true;
-
-      try {
-        standbyVideo.pause();
-        await seekVideo(standbyVideo, loopTrimStart);
-        await standbyVideo.play();
-
-        await new Promise<void>((resolve) => {
-          if (standbyVideo.readyState >= 3) {
-            standbyPrimed = true;
-            resolve();
-            return;
-          }
-          standbyVideo.addEventListener(
-            "canplay",
-            () => {
-              standbyPrimed = true;
-              resolve();
-            },
-            { once: true },
-          );
-        });
-      } catch (error) {
-        primingStandby = false;
-        void error;
-      }
-    }
-
-    function swapVideos() {
-      const previousActive = activeVideo;
-      activeVideo = standbyVideo;
-      standbyVideo = previousActive;
-
-      // انقل الـ ended listener للفيديو الجديد النشط
-      standbyVideo.removeEventListener("ended", handleVideoEnded);
-      activeVideo.addEventListener("ended", handleVideoEnded);
-
-      standbyPrimed = false;
-      primingStandby = false;
-      standbyVideo.pause();
-      standbyVideo.currentTime = loopTrimStart;
-
-      // ─── FIX: تأكد من استمرار الـ render loop بعد الـ swap ───
-      if (!stopped) {
-        scheduleNextFrame();
-      }
-    }
-
-    // ─── FIX: fallback مضمون عند انتهاء الفيديو ───
-    async function handleVideoEnded() {
-      if (stopped) return;
-
-      if (standbyPrimed && standbyVideo.readyState >= 2) {
-        swapVideos();
+    function updateQuad(cssW: number, cssH: number, vw: number, vh: number) {
+      if (!gl || !positionBuffer) return;
+      const vAspect = vw / vh;
+      const cAspect = cssW / cssH;
+      let l = -1, r = 1, b = -1, t = 1;
+      if (vAspect > cAspect) {
+        const scale = cAspect / vAspect;
+        l = -scale;
+        r = scale;
       } else {
-        // الـ standby لم يكن جاهزاً — أعد تشغيل نفس الفيديو كـ fallback
-        try {
-          await seekVideo(activeVideo, loopTrimStart);
-          await activeVideo.play();
-          scheduleNextFrame();
-        } catch (e) {
-          void e;
-        }
+        const scale = vAspect / cAspect;
+        b = -scale;
+        t = scale;
       }
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([l, b, r, b, l, t, r, b, r, t, l, t]),
+        gl.DYNAMIC_DRAW,
+      );
+      gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
     }
 
     function renderFrame() {
       if (stopped || !gl || !program || !texture) return;
 
-      if (activeVideo.readyState < 2 || activeVideo.videoWidth === 0) {
-        scheduleNextFrame();
+      if (heroVideo.readyState < 2 || heroVideo.videoWidth === 0 || heroVideo.seeking) {
+        rafId = requestAnimationFrame(renderFrame);
         return;
       }
 
-      const remaining =
-        activeVideo.duration > 0
-          ? activeVideo.duration - activeVideo.currentTime
-          : Infinity;
-
-      if (remaining <= loopPrimeAt) {
-        void primeStandbyVideo();
+      if (heroVideo.duration > 0 && heroVideo.currentTime >= heroVideo.duration - 0.08) {
+        heroVideo.currentTime = loopTrimStart;
       }
 
-      if (
-        standbyPrimed &&
-        standbyVideo.readyState >= 2 &&
-        standbyVideo.currentTime >= loopTrimStart + switchAt
-      ) {
-        swapVideos();
-        // swapVideos يستدعي scheduleNextFrame داخله — لا نكمل هنا
-        return;
+      const s = sizeRef.current;
+      if (s.cssWidth > 0 && s.cssHeight > 0) {
+        updateQuad(s.cssWidth, s.cssHeight, heroVideo.videoWidth, heroVideo.videoHeight);
       }
-
-    resizeCanvas();
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    applyCropUniform();
+      gl.viewport(0, 0, s.width, s.height);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      if (cropLocation) gl.uniform4f(cropLocation, cropX, cropY, cropX, cropY);
 
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, activeVideo);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, heroVideo);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
       if (!initialized) {
@@ -451,101 +345,34 @@ function resizeCanvas() {
         onReady();
       }
 
-      scheduleNextFrame();
-    }
-
-    function scheduleNextFrame() {
-      if (stopped) return;
-
-      const videoWithFrameCallback = activeVideo as HTMLVideoElement & {
-        requestVideoFrameCallback?: (callback: () => void) => number;
-        cancelVideoFrameCallback?: (handle: number) => void;
-      };
-
-      if (typeof videoWithFrameCallback.requestVideoFrameCallback === "function") {
-        videoFrameId = videoWithFrameCallback.requestVideoFrameCallback(() => {
-          videoFrameId = null;
-          renderFrame();
-        });
-        return;
-      }
-
       rafId = requestAnimationFrame(renderFrame);
     }
 
-    const stop = () => {
-      stopped = true;
-      cancelAnimationFrame(rafId);
-
-      const videoWithFrameCallback = activeVideo as HTMLVideoElement & {
-        cancelVideoFrameCallback?: (handle: number) => void;
-      };
-      if (
-        videoFrameId !== null &&
-        typeof videoWithFrameCallback.cancelVideoFrameCallback === "function"
-      ) {
-        videoWithFrameCallback.cancelVideoFrameCallback(videoFrameId);
-        videoFrameId = null;
-      }
-
-      // ─── FIX: أزل الـ listeners عند الإيقاف ───
-      primaryVideo.removeEventListener("ended", handleVideoEnded);
-      secondaryVideo.removeEventListener("ended", handleVideoEnded);
-
-      primaryVideo.pause();
-      secondaryVideo.pause();
-    };
-
     const start = async () => {
-    if (!md.matches || rm.matches) {
-      stop();
-      return;
-    }
-
-    stopped = false;
-    if (!gl && !initGL()) return;
-    await seekVideo(primaryVideo, loopTrimStart);
-    await seekVideo(secondaryVideo, loopTrimStart);
-    activeVideo = primaryVideo;
-    standbyVideo = secondaryVideo;
-    standbyPrimed = false;
-    primingStandby = false;
-
-      // ─── FIX: سجّل الـ ended listener على الفيديو النشط ───
-      primaryVideo.removeEventListener("ended", handleVideoEnded);
-      secondaryVideo.removeEventListener("ended", handleVideoEnded);
-      activeVideo.addEventListener("ended", handleVideoEnded);
-
+      if (!md.matches || rm.matches) return;
+      stopped = false;
+      if (!gl && !initGL()) return;
       try {
-        if (!hasStarted) {
-          await activeVideo.play();
-          hasStarted = true;
-        } else if (activeVideo.paused) {
-          await activeVideo.play();
-        }
+        heroVideo.currentTime = loopTrimStart;
+        await heroVideo.play();
         renderFrame();
-      } catch (error) {
-        void error;
-      }
+      } catch { /* ignore */ }
     };
 
-    const handleMediaChange = () => {
-      void start();
-    };
-
+    const handleMediaChange = () => { void start(); };
     md.addEventListener("change", handleMediaChange);
     rm.addEventListener("change", handleMediaChange);
     void start();
 
     return () => {
-      stop();
-      resetVideo(primaryVideo);
-      resetVideo(secondaryVideo);
+      stopped = true;
+      cancelAnimationFrame(rafId);
+      heroVideo.pause();
       md.removeEventListener("change", handleMediaChange);
       rm.removeEventListener("change", handleMediaChange);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasRef, onReady, primaryVideoRef, secondaryVideoRef]);
+  }, [canvasRef, onReady, videoRef]);
 }
 
 export function HeroSection({
@@ -559,14 +386,13 @@ export function HeroSection({
   const { heroSection } = dictionary;
   const scrollLabel = lang === "ar" ? "مرر" : "SCROLL";
 
-  const sourceVideoRef = useRef<HTMLVideoElement>(null);
-  const standbyVideoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const chromaCanvasRef = useRef<HTMLCanvasElement>(null);
   const particlesCanvasRef = useRef<HTMLCanvasElement>(null);
   const [chromaReady, setChromaReady] = useState(false);
 
   useParticles(particlesCanvasRef);
-  useWebGLChroma(sourceVideoRef, standbyVideoRef, chromaCanvasRef, () => setChromaReady(true));
+  useWebGLChroma(videoRef, chromaCanvasRef, () => setChromaReady(true));
 
   return (
     <section
@@ -645,19 +471,7 @@ export function HeroSection({
       />
 
       <video
-        ref={sourceVideoRef}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        className="pointer-events-none absolute top-0 h-px w-px opacity-0 hidden md:block"
-        aria-hidden="true"
-      >
-        <source src="/videos/robot_welcome.mp4" type="video/mp4" />
-      </video>
-
-      <video
-        ref={standbyVideoRef}
+        ref={videoRef}
         muted
         playsInline
         preload="auto"
@@ -687,10 +501,12 @@ export function HeroSection({
         aria-hidden="true"
       >
         <Image
-          src="/images/robot_mascot.webp"
+          src="/images/robot_mascot.avif"
           alt=""
           fill
-          quality={60}
+          priority
+          fetchPriority="high"
+          quality={80}
           sizes="(max-width: 768px) 55vw, 25vw"
           className="object-contain object-bottom"
         />

@@ -303,23 +303,34 @@ export default async function PortfolioItemPage({
             >
               {isAr ? "معرض الصور" : "Gallery"}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {images.map((src, i) => (
-                <div
-                  key={i}
-                  className="relative rounded-2xl overflow-hidden"
-                  style={{ aspectRatio: "16 / 9", background: "var(--color-card)" }}
-                >
-                  <Image
-                    src={src}
-                    alt={`${title} - ${i + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            {images.length === 6 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+                {images.map((src, i) => (
+                  <div key={i} className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl" style={{ aspectRatio: "590 / 1280", background: "var(--color-card)" }}>
+                    <Image src={src} alt={`${title} - ${i + 1}`} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover transition-all duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {images.map((src, i) => (
+                  <div
+                    key={i}
+                    className="relative rounded-2xl overflow-hidden"
+                    style={{ aspectRatio: "16 / 9", background: "var(--color-card)" }}
+                  >
+                    <Image
+                      src={src}
+                      alt={`${title} - ${i + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

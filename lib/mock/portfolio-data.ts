@@ -104,6 +104,25 @@ export const MOCK_PORTFOLIO: Record<string, MockPortfolioItem> = {
         "• AI-powered content production for Wifaq Qatar Foundation with a modern visual style reflecting its humanitarian mission and role in supporting families.\n\n• Informational videos designed using AI techniques to present the foundation's services in an impactful and clear way.\n\n• Creative content combining visual storytelling with corporate identity to highlight Wifaq Foundation's efforts in family awareness and support.\n\n• Modern AI-driven visual materials that help convey the foundation's message in a professional and engaging style.\n\n• Innovative explanatory videos focused on community values and the humanitarian role of Wifaq Qatar Foundation in supporting families.",
     },
   },
+  "tafawwoq-educational-app": {
+    emoji: "⭐",
+    gradient: "linear-gradient(135deg,#0a1628,#1a2a4a)",
+    accentColor: "#4FC3F7",
+    tags: ["Flutter", "Clean Architecture", "BLoC", "Educational", "Cross-Platform"],
+    category: "App",
+    ar: {
+      title: "تفوقي — تطبيق تعليمي للمراهقين",
+      summary: "تطبيق تعليمي متكامل للمراهقين مبني باستخدام Flutter وClean Architecture.",
+      description:
+        "• تطوير تطبيق 'تفوقي' التعليمي للمراهقين باستخدام Flutter وClean Architecture لتقديم تجربة تعليمية حديثة ومتكاملة باللغة العربية.\n\n• تطبيق تعليمي متكامل يوفّر دروس فيديو، اختبارات تفاعلية، ونظام اشتراكات مع دعم كامل للغة العربية وواجهة RTL.\n\n• بناء منصة تعليمية تعتمد على Flutter وBLoC مع تكامل API آمن، تخزين محلي، وتجربة استخدام محسّنة للوضعين الفاتح والداكن.\n\n• تطوير نظام اختبارات ذكي يتضمن مؤقت زمني، تصحيحًا آليًا، تقييمًا للأداء، وإمكانية مراجعة الأسئلة المحفوظة لاحقًا.\n\n• تحسين البنية البرمجية للتطبيق عبر إعادة هيكلة التبعيات، إصلاح عشرات المشكلات التقنية، وتحسين الأداء وتجربة المستخدم بشكل شامل.",
+    },
+    en: {
+      title: "Tafawwoq — Educational App for Teenagers",
+      summary: "A comprehensive educational application for teenagers built with Flutter and Clean Architecture.",
+      description:
+        "• Developing the 'Tafawwoq' educational app for teenagers using Flutter and Clean Architecture to deliver a modern, integrated learning experience in Arabic.\n\n• A fully integrated educational app providing video lessons, interactive quizzes, and subscription management with full Arabic language and RTL interface support.\n\n• Building an educational platform powered by Flutter and BLoC with secure API integration, local storage, and an optimized user experience for both light and dark modes.\n\n• Developing a smart quiz system featuring a timer, auto-grading, performance evaluation, and the ability to review saved questions later.\n\n• Improving the app's code architecture through dependency restructuring, fixing dozens of technical issues, and enhancing overall performance and user experience.",
+    },
+  },
   "ai-design-brand": {
     emoji: "🎨",
     gradient: "linear-gradient(135deg,#0d0d1a,#1a0533)",

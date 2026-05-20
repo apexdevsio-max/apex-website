@@ -112,6 +112,15 @@ const PROJECT_VISUALS: ProjectVisual[] = [
     thumbnail: "/images/portfolio/tajweed-kids-ai-1.jpg",
     driveUrl: "https://drive.google.com/file/d/1Dilf9f9a81YmbA91bPR_iVrULK7QOXk6/view?usp=sharing",
   },
+  {
+    slug: "tafawwoq-educational-app",
+    category: "mobile",
+    emoji: "⭐",
+    gradient: "linear-gradient(135deg,#0a1628,#1a2a4a)",
+    accentColor: "#4FC3F7",
+    tags: ["Flutter", "Clean Architecture", "BLoC", "Educational", "Cross-Platform"],
+    thumbnail: "/images/portfolio/tafawwoq-educational-app-1.jpg",
+  },
 ];
 
 const CATEGORY_LABELS = {
@@ -372,8 +381,8 @@ export function PortfolioGrid({
 
   const projects = useMemo(() => {
     if (mdxItems.length > 0) {
-      return mdxItems.map((item, index) => {
-        const visual = PROJECT_VISUALS[index % PROJECT_VISUALS.length];
+      return mdxItems.map((item) => {
+        const visual = PROJECT_VISUALS.find((v) => v.slug === item.slug) ?? PROJECT_VISUALS[Math.abs(item.slug.split("").reduce((a, c) => a + c.charCodeAt(0), 0)) % PROJECT_VISUALS.length];
         const category = normalizeCategory(item.slug + " " + item.title + " " + item.description);
 
         return {

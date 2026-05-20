@@ -20,8 +20,6 @@ const LAST_UPDATED = new Date("2026-05-17");
 
 const STATIC_ROUTES: StaticRoute[] = [
   { route: "", changeFrequency: "weekly", priority: 1.0, lastModified: LAST_UPDATED },
-  { route: "about", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
-  { route: "services", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
   { route: "portfolio", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
   { route: "blog", changeFrequency: "weekly", priority: 0.8, lastModified: LAST_UPDATED },
   { route: "academy", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
