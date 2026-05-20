@@ -392,7 +392,7 @@ export function PortfolioGrid({
           gradient: visual.gradient,
           accentColor: visual.accentColor,
           tags: visual.tags,
-          thumbnail: (item.images?.[0]) ?? item.thumbnail ?? visual.thumbnail,
+          thumbnail: item.thumbnail ?? (item.images?.[0]) ?? visual.thumbnail,
           driveUrl: item.driveUrl ?? visual.driveUrl,
           title: item.title,
           summary: item.summary,
