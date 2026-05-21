@@ -38,18 +38,18 @@ export function Footer({
                 width={120}
                 height={40}
                 quality={40}
-                className="h-10 w-auto"
+                sizes="120px"
               />
             </Link>
-            <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.8 }}>
+            <p className={`text-sm ${rtl.fontClass} leading-relaxed`} style={{ opacity: 0.8 }}>
               {footer.description}
             </p>
           </div>
 
           <div>
-            <h4 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
+            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
               {footer.quickLinks}
-            </h4>
+            </h3>
             <ul className="space-y-2">
               {(Object.entries(dictionary.navigation || {}) as [string, string][])
                 .filter(([key]) => key !== "letsTalk")
@@ -70,9 +70,9 @@ export function Footer({
           </div>
 
           <div>
-            <h4 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
+            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
               {services.title}
-            </h4>
+            </h3>
             <ul className="space-y-2">
               {services.items.slice(0, 3).map((item, i) => (
                 <li key={item.title}>
@@ -88,9 +88,9 @@ export function Footer({
           </div>
 
           <div className={`${rtl.flexRev}`}>
-            <h4 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
+            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
               {footer.quickContact}
-            </h4>
+            </h3>
             <div className="flex gap-4 mb-8">
               
             </div>

@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    inlineCss: true,
   },
   async headers() {
     return [

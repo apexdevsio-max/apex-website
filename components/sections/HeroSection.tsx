@@ -464,7 +464,7 @@ export function HeroSection({
         }}
       />
 
-<div
+      <div
         className="absolute z-20 pointer-events-none"
         style={{
           top: "10%",
@@ -479,9 +479,8 @@ export function HeroSection({
         <Image
           src="/images/Apex_logo.png"
           alt=""
-          fill
-          priority
-          fetchPriority="high"
+          width={360}
+          height={140}
           sizes="(max-width: 768px) 220px, 360px"
           className="object-contain"
         />
@@ -498,7 +497,7 @@ export function HeroSection({
         ref={videoRef}
         muted
         playsInline
-        preload="auto"
+        preload="none"
         className="pointer-events-none absolute top-0 h-px w-px opacity-0 hidden md:block"
         aria-hidden="true"
       >
@@ -524,17 +523,17 @@ export function HeroSection({
         className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden"
         aria-hidden="true"
       >
-        <Image
-          src="/images/robot_mascot.avif"
-          alt=""
-          width={373}
-          height={373}
-          priority
-          fetchPriority="high"
-          quality={80}
-          sizes="(max-width: 768px) 55vw, 25vw"
-          className="w-full h-auto object-contain object-bottom"
-        />
+          <Image
+            src="/images/robot_mascot.avif"
+            alt=""
+            width={373}
+            height={373}
+            priority
+            fetchPriority="high"
+            quality={60}
+            sizes="(max-width: 768px) 55vw, 25vw"
+            className="object-contain object-bottom"
+          />
       </div>
 
       <div className="relative z-50 mx-auto w-full max-w-7xl px-6 pb-16 pt-24 md:px-10">
