@@ -1,70 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 
-import { getAcademyCourseBySlug, getAcademyCourses } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
-import { MOCK_COURSES } from "@/lib/mock/academy-data";
-import { buildPageMeta } from "@/lib/seo/metadata";
+import {
+  getAcademyCourseBySlug,
+} from "@/lib/content/content-loader";
+import { isLocale } from "@/lib/i18n/locale";
+import {
+  MOCK_COURSES,
+} from "@/lib/mock/academy-data";
+import { LEVEL_COLORS } from "@/lib/constants";
 
 type Props = { params: Promise<{ lang: string; course: string }> };
 
-export async function generateStaticParams() {
-  const seen = new Set<string>();
-  const params: { lang: string; course: string }[] = [];
-
-  for (const lang of SUPPORTED_LOCALES) {
-    const mdxCourses = await getAcademyCourses(lang);
-
-    for (const course of mdxCourses) {
-      const key = `${lang}:${course.slug}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        params.push({ lang, course: course.slug });
-      }
-    }
-
-    for (const course of MOCK_COURSES) {
-      const key = `${lang}:${course.slug}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        params.push({ lang, course: course.slug });
-      }
-    }
-  }
-
-  return params;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang, course } = await params;
-  const locale = isLocale(lang) ? lang : "ar";
-  let mdx = null;
-  try {
-    mdx = await getAcademyCourseBySlug(locale, course);
-  } catch {
-    mdx = null;
-  }
-
-  return buildPageMeta(locale, {
-    title: `${mdx?.title ?? (locale === "ar" ? "تفاصيل الدورة" : "Course Details")} - APEX`,
-    description:
-      mdx?.summary ??
-      (locale === "ar"
-        ? "تفاصيل دورة تقنية من أكاديمية APEX."
-        : "Technical course details from APEX Academy."),
-    path: `/${lang}/academy/${course}`,
-  });
-}
-
-const LEVEL_COLORS: Record<string, string> = {
-  beginner: "#22c55e",
-  intermediate: "#FFBF00",
-  advanced: "#ef4444",
-};
-
 const hoverStyles = `
-  .apex-back:hover { color: var(--color-primary) !important; }
   .apex-lesson-card { transition: all 0.2s ease; }
   .apex-lesson-card:hover {
     border-color: var(--color-primary) !important;
@@ -72,8 +20,6 @@ const hoverStyles = `
     background: color-mix(in srgb,var(--color-primary) 5%,var(--color-card)) !important;
   }
   [dir="rtl"] .apex-lesson-card:hover { transform: translateX(-4px); }
-  .apex-btn-primary:hover { opacity: 0.92; transform: translateY(-2px); }
-  .apex-btn-outline:hover { background: color-mix(in srgb,var(--color-primary) 10%,transparent); }
 `;
 
 export default async function CoursePage({ params }: Props) {

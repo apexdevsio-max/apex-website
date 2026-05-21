@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
 
+import { Reveal } from "@/components/ui/Reveal";
 import type { PortfolioItem } from "@/lib/content/content-loader";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
@@ -150,42 +151,6 @@ function normalizeCategory(category: string): "web" | "mobile" | "ecommerce" | "
   if (/\b(content|creation)\b/.test(normalized)) return "content";
   if (/\b(ai)\b/.test(normalized)) return "ai";
   return "web";
-}
-
-function Reveal({
-  children,
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-}) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.08 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(22px)",
-        transition: `opacity 0.6s ${delay}ms ease, transform 0.6s ${delay}ms ease`,
-      }}
-    >
-      {children}
-    </div>
-  );
 }
 
 function ProjectCard({
@@ -426,7 +391,6 @@ export function PortfolioGrid({
     <main
       className="min-h-screen px-6 pb-24 pt-28"
       style={{ background: "var(--color-background)" }}
-      dir={isAr ? "rtl" : "ltr"}
     >
       <div className="mx-auto max-w-6xl">
         <Reveal>

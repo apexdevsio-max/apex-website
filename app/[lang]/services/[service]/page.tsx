@@ -56,12 +56,7 @@ export async function generateMetadata({
   });
 }
 
-const hoverStyles = `
-  .apex-back:hover { color: var(--color-primary) !important; }
-  .apex-feature { transition: border-color 0.2s ease, background 0.2s ease; }
-  .apex-cta-btn:hover { opacity: 0.92; transform: translateY(-2px); }
-  .apex-btn-outline:hover { background: color-mix(in srgb,var(--color-primary) 10%,transparent); }
-`;
+
 
 export default async function ServiceDetailsPage({
   params,
@@ -100,7 +95,6 @@ export default async function ServiceDetailsPage({
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
-      <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-4xl mx-auto">
         <Link
           href={`/${lang}/services`}

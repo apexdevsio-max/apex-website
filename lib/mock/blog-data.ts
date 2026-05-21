@@ -1,7 +1,7 @@
 export type MockPost = {
   emoji: string;
   accentColor: string;
-  category: string;
+  categories: string[];
   readTime: number;
   ar: { title: string; excerpt: string; date: string; content: string };
   en: { title: string; excerpt: string; date: string; content: string };
@@ -11,7 +11,7 @@ export const MOCK_POSTS: Record<string, MockPost> = {
   "nextjs-vs-remix-2025": {
     emoji: "\u26a1",
     accentColor: "#00BCD4",
-    category: "comparisons",
+    categories: ["comparisons"],
     readTime: 8,
     ar: {
       title: "Next.js مقابل Remix في 2025 — أيهما تختار؟",
@@ -81,7 +81,7 @@ For most projects in 2025, Next.js remains the safest and most widely supported 
   "react-native-expo-guide": {
     emoji: "\ud83d\udcf1",
     accentColor: "#FFBF00",
-    category: "mobile",
+    categories: ["mobile"],
     readTime: 12,
     ar: {
       title: "دليل React Native + Expo الشامل للمبتدئين",
@@ -153,7 +153,7 @@ If you're a web developer looking to enter mobile, React Native + Expo is one of
   "ai-tools-developers-2025": {
     emoji: "\ud83e\udd16",
     accentColor: "#4DD0E1",
-    category: "selected",
+    categories: ["selected"],
     readTime: 6,
     ar: {
       title: "أفضل أدوات الذكاء الاصطناعي للمطورين في 2025",
@@ -215,7 +215,7 @@ A developer who masters these tools can work far more efficiently than one who i
   "flutter": {
     emoji: "\ud83d\udc99",
     accentColor: "#54C5F8",
-    category: "lang-framework",
+    categories: ["lang-framework", "comparisons"],
     readTime: 15,
     ar: {
       title: "ما هو Flutter؟ دليل شامل لتطوير التطبيقات متعددة المنصات",
@@ -227,6 +227,24 @@ A developer who masters these tools can work far more efficiently than one who i
       title: "What is Flutter? A Complete Guide to Cross-Platform App Development",
       excerpt: "A comprehensive guide to Flutter — Google's UI framework for building Android, iOS, web, and desktop apps from a single codebase.",
       date: "May 12, 2026",
+      content: "",
+    },
+  },
+  "react-native": {
+    emoji: "\u2699\ufe0f",
+    accentColor: "#61DAFB",
+    categories: ["lang-framework", "comparisons"],
+    readTime: 10,
+    ar: {
+      title: "React Native: دليل شامل لتطوير تطبيقات Android وiOS",
+      excerpt: "شرح شامل لـ React Native، طريقة عمله، مميزاته وعيوبه، وأشهر التطبيقات المبنية به.",
+      date: "20 مايو 2026",
+      content: "",
+    },
+    en: {
+      title: "React Native: Complete Guide to Building Android and iOS Apps",
+      excerpt: "A complete guide to React Native including how it works, advantages, limitations, and real-world applications.",
+      date: "May 20, 2026",
       content: "",
     },
   },
@@ -246,7 +264,7 @@ export const CATEGORY_LABELS: Record<string, { ar: string; en: string }> = {
 export const FALLBACK_POST = (slug: string, lang: string) => ({
   emoji: "\ud83d\udcdd",
   accentColor: "#00BCD4",
-  category: lang === "ar" ? "مقالات" : "Articles",
+  categories: [lang === "ar" ? "مقالات" : "Articles"],
   readTime: 5,
   title: lang === "ar" ? "مقال APEX" : "APEX Article",
   excerpt: lang === "ar" ? "مقال تقني من فريق APEX." : "A technical article from the APEX team.",

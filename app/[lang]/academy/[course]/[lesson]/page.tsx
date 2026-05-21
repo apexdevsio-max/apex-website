@@ -8,12 +8,13 @@ import {
   getAcademyLessonBySlugs,
 } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
-import { MOCK_COURSES } from "@/lib/mock/academy-data";
 import { buildPageMeta } from "@/lib/seo/metadata";
+import {
+  MOCK_COURSES,
+} from "@/lib/mock/academy-data";
+import { LEVEL_COLORS } from "@/lib/constants";
 
-type Props = {
-  params: Promise<{ lang: string; course: string; lesson: string }>;
-};
+type Props = { params: Promise<{ lang: string; course: string; lesson: string }> };
 
 export async function generateStaticParams() {
   const seen = new Set<string>();
@@ -68,21 +69,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-const LEVEL_COLORS: Record<string, string> = {
-  beginner: "#22c55e",
-  intermediate: "#FFBF00",
-  advanced: "#ef4444",
-};
-
 const hoverStyles = `
-  .apex-back:hover { color: var(--color-primary) !important; }
   .apex-nav-lesson { transition: all 0.2s ease; }
   .apex-nav-lesson:hover {
     border-color: var(--color-primary) !important;
     background: color-mix(in srgb,var(--color-primary) 5%,var(--color-card)) !important;
   }
-  .apex-btn-primary:hover { opacity: 0.92; transform: translateY(-2px); }
-  .apex-btn-outline:hover { background: color-mix(in srgb,var(--color-primary) 10%,transparent); }
 `;
 
 export default async function LessonPage({ params }: Props) {

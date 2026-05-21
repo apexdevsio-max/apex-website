@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
 import { openGraph } from "./openGraph";
 
-export const siteUrl = "https://apex-tech.sa";
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://apex-tech.sa";
 export const metadataBase = new URL(siteUrl);
 
 type PageMetaInput = {

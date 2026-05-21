@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
+import { Reveal } from "@/components/ui/Reveal";
 import type { BlogPost } from "@/lib/content/content-loader";
 import type { Locale } from "@/lib/i18n/locale";
 import { MOCK_POSTS } from "@/lib/mock/blog-data";
@@ -27,49 +28,9 @@ const CATS_EN = [
   { key: "practical", label: "Practical Experiences" },
 ];
 
-
-function Reveal({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.08 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(20px)",
-        transition: `opacity 0.6s ${delay}ms ease, transform 0.6s ${delay}ms ease`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
 type GridPost = {
   slug: string;
-  category: string;
+  categories: string[];
   emoji: string;
   readTime: number;
   accentColor: string;
@@ -157,8 +118,8 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
         <div className={`flex items-center gap-3 mb-4 ${isAr ? "flex-row-reverse" : ""}`}>
           <span className="apex-tag">
             {isAr
-              ? CATS_AR.find((cat) => cat.key === post.category)?.label
-              : CATS_EN.find((cat) => cat.key === post.category)?.label}
+              ? CATS_AR.find((cat) => cat.key === post.categories[0])?.label
+              : CATS_EN.find((cat) => cat.key === post.categories[0])?.label}
           </span>
           <span className="text-xs" style={{ color: "var(--color-secondary-text)" }}>
             {content.date} · {post.readTime} {isAr ? "دقائق" : "min read"}
@@ -252,8 +213,8 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
           }}
         >
           {isAr
-            ? CATS_AR.find((cat) => cat.key === post.category)?.label
-            : CATS_EN.find((cat) => cat.key === post.category)?.label}
+            ? CATS_AR.find((cat) => cat.key === post.categories[0])?.label
+            : CATS_EN.find((cat) => cat.key === post.categories[0])?.label}
         </div>
       </div>
 
@@ -302,7 +263,7 @@ export function BlogGrid({
 
   const fallbackPosts = Object.entries(MOCK_POSTS).map(([slug, post], index) => ({
     slug,
-    category: post.category,
+    categories: post.categories,
     emoji: post.emoji,
     readTime: post.readTime,
     accentColor: post.accentColor,
@@ -337,13 +298,12 @@ export function BlogGrid({
   const filtered =
     activeFilter === "all"
       ? regular
-      : regular.filter((post) => post.category === activeFilter);
+      : regular.filter((post) => post.categories.includes(activeFilter));
 
   return (
     <main
       className="min-h-screen pt-28 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
-      dir={isAr ? "rtl" : "ltr"}
     >
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-14">

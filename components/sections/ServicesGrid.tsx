@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
+import { Reveal } from "@/components/ui/Reveal";
 import type { ServiceItem } from "@/lib/content/content-loader";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
@@ -119,45 +120,6 @@ const SERVICE_VISUALS = [
     },
   },
 ] as const;
-
-function Reveal({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.08 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(20px)",
-        transition: `opacity 0.6s ${delay}ms ease, transform 0.6s ${delay}ms ease`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
 
 function ServiceCard({
   service,
@@ -302,7 +264,6 @@ export function ServicesGrid({
     <main
       className="min-h-screen px-6 pb-24 pt-28"
       style={{ background: "var(--color-background)" }}
-      dir={isAr ? "rtl" : "ltr"}
     >
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-16 text-center">

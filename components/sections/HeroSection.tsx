@@ -42,7 +42,10 @@ function useElementSize<T extends HTMLElement>(
   return { sizeRef };
 }
 
-function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
+function useParticles(
+  canvasRef: React.RefObject<HTMLCanvasElement | null>,
+  visibleRef: React.RefObject<boolean>,
+) {
   const { sizeRef } = useElementSize(canvasRef, (size) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -66,32 +69,35 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
     type Particle = { x: number; y: number; vx: number; vy: number };
     let nodes: Particle[] = [];
 
-    const resize = () => {
+    let lastTime = 0;
+    const draw = (time: number) => {
       const dpr = window.devicePixelRatio || 1;
       const s = sizeRef.current;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const w = s.cssWidth;
       const h = s.cssHeight;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const count = Math.max(24, Math.min(60, Math.floor(w / 30)));
-      nodes = Array.from({ length: count }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.28,
-        vy: (Math.random() - 0.5) * 0.28,
-      }));
-    };
-
-    const draw = () => {
+      if (!nodes.length) {
+        const count = Math.max(24, Math.min(60, Math.floor(w / 30)));
+        nodes = Array.from({ length: count }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.002,
+          vy: (Math.random() - 0.5) * 0.002,
+        }));
+      }
       if (stopped) return;
-
-      const s = sizeRef.current;
+      if (!visibleRef.current) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+      const dt = lastTime ? Math.min((time - lastTime) / 16.67, 4) : 1;
+      lastTime = time;
       ctx.clearRect(0, 0, s.width, s.height);
 
       for (let i = 0; i < nodes.length; i += 1) {
         const p = nodes[i];
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
 
         const w = s.cssWidth;
         const h = s.cssHeight;
@@ -124,8 +130,7 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
     const start = () => {
       if (rm.matches) return;
       stopped = false;
-      resize();
-      draw();
+      draw(0);
     };
 
     const stop = () => {
@@ -150,12 +155,14 @@ function useParticles(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
       stop();
       rm.removeEventListener("change", handleMotionChange);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef, sizeRef]);
 }
 
 function useWebGLChroma(
   videoRef: React.RefObject<HTMLVideoElement | null>,
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
+  visibleRef: React.RefObject<boolean>,
   onReady: () => void,
 ) {
   const { sizeRef } = useElementSize(canvasRef, (size) => {
@@ -316,6 +323,10 @@ function useWebGLChroma(
 
     function renderFrame() {
       if (stopped || !gl || !program || !texture) return;
+      if (!visibleRef.current) {
+        rafId = requestAnimationFrame(renderFrame);
+        return;
+      }
 
       if (heroVideo.readyState < 2 || heroVideo.videoWidth === 0 || heroVideo.seeking) {
         rafId = requestAnimationFrame(renderFrame);
@@ -389,14 +400,28 @@ export function HeroSection({
   const videoRef = useRef<HTMLVideoElement>(null);
   const chromaCanvasRef = useRef<HTMLCanvasElement>(null);
   const particlesCanvasRef = useRef<HTMLCanvasElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isVisibleRef = useRef(true);
   const [chromaReady, setChromaReady] = useState(false);
 
-  useParticles(particlesCanvasRef);
-  useWebGLChroma(videoRef, chromaCanvasRef, () => setChromaReady(true));
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useParticles(particlesCanvasRef, isVisibleRef);
+  useWebGLChroma(videoRef, chromaCanvasRef, isVisibleRef, () => setChromaReady(true));
 
   return (
     <section
       dir="ltr"
+      ref={sectionRef}
       className="relative flex min-h-screen items-center overflow-hidden"
       style={{ backgroundImage: "none" }}
       aria-label="Hero"
@@ -452,13 +477,12 @@ export function HeroSection({
         aria-hidden="true"
       >
         <Image
-          src="/images/Apex_logo.webp"
+          src="/images/Apex_logo.png"
           alt=""
           fill
           priority
           fetchPriority="high"
           sizes="(max-width: 768px) 220px, 360px"
-          quality={20}
           className="object-contain"
         />
       </div>
@@ -503,12 +527,13 @@ export function HeroSection({
         <Image
           src="/images/robot_mascot.avif"
           alt=""
-          fill
+          width={373}
+          height={373}
           priority
           fetchPriority="high"
           quality={80}
           sizes="(max-width: 768px) 55vw, 25vw"
-          className="object-contain object-bottom"
+          className="w-full h-auto object-contain object-bottom"
         />
       </div>
 

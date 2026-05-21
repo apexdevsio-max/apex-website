@@ -33,7 +33,7 @@ export function Footer({
           <div className={`flex flex-col ${rtl.flexRev}`}>
             <Link href={`/${lang}`} className="mb-6 flex items-center gap-2">
               <Image
-                src="/images/Apex_logo.webp"
+                src="/images/Apex_logo.png"
                 alt="Apex"
                 width={120}
                 height={40}

@@ -140,22 +140,19 @@ export function Header({ lang, dictionary }: Props) {
         dir={isAr ? "rtl" : "ltr"}
       >
         <Link href={buildUrl("/")} className="shrink-0 flex items-center gap-2">
-          <picture>
-            <source srcSet="/images/Apex_logo.avif" type="image/avif" />
-            <Image
-              src="/images/Apex_logo.webp"
-              alt="APEX"
-              width={110}
-              height={36}
-              priority
-              quality={40}
-              style={{
-                filter: darkMode
-                  ? "drop-shadow(0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent))"
-                  : undefined,
-              }}
-            />
-          </picture>
+          <Image
+            src="/images/Apex_logo.png"
+            alt="APEX"
+            width={110}
+            height={36}
+            priority
+            quality={40}
+            style={{
+              filter: darkMode
+                ? "drop-shadow(0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent))"
+                : undefined,
+            }}
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">

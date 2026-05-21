@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 type RevealProps = {
   children: React.ReactNode;
   delay?: number;
@@ -11,16 +15,36 @@ export function Reveal({
   children,
   delay = 0,
   className = "",
+  threshold = 0.08,
   offsetY = 22,
-  durationMs = 650,
+  durationMs = 600,
 }: RevealProps) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [threshold]);
+
   return (
     <div
-      className={`apex-fade-up ${className}`.trim()}
+      ref={ref}
+      className={className}
       style={{
-        ["--apex-offset" as never]: `${offsetY}px`,
-        animationDelay: `${delay}ms`,
-        animationDuration: `${durationMs}ms`,
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : `translateY(${offsetY}px)`,
+        transition: `opacity ${durationMs}ms ${delay}ms ease, transform ${durationMs}ms ${delay}ms ease`,
       }}
     >
       {children}

@@ -9,7 +9,7 @@ import {
   getPortfolioItems,
 } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
-import { buildPageMeta } from "@/lib/seo/metadata";
+import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
   FALLBACK_PORTFOLIO,
   MOCK_PORTFOLIO,
@@ -58,22 +58,18 @@ export async function generateMetadata({
     mdxItem = null;
   }
 
+  const thumbnail = mdxItem?.thumbnail ?? mdxItem?.images?.[0];
+
   return buildPageMeta(locale, {
     title: `${mdxItem?.title ?? mock?.title ?? slug} - APEX`,
     description: mdxItem?.summary ?? mock?.summary ?? "",
     path: `/${lang}/portfolio/${slug}`,
+    ...(thumbnail ? { image: `${siteUrl}${thumbnail.startsWith("/") ? "" : "/"}${thumbnail}` } : {}),
   });
 }
 
 const hoverStyles = `
   .apex-back-link:hover { color: var(--color-primary) !important; }
-  .apex-tag-chip {
-    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-    color: var(--color-primary);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
-  }
-  .apex-btn-primary:hover { opacity: 0.92; transform: translateY(-2px); }
-  .apex-btn-outline:hover { background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
   .apex-result-item {
     display: flex;
     align-items: flex-start;
@@ -134,8 +130,8 @@ export default async function PortfolioItemPage({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: `${"https://apex-tech.sa"}/${lang}` },
-              { "@type": "ListItem", position: 2, name: isAr ? "أعمالنا" : "Portfolio", item: `${"https://apex-tech.sa"}/${lang}/portfolio` },
+              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: `${siteUrl}/${lang}` },
+              { "@type": "ListItem", position: 2, name: isAr ? "أعمالنا" : "Portfolio", item: `${siteUrl}/${lang}/portfolio` },
               { "@type": "ListItem", position: 3, name: title },
             ],
           }),
