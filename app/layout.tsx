@@ -36,9 +36,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/images/Apex_logo.png",
-    shortcut: "/images/Apex_logo.png",
-    apple: "/images/Apex_logo.png",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   alternates: {
     languages: {
