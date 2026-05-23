@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -34,6 +35,11 @@ export async function generateStaticParams() {
   return params;
 }
 
+function extractFirstImage(content: string): string | undefined {
+  const match = /^!\[.*\]\((.*)\)$/m.exec(content);
+  return match?.[1] ?? undefined;
+}
+
 const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
   flutter: {
     ar: ["Flutter", "دارت", "تطوير تطبيقات", "تطبيقات متعددة المنصات", "Google Flutter", "تطوير الموبايل"],
@@ -55,12 +61,15 @@ export async function generateMetadata({
     mdxPost = null;
   }
   const mock = MOCK_POSTS[slug]?.[locale];
+  const rawContent = mdxPost?.content ?? mock?.content ?? "";
+  const ogImage = extractFirstImage(rawContent);
 
   return buildPageMeta(locale, {
     title: `${mdxPost?.title ?? mock?.title ?? slug} - APEX`,
     description: mdxPost?.excerpt ?? mock?.excerpt ?? "",
     path: `/${lang}/blog/${slug}`,
     keywords: POST_KEYWORDS[slug]?.[locale],
+    image: ogImage,
   });
 }
 
@@ -308,15 +317,19 @@ export default async function BlogPostPage({
 
             const imgMatch = /^!\[(.*)\]\((.*)\)$/.exec(line);
             if (imgMatch) {
+              const isFirstImage = index < 2;
               return (
                 <figure key={index} className="my-8">
-                  <img
-                    src={imgMatch[2]}
-                    alt={imgMatch[1]}
-                    className="w-full rounded-2xl shadow-lg"
-                    loading="lazy"
-                    style={{ background: "var(--color-card)" }}
-                  />
+                  <div className="relative w-full aspect-video">
+                    <Image
+                      src={imgMatch[2]}
+                      alt={imgMatch[1]}
+                      fill
+                      priority={isFirstImage}
+                      className="rounded-2xl object-cover shadow-lg"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 720px"
+                    />
+                  </div>
                 </figure>
               );
             }

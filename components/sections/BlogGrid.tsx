@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import { Reveal } from "@/components/ui/Reveal";
 import type { BlogPost } from "@/lib/content/content-loader";
@@ -42,22 +42,18 @@ type GridPost = {
 function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
   const isAr = lang === "ar";
   const content = post[lang];
-  const [hovered, setHovered] = useState(false);
 
   return (
     <Link
       href={`/${lang}/blog/${post.slug}`}
-      className="apex-card-base group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden transition-all duration-300"
-      style={{
-        borderColor: hovered ? post.accentColor : "var(--color-border)",
-        transform: hovered ? "translateY(-4px)" : "translateY(0)",
-        boxShadow: hovered
-          ? `0 20px 50px color-mix(in srgb,${post.accentColor} 18%,transparent)`
-          : "none",
-        textDecoration: "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="apex-card-base group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+      style={
+        {
+          "--card-accent": post.accentColor,
+          borderColor: "var(--color-border)",
+          boxShadow: "none",
+        } as React.CSSProperties
+      }
       dir={isAr ? "rtl" : "ltr"}
     >
       <div
@@ -91,11 +87,11 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
           aria-hidden="true"
         />
         <span
+          className="card-emoji"
           style={{
             fontSize: "72px",
             filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
             transition: "transform 0.3s",
-            transform: hovered ? "scale(1.1)" : "scale(1)",
           }}
         >
           {post.emoji}
@@ -138,7 +134,7 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
           {content.excerpt}
         </p>
         <div
-          className={`flex items-center gap-2 font-bold text-sm apex-arrow ${hovered ? "apex-arrow-shift" : ""} ${isAr ? "flex-row-reverse" : ""}`}
+          className={`flex items-center gap-2 font-bold text-sm apex-arrow ${isAr ? "flex-row-reverse" : ""}`}
           style={{ color: post.accentColor }}
         >
           {isAr ? "قراءة المقال" : "Read Article"}
@@ -151,22 +147,18 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
 function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
   const isAr = lang === "ar";
   const content = post[lang];
-  const [hovered, setHovered] = useState(false);
 
   return (
     <Link
       href={`/${lang}/blog/${post.slug}`}
-      className="apex-card-base flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
-      style={{
-        borderColor: hovered ? post.accentColor : "var(--color-border)",
-        transform: hovered ? "translateY(-5px)" : "translateY(0)",
-        boxShadow: hovered
-          ? `0 16px 40px color-mix(in srgb,${post.accentColor} 16%,transparent)`
-          : "none",
-        textDecoration: "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="apex-card-base group flex flex-col rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+      style={
+        {
+          "--card-accent": post.accentColor,
+          borderColor: "var(--color-border)",
+          boxShadow: "none",
+        } as React.CSSProperties
+      }
     >
       <div
         className="relative flex items-center justify-center"
@@ -194,11 +186,11 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
           aria-hidden="true"
         />
         <span
+          className="card-emoji"
           style={{
             fontSize: "52px",
             filter: "drop-shadow(0 0 16px rgba(255,255,255,0.25))",
             transition: "transform 0.3s",
-            transform: hovered ? "scale(1.1)" : "scale(1)",
           }}
         >
           {post.emoji}
@@ -240,7 +232,7 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
           {content.excerpt}
         </p>
         <div
-          className={`flex items-center gap-2 font-bold text-sm mt-auto apex-arrow ${hovered ? "apex-arrow-shift" : ""} ${isAr ? "flex-row-reverse" : ""}`}
+          className={`flex items-center gap-2 font-bold text-sm mt-auto apex-arrow ${isAr ? "flex-row-reverse" : ""}`}
           style={{ color: post.accentColor }}
         >
           {isAr ? "قراءة المقال" : "Read Article"}
@@ -261,37 +253,60 @@ export function BlogGrid({
   const cats = isAr ? CATS_AR : CATS_EN;
   const [activeFilter, setActiveFilter] = useState("all");
 
-  const fallbackPosts = Object.entries(MOCK_POSTS).map(([slug, post], index) => ({
-    slug,
-    categories: post.categories,
-    emoji: post.emoji,
-    readTime: post.readTime,
-    accentColor: post.accentColor,
-    featured: index === 0,
-    ar: {
-      title: post.ar.title,
-      excerpt: post.ar.excerpt,
-      date: post.ar.date,
-    },
-    en: {
-      title: post.en.title,
-      excerpt: post.en.excerpt,
-      date: post.en.date,
-    },
-  }));
+  const mockPostList = useMemo(
+    () =>
+      Object.entries(MOCK_POSTS).map(([slug, post], index) => ({
+        slug,
+        categories: post.categories,
+        emoji: post.emoji,
+        readTime: post.readTime,
+        accentColor: post.accentColor,
+        featured: index === 0,
+        ar: {
+          title: post.ar.title,
+          excerpt: post.ar.excerpt,
+          date: post.ar.date,
+        },
+        en: {
+          title: post.en.title,
+          excerpt: post.en.excerpt,
+          date: post.en.date,
+        },
+      })),
+    []
+  );
 
-  const posts: GridPost[] =
-    mdxPosts.length > 0
-      ? mdxPosts.map((post, index) => ({
-          ...fallbackPosts[index % fallbackPosts.length],
-          slug: post.slug,
+  const posts: GridPost[] = useMemo(() => {
+    if (mdxPosts.length === 0) return mockPostList;
+
+    const mockBySlug = new Map(mockPostList.map((p) => [p.slug, p]));
+    let nextIndex = mockPostList.length;
+
+    return mdxPosts.map((post) => {
+      const mock = mockBySlug.get(post.slug);
+      if (mock) {
+        return {
+          ...mock,
           [lang]: {
             title: post.title,
             excerpt: post.excerpt,
-            date: "",
+            date: mock[lang].date,
           },
-        }))
-      : fallbackPosts;
+        };
+      }
+      const fallback = mockPostList[nextIndex % mockPostList.length];
+      nextIndex++;
+      return {
+        ...fallback,
+        slug: post.slug,
+        [lang]: {
+          title: post.title,
+          excerpt: post.excerpt,
+          date: "",
+        },
+      };
+    });
+  }, [mdxPosts, lang, mockPostList]);
 
   const featured = posts.find((post) => post.featured);
   const regular = posts.filter((post) => !post.featured);
@@ -301,7 +316,7 @@ export function BlogGrid({
       : regular.filter((post) => post.categories.includes(activeFilter));
 
   return (
-    <main
+    <section
       className="min-h-screen pt-28 pb-24 px-6"
       style={{ background: "var(--color-background)" }}
     >
@@ -423,6 +438,6 @@ export function BlogGrid({
           </div>
         </Reveal>
       </div>
-    </main>
+    </section>
   );
 }

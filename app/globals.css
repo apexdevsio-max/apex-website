@@ -88,6 +88,19 @@ html, body {
   background: var(--color-card);
   border: 1px solid var(--color-border);
 }
+.apex-card-base:hover {
+  border-color: var(--card-accent) !important;
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--card-accent) 16%, transparent);
+}
+.apex-card-base:hover .card-emoji {
+  transform: scale(1.1);
+}
+.apex-card-base:hover .apex-arrow::after {
+  transform: translateX(4px);
+}
+[dir="rtl"] .apex-card-base:hover .apex-arrow::after {
+  transform: translateX(-4px);
+}
 
 .apex-section-title {
   font-size: clamp(28px, 3.9vw, 52px);
