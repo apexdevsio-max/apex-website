@@ -230,6 +230,24 @@ A developer who masters these tools can work far more efficiently than one who i
       content: "",
     },
   },
+  "seo-vs-geo": {
+    emoji: "\ud83d\udd0d",
+    accentColor: "#7C3AED",
+    categories: ["comparisons", "selected"],
+    readTime: 14,
+    ar: {
+      title: "SEO vs GEO: طرق تحسين محركات البحث ومحركات الذكاء الاصطناعي",
+      excerpt: "دراسة معمقة للفرق بين SEO vs GEO وكيف غيّر الذكاء الاصطناعي مستقبل الظهور الرقمي. اكتشف كيف تجعل محتواك قابلاً للاقتباس داخل ChatGPT وGoogle AI وPerplexity.",
+      date: "23 مايو 2026",
+      content: "",
+    },
+    en: {
+      title: "SEO vs GEO: How AI Search Engines Are Reshaping the Future of Digital Visibility",
+      excerpt: "A comprehensive guide explaining the difference between SEO and GEO, and how AI-powered search is transforming the future of digital content and online visibility.",
+      date: "May 23, 2026",
+      content: "",
+    },
+  },
   "react-native": {
     emoji: "\u2699\ufe0f",
     accentColor: "#61DAFB",

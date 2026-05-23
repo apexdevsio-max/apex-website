@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useMemo } from "react";
 
 import { Reveal } from "@/components/ui/Reveal";
 import type { BlogPost } from "@/lib/content/content-loader";
 import type { Locale } from "@/lib/i18n/locale";
 import { MOCK_POSTS } from "@/lib/mock/blog-data";
+
+function extractFirstImage(content: string): string | undefined {
+  const match = /^!\[.*\]\((.*)\)$/m.exec(content);
+  return match?.[1] ?? undefined;
+}
 
 const CATS_AR = [
   { key: "all", label: "الكل" },
@@ -32,6 +38,7 @@ type GridPost = {
   slug: string;
   categories: string[];
   emoji: string;
+  image?: string;
   readTime: number;
   accentColor: string;
   featured?: boolean;
@@ -57,58 +64,73 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
       dir={isAr ? "rtl" : "ltr"}
     >
       <div
-        className="relative shrink-0 flex items-center justify-center"
-        style={{
-          width: "100%",
-          maxWidth: "340px",
-          minHeight: "220px",
-          background: "linear-gradient(135deg,#0f0c29,#302b63)",
-        }}
-      >
-        <div
-          className="absolute inset-0 opacity-15"
+          className="relative shrink-0 overflow-hidden"
           style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: "200px",
-            height: "200px",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: `radial-gradient(circle,${post.accentColor}35 0%,transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
-        <span
-          className="card-emoji"
-          style={{
-            fontSize: "72px",
-            filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
-            transition: "transform 0.3s",
+            width: "100%",
+            maxWidth: "340px",
+            minHeight: "220px",
           }}
         >
-          {post.emoji}
-        </span>
-        <div
-          className="absolute top-3 px-3 py-1 rounded-full text-xs font-bold"
-          style={{
-            [isAr ? "left" : "right"]: "12px",
-            background: `color-mix(in srgb,${post.accentColor} 22%,rgba(0,0,0,0.5))`,
-            border: `1px solid ${post.accentColor}55`,
-            color: post.accentColor,
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          {isAr ? "⭐ مميز" : "⭐ Featured"}
+          {post.image ? (
+            <Image
+              src={post.image}
+              alt=""
+              fill
+              className="object-cover"
+              sizes="340px"
+            />
+          ) : (
+            <>
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg,#0f0c29,#302b63)" }}
+              />
+              <div
+                className="absolute inset-0 opacity-15"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+                  backgroundSize: "24px 24px",
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-50%)",
+                  background: `radial-gradient(circle,${post.accentColor}35 0%,transparent 70%)`,
+                }}
+                aria-hidden="true"
+              />
+              <span
+                className="card-emoji"
+                style={{
+                  fontSize: "72px",
+                  filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
+                  transition: "transform 0.3s",
+                }}
+              >
+                {post.emoji}
+              </span>
+            </>
+          )}
+          <div
+            className="absolute top-3 px-3 py-1 rounded-full text-xs font-bold"
+            style={{
+              [isAr ? "left" : "right"]: "12px",
+              background: `color-mix(in srgb,${post.accentColor} 22%,rgba(0,0,0,0.5))`,
+              border: `1px solid ${post.accentColor}55`,
+              color: post.accentColor,
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {isAr ? "⭐ مميز" : "⭐ Featured"}
+          </div>
         </div>
-      </div>
 
       <div className="flex flex-col justify-center p-8 flex-1">
         <div className={`flex items-center gap-3 mb-4 ${isAr ? "flex-row-reverse" : ""}`}>
@@ -161,54 +183,70 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
       }
     >
       <div
-        className="relative flex items-center justify-center"
-        style={{ height: "160px", background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}
-      >
-        <div
-          className="absolute inset-0 opacity-15"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-            backgroundSize: "20px 20px",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: "140px",
-            height: "140px",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: `radial-gradient(circle,${post.accentColor}28 0%,transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
-        <span
-          className="card-emoji"
-          style={{
-            fontSize: "52px",
-            filter: "drop-shadow(0 0 16px rgba(255,255,255,0.25))",
-            transition: "transform 0.3s",
-          }}
+          className="relative overflow-hidden"
+          style={{ height: "160px" }}
         >
-          {post.emoji}
-        </span>
-        <div
-          className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
-          style={{
-            [isAr ? "left" : "right"]: "10px",
-            background: `color-mix(in srgb,${post.accentColor} 20%,rgba(0,0,0,0.5))`,
-            border: `1px solid ${post.accentColor}50`,
-            color: post.accentColor,
-          }}
-        >
-          {isAr
-            ? CATS_AR.find((cat) => cat.key === post.categories[0])?.label
-            : CATS_EN.find((cat) => cat.key === post.categories[0])?.label}
+          {post.image ? (
+            <Image
+              src={post.image}
+              alt=""
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <>
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}
+              />
+              <div
+                className="absolute inset-0 opacity-15"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+                  backgroundSize: "20px 20px",
+                }}
+                aria-hidden="true"
+              />
+              <div
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  width: "140px",
+                  height: "140px",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-50%)",
+                  background: `radial-gradient(circle,${post.accentColor}28 0%,transparent 70%)`,
+                }}
+                aria-hidden="true"
+              />
+              <span
+                className="card-emoji"
+                style={{
+                  fontSize: "52px",
+                  filter: "drop-shadow(0 0 16px rgba(255,255,255,0.25))",
+                  transition: "transform 0.3s",
+                }}
+              >
+                {post.emoji}
+              </span>
+            </>
+          )}
+          <div
+            className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
+            style={{
+              [isAr ? "left" : "right"]: "10px",
+              background: `color-mix(in srgb,${post.accentColor} 20%,rgba(0,0,0,0.5))`,
+              border: `1px solid ${post.accentColor}50`,
+              color: post.accentColor,
+            }}
+          >
+            {isAr
+              ? CATS_AR.find((cat) => cat.key === post.categories[0])?.label
+              : CATS_EN.find((cat) => cat.key === post.categories[0])?.label}
+          </div>
         </div>
-      </div>
 
       <div className="flex flex-col flex-1 p-6" dir={isAr ? "rtl" : "ltr"}>
         <div
@@ -255,24 +293,29 @@ export function BlogGrid({
 
   const mockPostList = useMemo(
     () =>
-      Object.entries(MOCK_POSTS).map(([slug, post], index) => ({
-        slug,
-        categories: post.categories,
-        emoji: post.emoji,
-        readTime: post.readTime,
-        accentColor: post.accentColor,
-        featured: index === 0,
-        ar: {
-          title: post.ar.title,
-          excerpt: post.ar.excerpt,
-          date: post.ar.date,
-        },
-        en: {
-          title: post.en.title,
-          excerpt: post.en.excerpt,
-          date: post.en.date,
-        },
-      })),
+      Object.entries(MOCK_POSTS).map(([slug, post], index) => {
+        const arImage = extractFirstImage(post.ar.content || "");
+        const enImage = extractFirstImage(post.en.content || "");
+        return {
+          slug,
+          categories: post.categories,
+          emoji: post.emoji,
+          image: enImage || arImage || undefined,
+          readTime: post.readTime,
+          accentColor: post.accentColor,
+          featured: index === 0,
+          ar: {
+            title: post.ar.title,
+            excerpt: post.ar.excerpt,
+            date: post.ar.date,
+          },
+          en: {
+            title: post.en.title,
+            excerpt: post.en.excerpt,
+            date: post.en.date,
+          },
+        };
+      }),
     []
   );
 
@@ -283,10 +326,12 @@ export function BlogGrid({
     let nextIndex = mockPostList.length;
 
     return mdxPosts.map((post) => {
+      const mdxImage = extractFirstImage(post.content) || undefined;
       const mock = mockBySlug.get(post.slug);
       if (mock) {
         return {
           ...mock,
+          image: mdxImage || mock.image,
           [lang]: {
             title: post.title,
             excerpt: post.excerpt,
@@ -299,6 +344,7 @@ export function BlogGrid({
       return {
         ...fallback,
         slug: post.slug,
+        image: mdxImage || fallback.image,
         [lang]: {
           title: post.title,
           excerpt: post.excerpt,
