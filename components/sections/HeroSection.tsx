@@ -70,6 +70,7 @@ function useParticles(
     let nodes: Particle[] = [];
 
     let lastTime = 0;
+    let throttleTimer: ReturnType<typeof setTimeout> | null = null;
     const draw = (time: number) => {
       const dpr = window.devicePixelRatio || 1;
       const s = sizeRef.current;
@@ -87,7 +88,9 @@ function useParticles(
       }
       if (stopped) return;
       if (!visibleRef.current) {
-        raf = requestAnimationFrame(draw);
+        throttleTimer = setTimeout(() => {
+          if (!stopped) raf = requestAnimationFrame(draw);
+        }, 200);
         return;
       }
       const dt = lastTime ? Math.min((time - lastTime) / 16.67, 4) : 1;
@@ -149,10 +152,13 @@ function useParticles(
     };
 
     rm.addEventListener("change", handleMotionChange);
-    start();
+
+    const idleId = requestIdleCallback(() => start(), { timeout: 1500 });
 
     return () => {
       stop();
+      if (throttleTimer) clearTimeout(throttleTimer);
+      cancelIdleCallback(idleId);
       rm.removeEventListener("change", handleMotionChange);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -195,6 +201,9 @@ function useWebGLChroma(
     let cropLocation: WebGLUniformLocation | null = null;
     let positionBuffer: WebGLBuffer | null = null;
     let positionLoc = 0;
+    let videoReady = false;
+    let videoMeta = { w: 0, h: 0, dur: 0 };
+    let isSeeking = false;
 
     const VS = `#version 300 es
       in vec2 a_position;
@@ -321,25 +330,28 @@ function useWebGLChroma(
       gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
     }
 
+    let chromaThrottleTimer: ReturnType<typeof setTimeout> | null = null;
     function renderFrame() {
       if (stopped || !gl || !program || !texture) return;
       if (!visibleRef.current) {
+        chromaThrottleTimer = setTimeout(() => {
+          if (!stopped) rafId = requestAnimationFrame(renderFrame);
+        }, 200);
+        return;
+      }
+
+      if (!videoReady || videoMeta.w === 0 || isSeeking) {
         rafId = requestAnimationFrame(renderFrame);
         return;
       }
 
-      if (heroVideo.readyState < 2 || heroVideo.videoWidth === 0 || heroVideo.seeking) {
-        rafId = requestAnimationFrame(renderFrame);
-        return;
-      }
-
-      if (heroVideo.duration > 0 && heroVideo.currentTime >= heroVideo.duration - 0.08) {
+      if (videoMeta.dur > 0 && heroVideo.currentTime >= videoMeta.dur - 0.08) {
         heroVideo.currentTime = loopTrimStart;
       }
 
       const s = sizeRef.current;
       if (s.cssWidth > 0 && s.cssHeight > 0) {
-        updateQuad(s.cssWidth, s.cssHeight, heroVideo.videoWidth, heroVideo.videoHeight);
+        updateQuad(s.cssWidth, s.cssHeight, videoMeta.w, videoMeta.h);
       }
       gl.viewport(0, 0, s.width, s.height);
       gl.clearColor(0, 0, 0, 0);
@@ -359,6 +371,23 @@ function useWebGLChroma(
       rafId = requestAnimationFrame(renderFrame);
     }
 
+    const onLoadedMetadata = () => {
+      videoMeta = { w: heroVideo.videoWidth, h: heroVideo.videoHeight, dur: heroVideo.duration };
+    };
+    const onCanPlay = () => { videoReady = true; };
+    const onSeeking = () => { isSeeking = true; };
+    const onSeeked = () => { isSeeking = false; };
+
+    heroVideo.addEventListener('loadedmetadata', onLoadedMetadata);
+    heroVideo.addEventListener('canplay', onCanPlay);
+    heroVideo.addEventListener('seeking', onSeeking);
+    heroVideo.addEventListener('seeked', onSeeked);
+
+    if (heroVideo.readyState >= 2) {
+      videoReady = true;
+      videoMeta = { w: heroVideo.videoWidth, h: heroVideo.videoHeight, dur: heroVideo.duration };
+    }
+
     const start = async () => {
       if (!md.matches || rm.matches) return;
       stopped = false;
@@ -373,12 +402,19 @@ function useWebGLChroma(
     const handleMediaChange = () => { void start(); };
     md.addEventListener("change", handleMediaChange);
     rm.addEventListener("change", handleMediaChange);
-    void start();
+
+    const chromaIdleId = requestIdleCallback(() => { void start(); }, { timeout: 2000 });
 
     return () => {
       stopped = true;
       cancelAnimationFrame(rafId);
       heroVideo.pause();
+      if (chromaThrottleTimer) clearTimeout(chromaThrottleTimer);
+      cancelIdleCallback(chromaIdleId);
+      heroVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
+      heroVideo.removeEventListener('canplay', onCanPlay);
+      heroVideo.removeEventListener('seeking', onSeeking);
+      heroVideo.removeEventListener('seeked', onSeeked);
       md.removeEventListener("change", handleMediaChange);
       rm.removeEventListener("change", handleMediaChange);
     };
@@ -481,6 +517,7 @@ export function HeroSection({
           alt=""
           width={360}
           height={140}
+          quality={10}
           sizes="(max-width: 768px) 220px, 360px"
           className="object-contain"
         />
