@@ -108,7 +108,6 @@ export default async function BlogPostPage({
   const excerpt = mdxPost?.excerpt ?? mockContent?.excerpt ?? fallback.excerpt;
   const date = mockContent?.date ?? fallback.date;
   const readTime = mock?.readTime ?? fallback.readTime;
-  const emoji = mock?.emoji ?? fallback.emoji;
   const accentColor = mock?.accentColor ?? fallback.accentColor;
   const categoryKey = mock?.categories?.[0] ?? fallback.categories[0];
   const category = CATEGORY_LABELS[categoryKey]?.[lang] ?? categoryKey;
@@ -184,57 +183,19 @@ export default async function BlogPostPage({
         </Link>
 
         <div
-          className="relative rounded-3xl overflow-hidden mb-10"
-          style={{
-            height: "clamp(200px,26vw,320px)",
-            background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)",
-          }}
-        >
-          <div
-            className="absolute inset-0 opacity-15"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
-            aria-hidden="true"
-          />
-          <div
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              width: "260px",
-              height: "260px",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%,-50%)",
-              background: `radial-gradient(circle,${accentColor}30 0%,transparent 70%)`,
-            }}
-            aria-hidden="true"
-          />
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ fontSize: "80px", filter: "drop-shadow(0 0 24px rgba(255,255,255,0.3))" }}
-          >
-            {emoji}
-          </div>
-          <div
-            className="absolute top-4 px-4 py-1.5 rounded-full text-xs font-bold"
-            style={{
-              [isAr ? "left" : "right"]: "16px",
-              background: `color-mix(in srgb,${accentColor} 18%,rgba(0,0,0,0.6))`,
-              border: `1px solid ${accentColor}55`,
-              color: accentColor,
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            {category}
-          </div>
-        </div>
-
-        <div
           className={`flex items-center gap-3 mb-4 text-xs ${isAr ? "flex-row-reverse" : ""}`}
           style={{ color: "var(--color-secondary-text)" }}
         >
+          <span
+            className="px-3 py-1 rounded-full text-xs font-bold"
+            style={{
+              background: `color-mix(in srgb,${accentColor} 18%,transparent)`,
+              border: `1px solid ${accentColor}55`,
+              color: accentColor,
+            }}
+          >
+            {category}
+          </span>
           {date && <span>{date}</span>}
           {date && <span>·</span>}
           <span>
