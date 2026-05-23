@@ -194,7 +194,7 @@ export function Header({ lang, dictionary }: Props) {
             {dictionary.navigation.letsTalk}
           </Link>
 
-          {isClient && (
+          {isClient ? (
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
@@ -206,6 +206,8 @@ export function Header({ lang, dictionary }: Props) {
             >
               {darkMode ? <Sun size={17} /> : <Moon size={17} />}
             </button>
+          ) : (
+            <div className="p-2" style={{ width: 33, height: 33 }} />
           )}
 
           <Link

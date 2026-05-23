@@ -517,8 +517,7 @@ export function HeroSection({
           alt=""
           width={360}
           height={140}
-          quality={10}
-          sizes="(max-width: 768px) 220px, 360px"
+          unoptimized
           className="object-contain"
         />
       </div>

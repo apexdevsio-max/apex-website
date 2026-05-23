@@ -39,6 +39,7 @@ export function Footer({
                 height={40}
                 quality={40}
                 sizes="120px"
+                priority
               />
             </Link>
             <p className={`text-sm ${rtl.fontClass} leading-relaxed`} style={{ opacity: 0.8 }}>
