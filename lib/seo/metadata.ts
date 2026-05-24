@@ -43,12 +43,10 @@ function buildLocalizedPath(path: string, locale: Locale): string {
 
 function buildAlternates(path: string) {
   const canonicalPath = normalizePath(path);
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((locale) => [
-      locale,
-      `${siteUrl}${buildLocalizedPath(canonicalPath, locale)}`,
-    ])
-  ) as Record<Locale, string>;
+  const languages: Record<Locale, string> = { en: "", ar: "" };
+  for (const locale of SUPPORTED_LOCALES) {
+    languages[locale] = `${siteUrl}${buildLocalizedPath(canonicalPath, locale)}`;
+  }
 
   return {
     canonical: `${siteUrl}${canonicalPath}`,
