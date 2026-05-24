@@ -92,15 +92,16 @@ export function HeroSection({
         }}
         aria-hidden="true"
       >
-          <Image
-            src="/images/Apex_logo.png"
-            alt=""
-            width={360}
-            height={140}
-            sizes="(max-width: 768px) 40vw, 360px"
-            className="object-contain"
-            loading="lazy"
-          />
+           <Image
+             src="/images/Apex_logo.png"
+             alt=""
+             width={360}
+             height={140}
+             sizes="(max-width: 768px) 40vw, 360px"
+             className="object-contain"
+             loading="lazy"
+             quality={30}
+           />
       </div>
 
        <ParticleBackground isVisible={true} />
