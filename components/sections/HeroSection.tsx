@@ -32,7 +32,7 @@ export function HeroSection({
         backgroundImage: "none",
         minHeight: "100svh",
         height: "auto",
-        contain: "layout paint",
+        contain: "layout paint size",
       }}
       aria-label="Hero"
     >
@@ -54,9 +54,11 @@ export function HeroSection({
           right: "2%",
           width: "min(560px,50vw)",
           height: "min(560px,50vw)",
+          aspectRatio: "1/1",
           borderRadius: "50%",
           background:
             "radial-gradient(circle,color-mix(in srgb,var(--color-primary) 14%,transparent) 0%,transparent 70%)",
+          contain: "layout paint size",
         }}
       />
 
@@ -68,9 +70,11 @@ export function HeroSection({
           left: "45%",
           width: "min(380px,40vw)",
           height: "min(380px,40vw)",
+          aspectRatio: "1/1",
           borderRadius: "50%",
           background:
             "radial-gradient(circle,color-mix(in srgb,var(--color-gold) 10%,transparent) 0%,transparent 70%)",
+          contain: "layout paint size",
         }}
       />
 
@@ -81,8 +85,10 @@ export function HeroSection({
           left: "6%",
           width: "min(360px,40vw)",
           height: "min(140px,16vw)",
+          aspectRatio: "360/140",
           opacity: 0.08,
           filter: "blur(0.2px)",
+          contain: "layout paint size",
         }}
         aria-hidden="true"
       >
@@ -93,13 +99,14 @@ export function HeroSection({
             height={140}
             sizes="(max-width: 768px) 40vw, 360px"
             className="object-contain"
+            loading="lazy"
           />
       </div>
 
        <ParticleBackground isVisible={true} />
        <ChromaVideoBackground isVisible={true} />
 
-      <div
+       <div
         className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden"
         style={{
           aspectRatio: "1/1",
@@ -118,6 +125,7 @@ export function HeroSection({
             quality={60}
             sizes="(max-width: 768px) 55vw, 25vw"
             className="object-contain object-bottom"
+            style={{ contain: "layout paint size" }}
           />
       </div>
 
