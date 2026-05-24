@@ -1,23 +1,14 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import { useRtl } from "@/hooks/useRtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
-
-const ParticleBackground = dynamic(
-  () => import("@/components/effects/ParticleBackground").then((m) => m.ParticleBackground),
-  { ssr: false, loading: () => null },
-);
-
-const ChromaVideoBackground = dynamic(
-  () => import("@/components/effects/ChromaVideoBackground").then((m) => m.ChromaVideoBackground),
-  { ssr: false, loading: () => null },
-);
+import { ParticleBackground } from "@/components/effects/ParticleBackground";
+import { ChromaVideoBackground } from "@/components/effects/ChromaVideoBackground";
 
 export function HeroSection({
   lang,
@@ -31,25 +22,18 @@ export function HeroSection({
   const scrollLabel = lang === "ar" ? "مرر" : "SCROLL";
 
   const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { setIsVisible(entry.isIntersecting); },
-      { threshold: 0 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section
       dir="ltr"
       ref={sectionRef}
-      className="relative flex min-h-screen items-center overflow-hidden"
-      style={{ backgroundImage: "none" }}
+      className="relative flex items-center overflow-hidden"
+      style={{
+        backgroundImage: "none",
+        minHeight: "100svh",
+        height: "auto",
+        contain: "layout paint",
+      }}
       aria-label="Hero"
     >
       <div
@@ -112,11 +96,16 @@ export function HeroSection({
           />
       </div>
 
-      <ParticleBackground isVisible={isVisible} />
-      <ChromaVideoBackground isVisible={isVisible} />
+       <ParticleBackground isVisible={true} />
+       <ChromaVideoBackground isVisible={true} />
 
       <div
         className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden"
+        style={{
+          aspectRatio: "1/1",
+          maxHeight: "50vh",
+          contain: "layout paint size",
+        }}
         aria-hidden="true"
       >
           <Image

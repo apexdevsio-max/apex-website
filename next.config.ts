@@ -8,14 +8,21 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 86400,
     deviceSizes: [320, 640, 750, 828, 1080, 1200],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    imageSizes: [16, 32, 48, 96, 128, 256, 384],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
   },
   outputFileTracingRoot: projectRoot,
+  reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['lucide-react'],
     inlineCss: true,
+    serverMinification: true,
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
   },
   async headers() {
     return [

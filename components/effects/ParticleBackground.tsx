@@ -139,7 +139,11 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 z-30 h-full w-full pointer-events-none opacity-70"
-      style={{ backgroundImage: "none", backgroundColor: "transparent" }}
+      style={{
+        backgroundImage: "none",
+        backgroundColor: "transparent",
+        contain: "layout paint size",
+      }}
       aria-hidden="true"
     />
   );

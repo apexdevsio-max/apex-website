@@ -290,25 +290,34 @@ export function ChromaVideoBackground({
         muted
         playsInline
         preload="none"
-        className="pointer-events-none absolute top-0 h-px w-px opacity-0 hidden md:block"
+        className="pointer-events-none absolute top-0 h-px w-px opacity-0"
         aria-hidden="true"
       >
         <source src="/videos/robot_welcome.mp4" type="video/mp4" />
       </video>
-      <canvas
-        ref={canvasRef}
-        className={`absolute z-40 hidden pointer-events-none transition-opacity duration-700 md:block ${
-          ready ? "opacity-100" : "opacity-0"
-        }`}
+      <div
+        className="hidden md:block absolute z-40 pointer-events-none"
         style={{
           top: 0,
           right: 0,
           width: "50%",
           height: "100%",
-          filter: "brightness(1.03) contrast(1.05) saturate(1.08)",
+          contain: "layout paint size",
         }}
-        aria-hidden="true"
-      />
+      >
+        <canvas
+          ref={canvasRef}
+          className={`absolute inset-0 transition-opacity duration-700 ${
+            ready ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            width: "100%",
+            height: "100%",
+            filter: "brightness(1.03) contrast(1.05) saturate(1.08)",
+          }}
+          aria-hidden="true"
+        />
+      </div>
     </>
   );
 }
