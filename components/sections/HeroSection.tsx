@@ -130,7 +130,7 @@ export function HeroSection({
           />
       </div>
 
-      <div className="relative z-50 mx-auto w-full max-w-7xl px-6 pb-16 pt-24 md:px-10">
+      <div className="relative z-50 mx-auto w-full max-w-7xl px-6 pb-24 md:pb-16 pt-24 md:px-10">
         <div
           dir={rtl.dirAttr}
           className={`${rtl.textAlign} md:max-w-[45%]`}
@@ -164,8 +164,8 @@ export function HeroSection({
           <h1
             className={`apex-fade-up apex-delay-2 font-bold leading-[1.04] ${rtl.fontClass}`}
             style={{
-              fontSize: "clamp(40px,5.5vw,78px)",
-              minHeight: "clamp(120px,18vw,180px)",
+              fontSize: "clamp(28px,5.5vw,78px)",
+              minHeight: "clamp(84px,18vw,180px)",
             }}
           >
             <span style={{ color: "var(--color-primary-text)" }}>

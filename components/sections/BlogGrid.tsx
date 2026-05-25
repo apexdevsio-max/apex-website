@@ -132,7 +132,7 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
           </div>
         </div>
 
-      <div className="flex flex-col justify-center p-8 flex-1">
+      <div className="flex flex-col justify-center p-5 md:p-8 flex-1">
         <div className={`flex items-center gap-3 mb-4 ${isAr ? "flex-row-reverse" : ""}`}>
           <span className="apex-tag">
             {isAr
@@ -248,7 +248,7 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
           </div>
         </div>
 
-      <div className="flex flex-col flex-1 p-6" dir={isAr ? "rtl" : "ltr"}>
+      <div className="flex flex-col flex-1 p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
         <div
           className={`flex items-center gap-2 mb-3 text-xs ${isAr ? "flex-row-reverse" : ""}`}
           style={{ color: "var(--color-secondary-text)" }}
@@ -363,7 +363,7 @@ export function BlogGrid({
 
   return (
     <section
-      className="min-h-screen pt-28 pb-24 px-6"
+      className="min-h-screen pt-16 md:pt-28 pb-16 md:pb-24 px-6"
       style={{ background: "var(--color-background)" }}
     >
       <div className="max-w-6xl mx-auto">
@@ -393,7 +393,7 @@ export function BlogGrid({
         )}
 
         <Reveal delay={100}>
-          <div className="flex flex-wrap gap-2 justify-center mb-10">
+          <div className="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1">
             {cats.map((cat) => (
               <button
                 key={cat.key}

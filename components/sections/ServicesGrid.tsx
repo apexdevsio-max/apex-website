@@ -185,7 +185,7 @@ function ServiceCard({
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-6" dir={isAr ? "rtl" : "ltr"}>
+      <div className="flex flex-1 flex-col p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
         <h2
           className={`mb-2 font-bold ${isAr ? "font-ar" : "font-en"}`}
           style={{ fontSize: "16px", color: "var(--color-primary-text)" }}
@@ -262,7 +262,7 @@ export function ServicesGrid({
 
   return (
     <main
-      className="min-h-screen px-6 pb-24 pt-28"
+      className="min-h-screen px-6 pb-16 md:pb-24 pt-16 md:pt-28"
       style={{ background: "var(--color-background)" }}
     >
       <div className="mx-auto max-w-6xl">
@@ -315,13 +315,13 @@ export function ServicesGrid({
             >
               {isAr ? "كيف نعمل معك" : "How We Work With You"}
             </h2>
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:grid-cols-4">
               {steps.map((step) => (
                 <div key={step.num} className="text-center">
                   <div
                     className="mb-2 font-en font-bold"
                     style={{
-                      fontSize: "36px",
+                      fontSize: "clamp(28px,5vw,36px)",
                       color: "color-mix(in srgb,var(--color-primary) 28%,transparent)",
                       lineHeight: 1,
                     }}

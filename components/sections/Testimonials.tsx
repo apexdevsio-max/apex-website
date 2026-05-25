@@ -15,7 +15,7 @@ export function Testimonials({
   return (
     <section
       id="testimonials"
-      className="relative py-28 md:py-36 px-6 overflow-hidden apex-section-alt"
+      className="relative py-16 md:py-36 px-6 overflow-hidden apex-section-alt"
     >
       <div
         className="absolute inset-0 pointer-events-none"
@@ -55,7 +55,7 @@ export function Testimonials({
             ) => (
               <Reveal key={index} delay={index * 100}>
                 <div
-                  className="apex-card-base apex-card-hover relative rounded-2xl p-8 h-full flex flex-col"
+                  className="apex-card-base apex-card-hover relative rounded-2xl p-5 md:p-8 h-full flex flex-col"
                   dir={isAr ? "rtl" : "ltr"}
                 >
                   <div

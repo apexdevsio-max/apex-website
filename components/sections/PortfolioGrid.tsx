@@ -260,7 +260,7 @@ function ProjectCard({
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col p-6" dir={isAr ? "rtl" : "ltr"}>
+      <div className="flex flex-1 flex-col p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
         <div className={`mb-3 flex flex-wrap gap-1.5 ${isAr ? "flex-row-reverse" : ""}`}>
           {tags.map((tag) => (
             <span
@@ -389,7 +389,7 @@ export function PortfolioGrid({
 
   return (
     <main
-      className="min-h-screen px-6 pb-24 pt-28"
+      className="min-h-screen px-6 pb-16 md:pb-24 pt-16 md:pt-28"
       style={{ background: "var(--color-background)" }}
     >
       <div className="mx-auto max-w-6xl">
@@ -417,7 +417,7 @@ export function PortfolioGrid({
         </Reveal>
 
         <Reveal delay={80}>
-          <div className="mb-12 flex flex-wrap justify-center gap-2">
+          <div className="mb-12 flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 py-1">
             {categories.map((category) => (
               <button
                 key={category.key}
@@ -480,7 +480,7 @@ export function PortfolioGrid({
 
         <Reveal delay={100}>
           <div
-            className="mt-20 grid grid-cols-2 gap-6 rounded-2xl border p-8 md:grid-cols-4"
+            className="mt-20 grid grid-cols-2 gap-6 rounded-2xl border p-5 md:p-8 md:grid-cols-4"
             style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
           >
             {[
