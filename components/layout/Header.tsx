@@ -198,21 +198,21 @@ export function Header({ lang, dictionary }: Props) {
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="p-2 rounded-full transition-colors"
+              className="p-2.5 rounded-full transition-colors"
               style={{
                 color: "var(--color-gold)",
                 background: "color-mix(in srgb, var(--color-gold) 10%, transparent)",
               }}
             >
-              {darkMode ? <Sun size={17} /> : <Moon size={17} />}
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
           ) : (
-            <div className="p-2" style={{ width: 33, height: 33 }} />
+            <div className="p-2.5" style={{ width: 37, height: 37 }} />
           )}
 
           <Link
             href={switchedHref}
-            className="px-4 py-3 md:px-3 md:py-1.5 text-xs font-bold rounded-full border transition-all min-w-[65px] text-center flex items-center justify-center"
+            className="px-4 py-3 md:px-4 md:py-2 text-xs font-bold rounded-full border transition-all min-w-[44px] text-center flex items-center justify-center"
             style={{
               color: "var(--color-lang-pill-text)",
               borderColor: "var(--color-lang-pill-border)",

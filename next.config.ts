@@ -25,6 +25,17 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  webpack: (config, { webpack: wp, isServer }) => {
+    if (!isServer) {
+      config.plugins.push(
+        new wp.NormalModuleReplacementPlugin(
+          /polyfill-module/,
+          path.join(__dirname, 'lib/polyfill-empty.js')
+        )
+      );
+    }
+    return config;
+  },
   async headers() {
     return [
       {

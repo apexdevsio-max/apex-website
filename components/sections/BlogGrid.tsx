@@ -53,7 +53,7 @@ function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
   return (
     <Link
       href={`/${lang}/blog/${post.slug}`}
-      className="apex-card-base group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+      className="apex-card-base group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 active:translate-y-0"
       style={
         {
           "--card-accent": post.accentColor,
@@ -173,7 +173,7 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
   return (
     <Link
       href={`/${lang}/blog/${post.slug}`}
-      className="apex-card-base group flex flex-col rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+      className="apex-card-base group flex flex-col rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 active:translate-y-0"
       style={
         {
           "--card-accent": post.accentColor,
@@ -184,7 +184,7 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
     >
       <div
           className="relative overflow-hidden"
-          style={{ height: "160px" }}
+          style={{ aspectRatio: "5/3" }}
         >
           {post.image ? (
             <Image
@@ -398,7 +398,7 @@ export function BlogGrid({
               <button
                 key={cat.key}
                 onClick={() => setActiveFilter(cat.key)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
+                className={`px-5 py-3.5 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
                 style={
                   activeFilter === cat.key
                     ? {

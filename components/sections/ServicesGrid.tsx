@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
 import { Reveal } from "@/components/ui/Reveal";
 import type { ServiceItem } from "@/lib/content/content-loader";
@@ -131,83 +130,107 @@ function ServiceCard({
   learnMore: string;
 }) {
   const isAr = lang === "ar";
-  const [hovered, setHovered] = useState(false);
 
   return (
-    <Link
-      href={`/${lang}/services/${service.slug}`}
-      className="apex-card-base flex flex-col overflow-hidden rounded-2xl transition-all duration-300"
-      style={{
-        borderColor: hovered ? service.accentColor : "var(--color-border)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
-        boxShadow: hovered
-          ? `0 20px 50px color-mix(in srgb,${service.accentColor} 18%,transparent)`
-          : "none",
-        textDecoration: "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div
-        className="relative flex items-center justify-center"
-        style={{ height: "156px", background: service.gradient }}
+    <>
+      <style>{`
+        .service-card {
+          --card-accent: ${service.accentColor};
+        }
+        @media (hover: hover) {
+          .service-card:hover {
+            border-color: var(--card-accent);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px color-mix(in srgb, var(--card-accent) 18%, transparent);
+          }
+          .service-card:hover .card-emoji-svc {
+            transform: scale(1.1);
+          }
+          .service-card:hover .card-arrow-svc {
+            gap: 0.75rem;
+          }
+        }
+        @media (hover: none) {
+          .service-card:active {
+            border-color: var(--card-accent);
+            transform: translateY(-3px);
+          }
+          .service-card:active .card-emoji-svc {
+            transform: scale(1.05);
+          }
+        }
+      `}</style>
+      <Link
+        href={`/${lang}/services/${service.slug}`}
+        className="service-card apex-card-base flex flex-col overflow-hidden rounded-2xl transition-all duration-300"
+        style={{
+          borderColor: "var(--color-border)",
+          transform: "translateY(0)",
+          boxShadow: "none",
+          textDecoration: "none",
+        }}
       >
         <div
-          className="absolute inset-0 opacity-15"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-            backgroundSize: "22px 22px",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute rounded-full"
-          style={{
-            width: "140px",
-            height: "140px",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: `radial-gradient(circle,${service.accentColor}30 0%,transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
-        <span
-          style={{
-            fontSize: "52px",
-            filter: "drop-shadow(0 0 16px rgba(255,255,255,0.28))",
-            transition: "transform 0.3s",
-            transform: hovered ? "scale(1.1)" : "scale(1)",
-          }}
+          className="relative flex items-center justify-center"
+          style={{ aspectRatio: "3/2", background: service.gradient }}
         >
-          {service.emoji}
-        </span>
-      </div>
-
-      <div className="flex flex-1 flex-col p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
-        <h2
-          className={`mb-2 font-bold ${isAr ? "font-ar" : "font-en"}`}
-          style={{ fontSize: "16px", color: "var(--color-primary-text)" }}
-        >
-          {service.content.title}
-        </h2>
-        <p
-          className={`mb-5 flex-1 text-sm leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          {service.content.summary}
-        </p>
-        <div
-          className={`apex-arrow flex items-center gap-2 border-t pt-4 text-sm font-bold ${
-            hovered ? "apex-arrow-shift" : ""
-          } ${isAr ? "flex-row-reverse" : ""}`}
-          style={{ color: service.accentColor, borderColor: "var(--color-border)" }}
-        >
-          {learnMore}
+          <div
+            className="absolute inset-0 opacity-15"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+              backgroundSize: "22px 22px",
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute rounded-full"
+            style={{
+              width: "140px",
+              height: "140px",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+              background: `radial-gradient(circle,${service.accentColor}30 0%,transparent 70%)`,
+            }}
+            aria-hidden="true"
+          />
+          <span
+            className="card-emoji-svc"
+            style={{
+              fontSize: "52px",
+              filter: "drop-shadow(0 0 16px rgba(255,255,255,0.28))",
+              transition: "transform 0.3s",
+            }}
+          >
+            {service.emoji}
+          </span>
         </div>
-      </div>
-    </Link>
+
+        <div className="flex flex-1 flex-col p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
+          <h2
+            className={`mb-2 font-bold ${isAr ? "font-ar" : "font-en"}`}
+            style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "var(--color-primary-text)" }}
+          >
+            {service.content.title}
+          </h2>
+          <p
+            className={`mb-5 flex-1 text-sm leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            style={{ color: "var(--color-secondary-text)" }}
+          >
+            {service.content.summary}
+          </p>
+          <div
+            className={`card-arrow-svc apex-arrow flex items-center gap-2 border-t pt-4 text-sm font-bold ${
+              isAr ? "flex-row-reverse" : ""
+            }`}
+            style={{ color: service.accentColor, borderColor: "var(--color-border)" }}
+          >
+            {learnMore}
+          </div>
+        </div>
+      </Link>
+    </>
   );
 }
 

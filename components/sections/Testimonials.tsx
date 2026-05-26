@@ -86,7 +86,7 @@ export function Testimonials({
                     className={`leading-relaxed flex-1 italic mb-7 ${
                       isAr ? "font-ar" : "font-en"
                     }`}
-                    style={{ fontSize: "13px", color: "var(--color-secondary-text)" }}
+                    style={{ fontSize: "clamp(14px, 1.5vw, 16px)", color: "var(--color-secondary-text)" }}
                   >
                     {item.text}
                   </p>

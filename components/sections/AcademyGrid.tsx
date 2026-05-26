@@ -55,136 +55,160 @@ type GridCourse = {
 function CourseCard({ course, lang }: { course: GridCourse; lang: Locale }) {
   const isAr = lang === "ar";
   const content = course[lang];
-  const [hovered, setHovered] = useState(false);
   const levelColor = LEVEL_COLORS[course.level] ?? "#00BCD4";
 
   return (
-    <Link
-      href={`/${lang}/academy/${course.slug}`}
-      className="apex-card-base flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
-      style={{
-        borderColor: hovered ? course.accentColor : "var(--color-border)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
-        boxShadow: hovered
-          ? `0 20px 50px color-mix(in srgb,${course.accentColor} 18%,transparent)`
-          : "none",
-        textDecoration: "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div
-        className="relative flex items-center justify-center"
-        style={{ height: "168px", background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}
+    <>
+      <style>{`
+        .academy-card {
+          --card-accent: ${course.accentColor};
+        }
+        @media (hover: hover) {
+          .academy-card:hover {
+            border-color: var(--card-accent);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px color-mix(in srgb, var(--card-accent) 18%, transparent);
+          }
+          .academy-card:hover .card-emoji-ac {
+            transform: scale(1.12);
+          }
+          .academy-card:hover .card-arrow-ac {
+            gap: 0.75rem;
+          }
+        }
+        @media (hover: none) {
+          .academy-card:active {
+            border-color: var(--card-accent);
+            transform: translateY(-3px);
+          }
+          .academy-card:active .card-emoji-ac {
+            transform: scale(1.06);
+          }
+        }
+      `}</style>
+      <Link
+        href={`/${lang}/academy/${course.slug}`}
+        className="academy-card apex-card-base flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
+        style={{
+          borderColor: "var(--color-border)",
+          transform: "translateY(0)",
+          boxShadow: "none",
+          textDecoration: "none",
+        }}
       >
         <div
-          className="absolute inset-0 opacity-15"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-            backgroundSize: "22px 22px",
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: "150px",
-            height: "150px",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: `radial-gradient(circle,${course.accentColor}30 0%,transparent 70%)`,
-          }}
-          aria-hidden="true"
-        />
-        <span
-          style={{
-            fontSize: "56px",
-            filter: "drop-shadow(0 0 18px rgba(255,255,255,0.28))",
-            transition: "transform 0.3s",
-            transform: hovered ? "scale(1.12)" : "scale(1)",
-          }}
+          className="relative flex items-center justify-center"
+          style={{ aspectRatio: "5/3", background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}
         >
-          {course.emoji}
-        </span>
-        <div
-          className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
-          style={{
-            [isAr ? "left" : "right"]: "10px",
-            background: `color-mix(in srgb,${levelColor} 18%,rgba(0,0,0,0.55))`,
-            border: `1px solid ${levelColor}55`,
-            color: levelColor,
-          }}
-        >
-          {content.level}
-        </div>
-      </div>
-
-      <div className="flex flex-col flex-1 p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
-        <div
-          className={`flex items-center gap-3 mb-3 text-xs flex-wrap ${isAr ? "flex-row-reverse" : ""}`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          <span>
-            📚 {course.lessonsCount} {isAr ? "درس" : "lessons"}
+          <div
+            className="absolute inset-0 opacity-15"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+              backgroundSize: "22px 22px",
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              width: "150px",
+              height: "150px",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+              background: `radial-gradient(circle,${course.accentColor}30 0%,transparent 70%)`,
+            }}
+            aria-hidden="true"
+          />
+          <span
+            className="card-emoji-ac"
+            style={{
+              fontSize: "56px",
+              filter: "drop-shadow(0 0 18px rgba(255,255,255,0.28))",
+              transition: "transform 0.3s",
+            }}
+          >
+            {course.emoji}
           </span>
-          <span>·</span>
-          <span>⏱ {course.duration[lang]}</span>
+          <div
+            className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
+            style={{
+              [isAr ? "left" : "right"]: "10px",
+              background: `color-mix(in srgb,${levelColor} 18%,rgba(0,0,0,0.55))`,
+              border: `1px solid ${levelColor}55`,
+              color: levelColor,
+            }}
+          >
+            {content.level}
+          </div>
         </div>
 
-        <h3
-          className={`font-bold mb-2 leading-snug ${isAr ? "font-ar" : "font-en"}`}
-          style={{ fontSize: "15px", color: "var(--color-primary-text)" }}
-        >
-          {content.title}
-        </h3>
+        <div className="flex flex-col flex-1 p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
+          <div
+            className={`flex items-center gap-3 mb-3 text-xs flex-wrap ${isAr ? "flex-row-reverse" : ""}`}
+            style={{ color: "var(--color-secondary-text)" }}
+          >
+            <span>
+              📚 {course.lessonsCount} {isAr ? "درس" : "lessons"}
+            </span>
+            <span>·</span>
+            <span>⏱ {course.duration[lang]}</span>
+          </div>
 
-        <p
-          className={`text-sm leading-relaxed flex-1 mb-4 ${isAr ? "font-ar" : "font-en"}`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          {content.summary}
-        </p>
+          <h3
+            className={`font-bold mb-2 leading-snug ${isAr ? "font-ar" : "font-en"}`}
+            style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "var(--color-primary-text)" }}
+          >
+            {content.title}
+          </h3>
 
-        <div className="mb-4 space-y-1.5">
-          {course.lessons.slice(0, 2).map((lesson, index) => (
-            <div
-              key={lesson.slug}
-              className={`flex items-center gap-2 text-xs ${isAr ? "flex-row-reverse" : ""}`}
-              style={{ color: "var(--color-secondary-text)" }}
-            >
-              <span
-                className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
-                style={{
-                  background: `color-mix(in srgb,${course.accentColor} 18%,transparent)`,
-                  color: course.accentColor,
-                }}
+          <p
+            className={`text-sm leading-relaxed flex-1 mb-4 ${isAr ? "font-ar" : "font-en"}`}
+            style={{ color: "var(--color-secondary-text)" }}
+          >
+            {content.summary}
+          </p>
+
+          <div className="mb-4 space-y-1.5">
+            {course.lessons.slice(0, 2).map((lesson, index) => (
+              <div
+                key={lesson.slug}
+                className={`flex items-center gap-2 text-xs ${isAr ? "flex-row-reverse" : ""}`}
+                style={{ color: "var(--color-secondary-text)" }}
               >
-                {index + 1}
-              </span>
-              <span className={isAr ? "font-ar" : "font-en"}>{lesson[lang]}</span>
-            </div>
-          ))}
+                <span
+                  className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0"
+                  style={{
+                    background: `color-mix(in srgb,${course.accentColor} 18%,transparent)`,
+                    color: course.accentColor,
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span className={isAr ? "font-ar" : "font-en"}>{lesson[lang]}</span>
+              </div>
+            ))}
 
-          {course.lessons.length > 2 && (
-            <div
-              className={`text-xs ${isAr ? "font-ar text-right" : "font-en"}`}
-              style={{ color: course.accentColor }}
-            >
-              +{course.lessons.length - 2} {isAr ? "دروس أخرى" : "more lessons"}
-            </div>
-          )}
-        </div>
+            {course.lessons.length > 2 && (
+              <div
+                className={`text-xs ${isAr ? "font-ar text-right" : "font-en"}`}
+                style={{ color: course.accentColor }}
+              >
+                +{course.lessons.length - 2} {isAr ? "دروس أخرى" : "more lessons"}
+              </div>
+            )}
+          </div>
 
-        <div
-          className={`flex items-center gap-2 font-bold text-sm mt-auto border-t pt-4 apex-arrow ${hovered ? "apex-arrow-shift" : ""} ${isAr ? "flex-row-reverse" : ""}`}
-          style={{ color: course.accentColor, borderColor: "var(--color-border)" }}
-        >
-          {isAr ? "ابدأ الدورة" : "Start Course"}
+          <div
+            className={`card-arrow-ac flex items-center gap-2 font-bold text-sm mt-auto border-t pt-4 apex-arrow ${isAr ? "flex-row-reverse" : ""}`}
+            style={{ color: course.accentColor, borderColor: "var(--color-border)" }}
+          >
+            {isAr ? "ابدأ الدورة" : "Start Course"}
+          </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </>
   );
 }
 
@@ -280,7 +304,7 @@ export function AcademyGrid({
               <button
                 key={cat.key}
                 onClick={() => setActiveFilter(cat.key)}
-                className={`px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
+                className={`px-5 py-3.5 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
                 style={
                   activeFilter === cat.key
                     ? {

@@ -181,144 +181,173 @@ function ProjectCard({
   driveUrl?: string;
 }) {
   const isAr = lang === "ar";
-  const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   return (
-    <div className="apex-card-base group flex flex-col overflow-hidden rounded-2xl transition-all duration-300"
-      style={{
-        borderColor: hovered ? accentColor : "var(--color-border)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
-        boxShadow: hovered
-          ? `0 20px 50px color-mix(in srgb,${accentColor} 20%,transparent)`
-          : "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <Link href={`/${lang}/portfolio/${slug}`} className="block" style={{ textDecoration: "none" }}>
-        <div className="relative overflow-hidden" style={{ height: "200px", background: gradient }}>
-          {thumbnail && !imgError ? (
-            <Image
-              src={thumbnail}
-              alt={title}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover transition-transform duration-500"
-              style={{ transform: hovered ? "scale(1.08)" : "scale(1)" }}
-              onError={() => setImgError(true)}
-            />
-          ) : (
-            <>
-              <div
-                className="absolute inset-0 opacity-20"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-                aria-hidden="true"
+    <>
+      <style>{`
+        .portfolio-card {
+          --card-accent: ${accentColor};
+        }
+        @media (hover: hover) {
+          .portfolio-card:hover {
+            border-color: var(--card-accent);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px color-mix(in srgb, var(--card-accent) 20%, transparent);
+          }
+          .portfolio-card:hover .card-img {
+            transform: scale(1.08);
+          }
+          .portfolio-card:hover .card-emoji-pf {
+            transform: scale(1.12);
+          }
+          .portfolio-card:hover .card-glow-pf {
+            width: 220px;
+            height: 220px;
+          }
+        }
+        @media (hover: none) {
+          .portfolio-card:active {
+            border-color: var(--card-accent);
+            transform: translateY(-3px);
+          }
+          .portfolio-card:active .card-emoji-pf {
+            transform: scale(1.06);
+          }
+        }
+      `}</style>
+      <div className="portfolio-card apex-card-base group flex flex-col overflow-hidden rounded-2xl transition-all duration-300"
+        style={{
+          borderColor: "var(--color-border)",
+          transform: "translateY(0)",
+          boxShadow: "none",
+        }}
+      >
+        <Link href={`/${lang}/portfolio/${slug}`} className="block" style={{ textDecoration: "none" }}>
+          <div className="relative overflow-hidden" style={{ aspectRatio: "4/3", background: gradient }}>
+            {thumbnail && !imgError ? (
+              <Image
+                src={thumbnail}
+                alt={title}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="card-img object-cover transition-transform duration-500"
+                onError={() => setImgError(true)}
               />
-              <div
-                className="pointer-events-none absolute rounded-full transition-all duration-500"
+            ) : (
+              <>
+                <div
+                  className="absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+                    backgroundSize: "24px 24px",
+                  }}
+                  aria-hidden="true"
+                />
+                <div
+                  className="card-glow-pf pointer-events-none absolute rounded-full transition-all duration-500"
+                  style={{
+                    width: "160px",
+                    height: "160px",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%,-50%)",
+                    background: `radial-gradient(circle,${accentColor}30 0%,transparent 70%)`,
+                  }}
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    fontSize: "64px",
+                    filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
+                    transition: "transform 0.3s ease",
+                    transform: "scale(1)",
+                  }}
+                >
+                  <span className="card-emoji-pf" style={{ transition: "transform 0.3s ease" }}>
+                    {emoji}
+                  </span>
+                </div>
+              </>
+            )}
+
+            <div
+              className="absolute top-3 rounded-full px-3 py-1.5 text-xs font-bold"
+              style={{
+                [isAr ? "left" : "right"]: "12px",
+                background: `color-mix(in srgb,${accentColor} 20%,rgba(0,0,0,0.5))`,
+                border: `1px solid ${accentColor}50`,
+                color: accentColor,
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              {categoryLabel}
+            </div>
+          </div>
+        </Link>
+
+        <div className="flex flex-1 flex-col p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
+          <div className={`mb-3 flex flex-wrap gap-1.5 ${isAr ? "flex-row-reverse" : ""}`}>
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                 className="rounded-full px-2 py-0.5 text-xs font-semibold"
                 style={{
-                  width: hovered ? "220px" : "160px",
-                  height: hovered ? "220px" : "160px",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%,-50%)",
-                  background: `radial-gradient(circle,${accentColor}30 0%,transparent 70%)`,
-                }}
-                aria-hidden="true"
-              />
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{
-                  fontSize: "64px",
-                  filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
-                  transition: "transform 0.3s ease",
-                  transform: hovered ? "scale(1.12)" : "scale(1)",
+                  background: "color-mix(in srgb,var(--color-primary) 10%,transparent)",
+                  color: "var(--color-primary)",
+                  border: "1px solid color-mix(in srgb,var(--color-primary) 22%,transparent)",
                 }}
               >
-                {emoji}
-              </div>
-            </>
-          )}
+                {tag}
+              </span>
+            ))}
+          </div>
 
-          <div
-            className="absolute top-3 rounded-full px-3 py-1 text-xs font-bold"
-            style={{
-              [isAr ? "left" : "right"]: "12px",
-              background: `color-mix(in srgb,${accentColor} 20%,rgba(0,0,0,0.5))`,
-              border: `1px solid ${accentColor}50`,
-              color: accentColor,
-              backdropFilter: "blur(8px)",
-            }}
+          <h3
+            className={`mb-2 font-bold leading-snug ${isAr ? "font-ar" : "font-en"}`}
+            style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "var(--color-primary-text)" }}
           >
-            {categoryLabel}
+            {title}
+          </h3>
+
+          <p
+            className={`flex-1 text-sm leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            style={{ color: "var(--color-secondary-text)" }}
+          >
+            {summary}
+          </p>
+
+          <div className={`mt-auto flex flex-wrap items-center gap-3 pt-4 ${isAr ? "flex-row-reverse" : ""}`}>
+            <Link
+              href={`/${lang}/portfolio/${slug}`}
+              className="flex items-center gap-2 text-sm font-bold transition-colors hover:opacity-80 py-2"
+              style={{ color: accentColor }}
+            >
+              {ctaLabel}
+            </Link>
+
+            {driveUrl && (
+              <a
+                href={driveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all hover:opacity-85"
+                style={{
+                  background: `color-mix(in srgb,${accentColor} 14%,transparent)`,
+                  color: accentColor,
+                  border: `1px solid color-mix(in srgb,${accentColor} 30%,transparent)`,
+                }}
+              >
+                <ExternalLink size={14} />
+                {isAr ? "مشاهدة" : "Watch"}
+              </a>
+            )}
           </div>
         </div>
-      </Link>
-
-      <div className="flex flex-1 flex-col p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
-        <div className={`mb-3 flex flex-wrap gap-1.5 ${isAr ? "flex-row-reverse" : ""}`}>
-          {tags.map((tag) => (
-            <span
-              key={tag}
-               className="rounded-full px-2 py-0.5 text-xs font-semibold"
-              style={{
-                background: "color-mix(in srgb,var(--color-primary) 10%,transparent)",
-                color: "var(--color-primary)",
-                border: "1px solid color-mix(in srgb,var(--color-primary) 22%,transparent)",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <h3
-          className={`mb-2 font-bold leading-snug ${isAr ? "font-ar" : "font-en"}`}
-          style={{ fontSize: "16px", color: "var(--color-primary-text)" }}
-        >
-          {title}
-        </h3>
-
-        <p
-          className={`flex-1 text-sm leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          {summary}
-        </p>
-
-        <div className={`mt-auto flex flex-wrap items-center gap-3 pt-4 ${isAr ? "flex-row-reverse" : ""}`}>
-          <Link
-            href={`/${lang}/portfolio/${slug}`}
-            className="flex items-center gap-2 text-sm font-bold transition-colors hover:opacity-80"
-            style={{ color: accentColor }}
-          >
-            {ctaLabel}
-          </Link>
-
-          {driveUrl && (
-            <a
-              href={driveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all hover:opacity-85"
-              style={{
-                background: `color-mix(in srgb,${accentColor} 14%,transparent)`,
-                color: accentColor,
-                border: `1px solid color-mix(in srgb,${accentColor} 30%,transparent)`,
-              }}
-            >
-              <ExternalLink size={12} />
-              {isAr ? "مشاهدة" : "Watch"}
-            </a>
-          )}
-        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -422,7 +451,7 @@ export function PortfolioGrid({
               <button
                 key={category.key}
                 onClick={() => setActiveFilter(category.key)}
-                className={`rounded-full border px-5 py-3 text-sm font-bold transition-all duration-200 ${
+                className={`rounded-full border px-5 py-3.5 text-sm font-bold transition-all duration-200 ${
                   isAr ? "font-ar" : "font-en"
                 }`}
                 style={

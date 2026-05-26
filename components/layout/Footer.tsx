@@ -60,7 +60,7 @@ export function Footer({
                     <li key={key}>
                       <Link
                         href={`/${lang}${path ? `/${path}` : ""}`}
-                        className="text-sm transition-colors hover:text-apex-primary block py-1"
+                        className="text-sm transition-colors hover:text-apex-primary block py-3"
                       >
                         {label}
                       </Link>
@@ -97,7 +97,7 @@ export function Footer({
             </div>
             <Link 
               href={`/${lang}/contact`}
-              className="inline-flex items-center gap-2 text-sm font-bold transition-all px-4 py-3 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
+              className="inline-flex items-center gap-2 text-sm font-bold transition-all px-5 py-3.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
             >
               Get Quote
               <span className={`${rtl.arrowRotate}`}>→</span>
@@ -106,14 +106,14 @@ export function Footer({
         </div>
 
         <div className="border-t border-apex-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className={`text-xs ${rtl.fontClass}`} style={{ opacity: 0.6 }}>
+          <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.6 }}>
             © {year} Apex. {footer.rights}. {isAr ? 'جميع الحقوق محفوظة' : 'All rights reserved.'}
           </p>
           <div className="flex gap-4">
-            <Link href={`/${lang}/privacy`} className="text-xs hover:text-apex-primary transition-colors">
+            <Link href={`/${lang}/privacy`} className="text-sm hover:text-apex-primary transition-colors py-2">
               {footer.privacy}
             </Link>
-            <Link href={`/${lang}/terms`} className="text-xs hover:text-apex-primary transition-colors">
+            <Link href={`/${lang}/terms`} className="text-sm hover:text-apex-primary transition-colors py-2">
               {footer.terms}
             </Link>
           </div>

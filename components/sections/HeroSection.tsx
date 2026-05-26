@@ -24,9 +24,22 @@ export function HeroSection({
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <section
-      dir="ltr"
-      ref={sectionRef}
+    <>
+      <style>{`
+        @media (hover: hover) {
+          .hero-cta-secondary:hover {
+            background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+          }
+        }
+        @media (hover: none) {
+          .hero-cta-secondary:active {
+            background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+          }
+        }
+      `}</style>
+      <section
+        dir="ltr"
+        ref={sectionRef}
       className="relative flex items-center overflow-hidden"
       style={{
         backgroundImage: "none",
@@ -204,17 +217,11 @@ export function HeroSection({
 
             <Link
               href={`/${lang}/contact`}
-              className="inline-flex items-center gap-2 rounded-full border-2 px-8 py-3.5 text-sm font-bold transition-all"
+              className="hero-cta-secondary inline-flex items-center gap-2 rounded-full border-2 px-8 py-3.5 text-sm font-bold transition-all"
               style={{
                 color: "var(--color-primary)",
                 borderColor: "var(--color-primary)",
-              }}
-              onMouseEnter={(event) => {
-                event.currentTarget.style.background =
-                  "color-mix(in srgb,var(--color-primary) 10%,transparent)";
-              }}
-              onMouseLeave={(event) => {
-                event.currentTarget.style.background = "transparent";
+                background: "transparent",
               }}
             >
               {heroSection.ctaSecondary}
@@ -258,5 +265,6 @@ export function HeroSection({
         />
       </div>
     </section>
+    </>
   );
 }
