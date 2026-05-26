@@ -2,11 +2,16 @@
 /* Path: app/[lang]/academy/page.tsx */
 import { notFound }      from "next/navigation";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 
 import { getAcademyCourses }  from "@/lib/content/content-loader";
 import { isLocale }           from "@/lib/i18n/locale";
-import { AcademyGrid }        from "@/components/sections/AcademyGrid";
 import { buildPageMeta } from "@/lib/seo/metadata";
+
+const AcademyGrid = dynamic(
+  () => import("@/components/sections/AcademyGrid").then((m) => m.AcademyGrid),
+  { ssr: true }
+);
 
 type Props = { params: Promise<{ lang: string }> };
 

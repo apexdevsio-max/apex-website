@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-import { HeroSection } from "@/components/sections/HeroSection";
+const HeroSection = dynamic(
+  () => import("@/components/sections/HeroSection").then((m) => m.HeroSection),
+  { ssr: true }
+);
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale } from "@/lib/i18n/locale";
 import { socialLinks } from "@/data/social-links";
