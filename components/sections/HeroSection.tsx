@@ -100,7 +100,7 @@ export function HeroSection({
              sizes="(max-width: 768px) 40vw, 360px"
              className="object-contain"
              loading="lazy"
-             quality={30}
+             quality={50}
            />
       </div>
 

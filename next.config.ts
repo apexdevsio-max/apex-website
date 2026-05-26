@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 86400,
     deviceSizes: [320, 640, 750, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 96, 128, 256, 384],
+    qualities: [40, 50, 60, 75],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
   },
