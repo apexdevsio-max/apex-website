@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale } from "@/lib/i18n/locale";
-import { socialLinks } from "@/data/social-links";
-import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import { buildPageMeta } from "@/lib/seo/metadata";
+import { JsonLd, buildOrganizationSchema } from "@/lib/seo/schema";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -25,35 +25,12 @@ export default async function AboutPage({ params }: Props) {
   const { lang: langParam } = await params;
   if (!isLocale(langParam)) notFound();
 
-  const lang = langParam;
+  const lang = langParam as "en" | "ar";
   const dictionary = await getDictionary(lang);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "APEX",
-            url: siteUrl,
-            logo: `${siteUrl}/images/Apex_logo.png`,
-            sameAs: [
-              socialLinks.instagram ?? "",
-              socialLinks.linkedin ?? "",
-              socialLinks.twitter ?? "",
-            ].filter(Boolean),
-            contactPoint: {
-              "@type": "ContactPoint",
-              telephone: socialLinks.whatsapp,
-              contactType: "customer support",
-              availableLanguage: ["Arabic", "English"],
-            },
-          }),
-        }}
-      />
+      <JsonLd schema={buildOrganizationSchema(lang)} />
       <AboutSection lang={lang} dictionary={dictionary} />
     </>
   );

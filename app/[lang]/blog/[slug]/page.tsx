@@ -6,6 +6,12 @@ import type { Metadata } from "next";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildBlogPostingSchema,
+  buildBreadcrumbSchema,
+} from "@/lib/seo/schema";
 import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, MOCK_POST_SLUGS } from "@/lib/mock/blog-data";
 
 export async function generateStaticParams() {
@@ -121,46 +127,22 @@ export default async function BlogPostPage({
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: `${siteUrl}/${lang}` },
-              { "@type": "ListItem", position: 2, name: isAr ? "المدونة" : "Blog", item: `${siteUrl}/${lang}/blog` },
-              { "@type": "ListItem", position: 3, name: title },
-            ],
-          }),
-        }}
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd
+        schema={buildBreadcrumbSchema([
+          { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+          { name: isAr ? "المدونة" : "Blog", url: `${siteUrl}/${lang}/blog` },
+          { name: title, url: `${siteUrl}/${lang}/blog/${slug}` },
+        ])}
       />
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: title,
-            description: excerpt,
-            url: `${siteUrl}/${lang}/blog/${slug}`,
-            datePublished: date || undefined,
-            author: {
-              "@type": "Organization",
-              name: "APEX",
-              url: siteUrl,
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "APEX",
-              logo: `${siteUrl}/images/Apex_logo.png`,
-            },
-            image: `${siteUrl}/images/Apex_logo.png`,
-            inLanguage: isAr ? "ar" : "en",
-          }),
-        }}
+      <JsonLd
+        schema={buildBlogPostingSchema({
+          title,
+          excerpt,
+          url: `${siteUrl}/${lang}/blog/${slug}`,
+          datePublished: date || undefined,
+          lang,
+        })}
       />
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-3xl mx-auto">

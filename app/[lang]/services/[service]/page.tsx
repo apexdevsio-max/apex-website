@@ -4,7 +4,13 @@ import type { Metadata } from "next";
 
 import { getServiceBySlug, getServices } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
-import { buildPageMeta } from "@/lib/seo/metadata";
+import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildServiceSchema,
+  buildBreadcrumbSchema,
+} from "@/lib/seo/schema";
 import { MOCK_SERVICES, MOCK_SERVICE_SLUGS } from "@/lib/mock/services-data";
 
 export async function generateStaticParams() {
@@ -89,12 +95,22 @@ export default async function ServiceDetailsPage({
   const process = mockContent?.process ?? [];
   const result = mockContent?.result ?? "";
 
+  const breadcrumbItems = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "خدماتنا" : "Services", url: `${siteUrl}/${lang}/services` },
+    { name: title, url: `${siteUrl}/${lang}/services/${slug}` },
+  ];
+
   return (
-    <div
-      className="min-h-screen pt-24 pb-24 px-6"
-      style={{ background: "var(--color-background)" }}
-      dir={isAr ? "rtl" : "ltr"}
-    >
+    <>
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildServiceSchema(slug, title, summary, lang)} />
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      <div
+        className="min-h-screen pt-24 pb-24 px-6"
+        style={{ background: "var(--color-background)" }}
+        dir={isAr ? "rtl" : "ltr"}
+      >
       <div className="max-w-4xl mx-auto">
         <Link
           href={`/${lang}/services`}
@@ -309,5 +325,6 @@ export default async function ServiceDetailsPage({
         </div>
       </div>
     </div>
+    </>
   );
 }

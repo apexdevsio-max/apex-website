@@ -4,7 +4,13 @@ import dynamic            from "next/dynamic";
 
 import { getBlogPosts }  from "@/lib/content/content-loader";
 import { isLocale }      from "@/lib/i18n/locale";
-import { buildPageMeta } from "@/lib/seo/metadata";
+import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildBlogSchema,
+  buildBreadcrumbSchema,
+} from "@/lib/seo/schema";
 
 const BlogGrid = dynamic(
   () => import("@/components/sections/BlogGrid").then((m) => m.BlogGrid),
@@ -46,8 +52,21 @@ export default async function BlogPage({ params }: Props) {
   const { lang: langParam } = await params;
   if (!isLocale(langParam)) notFound();
 
-  const lang       = langParam;
+  const lang       = langParam as "en" | "ar";
   const mdxPosts   = await getBlogPosts(lang);
+  const isAr = lang === "ar";
 
-  return <BlogGrid lang={lang} mdxPosts={mdxPosts} />;
+  const breadcrumbItems = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "المدونة" : "Blog", url: `${siteUrl}/${lang}/blog` },
+  ];
+
+  return (
+    <>
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildBlogSchema(lang)} />
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      <BlogGrid lang={lang} mdxPosts={mdxPosts} />
+    </>
+  );
 }

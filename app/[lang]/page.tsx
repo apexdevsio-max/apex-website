@@ -9,7 +9,14 @@ const HeroSection = dynamic(
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale } from "@/lib/i18n/locale";
 import { socialLinks } from "@/data/social-links";
-import { buildPageMetadata, siteUrl } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+  buildServiceSchema,
+} from "@/lib/seo/schema";
+import { MOCK_SERVICES, MOCK_SERVICE_SLUGS } from "@/lib/mock/services-data";
 
 const AboutSection = dynamic(
   () => import("@/components/sections/AboutSection").then((m) => m.AboutSection),
@@ -52,35 +59,22 @@ export default async function HomePage({ params }: Props) {
 
   if (!isLocale(langParam)) notFound();
 
-  const lang = langParam;
+  const lang = langParam as "en" | "ar";
   const dictionary = await getDictionary(lang);
+
+  const serviceSchemas = MOCK_SERVICE_SLUGS.map((slug) => {
+    const service = MOCK_SERVICES[slug];
+    const content = service[lang];
+    return buildServiceSchema(slug, content.title, content.summary, lang);
+  });
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "APEX",
-            url: siteUrl,
-            logo: `${siteUrl}/images/Apex_logo.png`,
-            sameAs: [
-              socialLinks.instagram ?? "",
-              socialLinks.linkedin ?? "",
-              socialLinks.twitter ?? "",
-            ].filter(Boolean),
-            contactPoint: {
-              "@type": "ContactPoint",
-              telephone: socialLinks.whatsapp,
-              contactType: "customer support",
-              availableLanguage: ["Arabic", "English"],
-            },
-          }),
-        }}
-      />
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildWebSiteSchema()} />
+      {serviceSchemas.map((schema) => (
+        <JsonLd key={schema.url as string} schema={schema} />
+      ))}
 
       <HeroSection lang={lang} dictionary={dictionary} />
       <AboutSection lang={lang} dictionary={dictionary} />

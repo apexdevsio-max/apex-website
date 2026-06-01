@@ -5,7 +5,13 @@ import dynamic            from "next/dynamic";
 import { getDictionary }     from "@/lib/i18n/i18n";
 import { getPortfolioItems } from "@/lib/content/content-loader";
 import { isLocale }          from "@/lib/i18n/locale";
-import { buildPageMeta } from "@/lib/seo/metadata";
+import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildPortfolioCollectionSchema,
+  buildBreadcrumbSchema,
+} from "@/lib/seo/schema";
 
 const PortfolioGrid = dynamic(
   () => import("@/components/sections/PortfolioGrid").then((m) => m.PortfolioGrid),
@@ -47,15 +53,26 @@ export default async function PortfolioPage({ params }: Props) {
   const { lang: langParam } = await params;
   if (!isLocale(langParam)) notFound();
 
-  const lang       = langParam;
+  const lang       = langParam as "en" | "ar";
   const dictionary = await getDictionary(lang);
   const mdxItems   = await getPortfolioItems(lang);
+  const isAr = lang === "ar";
+
+  const breadcrumbItems = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "أعمالنا" : "Portfolio", url: `${siteUrl}/${lang}/portfolio` },
+  ];
 
   return (
-    <PortfolioGrid
-      lang={lang}
-      dictionary={dictionary}
-      mdxItems={mdxItems}
-    />
+    <>
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      <JsonLd schema={buildPortfolioCollectionSchema(mdxItems, lang)} />
+      <PortfolioGrid
+        lang={lang}
+        dictionary={dictionary}
+        mdxItems={mdxItems}
+      />
+    </>
   );
 }

@@ -6,6 +6,13 @@ import { getDictionary } from "@/lib/i18n/i18n";
 import { getServices } from "@/lib/content/content-loader";
 import { isLocale } from "@/lib/i18n/locale";
 import { buildPageMeta } from "@/lib/seo/metadata";
+import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildServiceCollectionSchema,
+  buildBreadcrumbSchema,
+} from "@/lib/seo/schema";
+import { siteUrl } from "@/lib/seo/metadata";
 
 const ServicesGrid = dynamic(
   () => import("@/components/sections/ServicesGrid").then((m) => m.ServicesGrid),
@@ -47,15 +54,27 @@ export default async function ServicesPage({ params }: Props) {
   const { lang: langParam } = await params;
   if (!isLocale(langParam)) notFound();
 
-  const lang = langParam;
+  const lang = langParam as "en" | "ar";
   const dictionary = await getDictionary(lang);
   const mdxItems = await getServices(lang);
+  const isAr = lang === "ar";
+
+  const breadcrumbItems = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "خدماتنا" : "Services", url: `${siteUrl}/${lang}/services` },
+  ];
 
   return (
-    <ServicesGrid
-      lang={lang}
-      dictionary={dictionary}
-      mdxItems={mdxItems}
-    />
+    <>
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      <JsonLd schema={buildServiceCollectionSchema(mdxItems, lang)} />
+
+      <ServicesGrid
+        lang={lang}
+        dictionary={dictionary}
+        mdxItems={mdxItems}
+      />
+    </>
   );
 }

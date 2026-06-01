@@ -163,7 +163,50 @@
     "description": "نحن على بعد رسالة واحدة، وسنرد خلال وقت قصير.",
     "available": "متاحون الآن - نرد خلال ساعتين",
     "email": "أرسل بريدًا إلكترونيًا",
-    "whatsapp": "تواصل عبر واتساب"
+    "whatsapp": "تواصل عبر واتساب",
+    "form": {
+      "title": "أخبرنا عن مشروعك",
+      "subtitle": "ساعدنا على فهم احتياجاتك لنعدّ أفضل نهج لمشروعك.",
+      "name": "الاسم الكامل",
+      "namePlaceholder": "اسمك الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "you@example.com",
+      "phone": "رقم الهاتف (اختياري)",
+      "phonePlaceholder": "+963 99 999 9999",
+      "projectType": "نوع المشروع",
+      "projectTypePlaceholder": "اختر نوع المشروع",
+      "projectTypeOptions": {
+        "web": "تطوير ويب",
+        "mobile": "تطبيق موبايل",
+        "ai": "حل ذكاء اصطناعي",
+        "uiux": "تصميم UI/UX",
+        "ecommerce": "متجر إلكتروني",
+        "content": "صناعة محتوى",
+        "other": "أخرى"
+      },
+      "budget": "الميزانية التقريبية",
+      "budgetPlaceholder": "اختر مجال الميزانية",
+      "budgetOptions": {
+        "low": "أقل من $1,000",
+        "medium": "$1,000 — $5,000",
+        "high": "$5,000 — $10,000",
+        "premium": "$10,000 — $25,000",
+        "enterprise": "$25,000+"
+      },
+      "description": "وصف المشروع",
+      "descriptionPlaceholder": "حدثنا عن مشروعك، أهدافك، والجدول الزمني...",
+      "sendWhatsapp": "أرسل عبر واتساب",
+      "sendEmail": "أرسل عبر البريد",
+      "success": "شكرًا لك! تم تجهيز استفسارك.",
+      "errors": {
+        "nameRequired": "الرجاء إدخال الاسم",
+        "emailRequired": "الرجاء إدخال البريد الإلكتروني",
+        "emailInvalid": "الرجاء إدخال بريد إلكتروني صحيح",
+        "projectTypeRequired": "الرجاء اختيار نوع المشروع",
+        "budgetRequired": "الرجاء اختيار مجال الميزانية",
+        "descriptionRequired": "الرجاء وصف مشروعك"
+      }
+    }
   },
   "footer": {
     "tagline": "Code · AI · Future",

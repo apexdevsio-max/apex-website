@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const OG_SITE_URL = "https://apex-tech.sa";
+import { siteUrl } from "./metadata";
 
 export const openGraph: NonNullable<Metadata["openGraph"]> = {
   title: "APEX",
@@ -8,7 +8,7 @@ export const openGraph: NonNullable<Metadata["openGraph"]> = {
   type: "website",
   images: [
     {
-      url: `${OG_SITE_URL}/images/Apex_logo.png`,
+      url: `${siteUrl}/images/Apex_logo.png`,
       width: 1200,
       height: 630,
       alt: "APEX",

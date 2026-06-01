@@ -11,6 +11,12 @@ import {
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
+  JsonLd,
+  buildOrganizationSchema,
+  buildCreativeWorkSchema,
+  buildBreadcrumbSchema,
+} from "@/lib/seo/schema";
+import {
   FALLBACK_PORTFOLIO,
   MOCK_PORTFOLIO,
   MOCK_PORTFOLIO_SLUGS,
@@ -122,20 +128,24 @@ export default async function PortfolioItemPage({
       style={{ background: "var(--color-background)" }}
       dir={isAr ? "rtl" : "ltr"}
     >
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: `${siteUrl}/${lang}` },
-              { "@type": "ListItem", position: 2, name: isAr ? "أعمالنا" : "Portfolio", item: `${siteUrl}/${lang}/portfolio` },
-              { "@type": "ListItem", position: 3, name: title },
-            ],
-          }),
-        }}
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd
+        schema={buildBreadcrumbSchema([
+          { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+          { name: isAr ? "أعمالنا" : "Portfolio", url: `${siteUrl}/${lang}/portfolio` },
+          { name: title, url: `${siteUrl}/${lang}/portfolio/${slug}` },
+        ])}
+      />
+      <JsonLd
+        schema={buildCreativeWorkSchema({
+          title,
+          summary,
+          description,
+          url: `${siteUrl}/${lang}/portfolio/${slug}`,
+          image: thumbnail || undefined,
+          tags: tags,
+          lang,
+        })}
       />
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-4xl mx-auto">

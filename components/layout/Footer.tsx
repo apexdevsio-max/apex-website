@@ -21,7 +21,7 @@ export function Footer({
 
   return (
     <footer
-      className="border-t border-apex-border bg-apex-surface py-12 md:py-16"
+      className="border-t border-apex-border bg-apex-bg py-12 md:py-16 min-h-[200px]"
       dir={rtl.dirAttr}
     >
       <div className="mx-auto max-w-7xl px-6 md:px-10">
@@ -42,13 +42,13 @@ export function Footer({
                 priority
               />
             </Link>
-            <p className={`text-sm ${rtl.fontClass} leading-relaxed`} style={{ opacity: 0.8 }}>
+            <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.8, lineHeight: "1.625" }}>
               {footer.description}
             </p>
           </div>
 
           <div>
-            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
+            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
               {footer.quickLinks}
             </h3>
             <ul className="space-y-2">
@@ -71,7 +71,7 @@ export function Footer({
           </div>
 
           <div>
-            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
+            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
               {services.title}
             </h3>
             <ul className="space-y-2">
@@ -89,12 +89,9 @@ export function Footer({
           </div>
 
           <div className={`${rtl.flexRev}`}>
-            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)" }}>
+            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
               {footer.quickContact}
             </h3>
-            <div className="flex gap-4 mb-8">
-              
-            </div>
             <Link 
               href={`/${lang}/contact`}
               className="inline-flex items-center gap-2 text-sm font-bold transition-all px-5 py-3.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
@@ -106,7 +103,7 @@ export function Footer({
         </div>
 
         <div className="border-t border-apex-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.6 }}>
+          <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.6, lineHeight: "1.5" }}>
             © {year} Apex. {footer.rights}. {isAr ? 'جميع الحقوق محفوظة' : 'All rights reserved.'}
           </p>
           <div className="flex gap-4">
