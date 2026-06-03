@@ -238,6 +238,25 @@ export function buildPortfolioCollectionSchema(
   };
 }
 
+export function buildCourseSchema(params: {
+  name: string;
+  description: string;
+  url: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: params.name,
+    description: params.description,
+    provider: {
+      "@type": "Organization",
+      name: "APEX",
+      url: siteUrl,
+    },
+    url: params.url,
+  };
+}
+
 export function buildCreativeWorkSchema(params: {
   title: string;
   summary: string;

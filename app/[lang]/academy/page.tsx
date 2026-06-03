@@ -6,7 +6,8 @@ import dynamic from "next/dynamic";
 
 import { getAcademyCourses }  from "@/lib/content/content-loader";
 import { isLocale }           from "@/lib/i18n/locale";
-import { buildPageMeta } from "@/lib/seo/metadata";
+import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import { JsonLd, buildOrganizationSchema, buildBreadcrumbSchema } from "@/lib/seo/schema";
 
 const AcademyGrid = dynamic(
   () => import("@/components/sections/AcademyGrid").then((m) => m.AcademyGrid),
@@ -31,7 +32,18 @@ export default async function AcademyPage({ params }: Props) {
   if (!isLocale(langParam)) notFound();
 
   const lang       = langParam;
+  const isAr       = lang === "ar";
   const mdxCourses = await getAcademyCourses(lang);
 
-  return <AcademyGrid lang={lang} mdxCourses={mdxCourses} />;
+  const breadcrumbItems = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "الأكاديمية" : "Academy", url: `${siteUrl}/${lang}/academy` },
+  ];
+
+  return (
+    <>
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      <AcademyGrid lang={lang} mdxCourses={mdxCourses} />
+    </>);
 }

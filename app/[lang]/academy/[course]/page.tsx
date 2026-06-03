@@ -1,16 +1,46 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import {
   getAcademyCourseBySlug,
 } from "@/lib/content/content-loader";
-import { isLocale } from "@/lib/i18n/locale";
+import { isLocale, type Locale } from "@/lib/i18n/locale";
 import {
   MOCK_COURSES,
 } from "@/lib/mock/academy-data";
 import { LEVEL_COLORS } from "@/lib/constants";
+import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import { JsonLd, buildOrganizationSchema, buildBreadcrumbSchema, buildCourseSchema } from "@/lib/seo/schema";
 
 type Props = { params: Promise<{ lang: string; course: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang, course: courseSlug } = await params;
+  const locale: Locale = isLocale(lang) ? lang : "en";
+  let course = null;
+  try {
+    course = await getAcademyCourseBySlug(locale, courseSlug);
+  } catch {
+    course = null;
+  }
+  if (!course) {
+    const mock = MOCK_COURSES.find((c) => c.slug === courseSlug);
+    if (mock) {
+      const mockContent = mock[locale];
+      return buildPageMeta(locale, {
+        title: `${mockContent.title} - APEX`,
+        description: mockContent.summary,
+        path: `/${lang}/academy/${courseSlug}`,
+      });
+    }
+  }
+  return buildPageMeta(locale, {
+    title: `${course?.title ?? courseSlug} - APEX`,
+    description: course?.summary ?? "",
+    path: `/${lang}/academy/${courseSlug}`,
+  });
+}
 
 const hoverStyles = `
   .apex-lesson-card { transition: all 0.2s ease; }
@@ -58,12 +88,18 @@ export default async function CoursePage({ params }: Props) {
         summary: "",
       }));
 
+  const breadcrumbItems = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "الأكاديمية" : "Academy", url: `${siteUrl}/${lang}/academy` },
+    { name: title, url: `${siteUrl}/${lang}/academy/${courseSlug}` },
+  ];
+
   return (
-    <div
-      className="min-h-screen pt-24 pb-24 px-6"
-      style={{ background: "var(--color-background)" }}
-      dir={isAr ? "rtl" : "ltr"}
-    >
+    <>
+      <JsonLd schema={buildOrganizationSchema(lang)} />
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      <JsonLd schema={buildCourseSchema({ name: title, description: summary, url: `${siteUrl}/${lang}/academy/${courseSlug}` })} />
+      <div className="min-h-screen pt-24 pb-24 px-6" style={{ background: "var(--color-background)" }} dir={isAr ? "rtl" : "ltr"}>
       <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-4xl mx-auto">
         <Link
@@ -249,6 +285,7 @@ export default async function CoursePage({ params }: Props) {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

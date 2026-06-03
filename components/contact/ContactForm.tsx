@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, type FormEvent } from "react";
-import { CheckCircle, Send, Mail } from "lucide-react";
+import { CheckCircle, Send, Mail, Loader2, AlertCircle } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
+import { socialLinks } from "@/data/social-links";
 import { Reveal } from "@/components/ui/Reveal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -84,8 +85,11 @@ export function ContactForm({ lang, dictionary }: Props) {
   const formDict = dictionary.contact.form;
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Errors>({});
-  const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState<"whatsapp" | "email" | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
+  const [apiSuccess, setApiSuccess] = useState(false);
 
   const projectTypeOptions = PROJECT_TYPE_KEYS.map((k) => ({
     value: k,
@@ -119,13 +123,43 @@ export function ContactForm({ lang, dictionary }: Props) {
     };
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setApiError(null);
+    setFieldErrors(null);
     const data = getFormData();
     const errs = validate(data, formDict);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
-    setSubmitted(true);
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setApiSuccess(true);
+        formRef.current?.reset();
+      } else if (res.status === 429) {
+        setApiError(isAr ? "لقد تجاوزت الحد المسموح من المحاولات. الرجاء المحاولة لاحقاً." : "Too many requests. Please try again later.");
+      } else if (res.status === 400 && result.fieldErrors) {
+        setFieldErrors(result.fieldErrors);
+        const mapped: Errors = {};
+        for (const [key, msgs] of Object.entries(result.fieldErrors as Record<string, string[]>)) {
+          if (msgs && msgs.length > 0) mapped[key as keyof FormData] = msgs[0];
+        }
+        setErrors(mapped);
+      } else {
+        setApiError(result.error ?? (isAr ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
+      }
+    } catch {
+      setApiError(isAr ? "تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى." : "Could not reach the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleWhatsApp() {
@@ -133,7 +167,7 @@ export function ContactForm({ lang, dictionary }: Props) {
     const { projectTypeLabel, budgetLabel } = getLabels(data);
     setSending("whatsapp");
     const msg = buildWhatsAppMessage(data, projectTypeLabel, budgetLabel, isAr);
-    const number = "963991313929".replace(/[^0-9]/g, "");
+    const number = socialLinks.whatsapp.replace(/[^0-9]/g, "");
     window.open(`https://wa.me/${number}?text=${msg}`, "_blank");
     setTimeout(() => setSending(null), 1000);
   }
@@ -144,18 +178,19 @@ export function ContactForm({ lang, dictionary }: Props) {
     setSending("email");
     const subject = isAr ? `استفسار مشروع من ${data.name}` : `Project Inquiry from ${data.name}`;
     const body = buildMailBody(data, projectTypeLabel, budgetLabel);
-    window.location.href = `mailto:apex.devs.io@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${socialLinks.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setTimeout(() => setSending(null), 1000);
   }
 
   function handleReset() {
-    setSubmitted(false);
     setErrors({});
+    setApiError(null);
+    setFieldErrors(null);
+    setApiSuccess(false);
     formRef.current?.reset();
   }
 
-  if (submitted) {
-    const data = getFormData();
+  if (apiSuccess) {
     return (
       <Reveal>
         <div
@@ -170,50 +205,26 @@ export function ContactForm({ lang, dictionary }: Props) {
             className={`text-lg font-bold mb-2 ${isAr ? "font-ar" : "font-en"}`}
             style={{ color: "var(--color-primary-text)" }}
           >
-            {formDict.success}
+            {isAr ? "تم الإرسال بنجاح! 🎉" : "Sent successfully! 🎉"}
           </h3>
           <p
             className={`text-sm mb-6 ${isAr ? "font-ar" : "font-en"}`}
             style={{ color: "var(--color-secondary-text)" }}
           >
-            {isAr ? "اختر طريقة الإرسال:" : "Choose how to send:"}
+            {isAr
+              ? "شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن."
+              : "Thank you for reaching out. We'll get back to you as soon as possible."}
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-4">
+          <div className="flex flex-wrap justify-center gap-3">
             <button
               type="button"
-              onClick={handleWhatsApp}
-              disabled={sending === "whatsapp"}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              style={{
-                background: "linear-gradient(135deg, #25D366, #128C7E)",
-                boxShadow: "0 6px 20px rgba(37,211,102,0.3)",
-              }}
+              onClick={handleReset}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all border-2"
+              style={{ color: "var(--color-primary)", borderColor: "var(--color-primary)" }}
             >
-              <Send size={16} />
-              {formDict.sendWhatsapp}
-            </button>
-            <button
-              type="button"
-              onClick={handleEmail}
-              disabled={sending === "email"}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              style={{
-                background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
-                boxShadow: "0 6px 20px color-mix(in srgb, var(--color-primary) 35%, transparent)",
-              }}
-            >
-              <Mail size={16} />
-              {formDict.sendEmail}
+              {isAr ? "إرسال استفسار آخر" : "Send Another Message"}
             </button>
           </div>
-          <button
-            type="button"
-            onClick={handleReset}
-            className={`text-xs underline opacity-60 hover:opacity-100 transition-opacity ${isAr ? "font-ar" : "font-en"}`}
-            style={{ color: "var(--color-secondary-text)" }}
-          >
-            {isAr ? "تعديل البيانات" : "Edit details"}
-          </button>
         </div>
       </Reveal>
     );
@@ -243,6 +254,20 @@ export function ContactForm({ lang, dictionary }: Props) {
         >
           {formDict.subtitle}
         </p>
+
+        {apiError && (
+          <div
+            className="flex items-center gap-3 p-4 mb-6 rounded-xl border text-sm"
+            style={{
+              background: "color-mix(in srgb, #ef4444 8%, transparent)",
+              borderColor: "color-mix(in srgb, #ef4444 25%, transparent)",
+              color: "#ef4444",
+            }}
+          >
+            <AlertCircle size={18} className="shrink-0" />
+            <span className={isAr ? "font-ar" : "font-en"}>{apiError}</span>
+          </div>
+        )}
 
         <div className="grid sm:grid-cols-2 gap-4 mb-4">
           <Input
@@ -303,15 +328,61 @@ export function ContactForm({ lang, dictionary }: Props) {
 
         <button
           type="submit"
-          className="w-full inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5"
+          disabled={loading}
+          className="w-full inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
           style={{
             background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
             boxShadow: "0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent)",
           }}
         >
-          {isAr ? "التالي" : "Next"}
-          <span style={{ display: "inline-block", transform: isAr ? "rotate(180deg)" : "none" }}>→</span>
+          {loading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              {isAr ? "جاري الإرسال..." : "Sending..."}
+            </>
+          ) : (
+            <>
+              {isAr ? "إرسال" : "Send"}
+            </>
+          )}
         </button>
+
+        <div className="mt-6 pt-6 border-t" style={{ borderColor: "var(--color-border)" }}>
+          <p
+            className={`text-xs mb-3 text-center ${isAr ? "font-ar" : "font-en"}`}
+            style={{ color: "var(--color-secondary-text)" }}
+          >
+            {isAr ? "أو تواصل معنا مباشرة عبر:" : "Or reach us directly via:"}
+          </p>
+          <div className="flex justify-center gap-3">
+            <button
+              type="button"
+              onClick={handleWhatsApp}
+              disabled={sending === "whatsapp"}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
+              style={{
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                boxShadow: "0 4px 12px rgba(37,211,102,0.25)",
+              }}
+            >
+              <Send size={14} />
+              {formDict.sendWhatsapp}
+            </button>
+            <button
+              type="button"
+              onClick={handleEmail}
+              disabled={sending === "email"}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
+              style={{
+                background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
+                boxShadow: "0 4px 12px color-mix(in srgb, var(--color-primary) 35%, transparent)",
+              }}
+            >
+              <Mail size={14} />
+              {formDict.sendEmail}
+            </button>
+          </div>
+        </div>
       </form>
     </Reveal>
   );
