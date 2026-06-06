@@ -57,7 +57,7 @@ export default async function TermsPage({ params }: Props) {
     <>
       <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
       <div className="px-6 py-20 max-w-3xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
-        <h1 className="text-4xl font-bold mb-4">{copy.heading}</h1>
+        <h1 className="font-bold mb-4" style={{ fontSize: "clamp(24px, 4vw, 36px)" }}>{copy.heading}</h1>
         <p className="text-apex-muted mb-8">{copy.updated}</p>
         <div className="space-y-4 text-apex-muted leading-relaxed">
           {copy.body.map((p) => (

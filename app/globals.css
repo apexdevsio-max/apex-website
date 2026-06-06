@@ -65,7 +65,6 @@ html {
 html, body {
   background-color: var(--color-background);
   color: var(--color-primary-text);
-  overflow-x: hidden;
 }
 
 
@@ -216,6 +215,9 @@ html, body {
 .apex-btn-outline:hover { background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
 
 .apex-btn-primary:hover { opacity: 0.92; transform: translateY(-2px); }
+
+.apex-prose-bullet { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.apex-related:hover { border-color: var(--color-primary) !important; transform: translateY(-3px); }
 
 @keyframes apex-spin {
   to { transform: rotate(360deg); }

@@ -451,7 +451,7 @@ export function PortfolioGrid({
               <button
                 key={category.key}
                 onClick={() => setActiveFilter(category.key)}
-                className={`rounded-full border px-5 py-3.5 text-sm font-bold transition-all duration-200 ${
+                className={`rounded-full border px-5 min-h-[44px] py-3.5 text-sm font-bold transition-all duration-200 ${
                   isAr ? "font-ar" : "font-en"
                 }`}
                 style={

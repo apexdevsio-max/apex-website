@@ -60,7 +60,7 @@ export function Footer({
                     <li key={key}>
                       <Link
                         href={`/${lang}${path ? `/${path}` : ""}`}
-                        className="text-sm transition-colors hover:text-apex-primary block py-3"
+                        className="text-sm transition-colors hover:text-apex-primary block py-3 min-h-[44px] flex items-center"
                       >
                         {label}
                       </Link>
@@ -107,10 +107,10 @@ export function Footer({
             © {year} Apex. {footer.rights}. {isAr ? 'جميع الحقوق محفوظة' : 'All rights reserved.'}
           </p>
           <div className="flex gap-4">
-            <Link href={`/${lang}/privacy`} className="text-sm hover:text-apex-primary transition-colors py-2">
+            <Link href={`/${lang}/privacy`} className="text-sm hover:text-apex-primary transition-colors py-2 min-h-[44px] flex items-center">
               {footer.privacy}
             </Link>
-            <Link href={`/${lang}/terms`} className="text-sm hover:text-apex-primary transition-colors py-2">
+            <Link href={`/${lang}/terms`} className="text-sm hover:text-apex-primary transition-colors py-2 min-h-[44px] flex items-center">
               {footer.terms}
             </Link>
           </div>

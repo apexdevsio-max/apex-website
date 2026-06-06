@@ -86,10 +86,7 @@ function renderMarkdownLinks(text: string): string {
   );
 }
 
-const hoverStyles = `
-  .apex-prose-bullet { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-  .apex-related:hover { border-color: var(--color-primary) !important; transform: translateY(-3px); }
-`;
+
 
 export default async function BlogPostPage({
   params,
@@ -144,12 +141,11 @@ export default async function BlogPostPage({
           lang,
         })}
       />
-      <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
       <div className="max-w-3xl mx-auto">
         <Link
           href={`/${lang}/blog`}
-          className={`apex-back inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-colors ${
-            isAr ? "font-ar flex-row-reverse" : "font-en"
+          className={`apex-back inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-colors min-h-[44px] py-2 ${
+            isAr ? "font-ar" : "font-en"
           }`}
           style={{ color: "var(--color-secondary-text)" }}
         >
@@ -165,11 +161,11 @@ export default async function BlogPostPage({
         </Link>
 
         <div
-          className={`flex items-center gap-3 mb-4 text-xs ${isAr ? "flex-row-reverse" : ""}`}
+          className="flex items-center gap-3 mb-4 text-xs"
           style={{ color: "var(--color-secondary-text)" }}
         >
           <span
-            className="px-3 py-1 rounded-full text-xs font-bold"
+            className="px-3 min-h-[28px] flex items-center rounded-full text-xs font-bold"
             style={{
               background: `color-mix(in srgb,${accentColor} 18%,transparent)`,
               border: `1px solid ${accentColor}55`,
@@ -200,7 +196,13 @@ export default async function BlogPostPage({
         </p>
 
         <article className="mb-14">
-          {contentLines.map((line, index) => {
+          {!rawContent.trim() ? (
+            <div className="text-center py-16" style={{ color: "var(--color-secondary-text)" }}>
+              <p className={`text-base ${isAr ? "font-ar" : "font-en"}`}>
+                {isAr ? "المحتوى قيد الإعداد..." : "Content coming soon..."}
+              </p>
+            </div>
+          ) : contentLines.map((line, index) => {
             line = line.replace(/\r$/, "");
             if (!line.trim()) return <div key={index} style={{ height: "8px" }} />;
 
@@ -302,7 +304,7 @@ export default async function BlogPostPage({
           </p>
           <Link
             href={`/${lang}/contact`}
-            className="apex-btn inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white"
+            className="inline-flex items-center gap-2 px-8 min-h-[44px] rounded-full font-bold text-sm text-white"
             style={{
               background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
               boxShadow: "0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)",
@@ -329,7 +331,7 @@ export default async function BlogPostPage({
                 <Link
                   key={item}
                   href={`/${lang}/blog/${item}`}
-                  className="apex-related rounded-xl p-4 border transition-all duration-200"
+                  className="rounded-xl p-4 min-h-[44px] flex items-center border transition-all duration-200"
                   style={{
                     background: "var(--color-card)",
                     borderColor: "var(--color-border)",

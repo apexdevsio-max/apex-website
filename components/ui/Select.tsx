@@ -25,7 +25,7 @@ export const Select = forwardRef<HTMLSelectElement, Props>(
         <select
           ref={ref}
           id={selectId}
-          className={`rounded-xl border px-4 py-3 text-sm outline-none transition-colors ${isAr ? "font-ar text-right" : "font-en"} ${className}`}
+          className={`rounded-xl border px-4 min-h-[44px] py-3 text-sm outline-none transition-colors ${isAr ? "font-ar text-right" : "font-en"} ${className}`}
           style={{
             background: "var(--color-card)",
             borderColor: error ? "#ef4444" : "var(--color-border)",

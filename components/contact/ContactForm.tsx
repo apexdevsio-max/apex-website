@@ -219,7 +219,7 @@ export function ContactForm({ lang, dictionary }: Props) {
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all border-2"
+              className="inline-flex items-center gap-2 px-6 min-h-[44px] py-3 rounded-full text-sm font-bold transition-all border-2"
               style={{ color: "var(--color-primary)", borderColor: "var(--color-primary)" }}
             >
               {isAr ? "إرسال استفسار آخر" : "Send Another Message"}
@@ -329,7 +329,7 @@ export function ContactForm({ lang, dictionary }: Props) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
+          className="w-full inline-flex items-center justify-center gap-2 px-8 min-h-[44px] py-3 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
           style={{
             background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
             boxShadow: "0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent)",
@@ -359,7 +359,7 @@ export function ContactForm({ lang, dictionary }: Props) {
               type="button"
               onClick={handleWhatsApp}
               disabled={sending === "whatsapp"}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-5 min-h-[44px] py-2 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
               style={{
                 background: "linear-gradient(135deg, #25D366, #128C7E)",
                 boxShadow: "0 4px 12px rgba(37,211,102,0.25)",
@@ -372,7 +372,7 @@ export function ContactForm({ lang, dictionary }: Props) {
               type="button"
               onClick={handleEmail}
               disabled={sending === "email"}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-5 min-h-[44px] py-2 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
                 boxShadow: "0 4px 12px color-mix(in srgb, var(--color-primary) 35%, transparent)",

@@ -170,6 +170,7 @@ async function directoryExists(directory: string): Promise<boolean> {
 
 async function loadBlogPosts(locale: Locale): Promise<BlogPost[]> {
   const directory = path.join(CONTENT_ROOT, "blog");
+  if (!(await directoryExists(directory))) return [];
   const files = await readLocalizedMdxFiles(directory, locale);
 
   const items = await Promise.all(

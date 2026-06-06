@@ -398,7 +398,7 @@ export function BlogGrid({
               <button
                 key={cat.key}
                 onClick={() => setActiveFilter(cat.key)}
-                className={`px-5 py-3.5 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
+                className={`px-5 min-h-[44px] py-3.5 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
                 style={
                   activeFilter === cat.key
                     ? {

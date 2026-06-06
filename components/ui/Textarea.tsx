@@ -24,7 +24,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
           ref={ref}
           id={textareaId}
           rows={4}
-          className={`rounded-xl border px-4 py-3 text-sm outline-none transition-colors resize-vertical ${isAr ? "font-ar text-right" : "font-en"} ${className}`}
+          className={`rounded-xl border px-4 min-h-[44px] py-3 text-sm outline-none transition-colors resize-vertical ${isAr ? "font-ar text-right" : "font-en"} ${className}`}
           style={{
             background: "var(--color-card)",
             borderColor: error ? "#ef4444" : "var(--color-border)",

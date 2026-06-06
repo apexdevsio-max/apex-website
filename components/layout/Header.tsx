@@ -198,7 +198,7 @@ export function Header({ lang, dictionary }: Props) {
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="p-2.5 rounded-full transition-colors"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 rounded-full transition-colors"
               style={{
                 color: "var(--color-gold)",
                 background: "color-mix(in srgb, var(--color-gold) 10%, transparent)",
@@ -207,12 +207,12 @@ export function Header({ lang, dictionary }: Props) {
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
           ) : (
-            <div className="p-2.5" style={{ width: 37, height: 37 }} />
+            <div className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5" />
           )}
 
           <Link
             href={switchedHref}
-            className="px-4 py-3 md:px-4 md:py-2 text-xs font-bold rounded-full border transition-all min-w-[44px] text-center flex items-center justify-center"
+            className="px-4 py-3 md:px-4 md:py-3 text-xs font-bold rounded-full border transition-all min-w-[44px] min-h-[44px] text-center flex items-center justify-center"
             style={{
               color: "var(--color-lang-pill-text)",
               borderColor: "var(--color-lang-pill-border)",
@@ -261,7 +261,7 @@ export function Header({ lang, dictionary }: Props) {
               <Link
                 key={link.key}
                 href={buildUrl(link.path)}
-                className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                className={`block px-4 min-h-[44px] flex items-center rounded-xl text-sm font-medium transition-colors ${
                   isAr ? "font-ar" : "font-en"
                 }`}
                 style={{
@@ -280,7 +280,7 @@ export function Header({ lang, dictionary }: Props) {
 
             <Link
               href={buildUrl("contact")}
-              className="mt-3 px-4 py-3 rounded-xl text-sm font-bold text-white text-center"
+              className="mt-3 px-4 min-h-[44px] flex items-center justify-center rounded-xl text-sm font-bold text-white text-center"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
               }}
