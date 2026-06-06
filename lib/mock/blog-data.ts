@@ -248,6 +248,24 @@ A developer who masters these tools can work far more efficiently than one who i
       content: "",
     },
   },
+  "mobile-app-development-cost": {
+    emoji: "\ud83d\udcf1",
+    accentColor: "#4CAF50",
+    categories: ["mobile", "practical"],
+    readTime: 16,
+    ar: {
+      title: "تكلفة تطوير تطبيق موبايل في 2025 — دليل الأسعار الحقيقية",
+      excerpt: "اكتشف تكلفة تطوير تطبيق موبايل في 2025 بأرقام واقعية. دليل شامل يشرح العوامل المؤثرة في السعر وكيف تختار الشركة المناسبة.",
+      date: "1 يناير 2025",
+      content: "",
+    },
+    en: {
+      title: "Mobile App Development Cost in 2025 — The Real Numbers Guide",
+      excerpt: "Discover the real cost of mobile app development in 2025. A comprehensive guide covering every pricing factor, honest cost ranges, and how to choose the right development partner.",
+      date: "Jan 1, 2025",
+      content: "",
+    },
+  },
   "react-native": {
     emoji: "\u2699\ufe0f",
     accentColor: "#61DAFB",
