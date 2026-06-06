@@ -256,13 +256,13 @@ A developer who masters these tools can work far more efficiently than one who i
     ar: {
       title: "تكلفة تطوير تطبيق موبايل في 2025 — دليل الأسعار الحقيقية",
       excerpt: "اكتشف تكلفة تطوير تطبيق موبايل في 2025 بأرقام واقعية. دليل شامل يشرح العوامل المؤثرة في السعر وكيف تختار الشركة المناسبة.",
-      date: "1 يناير 2025",
+      date: "1 يناير 2026",
       content: "",
     },
     en: {
       title: "Mobile App Development Cost in 2025 — The Real Numbers Guide",
       excerpt: "Discover the real cost of mobile app development in 2025. A comprehensive guide covering every pricing factor, honest cost ranges, and how to choose the right development partner.",
-      date: "Jan 1, 2025",
+      date: "Jan 1, 2026",
       content: "",
     },
   },
