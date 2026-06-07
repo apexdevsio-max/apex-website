@@ -41,130 +41,9 @@ type GridPost = {
   image?: string;
   readTime: number;
   accentColor: string;
-  featured?: boolean;
   ar: { title: string; excerpt: string; date: string };
   en: { title: string; excerpt: string; date: string };
 };
-
-function FeaturedCard({ post, lang }: { post: GridPost; lang: Locale }) {
-  const isAr = lang === "ar";
-  const content = post[lang];
-
-  return (
-    <Link
-      href={`/${lang}/blog/${post.slug}`}
-      className="apex-card-base group col-span-full flex flex-col md:flex-row rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 active:translate-y-0"
-      style={
-        {
-          "--card-accent": post.accentColor,
-          borderColor: "var(--color-border)",
-          boxShadow: "none",
-        } as React.CSSProperties
-      }
-      dir={isAr ? "rtl" : "ltr"}
-    >
-      <div
-          className="relative shrink-0 overflow-hidden"
-          style={{
-            width: "100%",
-            maxWidth: "340px",
-            minHeight: "220px",
-          }}
-        >
-          {post.image ? (
-            <Image
-              src={post.image}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="340px"
-            />
-          ) : (
-            <>
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(135deg,#0f0c29,#302b63)" }}
-              />
-              <div
-                className="absolute inset-0 opacity-15"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-                aria-hidden="true"
-              />
-              <div
-                className="absolute rounded-full pointer-events-none"
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%,-50%)",
-                  background: `radial-gradient(circle,${post.accentColor}35 0%,transparent 70%)`,
-                }}
-                aria-hidden="true"
-              />
-              <span
-                className="card-emoji"
-                style={{
-                  fontSize: "72px",
-                  filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
-                  transition: "transform 0.3s",
-                }}
-              >
-                {post.emoji}
-              </span>
-            </>
-          )}
-          <div
-            className="absolute top-3 px-3 py-1 rounded-full text-xs font-bold"
-            style={{
-              [isAr ? "left" : "right"]: "12px",
-              background: `color-mix(in srgb,${post.accentColor} 22%,rgba(0,0,0,0.5))`,
-              border: `1px solid ${post.accentColor}55`,
-              color: post.accentColor,
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            {isAr ? "⭐ مميز" : "⭐ Featured"}
-          </div>
-        </div>
-
-      <div className="flex flex-col justify-center p-5 md:p-8 flex-1">
-        <div className={`flex items-center gap-3 mb-4 ${isAr ? "flex-row-reverse" : ""}`}>
-          <span className="apex-tag">
-            {isAr
-              ? CATS_AR.find((cat) => cat.key === post.categories[0])?.label
-              : CATS_EN.find((cat) => cat.key === post.categories[0])?.label}
-          </span>
-          <span className="text-xs" style={{ color: "var(--color-secondary-text)" }}>
-            {content.date} · {post.readTime} {isAr ? "دقائق" : "min read"}
-          </span>
-        </div>
-        <h2
-          className={`font-bold mb-3 leading-snug ${isAr ? "font-ar" : "font-en"}`}
-          style={{ fontSize: "clamp(18px,2.2vw,24px)", color: "var(--color-primary-text)" }}
-        >
-          {content.title}
-        </h2>
-        <p
-          className={`leading-relaxed mb-5 ${isAr ? "font-ar" : "font-en"}`}
-          style={{ fontSize: "14px", color: "var(--color-secondary-text)" }}
-        >
-          {content.excerpt}
-        </p>
-        <div
-          className={`flex items-center gap-2 font-bold text-sm apex-arrow ${isAr ? "flex-row-reverse" : ""}`}
-          style={{ color: post.accentColor }}
-        >
-          {isAr ? "قراءة المقال" : "Read Article"}
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
   const isAr = lang === "ar";
@@ -303,7 +182,6 @@ export function BlogGrid({
           image: enImage || arImage || undefined,
           readTime: post.readTime,
           accentColor: post.accentColor,
-          featured: index === 0,
           ar: {
             title: post.ar.title,
             excerpt: post.ar.excerpt,
@@ -354,12 +232,10 @@ export function BlogGrid({
     });
   }, [mdxPosts, lang, mockPostList]);
 
-  const featured = posts.find((post) => post.featured);
-  const regular = posts.filter((post) => !post.featured);
   const filtered =
     activeFilter === "all"
-      ? regular
-      : regular.filter((post) => post.categories.includes(activeFilter));
+      ? posts
+      : posts.filter((post) => post.categories.includes(activeFilter));
 
   return (
     <section
@@ -386,13 +262,7 @@ export function BlogGrid({
           </p>
         </Reveal>
 
-        {featured && (
-          <Reveal delay={80} className="mb-10">
-            <FeaturedCard post={featured} lang={lang} />
-          </Reveal>
-        )}
-
-        <Reveal delay={100}>
+        <Reveal delay={80}>
           <div className="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1">
             {cats.map((cat) => (
               <button
