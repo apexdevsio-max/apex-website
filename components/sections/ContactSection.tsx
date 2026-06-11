@@ -1,8 +1,10 @@
+"use client";
+
 import { Mail, MessageCircle } from "lucide-react";
-import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { Reveal } from "@/components/ui/Reveal";
+import { socialLinks } from "@/data/social-links";
 
 type Props = {
   lang: Locale;
@@ -14,6 +16,11 @@ export function ContactSection({ lang, dictionary, whatsapp }: Props) {
   const isAr = lang === "ar";
   const { contact } = dictionary;
   const whatsappNumber = whatsapp.replace(/[^0-9]/g, "");
+
+  const handleEmailClick = () => {
+    const subject = isAr ? "استفسار من APEX" : "Inquiry from APEX";
+    window.location.href = `mailto:${socialLinks.email}?subject=${encodeURIComponent(subject)}`;
+  };
 
   return (
     <section
@@ -73,9 +80,10 @@ export function ContactSection({ lang, dictionary, whatsapp }: Props) {
               </span>
               <span className="text-sm opacity-80">{whatsapp}</span>
             </a>
-            <Link
-              href={`/${lang}/contact`}
-              className="flex flex-col items-center gap-3 rounded-2xl p-5 md:p-8 text-white font-bold transition-transform hover:-translate-y-1"
+            <button
+              type="button"
+              onClick={handleEmailClick}
+              className="flex flex-col items-center gap-3 rounded-2xl p-5 md:p-8 text-white font-bold transition-transform hover:-translate-y-1 cursor-pointer"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
                 boxShadow: "0 10px 32px color-mix(in srgb, var(--color-primary) 35%, transparent)",
@@ -87,9 +95,9 @@ export function ContactSection({ lang, dictionary, whatsapp }: Props) {
                 {contact.email}
               </span>
               <span className="text-sm opacity-80">
-                {isAr ? "نموذج الاتصال" : "Contact Form"}
+                {isAr ? "راسلنا عبر البريد" : "Email Us"}
               </span>
-            </Link>
+            </button>
           </div>
         </Reveal>
 

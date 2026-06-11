@@ -88,8 +88,8 @@ export default async function RootLayout({
       </head>
       <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
         {children}
-        {/* TODO: Replace GA_MEASUREMENT_ID with your actual Google Analytics 4 Measurement ID */}
-        <GoogleAnalytics gaId="GA_MEASUREMENT_ID" />
+        {/* TODO: Replace G-TFJWH33D6R with your actual Google Analytics 4 Measurement ID */}
+        <GoogleAnalytics gaId="G-TFJWH33D6R" />
         <SpeedInsights />
       </body>
     </html>
