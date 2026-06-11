@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 
 const projectRoot = path.resolve(process.cwd());
 
+// Note: www → non-www redirect (apex.sy) must be configured at the CDN/server level (Vercel/Cloudflare),
+// not in Next.js config. No redirect chains exist — the middleware handles locale detection in one hop.
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/webp', 'image/avif'],

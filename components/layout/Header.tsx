@@ -142,7 +142,7 @@ export function Header({ lang, dictionary }: Props) {
         <Link href={buildUrl("/")} className="shrink-0 flex items-center gap-2">
           <Image
             src="/images/Apex_logo.png"
-            alt="APEX"
+            alt={isAr ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
             width={110}
             height={36}
             priority

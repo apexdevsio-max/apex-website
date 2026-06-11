@@ -21,7 +21,7 @@ export const ibmPlexSansArabic = localFont({
   fallback: ["Arial", "system-ui", "sans-serif"],
   adjustFontFallback: "Arial",
   variable: "--font-ar",
-  display: "optional",
+  display: "swap",
 });
 
 export const ibmPlexSerif = localFont({
@@ -40,5 +40,5 @@ export const ibmPlexSerif = localFont({
   fallback: ["Times New Roman", "serif"],
   adjustFontFallback: "Times New Roman",
   variable: "--font-en",
-  display: "optional",
+  display: "swap",
 });

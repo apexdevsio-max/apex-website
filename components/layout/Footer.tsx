@@ -34,7 +34,7 @@ export function Footer({
             <Link href={`/${lang}`} className="mb-6 flex items-center gap-2">
               <Image
                 src="/images/Apex_logo.png"
-                alt="Apex"
+                alt={isAr ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
                 width={120}
                 height={40}
                 quality={40}

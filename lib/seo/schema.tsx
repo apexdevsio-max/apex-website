@@ -21,7 +21,7 @@ export function buildOrganizationSchema(lang: Locale) {
   const isAr = lang === "ar";
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "LocalBusiness"],
     name: "APEX",
     url: siteUrl,
     logo: `${siteUrl}/images/Apex_logo.png`,
@@ -30,7 +30,7 @@ export function buildOrganizationSchema(lang: Locale) {
       : "A Syrian software company building mobile apps, websites, AI solutions, and e-commerce platforms",
     slogan: isAr ? "تقنية تتحدث عنك" : "Technology That Speaks for You",
     foundingLocation: "Syria",
-    areaServed: ["SY", "MENA"],
+    areaServed: ["SA", "AE", "QA", "SY"],
     sameAs: [socialLinks.instagram, socialLinks.linkedin, socialLinks.twitter].filter(Boolean),
     knowsAbout: [
       "Software Development",
@@ -40,6 +40,15 @@ export function buildOrganizationSchema(lang: Locale) {
       "UI/UX Design",
       "E-Commerce Development",
     ],
+    knowsLanguage: ["ar", "en"],
+    serviceType: [
+      "Mobile App Development",
+      "Web Development",
+      "AI Solutions",
+      "E-commerce Development",
+      "UI/UX Design",
+    ],
+    priceRange: "$$",
     contactPoint: {
       "@type": "ContactPoint",
       telephone: socialLinks.whatsapp,

@@ -1,4 +1,5 @@
 import { Mail, MessageCircle } from "lucide-react";
+import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { Reveal } from "@/components/ui/Reveal";
@@ -6,11 +7,10 @@ import { Reveal } from "@/components/ui/Reveal";
 type Props = {
   lang: Locale;
   dictionary: Dictionary;
-  email: string;
   whatsapp: string;
 };
 
-export function ContactSection({ lang, dictionary, email, whatsapp }: Props) {
+export function ContactSection({ lang, dictionary, whatsapp }: Props) {
   const isAr = lang === "ar";
   const { contact } = dictionary;
   const whatsappNumber = whatsapp.replace(/[^0-9]/g, "");
@@ -73,8 +73,8 @@ export function ContactSection({ lang, dictionary, email, whatsapp }: Props) {
               </span>
               <span className="text-sm opacity-80">{whatsapp}</span>
             </a>
-            <a
-              href={`mailto:${email}`}
+            <Link
+              href={`/${lang}/contact`}
               className="flex flex-col items-center gap-3 rounded-2xl p-5 md:p-8 text-white font-bold transition-transform hover:-translate-y-1"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
@@ -86,8 +86,10 @@ export function ContactSection({ lang, dictionary, email, whatsapp }: Props) {
               <span className={`text-base ${isAr ? "font-ar" : "font-en"}`}>
                 {contact.email}
               </span>
-              <span className="text-sm opacity-80">{email}</span>
-            </a>
+              <span className="text-sm opacity-80">
+                {isAr ? "نموذج الاتصال" : "Contact Form"}
+              </span>
+            </Link>
           </div>
         </Reveal>
 

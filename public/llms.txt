@@ -1,0 +1,49 @@
+# APEX - Software Development Company
+
+APEX is a Syrian software company serving clients in Saudi Arabia, UAE, Qatar, and Syria. We build mobile apps, websites, AI solutions, e-commerce platforms, and UI/UX designs.
+
+Target markets: Saudi Arabia, UAE, Qatar, Syria.
+
+## Services
+- Mobile App Development
+- Web Development
+- AI Solutions
+- E-commerce Development
+- UI/UX Design
+
+## Site Sections
+- Home: https://apex.sy/en
+- About: https://apex.sy/en/about
+- Services: https://apex.sy/en/services
+- Portfolio: https://apex.sy/en/portfolio
+- Blog: https://apex.sy/en/blog
+- Academy: https://apex.sy/en/academy
+- Contact: https://apex.sy/en/contact
+
+This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
+
+---
+
+# أبيكس - شركة تطوير برمجيات
+
+أبيكس هي شركة برمجيات سورية تخدم عملاء في السعودية والإمارات وقطر وسوريا. نبني تطبيقات الموبايل ومواقع الويب وحلول الذكاء الاصطناعي والمتاجر الإلكترونية وتصميم واجهات المستخدم.
+
+الأسواق المستهدفة: السعودية، الإمارات، قطر، سوريا.
+
+## الخدمات
+- تطوير تطبيقات الموبايل
+- تطوير الويب
+- حلول الذكاء الاصطناعي
+- تطوير المتاجر الإلكترونية
+- تصميم واجهات المستخدم
+
+## أقسام الموقع
+- الرئيسية: https://apex.sy/ar
+- من نحن: https://apex.sy/ar/about
+- الخدمات: https://apex.sy/ar/services
+- أعمالنا: https://apex.sy/ar/portfolio
+- المدونة: https://apex.sy/ar/blog
+- الأكاديمية: https://apex.sy/ar/academy
+- اتصل بنا: https://apex.sy/ar/contact
+
+هذا الموقع ثنائي اللغة (عربي/إنجليزي). استخدم /ar/ للعربية و /en/ للإنجليزية.

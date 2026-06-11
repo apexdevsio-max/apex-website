@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
 import { metadataBase, siteUrl } from "@/lib/seo/metadata";
@@ -76,6 +77,7 @@ export default async function RootLayout({
     <html suppressHydrationWarning lang={lang}>
       <head>
         <link rel="preconnect" href="https://vitals.vercel-analytics.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -86,6 +88,8 @@ export default async function RootLayout({
       </head>
       <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
         {children}
+        {/* TODO: Replace GA_MEASUREMENT_ID with your actual Google Analytics 4 Measurement ID */}
+        <GoogleAnalytics gaId="GA_MEASUREMENT_ID" />
         <SpeedInsights />
       </body>
     </html>

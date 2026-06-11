@@ -49,7 +49,6 @@ export default async function ContactPage({ params }: Props) {
       <ContactSection
         lang={lang}
         dictionary={dictionary}
-        email={socialLinks.email}
         whatsapp={socialLinks.whatsapp}
       />
       <section

@@ -106,10 +106,10 @@ export function HeroSection({
         aria-hidden="true"
       >
            <Image
-             src="/images/Apex_logo.png"
-             alt=""
-             width={360}
-             height={140}
+              src="/images/Apex_logo.png"
+              alt={lang === "ar" ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
+              width={360}
+              height={140}
              sizes="(max-width: 768px) 40vw, 360px"
              className="object-contain"
              loading="lazy"
@@ -130,9 +130,9 @@ export function HeroSection({
         aria-hidden="true"
       >
           <Image
-            src="/images/robot_mascot.avif"
-            alt=""
-            width={373}
+             src="/images/robot_mascot.avif"
+             alt={lang === "ar" ? "مساعد أبيكس الذكي — حلول البرمجيات الذكية" : "Apex AI Assistant — Intelligent Software Solutions"}
+             width={373}
             height={373}
             priority
             fetchPriority="high"

@@ -84,7 +84,6 @@ export default async function HomePage({ params }: Props) {
       <ContactSection
         lang={lang}
         dictionary={dictionary}
-        email={socialLinks.email}
         whatsapp={socialLinks.whatsapp}
       />
     </>
