@@ -236,12 +236,26 @@ export function ContactForm({ lang, dictionary }: Props) {
         ref={formRef}
         onSubmit={handleSubmit}
         noValidate
+        itemScope
+        itemType="https://schema.org/ContactPoint"
         className="rounded-2xl border p-6 sm:p-8"
         style={{
           background: "var(--color-card)",
           borderColor: "var(--color-border)",
         }}
+        aria-label={isAr ? "نموذج الاتصال" : "Contact form"}
       >
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ContactPoint",
+            "name": isAr ? "نموذج تواصل مع أبيكس" : "APEX Contact Form",
+            "description": isAr ? "تواصل مع فريق أبيكس لاستشارة مشروعك في تطوير الويب، تطبيقات الموبايل، الذكاء الاصطناعي، أو التجارة الإلكترونية." : "Get in touch with APEX team to discuss your web development, mobile apps, AI solutions, or e-commerce project.",
+            "url": `https://apex.sy/${lang}/contact`,
+            "contactType": "project inquiry",
+            "email": socialLinks.email,
+          }),
+        }} />
         <h3
           className={`text-lg font-bold mb-1 ${isAr ? "font-ar" : "font-en"}`}
           style={{ color: "var(--color-primary-text)" }}
@@ -276,6 +290,8 @@ export function ContactForm({ lang, dictionary }: Props) {
             placeholder={formDict.namePlaceholder}
             error={errors.name}
             isAr={isAr}
+            autoComplete="name"
+            itemProp="name"
           />
           <Input
             name="email"
@@ -284,6 +300,8 @@ export function ContactForm({ lang, dictionary }: Props) {
             placeholder={formDict.emailPlaceholder}
             error={errors.email}
             isAr={isAr}
+            autoComplete="email"
+            itemProp="email"
           />
         </div>
 
@@ -294,6 +312,8 @@ export function ContactForm({ lang, dictionary }: Props) {
             label={formDict.phone}
             placeholder={formDict.phonePlaceholder}
             isAr={isAr}
+            autoComplete="tel"
+            itemProp="telephone"
           />
         </div>
 
@@ -305,6 +325,7 @@ export function ContactForm({ lang, dictionary }: Props) {
             options={projectTypeOptions}
             error={errors.projectType}
             isAr={isAr}
+            itemProp="description"
           />
           <Select
             name="budget"
@@ -313,6 +334,7 @@ export function ContactForm({ lang, dictionary }: Props) {
             options={budgetOptions}
             error={errors.budget}
             isAr={isAr}
+            itemProp="priceRange"
           />
         </div>
 
@@ -323,6 +345,7 @@ export function ContactForm({ lang, dictionary }: Props) {
             placeholder={formDict.descriptionPlaceholder}
             error={errors.description}
             isAr={isAr}
+            itemProp="description"
           />
         </div>
 

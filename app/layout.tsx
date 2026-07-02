@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
+import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleAnalytics } from "@next/third-parties/google";
 
 import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
 import { metadataBase, siteUrl } from "@/lib/seo/metadata";
@@ -77,7 +77,6 @@ export default async function RootLayout({
     <html suppressHydrationWarning lang={lang}>
       <head>
         <link rel="preconnect" href="https://vitals.vercel-analytics.com" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -88,8 +87,17 @@ export default async function RootLayout({
       </head>
       <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
         {children}
-        {/* TODO: Replace G-TFJWH33D6R with your actual Google Analytics 4 Measurement ID */}
-        <GoogleAnalytics gaId="G-TFJWH33D6R" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-TFJWH33D6R"
+          strategy="lazyOnload"
+        />
+        <Script
+          id="google-analytics"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-TFJWH33D6R',{page_path:window.location.pathname});`,
+          }}
+        />
         <SpeedInsights />
       </body>
     </html>

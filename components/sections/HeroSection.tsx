@@ -40,12 +40,12 @@ export function HeroSection({
       <section
         dir="ltr"
         ref={sectionRef}
-      className="relative flex items-center overflow-hidden"
+      className="relative flex items-center overflow-x-hidden"
       style={{
         backgroundImage: "none",
         minHeight: "100svh",
         height: "auto",
-        contain: "layout paint size",
+        contain: "layout paint",
       }}
       aria-label="Hero"
     >
