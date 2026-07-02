@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
@@ -87,15 +86,9 @@ export default async function RootLayout({
       </head>
       <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
         {children}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-TFJWH33D6R"
-          strategy="lazyOnload"
-        />
-        <Script
-          id="google-analytics"
-          strategy="lazyOnload"
+        <script
           dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-TFJWH33D6R',{page_path:window.location.pathname});`,
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-TFJWH33D6R',{send_page_view:false});(function(){var d=document;function l(){var s=d.createElement('script');s.src='https://www.googletagmanager.com/gtag/js?id=G-TFJWH33D6R';s.async=true;d.head.appendChild(s)}d.addEventListener('scroll',l,{once:true});d.addEventListener('click',l,{once:true});d.addEventListener('touchstart',l,{once:true});setTimeout(l,3000);gtag('event','page_view')})()`,
           }}
         />
         <SpeedInsights />

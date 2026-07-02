@@ -21,8 +21,9 @@ export function Footer({
 
   return (
     <footer
-      className="border-t border-apex-border bg-apex-bg py-12 md:py-16 min-h-[200px]"
+      className="border-t border-apex-border bg-apex-bg py-12 md:py-16"
       dir={rtl.dirAttr}
+      style={{ contain: "layout paint size", minHeight: "200px" }}
     >
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className={`grid grid-cols-1 gap-8 lg:gap-12 ${

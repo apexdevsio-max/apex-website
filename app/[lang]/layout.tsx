@@ -60,6 +60,7 @@ export default async function LangLayout({
       <main
         className={`${isAr ? "font-ar" : "font-en"}`}
         dir={isAr ? "rtl" : "ltr"}
+        style={{ minHeight: "100dvh" }}
       >
         {children}
       </main>
