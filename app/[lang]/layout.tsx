@@ -9,6 +9,7 @@ import { isLocale } from "@/lib/i18n/locale";
 import { Footer } from "@/components/layout/Footer";
 import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
 import { metadataBase, siteUrl } from "@/lib/seo/metadata";
+import { AnalyticsConsent } from "@/components/analytics/AnalyticsConsent";
 
 import "../globals.css";
 
@@ -103,7 +104,7 @@ export default async function LangLayout({
       </main>
 
       <Footer lang={lang} dictionary={dictionary} />
-      <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-TFJWH33D6R',{send_page_view:false});(function(){var d=document;function l(){if(window.__apexGaLoaded)return;window.__apexGaLoaded=true;var s=d.createElement('script');s.src='https://www.googletagmanager.com/gtag/js?id=G-TFJWH33D6R';s.async=true;d.head.appendChild(s)}d.addEventListener('scroll',l,{once:true,passive:true});d.addEventListener('click',l,{once:true});d.addEventListener('touchstart',l,{once:true,passive:true});setTimeout(l,3000);gtag('event','page_view')})()` }} />
+      <AnalyticsConsent lang={lang} />
       <SpeedInsights />
       </body>
     </html>

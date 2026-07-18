@@ -40,3 +40,23 @@ test("public discovery files expose canonical URLs", async () => {
   assert.match(llms, /https:\/\/apex\.sy\/en\/services/);
   assert.match(llms, /https:\/\/apex\.sy\/ar\/services/);
 });
+
+test("framework and SEO regressions stay fixed", async () => {
+  const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+  assert.equal(packageJson.dependencies.next, "16.2.10");
+  assert.equal(packageJson.overrides.postcss, "8.5.10");
+
+  const schema = await readFile(path.join(root, "lib", "seo", "schema.tsx"), "utf8");
+  assert.doesNotMatch(schema, /dateCreated:\s*new Date/);
+
+  for (const relative of [
+    "app/[lang]/blog/[slug]/page.tsx",
+    "app/[lang]/services/[service]/page.tsx",
+    "app/[lang]/portfolio/[slug]/page.tsx",
+    "app/[lang]/academy/[course]/page.tsx",
+    "app/[lang]/academy/[course]/[lesson]/page.tsx",
+  ]) {
+    const source = await readFile(path.join(root, relative), "utf8");
+    assert.doesNotMatch(source, /title:\s*`[^`]* - APEX`/, `${relative} duplicates the title template`);
+  }
+});

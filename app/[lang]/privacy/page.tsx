@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "سياسة الخصوصية — APEX" : "Privacy Policy — APEX",
+    title: isAr ? "سياسة الخصوصية" : "Privacy Policy",
     description: isAr
       ? "سياسة الخصوصية الخاصة بشركة APEX للبرمجيات."
       : "APEX Software privacy policy.",

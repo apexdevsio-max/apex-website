@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "أعمالنا — APEX" : "Portfolio — APEX",
+    title: isAr ? "أعمالنا" : "Portfolio",
     description: isAr
       ? "أعمال ومشاريع APEX في الويب، الموبايل، والذكاء الاصطناعي."
       : "APEX portfolio across web, mobile, and AI projects.",

@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
   reactStrictMode: true,
   experimental: {
+    globalNotFound: true,
     optimizePackageImports: ['lucide-react'],
     inlineCss: true,
     serverMinification: true,

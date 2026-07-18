@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "الشروط والأحكام — APEX" : "Terms & Conditions — APEX",
+    title: isAr ? "الشروط والأحكام" : "Terms & Conditions",
     description: isAr
       ? "الشروط والأحكام الخاصة بخدمات APEX للبرمجيات."
       : "Terms and conditions for APEX Software services.",

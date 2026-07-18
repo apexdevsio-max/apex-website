@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang as "en" | "ar", {
-    title: isAr ? "تواصل معنا — APEX" : "Contact Us — APEX",
+    title: isAr ? "تواصل معنا" : "Contact Us",
     description: isAr
       ? "تواصل مع فريق APEX عبر نموذج تواصل ذكي أو واتساب أو البريد الإلكتروني."
       : "Get in touch with the APEX team via our smart form, WhatsApp, or email.",

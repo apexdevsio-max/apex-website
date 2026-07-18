@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "من نحن — APEX" : "About Us — APEX",
+    title: isAr ? "من نحن" : "About Us",
     description: isAr
       ? "شركة APEX للبرمجيات تبني حلولاً رقمية متكاملة. تعرف على رؤيتنا وفريقنا وقيمنا."
       : "APEX is a software company building integrated digital solutions. Learn about our vision, team, and values.",

@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "خدماتنا — APEX" : "Our Services — APEX",
+    title: isAr ? "خدماتنا" : "Our Services",
     description: isAr
       ? "نقدم حلولاً رقمية متكاملة: تطوير ويب، تطبيقات موبايل، ذكاء اصطناعي، تصميم UI/UX، متاجر إلكترونية، وصناعة محتوى."
       : "We offer integrated digital solutions: web development, mobile apps, AI, UI/UX design, e-commerce, and content creation.",
