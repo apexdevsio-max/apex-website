@@ -9,10 +9,13 @@ function getBrowserLocale(request: NextRequest): "en" | "ar" {
   const acceptLanguage = request.headers.get("accept-language");
   if (acceptLanguage) {
     const preferred = acceptLanguage
-      .split(",")[0]
-      ?.split("-")[0]
-      ?.trim()
-      .toLowerCase();
+      .split(",")
+      .map((entry) => {
+        const [tag, quality = "q=1"] = entry.trim().split(";");
+        return { locale: tag.split("-")[0].toLowerCase(), quality: Number(quality.replace("q=", "")) || 0 };
+      })
+      .filter(({ locale }) => locale === "ar" || locale === "en")
+      .sort((a, b) => b.quality - a.quality)[0]?.locale;
     if (preferred === "ar") return "ar";
   }
   return "en";

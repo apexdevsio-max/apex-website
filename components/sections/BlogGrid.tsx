@@ -172,7 +172,7 @@ export function BlogGrid({
 
   const mockPostList = useMemo(
     () =>
-      Object.entries(MOCK_POSTS).map(([slug, post], index) => {
+      Object.entries(MOCK_POSTS).map(([slug, post]) => {
         const arImage = extractFirstImage(post.ar.content || "");
         const enImage = extractFirstImage(post.en.content || "");
         return {
@@ -201,8 +201,6 @@ export function BlogGrid({
     if (mdxPosts.length === 0) return mockPostList;
 
     const mockBySlug = new Map(mockPostList.map((p) => [p.slug, p]));
-    let nextIndex = mockPostList.length;
-
     return mdxPosts.map((post) => {
       const mdxImage = extractFirstImage(post.content) || undefined;
       const mock = mockBySlug.get(post.slug);
@@ -213,21 +211,19 @@ export function BlogGrid({
           [lang]: {
             title: post.title,
             excerpt: post.excerpt,
-            date: mock[lang].date,
+            date: post.datePublished ?? mock[lang].date,
           },
         };
       }
-      const fallback = mockPostList[nextIndex % mockPostList.length];
-      nextIndex++;
       return {
-        ...fallback,
         slug: post.slug,
-        image: mdxImage || fallback.image,
-        [lang]: {
-          title: post.title,
-          excerpt: post.excerpt,
-          date: "",
-        },
+        image: mdxImage,
+        categories: ["selected"],
+        emoji: "📝",
+        readTime: Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200)),
+        accentColor: "#00BCD4",
+        ar: { title: post.title, excerpt: post.excerpt, date: post.datePublished ?? "" },
+        en: { title: post.title, excerpt: post.excerpt, date: post.datePublished ?? "" },
       };
     });
   }, [mdxPosts, lang, mockPostList]);

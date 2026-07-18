@@ -225,15 +225,27 @@ export function AcademyGrid({
 
   const courses: ReadonlyArray<GridCourse> =
     mdxCourses.length > 0
-      ? mdxCourses.map((course, index) => ({
-          ...MOCK_COURSES[index % MOCK_COURSES.length],
-          slug: course.slug,
-          [lang]: {
-            ...MOCK_COURSES[index % MOCK_COURSES.length][lang],
-            title: course.title,
-            summary: course.summary,
-          },
-        }))
+      ? mdxCourses.map((course) => {
+          const presentation = MOCK_COURSES.find((item) => item.slug === course.slug);
+          if (presentation) {
+            return {
+              ...presentation,
+              [lang]: { ...presentation[lang], title: course.title, summary: course.summary },
+            };
+          }
+          const localized = { title: course.title, summary: course.summary, level: lang === "ar" ? "مبتدئ" : "Beginner" };
+          return {
+            slug: course.slug,
+            emoji: "📚",
+            accentColor: "#00BCD4",
+            level: "beginner" as const,
+            lessonsCount: course.lessons.length,
+            duration: { ar: "", en: "" },
+            ar: localized,
+            en: localized,
+            lessons: course.lessons.map((lesson) => ({ slug: lesson.slug, ar: lesson.title, en: lesson.title })),
+          };
+        })
       : MOCK_COURSES;
 
   const filtered =

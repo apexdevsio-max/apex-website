@@ -1,10 +1,42 @@
+import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale } from "@/lib/i18n/locale";
 import { Footer } from "@/components/layout/Footer";
+import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
+import { metadataBase, siteUrl } from "@/lib/seo/metadata";
+
+import "../globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#121212" },
+  ],
+};
+
+export const metadata: Metadata = {
+  metadataBase,
+  title: { default: "APEX — Software Company", template: "%s — APEX" },
+  description: "APEX builds mobile apps, websites, AI solutions, and e-commerce platforms.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  icons: { icon: "/favicon.ico", shortcut: "/favicon.ico", apple: "/favicon.ico" },
+  alternates: {
+    languages: { en: `${siteUrl}/en`, ar: `${siteUrl}/ar`, "x-default": `${siteUrl}/en` },
+  },
+};
+
+const themeScript = `(function(){try{var stored=localStorage.getItem("theme");var dark=stored?stored==="dark":matchMedia("(prefers-color-scheme:dark)").matches;document.documentElement.classList.toggle("dark",dark)}catch(e){}})();`;
 
 const Header = dynamic(
   () => import("@/components/layout/Header").then((m) => m.Header),
@@ -48,7 +80,12 @@ export default async function LangLayout({
   const isAr = lang === "ar";
 
   return (
-    <>
+    <html suppressHydrationWarning lang={lang} dir={isAr ? "rtl" : "ltr"}>
+      <head>
+        <link rel="preconnect" href="https://vitals.vercel-analytics.com" />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
       <div
         data-header-placeholder
         className="w-full"
@@ -60,12 +97,15 @@ export default async function LangLayout({
       <main
         className={`${isAr ? "font-ar" : "font-en"}`}
         dir={isAr ? "rtl" : "ltr"}
-        style={{ minHeight: "100dvh" }}
+        style={{ minHeight: "100vh", minBlockSize: "100dvh" }}
       >
         {children}
       </main>
 
       <Footer lang={lang} dictionary={dictionary} />
-    </>
+      <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-TFJWH33D6R',{send_page_view:false});(function(){var d=document;function l(){if(window.__apexGaLoaded)return;window.__apexGaLoaded=true;var s=d.createElement('script');s.src='https://www.googletagmanager.com/gtag/js?id=G-TFJWH33D6R';s.async=true;d.head.appendChild(s)}d.addEventListener('scroll',l,{once:true,passive:true});d.addEventListener('click',l,{once:true});d.addEventListener('touchstart',l,{once:true,passive:true});setTimeout(l,3000);gtag('event','page_view')})()` }} />
+      <SpeedInsights />
+      </body>
+    </html>
   );
 }

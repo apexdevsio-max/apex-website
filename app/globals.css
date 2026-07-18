@@ -68,6 +68,11 @@ html, body {
   color: var(--color-primary-text);
 }
 
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
 
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-background); }
@@ -176,13 +181,7 @@ html, body {
   direction: rtl;
 }
 
-[dir="rtl"] .flex-row         { flex-direction: row-reverse; }
-[dir="rtl"] .flex-row-reverse { flex-direction: row;         }
-[dir="rtl"] .rotate-180       { transform: rotate(0deg) !important; }
-
-
 [dir="rtl"] [dir="ltr"]                          { direction: ltr; unicode-bidi: embed; }
-[dir="rtl"] svg:not([dir="ltr"]):not(.no-flip)   { transform: scaleX(-1); }
 [dir="rtl"] .lucide:not(.no-flip)                { transform: scaleX(-1); }
 
 
@@ -227,5 +226,22 @@ html, body {
 @keyframes apex-card-fade-in {
   from { opacity: 0; transform: translateY(14px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@supports not (color: color-mix(in srgb, white, black)) {
+  .apex-section-alt, .apex-contact-bg { background: var(--color-card); }
+  .apex-card-base:hover { box-shadow: var(--shadow); }
+  .apex-btn-primary { box-shadow: 0 8px 28px rgba(30, 136, 229, 0.35); }
+  .apex-tag-chip { background: var(--color-card); border-color: var(--color-primary); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 

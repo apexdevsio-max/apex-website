@@ -17,6 +17,8 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   content: string;
+  datePublished?: string;
+  dateModified?: string;
   updatedAt?: Date;
 };
 
@@ -57,9 +59,31 @@ function assertString(value: unknown, path: string, dataset: string): asserts va
   }
 }
 
+function assertSlug(value: unknown, path: string, dataset: string): asserts value is string {
+  assertString(value, path, dataset);
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) {
+    throw new Error(`Invalid ${dataset}: "${path}" must be a lowercase URL-safe slug`);
+  }
+}
+
+function assertOptionalStringArray(value: unknown, path: string, dataset: string): asserts value is string[] | undefined {
+  if (value === undefined) return;
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string" || item.trim() === "")) {
+    throw new Error(`Invalid ${dataset}: "${path}" must be an array of non-empty strings`);
+  }
+}
+
+function optionalIsoDate(value: unknown, path: string, dataset: string): string | undefined {
+  if (value === undefined) return undefined;
+  assertString(value, path, dataset);
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) throw new Error(`Invalid ${dataset}: "${path}" must be a valid date`);
+  return value;
+}
+
 function assertServiceItem(value: unknown, index: number, dataset: string): asserts value is ServiceItem {
   if (!isRecord(value)) throw new Error(`Invalid ${dataset}: item[${index}] must be an object`);
-  assertString(value.slug, `item[${index}].slug`, dataset);
+  assertSlug(value.slug, `item[${index}].slug`, dataset);
   assertString(value.title, `item[${index}].title`, dataset);
   assertString(value.summary, `item[${index}].summary`, dataset);
   assertString(value.description, `item[${index}].description`, dataset);
@@ -68,7 +92,7 @@ function assertServiceItem(value: unknown, index: number, dataset: string): asse
 
 function assertBlogPost(value: unknown, index: number, dataset: string): asserts value is BlogPost {
   if (!isRecord(value)) throw new Error(`Invalid ${dataset}: item[${index}] must be an object`);
-  assertString(value.slug, `item[${index}].slug`, dataset);
+  assertSlug(value.slug, `item[${index}].slug`, dataset);
   assertString(value.title, `item[${index}].title`, dataset);
   assertString(value.excerpt, `item[${index}].excerpt`, dataset);
   assertString(value.content, `item[${index}].content`, dataset);
@@ -76,10 +100,13 @@ function assertBlogPost(value: unknown, index: number, dataset: string): asserts
 
 function assertPortfolioItem(value: unknown, index: number, dataset: string): asserts value is PortfolioItem {
   if (!isRecord(value)) throw new Error(`Invalid ${dataset}: item[${index}] must be an object`);
-  assertString(value.slug, `item[${index}].slug`, dataset);
+  assertSlug(value.slug, `item[${index}].slug`, dataset);
   assertString(value.title, `item[${index}].title`, dataset);
   assertString(value.summary, `item[${index}].summary`, dataset);
   assertString(value.description, `item[${index}].description`, dataset);
+  if (value.thumbnail !== undefined) assertString(value.thumbnail, `item[${index}].thumbnail`, dataset);
+  if (value.driveUrl !== undefined) assertString(value.driveUrl, `item[${index}].driveUrl`, dataset);
+  assertOptionalStringArray(value.images, `item[${index}].images`, dataset);
 }
 
 function assertAcademyLesson(
@@ -91,7 +118,7 @@ function assertAcademyLesson(
   if (!isRecord(value)) {
     throw new Error(`Invalid ${dataset}: item[${courseIndex}].lessons[${lessonIndex}] must be an object`);
   }
-  assertString(value.slug, `item[${courseIndex}].lessons[${lessonIndex}].slug`, dataset);
+  assertSlug(value.slug, `item[${courseIndex}].lessons[${lessonIndex}].slug`, dataset);
   assertString(value.title, `item[${courseIndex}].lessons[${lessonIndex}].title`, dataset);
   assertString(value.summary, `item[${courseIndex}].lessons[${lessonIndex}].summary`, dataset);
   assertString(value.content, `item[${courseIndex}].lessons[${lessonIndex}].content`, dataset);
@@ -99,7 +126,7 @@ function assertAcademyLesson(
 
 function assertAcademyCourse(value: unknown, index: number, dataset: string): asserts value is AcademyCourse {
   if (!isRecord(value)) throw new Error(`Invalid ${dataset}: item[${index}] must be an object`);
-  assertString(value.slug, `item[${index}].slug`, dataset);
+  assertSlug(value.slug, `item[${index}].slug`, dataset);
   assertString(value.title, `item[${index}].title`, dataset);
   assertString(value.summary, `item[${index}].summary`, dataset);
 
@@ -122,6 +149,8 @@ function assertArray<T>(
   }
 
   value.forEach((item, index) => assertItem(item, index, dataset));
+  const slugs = value.map((item) => (item as { slug?: unknown }).slug).filter((slug): slug is string => typeof slug === "string");
+  if (new Set(slugs).size !== slugs.length) throw new Error(`Invalid ${dataset}: duplicate slugs are not allowed`);
 }
 
 type Frontmatter = Record<string, unknown>;
@@ -184,6 +213,8 @@ async function loadBlogPosts(locale: Locale): Promise<BlogPost[]> {
         title: data.title as string,
         excerpt: data.excerpt as string,
         content: body,
+        datePublished: optionalIsoDate(data.datePublished ?? data.date, "datePublished", `blog.${locale}`),
+        dateModified: optionalIsoDate(data.dateModified, "dateModified", `blog.${locale}`),
         updatedAt,
       } satisfies BlogPost;
     })

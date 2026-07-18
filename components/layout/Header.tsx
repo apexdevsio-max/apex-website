@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore, useEffect } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore, useEffect } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -21,14 +21,18 @@ function subscribeTheme(callback: () => void) {
   if (typeof window === "undefined") return () => {};
 
   const media = window.matchMedia("(prefers-color-scheme: dark)");
+  const syncSystemTheme = () => {
+    if (!localStorage.getItem("theme")) document.documentElement.classList.toggle("dark", media.matches);
+    callback();
+  };
   window.addEventListener(THEME_EVENT, callback);
-  window.addEventListener("storage", callback);
-  media.addEventListener("change", callback);
+  window.addEventListener("storage", syncSystemTheme);
+  media.addEventListener("change", syncSystemTheme);
 
   return () => {
     window.removeEventListener(THEME_EVENT, callback);
-    window.removeEventListener("storage", callback);
-    media.removeEventListener("change", callback);
+    window.removeEventListener("storage", syncSystemTheme);
+    media.removeEventListener("change", syncSystemTheme);
   };
 }
 
@@ -44,6 +48,8 @@ export function Header({ lang, dictionary }: Props) {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 56);
@@ -58,9 +64,23 @@ export function Header({ lang, dictionary }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const menu = menuRef.current;
+    const trigger = menuButtonRef.current;
+    const focusable = () => Array.from(menu?.querySelectorAll<HTMLElement>('a[href],button:not([disabled])') ?? []);
+    focusable()[0]?.focus();
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Tab") {
+        const items = focusable();
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    return () => { window.removeEventListener("keydown", handler); trigger?.focus(); };
   }, [open]);
 
   const isClient = useSyncExternalStore(
@@ -224,6 +244,7 @@ export function Header({ lang, dictionary }: Props) {
           </Link>
 
           <button
+            ref={menuButtonRef}
             className="md:hidden p-3 rounded-md transition-colors"
             onClick={() => setOpen((value) => !value)}
             aria-label="Toggle menu"
@@ -247,7 +268,11 @@ export function Header({ lang, dictionary }: Props) {
 
       {open && (
         <div
+          ref={menuRef}
           id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label={isAr ? "قائمة التنقل" : "Navigation menu"}
           className="md:hidden border-t"
           style={{
             background: "color-mix(in srgb, var(--color-background) 96%, transparent)",

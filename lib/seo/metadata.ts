@@ -68,11 +68,11 @@ export function buildBaseMetadata(lang: Locale): Metadata {
       ...openGraph,
       url,
       siteName: "APEX",
-      locale: lang === "ar" ? "ar_SA" : "en_US",
+      locale: lang === "ar" ? "ar_SY" : "en_US",
       type: "website",
       images: [
         {
-          url: `${siteUrl}/images/Apex_logo.png`,
+          url: `${siteUrl}/${lang}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: "APEX",
@@ -81,16 +81,14 @@ export function buildBaseMetadata(lang: Locale): Metadata {
     },
     twitter: {
       card: "summary_large_image",
-      site: "@apex_tech",
-      creator: "@apex_tech",
-      images: [`${siteUrl}/images/Apex_logo.png`],
+      images: [`${siteUrl}/${lang}/opengraph-image`],
     },
   };
 }
 
 export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
   const base = buildBaseMetadata(lang);
-  const image = input.image ?? `${siteUrl}/images/Apex_logo.png`;
+  const image = input.image ?? `${siteUrl}/${lang}/opengraph-image`;
   const path = normalizePath(input.path);
   const url = `${siteUrl}${path}`;
 

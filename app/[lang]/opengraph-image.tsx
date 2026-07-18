@@ -1,5 +1,4 @@
 import { ImageResponse } from "next/og";
-import type { Locale } from "@/lib/i18n/locale";
 
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };

@@ -13,6 +13,7 @@ import {
   MOCK_COURSES,
 } from "@/lib/mock/academy-data";
 import { LEVEL_COLORS } from "@/lib/constants";
+import { MarkdownContent } from "@/components/content/MarkdownContent";
 
 type Props = { params: Promise<{ lang: string; course: string; lesson: string }> };
 
@@ -61,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const mockTitle = mockLesson?.[locale] ?? lesson;
 
   return buildPageMeta(locale, {
-    title: `${mdx?.lesson.title ?? mockTitle} - APEX`,
+    title: mdx?.lesson.title ?? mockTitle,
     description:
       mdx?.lesson.summary ??
       (locale === "ar" ? "درس تدريبي من أكاديمية APEX." : "Training lesson from APEX Academy."),
@@ -120,7 +121,6 @@ export default async function LessonPage({ params }: Props) {
   const currentIndex = allLessons.findIndex((lesson) => lesson.slug === lessonSlug);
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
-  const contentLines = lessonContent.split("\n");
 
   return (
     <div
@@ -221,55 +221,7 @@ export default async function LessonPage({ params }: Props) {
         )}
 
         {lessonContent ? (
-          <article className="mb-14">
-            {contentLines.map((line, index) => {
-              if (!line.trim()) return <div key={index} style={{ height: "8px" }} />;
-
-              if (line.startsWith("## ")) {
-                return (
-                  <h2 key={index} className={`apex-prose-h2 ${isAr ? "font-ar" : "font-en"}`}>
-                    {line.replace("## ", "")}
-                  </h2>
-                );
-              }
-
-              if (line.startsWith("### ")) {
-                return (
-                  <h3 key={index} className={`apex-prose-h3 ${isAr ? "font-ar" : "font-en"}`}>
-                    {line.replace("### ", "")}
-                  </h3>
-                );
-              }
-
-              if (line.startsWith("> ")) {
-                return (
-                  <blockquote key={index} className={`apex-prose-quote ${isAr ? "font-ar" : "font-en"}`}>
-                    {line.replace("> ", "")}
-                  </blockquote>
-                );
-              }
-
-              if (line.startsWith("- ") || line.startsWith("• ")) {
-                return (
-                  <div key={index} className="flex items-start gap-3 mb-2">
-                    <span
-                      className="mt-2 w-2 h-2 rounded-full shrink-0"
-                      style={{ background: accentColor, boxShadow: `0 0 6px ${accentColor}` }}
-                    />
-                    <span className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`} style={{ margin: 0 }}>
-                      {line.replace(/^[-•]\s/, "")}
-                    </span>
-                  </div>
-                );
-              }
-
-              return (
-                <p key={index} className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`}>
-                  {line}
-                </p>
-              );
-            })}
-          </article>
+          <article className="mb-14"><MarkdownContent source={lessonContent} lang={lang} /></article>
         ) : (
           <div
             className="rounded-2xl border p-10 mb-14 text-center"

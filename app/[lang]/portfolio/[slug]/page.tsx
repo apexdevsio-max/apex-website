@@ -67,7 +67,7 @@ export async function generateMetadata({
   const thumbnail = mdxItem?.thumbnail ?? mdxItem?.images?.[0];
 
   return buildPageMeta(locale, {
-    title: `${mdxItem?.title ?? mock?.title ?? slug} - APEX`,
+    title: mdxItem?.title ?? mock?.title ?? slug,
     description: mdxItem?.summary ?? mock?.summary ?? "",
     path: `/${lang}/portfolio/${slug}`,
     ...(thumbnail ? { image: `${siteUrl}${thumbnail.startsWith("/") ? "" : "/"}${thumbnail}` } : {}),

@@ -15,7 +15,14 @@ export function ChromaVideoBackground({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef<ElementSize>({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
   const visibleRef = useRef(isVisible);
-  visibleRef.current = isVisible;
+
+  useEffect(() => {
+    visibleRef.current = isVisible;
+    const video = videoRef.current;
+    if (!video) return;
+    if (isVisible) void video.play().catch(() => undefined);
+    else video.pause();
+  }, [isVisible]);
 
   const [ready, setReady] = useState(false);
 
@@ -251,7 +258,7 @@ export function ChromaVideoBackground({
     }
 
     const start = async () => {
-      if (!md.matches || rm.matches) return;
+      if (!md.matches || rm.matches || document.hidden || !visibleRef.current) return;
       stopped = false;
       if (!gl && !initGL()) return;
       try {
@@ -262,8 +269,17 @@ export function ChromaVideoBackground({
     };
 
     const handleMediaChange = () => { void start(); };
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        heroVideo.pause();
+        cancelAnimationFrame(rafId);
+      } else {
+        void start();
+      }
+    };
     md.addEventListener("change", handleMediaChange);
     rm.addEventListener("change", handleMediaChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     const chromaIdleId = requestIdleCallback(() => { void start(); }, { timeout: 2000 });
 
@@ -279,6 +295,7 @@ export function ChromaVideoBackground({
       heroVideo.removeEventListener("seeked", onSeeked);
       md.removeEventListener("change", handleMediaChange);
       rm.removeEventListener("change", handleMediaChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       ro.disconnect();
     };
   }, [onReady]);

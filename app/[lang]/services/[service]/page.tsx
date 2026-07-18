@@ -56,7 +56,7 @@ export async function generateMetadata({
   const mock = MOCK_SERVICES[slug]?.[locale];
 
   return buildPageMeta(locale, {
-    title: `${mdx?.title ?? mock?.title ?? slug} - APEX`,
+    title: mdx?.title ?? mock?.title ?? slug,
     description: mdx?.summary ?? mock?.summary ?? "",
     path: `/${lang}/services/${slug}`,
   });

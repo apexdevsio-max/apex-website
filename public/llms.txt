@@ -5,11 +5,16 @@ APEX is a Syrian software company serving clients in Saudi Arabia, UAE, Qatar, a
 Target markets: Saudi Arabia, UAE, Qatar, Syria.
 
 ## Services
-- Mobile App Development
-- Web Development
-- AI Solutions
-- E-commerce Development
-- UI/UX Design
+- [Mobile App Development](https://apex.sy/en/services/mobile-apps)
+- [Web Development](https://apex.sy/en/services/web-development)
+- [AI Solutions](https://apex.sy/en/services/ai-solutions)
+- [Content Creation](https://apex.sy/en/services/content-creation)
+
+## Featured Guides
+- [SEO vs GEO](https://apex.sy/en/blog/seo-vs-geo)
+- [React Native Guide](https://apex.sy/en/blog/react-native)
+- [Flutter Guide](https://apex.sy/en/blog/flutter)
+- [Mobile App Development Cost](https://apex.sy/en/blog/mobile-app-development-cost)
 
 ## Site Sections
 - [Home](https://apex.sy/en)
@@ -31,11 +36,16 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 الأسواق المستهدفة: السعودية، الإمارات، قطر، سوريا.
 
 ## الخدمات
-- تطوير تطبيقات الموبايل
-- تطوير الويب
-- حلول الذكاء الاصطناعي
-- تطوير المتاجر الإلكترونية
-- تصميم واجهات المستخدم
+- [تطوير تطبيقات الموبايل](https://apex.sy/ar/services/mobile-apps)
+- [تطوير الويب](https://apex.sy/ar/services/web-development)
+- [حلول الذكاء الاصطناعي](https://apex.sy/ar/services/ai-solutions)
+- [صناعة المحتوى](https://apex.sy/ar/services/content-creation)
+
+## أدلة مختارة
+- [SEO وGEO](https://apex.sy/ar/blog/seo-vs-geo)
+- [دليل React Native](https://apex.sy/ar/blog/react-native)
+- [دليل Flutter](https://apex.sy/ar/blog/flutter)
+- [تكلفة تطوير تطبيقات الموبايل](https://apex.sy/ar/blog/mobile-app-development-cost)
 
 ## أقسام الموقع
 - [الرئيسية](https://apex.sy/ar)

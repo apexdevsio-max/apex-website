@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -13,6 +12,7 @@ import {
   buildBreadcrumbSchema,
 } from "@/lib/seo/schema";
 import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, MOCK_POST_SLUGS } from "@/lib/mock/blog-data";
+import { MarkdownContent } from "@/components/content/MarkdownContent";
 
 export async function generateStaticParams() {
   const seen = new Set<string>();
@@ -71,22 +71,13 @@ export async function generateMetadata({
   const ogImage = extractFirstImage(rawContent);
 
   return buildPageMeta(locale, {
-    title: `${mdxPost?.title ?? mock?.title ?? slug} - APEX`,
+    title: mdxPost?.title ?? mock?.title ?? slug,
     description: mdxPost?.excerpt ?? mock?.excerpt ?? "",
     path: `/${lang}/blog/${slug}`,
     keywords: POST_KEYWORDS[slug]?.[locale],
     image: ogImage,
   });
 }
-
-function renderMarkdownLinks(text: string): string {
-  return text.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer" class="font-semibold underline decoration-1 underline-offset-2 transition-colors" style="color:var(--color-primary)">$1</a>'
-  );
-}
-
-
 
 export default async function BlogPostPage({
   params,
@@ -109,13 +100,12 @@ export default async function BlogPostPage({
 
   const title = mdxPost?.title ?? mockContent?.title ?? fallback.title;
   const excerpt = mdxPost?.excerpt ?? mockContent?.excerpt ?? fallback.excerpt;
-  const date = mockContent?.date ?? fallback.date;
+  const date = mdxPost?.datePublished ?? mockContent?.date ?? fallback.date;
   const readTime = mock?.readTime ?? fallback.readTime;
   const accentColor = mock?.accentColor ?? fallback.accentColor;
   const categoryKey = mock?.categories?.[0] ?? fallback.categories[0];
   const category = CATEGORY_LABELS[categoryKey]?.[lang] ?? categoryKey;
   const rawContent = mdxPost?.content ?? mockContent?.content ?? fallback.content;
-  const contentLines = rawContent.split("\n");
   const relatedSlugs = MOCK_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);
 
   return (
@@ -138,6 +128,8 @@ export default async function BlogPostPage({
           excerpt,
           url: `${siteUrl}/${lang}/blog/${slug}`,
           datePublished: date || undefined,
+          dateModified: mdxPost?.dateModified,
+          image: extractFirstImage(rawContent),
           lang,
         })}
       />
@@ -202,91 +194,7 @@ export default async function BlogPostPage({
                 {isAr ? "المحتوى قيد الإعداد..." : "Content coming soon..."}
               </p>
             </div>
-          ) : contentLines.map((line, index) => {
-            line = line.replace(/\r$/, "");
-            if (!line.trim()) return <div key={index} style={{ height: "8px" }} />;
-
-            if (line.startsWith("## ")) {
-              return (
-                <h2 key={index} className={`apex-prose-h2 ${isAr ? "font-ar" : "font-en"}`}>
-                  <span dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("## ", "")) }} />
-                </h2>
-              );
-            }
-
-            if (line.startsWith("### ")) {
-              return (
-                <h3 key={index} className={`apex-prose-h3 ${isAr ? "font-ar" : "font-en"}`}>
-                  <span dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("### ", "")) }} />
-                </h3>
-              );
-            }
-
-            if (line === "---") {
-              return <hr key={index} className="my-10 border-apex-border" style={{ opacity: 0.4 }} />;
-            }
-
-            if (line.startsWith("> ")) {
-              return (
-                <blockquote
-                  key={index}
-                  className={`apex-prose-quote ${isAr ? "font-ar" : "font-en"}`}
-                  dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("> ", "")) }}
-                />
-              );
-            }
-
-            if (line.startsWith("- ")) {
-              return (
-                <ul key={index} className={`apex-prose-list ${isAr ? "font-ar" : "font-en"}`}>
-                  <li dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("- ", "")) }} />
-                </ul>
-              );
-            }
-
-            if (line.startsWith("• ")) {
-              return (
-                <div key={index} className="apex-prose-bullet">
-                  <span
-                    className="mt-2 w-2 h-2 rounded-full shrink-0"
-                    style={{ background: accentColor, boxShadow: `0 0 6px ${accentColor}` }}
-                  />
-                  <span
-                    className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`}
-                    style={{ margin: 0 }}
-                    dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line.replace("• ", "")) }}
-                  />
-                </div>
-              );
-            }
-
-            const imgMatch = /^!\[(.*)\]\((.*)\)$/.exec(line);
-            if (imgMatch) {
-              const isFirstImage = index < 2;
-              return (
-                <figure key={index} className="my-8">
-                  <div className="relative w-full aspect-video">
-                    <Image
-                      src={imgMatch[2]}
-                      alt={imgMatch[1]}
-                      fill
-                      priority={isFirstImage}
-                      className="rounded-2xl object-cover shadow-lg"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 720px"
-                    />
-                  </div>
-                </figure>
-              );
-            }
-
-            return (
-              <p
-                key={index}
-                className={`apex-prose-p ${isAr ? "font-ar" : "font-en"}`}
-                dangerouslySetInnerHTML={{ __html: renderMarkdownLinks(line) }}
-              />
-            );
-          })}
+          ) : <MarkdownContent source={rawContent} lang={lang} />}
         </article>
 
         <div

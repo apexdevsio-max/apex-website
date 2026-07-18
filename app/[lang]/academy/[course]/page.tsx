@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 
 import {
   getAcademyCourseBySlug,
+  getAcademyCourses,
 } from "@/lib/content/content-loader";
-import { isLocale, type Locale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, isLocale, type Locale } from "@/lib/i18n/locale";
 import {
   MOCK_COURSES,
 } from "@/lib/mock/academy-data";
@@ -14,6 +15,16 @@ import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import { JsonLd, buildOrganizationSchema, buildBreadcrumbSchema, buildCourseSchema } from "@/lib/seo/schema";
 
 type Props = { params: Promise<{ lang: string; course: string }> };
+
+export async function generateStaticParams() {
+  const params: { lang: string; course: string }[] = [];
+  for (const lang of SUPPORTED_LOCALES) {
+    const slugs = new Set((await getAcademyCourses(lang)).map((course) => course.slug));
+    MOCK_COURSES.forEach((course) => slugs.add(course.slug));
+    slugs.forEach((course) => params.push({ lang, course }));
+  }
+  return params;
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, course: courseSlug } = await params;
@@ -29,14 +40,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (mock) {
       const mockContent = mock[locale];
       return buildPageMeta(locale, {
-        title: `${mockContent.title} - APEX`,
+        title: mockContent.title,
         description: mockContent.summary,
         path: `/${lang}/academy/${courseSlug}`,
       });
     }
   }
   return buildPageMeta(locale, {
-    title: `${course?.title ?? courseSlug} - APEX`,
+    title: course?.title ?? courseSlug,
     description: course?.summary ?? "",
     path: `/${lang}/academy/${courseSlug}`,
   });

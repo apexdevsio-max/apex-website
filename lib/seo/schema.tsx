@@ -7,7 +7,7 @@ export function JsonLd({ schema }: { schema: Record<string, unknown> }) {
     <script
       type="application/ld+json"
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
     />
   );
 }
@@ -117,14 +117,6 @@ export function buildWebSiteSchema() {
     "@type": "WebSite",
     name: "APEX",
     url: siteUrl,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${siteUrl}/en/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -146,10 +138,11 @@ export function buildBlogPostingSchema(params: {
   excerpt: string;
   url: string;
   datePublished?: string;
+  dateModified?: string;
   image?: string;
   lang: Locale;
 }) {
-  const { title, excerpt, url, datePublished, image, lang } = params;
+  const { title, excerpt, url, datePublished, dateModified, image, lang } = params;
   const isAr = lang === "ar";
   return {
     "@context": "https://schema.org",
@@ -158,6 +151,7 @@ export function buildBlogPostingSchema(params: {
     description: excerpt,
     url,
     ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
     author: {
       "@type": "Organization",
       name: "APEX",
@@ -275,7 +269,7 @@ export function buildCreativeWorkSchema(params: {
   tags?: string[];
   lang: Locale;
 }) {
-  const { title, summary, description, url, image, tags, lang } = params;
+  const { title, summary, url, image, tags, lang } = params;
   const isAr = lang === "ar";
   return {
     "@context": "https://schema.org",
@@ -286,7 +280,6 @@ export function buildCreativeWorkSchema(params: {
     ...(image ? { image } : {}),
     ...(tags ? { keywords: tags.join(", ") } : {}),
     inLanguage: isAr ? "ar" : "en",
-    dateCreated: new Date().toISOString().split("T")[0],
     creator: {
       "@type": "Organization",
       name: "APEX",

@@ -22,6 +22,7 @@ type FormData = {
   projectType: string;
   budget: string;
   description: string;
+  website: string;
 };
 
 type Errors = Partial<Record<keyof FormData, string>>;
@@ -41,7 +42,7 @@ function validate(data: FormData, dict: Dictionary["contact"]["form"]): Errors {
 }
 
 function buildWhatsAppMessage(data: FormData, projectTypeLabel: string, budgetLabel: string, isAr: boolean): string {
-  const nl = "%0A";
+  const nl = "\n";
   const lines = isAr
     ? [
         `مرحباً APEX! 👋${nl}`,
@@ -63,7 +64,7 @@ function buildWhatsAppMessage(data: FormData, projectTypeLabel: string, budgetLa
         `Budget: ${budgetLabel}${nl}${nl}`,
         `Project Description:${nl}${data.description}`,
       ];
-  return lines.filter(Boolean).join("");
+  return encodeURIComponent(lines.filter(Boolean).join(""));
 }
 
 function buildMailBody(data: FormData, projectTypeLabel: string, budgetLabel: string): string {
@@ -88,7 +89,6 @@ export function ContactForm({ lang, dictionary }: Props) {
   const [sending, setSending] = useState<"whatsapp" | "email" | null>(null);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
   const [apiSuccess, setApiSuccess] = useState(false);
 
   const projectTypeOptions = PROJECT_TYPE_KEYS.map((k) => ({
@@ -102,7 +102,7 @@ export function ContactForm({ lang, dictionary }: Props) {
   }));
 
   function getFormData(): FormData {
-    if (!formRef.current) return { name: "", email: "", phone: "", projectType: "", budget: "", description: "" };
+    if (!formRef.current) return { name: "", email: "", phone: "", projectType: "", budget: "", description: "", website: "" };
     const fd = new FormData(formRef.current);
     return {
       name: (fd.get("name") as string) ?? "",
@@ -111,6 +111,7 @@ export function ContactForm({ lang, dictionary }: Props) {
       projectType: (fd.get("projectType") as string) ?? "",
       budget: (fd.get("budget") as string) ?? "",
       description: (fd.get("description") as string) ?? "",
+      website: (fd.get("website") as string) ?? "",
     };
   }
 
@@ -126,7 +127,6 @@ export function ContactForm({ lang, dictionary }: Props) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setApiError(null);
-    setFieldErrors(null);
     const data = getFormData();
     const errs = validate(data, formDict);
     setErrors(errs);
@@ -146,7 +146,6 @@ export function ContactForm({ lang, dictionary }: Props) {
       } else if (res.status === 429) {
         setApiError(isAr ? "لقد تجاوزت الحد المسموح من المحاولات. الرجاء المحاولة لاحقاً." : "Too many requests. Please try again later.");
       } else if (res.status === 400 && result.fieldErrors) {
-        setFieldErrors(result.fieldErrors);
         const mapped: Errors = {};
         for (const [key, msgs] of Object.entries(result.fieldErrors as Record<string, string[]>)) {
           if (msgs && msgs.length > 0) mapped[key as keyof FormData] = msgs[0];
@@ -185,7 +184,6 @@ export function ContactForm({ lang, dictionary }: Props) {
   function handleReset() {
     setErrors({});
     setApiError(null);
-    setFieldErrors(null);
     setApiSuccess(false);
     formRef.current?.reset();
   }
@@ -236,8 +234,6 @@ export function ContactForm({ lang, dictionary }: Props) {
         ref={formRef}
         onSubmit={handleSubmit}
         noValidate
-        itemScope
-        itemType="https://schema.org/ContactPoint"
         className="rounded-2xl border p-6 sm:p-8"
         style={{
           background: "var(--color-card)",
@@ -245,17 +241,10 @@ export function ContactForm({ lang, dictionary }: Props) {
         }}
         aria-label={isAr ? "نموذج الاتصال" : "Contact form"}
       >
-        <script type="application/ld+json" dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ContactPoint",
-            "name": isAr ? "نموذج تواصل مع أبيكس" : "APEX Contact Form",
-            "description": isAr ? "تواصل مع فريق أبيكس لاستشارة مشروعك في تطوير الويب، تطبيقات الموبايل، الذكاء الاصطناعي، أو التجارة الإلكترونية." : "Get in touch with APEX team to discuss your web development, mobile apps, AI solutions, or e-commerce project.",
-            "url": `https://apex.sy/${lang}/contact`,
-            "contactType": "project inquiry",
-            "email": socialLinks.email,
-          }),
-        }} />
+        <div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
         <h3
           className={`text-lg font-bold mb-1 ${isAr ? "font-ar" : "font-en"}`}
           style={{ color: "var(--color-primary-text)" }}

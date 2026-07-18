@@ -8,7 +8,10 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef<ElementSize>({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
   const visibleRef = useRef(isVisible);
-  visibleRef.current = isVisible;
+
+  useEffect(() => {
+    visibleRef.current = isVisible;
+  }, [isVisible]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

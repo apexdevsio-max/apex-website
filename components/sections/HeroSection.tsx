@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useRtl } from "@/hooks/useRtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -22,6 +22,18 @@ export function HeroSection({
   const scrollLabel = lang === "ar" ? "مرر" : "SCROLL";
 
   const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !("IntersectionObserver" in window)) {
+      const frame = requestAnimationFrame(() => setIsVisible(true));
+      return () => cancelAnimationFrame(frame);
+    }
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), { rootMargin: "200px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -117,8 +129,8 @@ export function HeroSection({
            />
       </div>
 
-       <ParticleBackground isVisible={true} />
-       <ChromaVideoBackground isVisible={true} />
+       <ParticleBackground isVisible={isVisible} />
+       <ChromaVideoBackground isVisible={isVisible} />
 
        <div
         className="absolute bottom-0 inset-e-0 z-40 w-[55%] pointer-events-none opacity-25 md:hidden"

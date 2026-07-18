@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(lang === "ar" ? "ar" : "en", {
-    title: isAr ? "الأكاديمية - APEX" : "Academy - APEX",
+    title: isAr ? "الأكاديمية" : "Academy",
     description: isAr
       ? "أكاديمية APEX لتعلم تطوير الويب والموبايل والذكاء الاصطناعي." : "APEX Academy for learning web, mobile, and AI development.",
     path: `/${lang}/academy`,

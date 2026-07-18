@@ -131,7 +131,11 @@ async function loadDynamicEntries(): Promise<MetadataRoute.Sitemap> {
           },
           "weekly",
           0.7,
-          post.updatedAt
+          post.dateModified
+            ? new Date(post.dateModified)
+            : post.datePublished
+              ? new Date(post.datePublished)
+              : post.updatedAt
         )
       );
     }

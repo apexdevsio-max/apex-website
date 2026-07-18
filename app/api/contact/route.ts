@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { Resend } from "resend";
-
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
-  projectType: z.string().min(1, "Project type is required"),
-  budget: z.string().min(1, "Budget is required"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-});
-
-type ContactData = z.infer<typeof contactSchema>;
+import { createHash } from "node:crypto";
+import { contactSchema, escapeHtml, readLimitedJson, RequestBodyError, MAX_CONTACT_BODY_BYTES, type ContactData } from "@/lib/contact-contract";
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const RATE_LIMIT_TIMEOUT_MS = 2_000;
 
-function checkRateLimit(ip: string): boolean {
+function checkMemoryRateLimit(ip: string): boolean {
   const now = Date.now();
+  if (rateLimitMap.size > 1_000) {
+    for (const [key, value] of rateLimitMap) {
+      if (now > value.resetAt) rateLimitMap.delete(key);
+    }
+  }
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
@@ -27,6 +23,29 @@ function checkRateLimit(ip: string): boolean {
   if (entry.count >= RATE_LIMIT_MAX) return false;
   entry.count++;
   return true;
+}
+
+async function checkRateLimit(ip: string): Promise<boolean> {
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!redisUrl || !redisToken) return checkMemoryRateLimit(ip);
+
+  const key = `contact:${createHash("sha256").update(ip).digest("hex")}`;
+  try {
+    const response = await fetch(`${redisUrl}/pipeline`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${redisToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify([["INCR", key], ["EXPIRE", key, RATE_LIMIT_WINDOW_MS / 1000, "NX"]]),
+      cache: "no-store",
+      signal: AbortSignal.timeout(RATE_LIMIT_TIMEOUT_MS),
+    });
+    if (!response.ok) throw new Error(`Rate limit store returned ${response.status}`);
+    const result = await response.json() as Array<{ result?: number }>;
+    return Number(result[0]?.result ?? RATE_LIMIT_MAX + 1) <= RATE_LIMIT_MAX;
+  } catch (error) {
+    console.warn("Durable rate limit unavailable; using local fallback", error);
+    return checkMemoryRateLimit(ip);
+  }
 }
 
 function buildEmailHtml(data: ContactData): string {
@@ -41,7 +60,7 @@ function buildEmailHtml(data: ContactData): string {
   const rows = fields
     .map(
       (f) =>
-        `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;color:#333;white-space:nowrap;vertical-align:top">${f.label}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;color:#555">${f.value}</td></tr>`
+        `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;color:#333;white-space:nowrap;vertical-align:top">${f.label}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;color:#555">${escapeHtml(f.value)}</td></tr>`
     )
     .join("");
   return `
@@ -60,8 +79,13 @@ function buildEmailHtml(data: ContactData): string {
 }
 
 export async function POST(request: NextRequest) {
+  const contentLength = Number(request.headers.get("content-length") ?? "0");
+  if (contentLength > MAX_CONTACT_BODY_BYTES) {
+    return NextResponse.json({ success: false, error: "Request body is too large" }, { status: 413 });
+  }
+
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (!checkRateLimit(ip)) {
+  if (!(await checkRateLimit(ip))) {
     return NextResponse.json(
       { success: false, error: "Too many requests. Please try again later." },
       { status: 429 }
@@ -70,11 +94,12 @@ export async function POST(request: NextRequest) {
 
   let body: unknown;
   try {
-    body = await request.json();
-  } catch {
+    body = await readLimitedJson(request);
+  } catch (error) {
+    const failure = error instanceof RequestBodyError ? error : new RequestBodyError(400, "Invalid request body");
     return NextResponse.json(
-      { success: false, error: "Invalid JSON body" },
-      { status: 400 }
+      { success: false, error: failure.message },
+      { status: failure.status }
     );
   }
 
@@ -89,8 +114,10 @@ export async function POST(request: NextRequest) {
 
   const data = parsed.data;
   const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.CONTACT_FROM_EMAIL;
+  const recipients = (process.env.CONTACT_TO_EMAIL ?? "").split(",").map((email) => email.trim()).filter(Boolean);
 
-  if (!apiKey) {
+  if (!apiKey || !from || recipients.length === 0) {
     return NextResponse.json(
       { success: false, error: "Email service not configured. Please try WhatsApp or email directly." },
       { status: 500 }
@@ -99,12 +126,19 @@ export async function POST(request: NextRequest) {
 
   try {
     const resend = new Resend(apiKey);
-    await resend.emails.send({
-      from: "APEX Contact <onboarding@resend.dev>",
-      to: ["apex.devs.io@gmail.com"],
+    const { error } = await resend.emails.send({
+      from,
+      to: recipients,
       subject: `New Inquiry from ${data.name}`,
       html: buildEmailHtml(data),
     });
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { success: false, error: "Failed to send email. Please try WhatsApp or email directly." },
+        { status: 502 }
+      );
+    }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Resend error:", err);
