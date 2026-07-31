@@ -2,10 +2,19 @@ import { z } from "zod";
 
 export const MAX_CONTACT_BODY_BYTES = 16_384;
 
+// `name` is interpolated into the email Subject header, so CR/LF must never survive
+// validation — otherwise a submission could inject additional mail headers.
+const NO_NEWLINES = /^[^\r\n]*$/;
+
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
-  email: z.string().trim().email("Invalid email address").max(254),
-  phone: z.string().trim().max(30).optional(),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(100)
+    .regex(NO_NEWLINES, "Name must not contain line breaks"),
+  email: z.string().trim().email("Invalid email address").max(254).regex(NO_NEWLINES, "Invalid email address"),
+  phone: z.string().trim().max(30).regex(NO_NEWLINES, "Invalid phone number").optional(),
   projectType: z.enum(["web", "mobile", "ai", "uiux", "ecommerce", "content", "other"]),
   budget: z.enum(["low", "medium", "high", "premium", "enterprise"]),
   description: z.string().trim().min(10, "Description must be at least 10 characters").max(5000),

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locale";
 import { openGraph } from "./openGraph";
 
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://apex.sy";
@@ -41,8 +41,13 @@ function buildLocalizedPath(path: string, locale: Locale): string {
   return `/${locale}${normalizedPath === "/" ? "" : normalizedPath}`;
 }
 
-function buildAlternates(path: string) {
-  const canonicalPath = normalizePath(path);
+// `lang` is the validated locale; `path` may carry an unvalidated locale segment
+// straight from the route params. The canonical is rebuilt through
+// buildLocalizedPath so its first segment is always the validated locale — quietly
+// emitting a canonical for an unrecognised locale would point search engines at a
+// URL that does not exist.
+function buildAlternates(path: string, lang: Locale) {
+  const canonicalPath = buildLocalizedPath(path, lang);
   const languages: Record<Locale, string> = { en: "", ar: "" };
   for (const locale of SUPPORTED_LOCALES) {
     languages[locale] = `${siteUrl}${buildLocalizedPath(canonicalPath, locale)}`;
@@ -52,7 +57,7 @@ function buildAlternates(path: string) {
     canonical: `${siteUrl}${canonicalPath}`,
     languages: {
       ...languages,
-      "x-default": languages.en,
+      "x-default": languages[DEFAULT_LOCALE],
     },
   };
 }
@@ -63,7 +68,7 @@ export function buildBaseMetadata(lang: Locale): Metadata {
 
   return {
     metadataBase,
-    alternates: buildAlternates(path),
+    alternates: buildAlternates(path, lang),
     openGraph: {
       ...openGraph,
       url,
@@ -89,7 +94,7 @@ export function buildBaseMetadata(lang: Locale): Metadata {
 export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
   const base = buildBaseMetadata(lang);
   const image = input.image ?? `${siteUrl}/${lang}/opengraph-image`;
-  const path = normalizePath(input.path);
+  const path = buildLocalizedPath(input.path, lang);
   const url = `${siteUrl}${path}`;
 
   return {
@@ -97,7 +102,7 @@ export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
     title: input.title,
     description: input.description,
     keywords: input.keywords,
-    alternates: buildAlternates(path),
+    alternates: buildAlternates(path, lang),
     openGraph: {
       ...(base.openGraph ?? {}),
       title: input.title,

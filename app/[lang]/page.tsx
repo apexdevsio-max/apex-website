@@ -7,7 +7,7 @@ const HeroSection = dynamic(
   { ssr: true }
 );
 import { getDictionary } from "@/lib/i18n/i18n";
-import { isLocale } from "@/lib/i18n/locale";
+import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { socialLinks } from "@/data/social-links";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
@@ -49,7 +49,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { lang } = await params;
-  return buildPageMetadata(lang === "ar" ? "ar" : "en");
+  return buildPageMetadata(toLocale(lang));
 }
 
 type Props = { params: Promise<{ lang: string }> };

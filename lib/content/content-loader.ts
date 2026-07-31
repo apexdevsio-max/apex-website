@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import type { Locale } from "@/lib/i18n/locale";
 import path from "path";
 import { readdir, readFile, stat } from "fs/promises";
@@ -321,9 +322,14 @@ async function loadAcademyCourses(locale: Locale): Promise<AcademyCourse[]> {
   return courses;
 }
 
-export async function getServices(locale: Locale): Promise<ServiceItem[]> {
+// Each of these reads and validates a whole content directory. `cache()` dedupes
+// that work per render pass, which matters because the *BySlug helpers below load
+// the full collection to find one item, and generateStaticParams +
+// generateMetadata + the page body all request the same data while building
+// ~157 routes.
+export const getServices = cache(async (locale: Locale): Promise<ServiceItem[]> => {
   return loadServices(locale);
-}
+});
 
 export async function getServiceBySlug(
   locale: Locale,
@@ -333,9 +339,9 @@ export async function getServiceBySlug(
   return items.find((item) => item.slug === slug);
 }
 
-export async function getBlogPosts(locale: Locale): Promise<BlogPost[]> {
+export const getBlogPosts = cache(async (locale: Locale): Promise<BlogPost[]> => {
   return loadBlogPosts(locale);
-}
+});
 
 export async function getBlogPostBySlug(
   locale: Locale,
@@ -345,9 +351,9 @@ export async function getBlogPostBySlug(
   return posts.find((post) => post.slug === slug);
 }
 
-export async function getPortfolioItems(locale: Locale): Promise<PortfolioItem[]> {
+export const getPortfolioItems = cache(async (locale: Locale): Promise<PortfolioItem[]> => {
   return loadPortfolioItems(locale);
-}
+});
 
 export async function getPortfolioItemBySlug(
   locale: Locale,
@@ -357,9 +363,9 @@ export async function getPortfolioItemBySlug(
   return items.find((item) => item.slug === slug);
 }
 
-export async function getAcademyCourses(locale: Locale): Promise<AcademyCourse[]> {
+export const getAcademyCourses = cache(async (locale: Locale): Promise<AcademyCourse[]> => {
   return loadAcademyCourses(locale);
-}
+});
 
 export async function getAcademyCourseBySlug(
   locale: Locale,

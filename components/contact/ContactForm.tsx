@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
 import { CheckCircle, Send, Mail, Loader2, AlertCircle } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
@@ -85,11 +85,16 @@ export function ContactForm({ lang, dictionary }: Props) {
   const isAr = lang === "ar";
   const formDict = dictionary.contact.form;
   const formRef = useRef<HTMLFormElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState<"whatsapp" | "email" | null>(null);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiSuccess, setApiSuccess] = useState(false);
+
+  useEffect(() => {
+    if (apiSuccess) successRef.current?.focus();
+  }, [apiSuccess]);
 
   const projectTypeOptions = PROJECT_TYPE_KEYS.map((k) => ({
     value: k,
@@ -124,13 +129,35 @@ export function ContactForm({ lang, dictionary }: Props) {
     };
   }
 
+  // Field order matters: focus should land on the first invalid field as it appears
+  // on screen, not in whichever order the error object happens to enumerate.
+  const FIELD_ORDER: Array<keyof FormData> = [
+    "name",
+    "email",
+    "phone",
+    "projectType",
+    "budget",
+    "description",
+  ];
+
+  function focusFirstInvalid(errs: Errors) {
+    const first = FIELD_ORDER.find((field) => errs[field]);
+    if (!first) return;
+    formRef.current
+      ?.querySelector<HTMLElement>(`[name="${first}"]`)
+      ?.focus();
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setApiError(null);
     const data = getFormData();
     const errs = validate(data, formDict);
     setErrors(errs);
-    if (Object.keys(errs).length > 0) return;
+    if (Object.keys(errs).length > 0) {
+      focusFirstInvalid(errs);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -151,6 +178,7 @@ export function ContactForm({ lang, dictionary }: Props) {
           if (msgs && msgs.length > 0) mapped[key as keyof FormData] = msgs[0];
         }
         setErrors(mapped);
+        focusFirstInvalid(mapped);
       } else {
         setApiError(result.error ?? (isAr ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
       }
@@ -191,11 +219,18 @@ export function ContactForm({ lang, dictionary }: Props) {
   if (apiSuccess) {
     return (
       <Reveal>
+        {/* Focused on mount so keyboard and screen-reader users are moved to the
+            confirmation rather than left on a submit button that no longer exists. */}
         <div
+          ref={successRef}
+          tabIndex={-1}
+          role="status"
+          aria-live="polite"
           className="rounded-2xl border p-8 text-center"
           style={{
             background: "var(--color-card)",
             borderColor: "var(--color-border)",
+            outline: "none",
           }}
         >
           <CheckCircle size={48} className="mx-auto mb-4" style={{ color: "#22c55e" }} />
@@ -241,7 +276,10 @@ export function ContactForm({ lang, dictionary }: Props) {
         }}
         aria-label={isAr ? "نموذج الاتصال" : "Contact form"}
       >
-        <div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
+        {/* Honeypot. `hidden` keeps it out of the layout entirely — the previous
+            off-screen absolute positioning had no positioned ancestor and could
+            widen the page. Bots that fill every field still trip it. */}
+        <div hidden>
           <label htmlFor="website">Website</label>
           <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
@@ -260,6 +298,7 @@ export function ContactForm({ lang, dictionary }: Props) {
 
         {apiError && (
           <div
+            role="alert"
             className="flex items-center gap-3 p-4 mb-6 rounded-xl border text-sm"
             style={{
               background: "color-mix(in srgb, #ef4444 8%, transparent)",

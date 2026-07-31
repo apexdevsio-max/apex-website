@@ -6,7 +6,7 @@ import {
   getAcademyCourseBySlug,
   getAcademyCourses,
 } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale, type Locale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, isLocale, toLocale, type Locale } from "@/lib/i18n/locale";
 import {
   MOCK_COURSES,
 } from "@/lib/mock/academy-data";
@@ -28,11 +28,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, course: courseSlug } = await params;
-  const locale: Locale = isLocale(lang) ? lang : "en";
+  const locale: Locale = toLocale(lang);
   let course = null;
   try {
     course = await getAcademyCourseBySlug(locale, courseSlug);
-  } catch {
+  } catch (error) {
+    // Recoverable (falls back to mock metadata below), but the error describes
+    // genuinely malformed content, so do not swallow it silently.
+    console.error("Content load failed:", error);
     course = null;
   }
   if (!course) {
@@ -71,7 +74,11 @@ export default async function CoursePage({ params }: Props) {
   let mdxCourse = null;
   try {
     mdxCourse = await getAcademyCourseBySlug(lang, courseSlug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxCourse = null;
   }
   const mock = MOCK_COURSES.find((course) => course.slug === courseSlug);

@@ -4,7 +4,7 @@ import dynamic            from "next/dynamic";
 
 import { getDictionary }     from "@/lib/i18n/i18n";
 import { getPortfolioItems } from "@/lib/content/content-loader";
-import { isLocale }          from "@/lib/i18n/locale";
+import { isLocale, toLocale }          from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
   JsonLd,
@@ -40,7 +40,7 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+  return buildPageMeta(toLocale(lang), {
     title: isAr ? "أعمالنا" : "Portfolio",
     description: isAr
       ? "أعمال ومشاريع APEX في الويب، الموبايل، والذكاء الاصطناعي."

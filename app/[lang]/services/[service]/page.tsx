@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { getServiceBySlug, getServices } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
   JsonLd,
@@ -46,11 +46,15 @@ export async function generateMetadata({
   params: Promise<{ lang: string; service: string }>;
 }): Promise<Metadata> {
   const { lang, service: slug } = await params;
-  const locale = isLocale(lang) ? lang : "ar";
+  const locale = toLocale(lang);
   let mdx = null;
   try {
     mdx = await getServiceBySlug(locale, slug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdx = null;
   }
   const mock = MOCK_SERVICES[slug]?.[locale];
@@ -76,7 +80,11 @@ export default async function ServiceDetailsPage({
   let mdxItem = null;
   try {
     mdxItem = await getServiceBySlug(lang, slug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxItem = null;
   }
   const mock = MOCK_SERVICES[slug];

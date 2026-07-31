@@ -1,10 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useRtl } from "@/hooks/useRtl";
+import { getRtlClasses } from "@/lib/i18n/rtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 
-const FOOTER_SERVICE_SLUGS = ["web-development", "mobile-apps", "ai-solutions"] as const;
+// Each slug is paired with the dictionary index it takes its label from, so
+// reordering `services.items` in the dictionaries cannot silently repoint these
+// links at the wrong service.
+const FOOTER_SERVICES = [
+  { slug: "web-development", titleIndex: 0 },
+  { slug: "mobile-apps", titleIndex: 1 },
+  { slug: "ai-solutions", titleIndex: 2 },
+] as const;
 
 export function Footer({
   lang,
@@ -13,10 +20,12 @@ export function Footer({
   lang: Locale;
   dictionary: Dictionary;
 }) {
-  const rtl = useRtl(lang);
+  const rtl = getRtlClasses(lang);
   const { footer, services } = dictionary;
   const isAr = lang === "ar";
 
+  // Pages are statically generated, so this is the build year. Accurate enough for
+  // a copyright line; it refreshes on the next deploy.
   const year = new Date().getFullYear();
 
   return (
@@ -38,9 +47,9 @@ export function Footer({
                 alt={isAr ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
                 width={120}
                 height={40}
-                quality={40}
+                quality={75}
                 sizes="120px"
-                priority
+                loading="lazy"
               />
             </Link>
             <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.8, lineHeight: "1.625" }}>
@@ -76,16 +85,20 @@ export function Footer({
               {services.title}
             </h3>
             <ul className="space-y-2">
-              {services.items.slice(0, 3).map((item, i) => (
-                <li key={item.title}>
-                  <Link
-                    href={`/${lang}/services/${FOOTER_SERVICE_SLUGS[i]}`}
-                    className="text-sm transition-colors hover:text-apex-primary block py-1"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
+              {FOOTER_SERVICES.map(({ slug, titleIndex }) => {
+                const title = services.items[titleIndex]?.title;
+                if (!title) return null;
+                return (
+                  <li key={slug}>
+                    <Link
+                      href={`/${lang}/services/${slug}`}
+                      className="text-sm transition-colors hover:text-apex-primary block py-3 min-h-[44px] flex items-center"
+                    >
+                      {title}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -93,19 +106,19 @@ export function Footer({
             <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
               {footer.quickContact}
             </h3>
-            <Link 
+            <Link
               href={`/${lang}/contact`}
-              className="inline-flex items-center gap-2 text-sm font-bold transition-all px-5 py-3.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white"
+              className={`inline-flex items-center gap-2 text-sm font-bold transition-all px-5 py-3.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white ${rtl.fontClass}`}
             >
-              Get Quote
-              <span className={`${rtl.arrowRotate}`}>→</span>
+              {dictionary.navigation.letsTalk}
+              <span className={`${rtl.arrowRotate}`} aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
 
         <div className="border-t border-apex-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.6, lineHeight: "1.5" }}>
-            © {year} Apex. {footer.rights}. {isAr ? 'جميع الحقوق محفوظة' : 'All rights reserved.'}
+            © {year} Apex. {footer.rights}
           </p>
           <div className="flex gap-4">
             <Link href={`/${lang}/privacy`} className="text-sm hover:text-apex-primary transition-colors py-2 min-h-[44px] flex items-center">

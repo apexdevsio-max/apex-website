@@ -1,6 +1,8 @@
 import path from "path";
 import type { NextConfig } from "next";
 
+import { CSP_HEADER_VALUE } from "./lib/seo/csp";
+
 const projectRoot = path.resolve(process.cwd());
 
 // Note: www → non-www redirect (apex.sy) must be configured at the CDN/server level (Vercel/Cloudflare),
@@ -70,7 +72,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://vitals.vercel-analytics.com https://vitals.vercel-insights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.google-analytics.com; font-src 'self' data:; media-src 'self'; connect-src 'self' https://*.google-analytics.com https://vitals.vercel-analytics.com https://vitals.vercel-insights.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+            value: CSP_HEADER_VALUE,
           },
         ],
       },

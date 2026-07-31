@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { useRtl } from "@/hooks/useRtl";
+import { getRtlClasses } from "@/lib/i18n/rtl";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { ParticleBackground } from "@/components/effects/ParticleBackground";
@@ -17,7 +17,7 @@ export function HeroSection({
   lang: Locale;
   dictionary: Dictionary;
 }) {
-  const rtl = useRtl(lang);
+  const rtl = getRtlClasses(lang);
   const { heroSection } = dictionary;
   const scrollLabel = lang === "ar" ? "مرر" : "SCROLL";
 

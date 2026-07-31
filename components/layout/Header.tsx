@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useRef, useState, useSyncExternalStore, useEffect } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore, useEffect, type MouseEvent } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { navigationItems } from "@/data/navigation";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -45,7 +45,6 @@ function getDarkMode() {
 
 export function Header({ lang, dictionary }: Props) {
   const pathname = usePathname() || `/${lang}`;
-  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -112,6 +111,9 @@ export function Header({ lang, dictionary }: Props) {
     return current === full || current.startsWith(`${full}/`);
   };
 
+  // Built from the pathname only. Reading useSearchParams() here would opt every
+  // page out of static generation just to preserve a query string, so the current
+  // search is appended at click time instead (see handleLanguageSwitch).
   const switchedHref = useMemo(() => {
     const target = lang === "ar" ? "en" : "ar";
     const segments = pathname.split("/");
@@ -122,10 +124,15 @@ export function Header({ lang, dictionary }: Props) {
       segments.splice(1, 0, target);
     }
 
-    const next = segments.join("/").replace(/\/+/g, "/");
-    const query = searchParams.toString();
-    return query ? `${next}?${query}` : next;
-  }, [lang, pathname, searchParams]);
+    return segments.join("/").replace(/\/+/g, "/");
+  }, [lang, pathname]);
+
+  const handleLanguageSwitch = (event: MouseEvent<HTMLAnchorElement>) => {
+    const search = window.location.search;
+    if (!search) return;
+    event.preventDefault();
+    window.location.assign(`${switchedHref}${search}`);
+  };
 
   const navLinks = useMemo(
     () =>
@@ -166,7 +173,7 @@ export function Header({ lang, dictionary }: Props) {
             width={110}
             height={36}
             priority
-            quality={40}
+            quality={75}
             sizes="110px"
             style={{
               filter: darkMode
@@ -232,6 +239,7 @@ export function Header({ lang, dictionary }: Props) {
 
           <Link
             href={switchedHref}
+            onClick={handleLanguageSwitch}
             className="px-4 py-3 md:px-4 md:py-3 text-xs font-bold rounded-full border transition-all min-w-[44px] min-h-[44px] text-center flex items-center justify-center"
             style={{
               color: "var(--color-lang-pill-text)",

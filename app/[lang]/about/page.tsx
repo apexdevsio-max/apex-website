@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 import { AboutSection } from "@/components/sections/AboutSection";
 import { getDictionary } from "@/lib/i18n/i18n";
-import { isLocale } from "@/lib/i18n/locale";
+import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import { JsonLd, buildOrganizationSchema, buildBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -12,7 +12,7 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+  return buildPageMeta(toLocale(lang), {
     title: isAr ? "من نحن" : "About Us",
     description: isAr
       ? "شركة APEX للبرمجيات تبني حلولاً رقمية متكاملة. تعرف على رؤيتنا وفريقنا وقيمنا."

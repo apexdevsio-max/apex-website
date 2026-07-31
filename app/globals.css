@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+/* Tailwind v4 reads theme tokens from here, not from tailwind.config.ts (removed).
+   Utilities like text-apex-primary / border-apex-border / font-ar are generated from these. */
+@theme {
+  --color-apex-bg:        var(--color-background);
+  --color-apex-card:      var(--color-card);
+  --color-apex-text:      var(--color-primary-text);
+  --color-apex-muted:     var(--color-secondary-text);
+  --color-apex-primary:   var(--color-primary);
+  --color-apex-primary-l: var(--color-primary-light);
+  --color-apex-accent:    var(--color-accent);
+  --color-apex-border:    var(--color-border);
+  --color-apex-gold:      var(--color-gold);
+
+  --font-ar: var(--font-ar), sans-serif;
+  --font-en: var(--font-en), serif;
+
+  --animate-fade-up:    apex-fade-up 0.75s ease both;
+  --animate-float:      apex-float 4s ease-in-out infinite;
+  --animate-shimmer:    apex-shimmer 4s linear infinite;
+  --animate-pulse-ring: apex-pulse-ring 2s ease-out infinite;
+  --animate-dot-blink:  apex-dot-blink 2.5s ease-in-out infinite;
+
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+
+  --shadow-apex-glow:    0 8px 30px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  --shadow-apex-glow-lg: 0 20px 60px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  --shadow-apex-gold:    0 8px 30px color-mix(in srgb, var(--color-gold) 35%, transparent);
+}
 
 :root {
   
@@ -57,10 +89,13 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  /* Keeps anchor targets clear of the 70px fixed header instead of hiding the
+     heading behind it. */
+  scroll-padding-top: 86px;
 }
 
 html, body {
@@ -223,6 +258,118 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
+@keyframes apex-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes apex-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes apex-shimmer {
+  to { background-position: 200% center; }
+}
+
+@keyframes apex-pulse-ring {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes apex-dot-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* Entrance animation. `both` means the 0% keyframe (opacity:0) also applies during
+   animation-delay, so any delayed element is briefly invisible. That is fine for
+   decorative content but not for the LCP element, so the hero <h1> is exempted
+   from its delay below. */
+.apex-fade-up { animation: apex-fade-up 0.75s ease both; }
+.apex-delay-1 { animation-delay: 0.06s; }
+.apex-delay-2 { animation-delay: 0.14s; }
+.apex-delay-3 { animation-delay: 0.22s; }
+.apex-delay-4 { animation-delay: 0.30s; }
+.apex-delay-5 { animation-delay: 0.38s; }
+
+/* The hero headline is the LCP candidate. Holding it at opacity:0 through a delay
+   pushes Largest Contentful Paint out by that much for no visual gain, so it
+   starts fading immediately while the elements around it stay staggered. */
+h1.apex-fade-up { animation-delay: 0s; }
+
+.apex-shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    var(--color-gold),
+    var(--color-primary)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: apex-shimmer 4s linear infinite;
+}
+
+.apex-section-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.apex-section-label.gold { color: var(--color-gold); }
+
+.apex-divider {
+  width: 56px;
+  height: 2px;
+  margin: 12px auto 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-gold));
+}
+.apex-divider.reverse {
+  background: linear-gradient(90deg, var(--color-gold), var(--color-primary));
+}
+
+.apex-glow {
+  text-shadow: 0 0 32px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.apex-online-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: apex-dot-blink 2.5s ease-in-out infinite;
+}
+
+.apex-card-hover {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.apex-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+
+.apex-tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--color-background) 82%, transparent);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.apex-btn { transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; }
+.apex-btn:hover { opacity: 0.94; }
+
 @keyframes apex-card-fade-in {
   from { opacity: 0; transform: translateY(14px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -230,6 +377,8 @@ html, body {
 
 @supports not (color: color-mix(in srgb, white, black)) {
   .apex-section-alt, .apex-contact-bg { background: var(--color-card); }
+  .apex-tag { background: var(--color-card); border-color: var(--color-primary); }
+  .apex-card-hover:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
   .apex-card-base:hover { box-shadow: var(--shadow); }
   .apex-btn-primary { box-shadow: 0 8px 28px rgba(30, 136, 229, 0.35); }
   .apex-tag-chip { background: var(--color-card); border-color: var(--color-primary); }
@@ -243,5 +392,14 @@ html, body {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+  /* The shimmer relies on a moving gradient for its colour; with the animation
+     frozen, fall back to a solid readable fill instead of transparent text. */
+  .apex-shimmer-text {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--color-primary);
+  }
+  .apex-card-hover:hover { transform: none; }
 }
 

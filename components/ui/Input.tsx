@@ -9,8 +9,12 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-  ({ label, error, isAr, className = "", id, ...rest }, ref) => {
-    const inputId = id ?? label.toLowerCase().replace(/\s+/g, "-");
+  ({ label, error, isAr, className = "", id, name, ...rest }, ref) => {
+    // Derived from `name`, not `label`: labels are translated, so a label-derived id
+    // changes per locale and can collide between fields sharing a translation.
+    const inputId = id ?? name ?? label.toLowerCase().replace(/\s+/g, "-");
+    const errorId = `${inputId}-error`;
+
     return (
       <div className="flex flex-col gap-1.5" dir={isAr ? "rtl" : "ltr"}>
         <label
@@ -23,6 +27,9 @@ export const Input = forwardRef<HTMLInputElement, Props>(
         <input
           ref={ref}
           id={inputId}
+          name={name}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           className={`rounded-xl border px-4 min-h-[44px] py-3 text-sm transition-colors ${isAr ? "font-ar text-right" : "font-en"} ${className}`}
           style={{
             background: "var(--color-card)",
@@ -32,7 +39,12 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           {...rest}
         />
         {error && (
-          <span className={`text-xs ${isAr ? "font-ar text-right" : "font-en"}`} style={{ color: "#ef4444" }}>
+          <span
+            id={errorId}
+            role="alert"
+            className={`text-xs ${isAr ? "font-ar text-right" : "font-en"}`}
+            style={{ color: "#ef4444" }}
+          >
             {error}
           </span>
         )}

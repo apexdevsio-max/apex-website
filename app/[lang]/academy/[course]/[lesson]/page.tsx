@@ -7,7 +7,7 @@ import {
   getAcademyCourses,
   getAcademyLessonBySlugs,
 } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta } from "@/lib/seo/metadata";
 import {
   MOCK_COURSES,
@@ -50,11 +50,15 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, course, lesson } = await params;
-  const locale = isLocale(lang) ? lang : "ar";
+  const locale = toLocale(lang);
   let mdx = null;
   try {
     mdx = await getAcademyLessonBySlugs(locale, course, lesson);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdx = null;
   }
   const mockCourse = MOCK_COURSES.find((item) => item.slug === course);
@@ -86,7 +90,11 @@ export default async function LessonPage({ params }: Props) {
   let mdxCourse = null;
   try {
     mdxCourse = await getAcademyCourseBySlug(lang, courseSlug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxCourse = null;
   }
   const mockCourse = MOCK_COURSES.find((course) => course.slug === courseSlug);
@@ -108,7 +116,11 @@ export default async function LessonPage({ params }: Props) {
   let mdxLesson = null;
   try {
     mdxLesson = await getAcademyLessonBySlugs(lang, courseSlug, lessonSlug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxLesson = null;
   }
   const mockLesson = mockCourse?.lessons.find((lesson) => lesson.slug === lessonSlug);

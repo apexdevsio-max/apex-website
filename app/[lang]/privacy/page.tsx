@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { isLocale } from "@/lib/i18n/locale";
+import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import { JsonLd, buildBreadcrumbSchema } from "@/lib/seo/schema";
 
@@ -32,7 +32,7 @@ const CONTENT = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+  return buildPageMeta(toLocale(lang), {
     title: isAr ? "سياسة الخصوصية" : "Privacy Policy",
     description: isAr
       ? "سياسة الخصوصية الخاصة بشركة APEX للبرمجيات."

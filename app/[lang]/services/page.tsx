@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 import { getDictionary } from "@/lib/i18n/i18n";
 import { getServices } from "@/lib/content/content-loader";
-import { isLocale } from "@/lib/i18n/locale";
+import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta } from "@/lib/seo/metadata";
 import {
   JsonLd,
@@ -41,7 +41,7 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+  return buildPageMeta(toLocale(lang), {
     title: isAr ? "خدماتنا" : "Our Services",
     description: isAr
       ? "نقدم حلولاً رقمية متكاملة: تطوير ويب، تطبيقات موبايل، ذكاء اصطناعي، تصميم UI/UX، متاجر إلكترونية، وصناعة محتوى."

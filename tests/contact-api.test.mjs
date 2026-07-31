@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import test from "node:test";
 
 import { contactSchema, escapeHtml, readLimitedJson, RequestBodyError } from "../lib/contact-contract.ts";
@@ -54,4 +56,38 @@ test("limited JSON reader rejects oversized streamed bodies without Content-Leng
     () => readLimitedJson(request),
     (error) => error instanceof RequestBodyError && error.status === 413,
   );
+});
+
+test("fields interpolated into mail headers reject CR/LF", () => {
+  // `name` lands in the Subject header, so a newline there could inject
+  // additional headers into the outgoing mail.
+  for (const injection of ["Bad\r\nBcc: attacker@evil.test", "Bad\nBcc: x@y.z", "Bad\rX: y"]) {
+    assert.equal(
+      contactSchema.safeParse({ ...validPayload, name: injection }).success,
+      false,
+      `name must reject ${JSON.stringify(injection)}`,
+    );
+  }
+  assert.equal(
+    contactSchema.safeParse({ ...validPayload, phone: "+1\r\nBcc: x@y.z" }).success,
+    false,
+  );
+  // A legitimate multi-line description is still fine: it is only ever placed in
+  // the escaped HTML body, never in a header.
+  assert.equal(
+    contactSchema.safeParse({ ...validPayload, description: "Line one.\nLine two, with detail." }).success,
+    true,
+  );
+});
+
+test("rate limiting keys off a header the client cannot forge", async () => {
+  const source = await readFile(path.join(process.cwd(), "app", "api", "contact", "route.ts"), "utf8");
+  assert.match(
+    source,
+    /x-vercel-forwarded-for/,
+    "prefer the edge-set header; x-forwarded-for alone is client-controllable",
+  );
+  const trustedIndex = source.indexOf("x-vercel-forwarded-for");
+  const fallbackIndex = source.indexOf("x-forwarded-for", trustedIndex + 1);
+  assert.ok(trustedIndex < fallbackIndex, "the forgeable header must only be a fallback");
 });

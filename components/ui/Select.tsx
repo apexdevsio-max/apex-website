@@ -11,8 +11,11 @@ type Props = SelectHTMLAttributes<HTMLSelectElement> & {
 };
 
 export const Select = forwardRef<HTMLSelectElement, Props>(
-  ({ label, error, isAr, options, placeholder, className = "", id, ...rest }, ref) => {
-    const selectId = id ?? label.toLowerCase().replace(/\s+/g, "-");
+  ({ label, error, isAr, options, placeholder, className = "", id, name, ...rest }, ref) => {
+    // See Input.tsx: ids come from `name` so they stay stable across locales.
+    const selectId = id ?? name ?? label.toLowerCase().replace(/\s+/g, "-");
+    const errorId = `${selectId}-error`;
+
     return (
       <div className="flex flex-col gap-1.5" dir={isAr ? "rtl" : "ltr"}>
         <label
@@ -25,6 +28,10 @@ export const Select = forwardRef<HTMLSelectElement, Props>(
         <select
           ref={ref}
           id={selectId}
+          name={name}
+          defaultValue=""
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           className={`rounded-xl border px-4 min-h-[44px] py-3 text-sm transition-colors ${isAr ? "font-ar text-right" : "font-en"} ${className}`}
           style={{
             background: "var(--color-card)",
@@ -43,7 +50,12 @@ export const Select = forwardRef<HTMLSelectElement, Props>(
           ))}
         </select>
         {error && (
-          <span className={`text-xs ${isAr ? "font-ar text-right" : "font-en"}`} style={{ color: "#ef4444" }}>
+          <span
+            id={errorId}
+            role="alert"
+            className={`text-xs ${isAr ? "font-ar text-right" : "font-en"}`}
+            style={{ color: "#ef4444" }}
+          >
             {error}
           </span>
         )}

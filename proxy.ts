@@ -1,11 +1,24 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { SUPPORTED_LOCALES } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locale";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-function getBrowserLocale(request: NextRequest): "en" | "ar" {
+// Top-level route segments that exist under /[lang]. An un-prefixed but otherwise
+// valid path (/about) is worth redirecting to /en/about; an unrecognised one is not.
+const KNOWN_ROUTES = new Set([
+  "about",
+  "services",
+  "portfolio",
+  "blog",
+  "academy",
+  "contact",
+  "privacy",
+  "terms",
+]);
+
+function getBrowserLocale(request: NextRequest): Locale {
   const acceptLanguage = request.headers.get("accept-language");
   if (acceptLanguage) {
     const preferred = acceptLanguage
@@ -18,7 +31,7 @@ function getBrowserLocale(request: NextRequest): "en" | "ar" {
       .sort((a, b) => b.quality - a.quality)[0]?.locale;
     if (preferred === "ar") return "ar";
   }
-  return "en";
+  return DEFAULT_LOCALE;
 }
 
 export function proxy(request: NextRequest) {
@@ -42,16 +55,24 @@ export function proxy(request: NextRequest) {
   }
 
   // Known locale → set header
-  if (firstSegment && SUPPORTED_LOCALES.includes(firstSegment as (typeof SUPPORTED_LOCALES)[number])) {
+  if (firstSegment && SUPPORTED_LOCALES.includes(firstSegment as Locale)) {
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-locale", firstSegment);
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  // Unknown locale → default to English with redirect
+  // No recognised locale prefix. Prefixing the path wholesale (/xx/about →
+  // /en/xx/about) produced a permanent redirect to a 404, which crawlers cache.
+  // A known route gets its locale prefix; anything else redirects to the locale
+  // home, temporarily, so a bad URL is never enshrined as a 308.
   const url = request.nextUrl.clone();
-  url.pathname = `/en${pathname === "/" ? "" : pathname}`;
-  return NextResponse.redirect(url, { status: 308 });
+  if (firstSegment && KNOWN_ROUTES.has(firstSegment)) {
+    url.pathname = `/${DEFAULT_LOCALE}${pathname}`;
+    return NextResponse.redirect(url, { status: 308 });
+  }
+
+  url.pathname = `/${DEFAULT_LOCALE}`;
+  return NextResponse.redirect(url, { status: 307 });
 }
 
 export const config = {

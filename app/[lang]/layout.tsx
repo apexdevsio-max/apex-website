@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale } from "@/lib/i18n/locale";
 import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
 import { metadataBase, siteUrl } from "@/lib/seo/metadata";
 import { AnalyticsConsent } from "@/components/analytics/AnalyticsConsent";
@@ -37,28 +37,9 @@ export const metadata: Metadata = {
   },
 };
 
+// Applied before first paint so the stored/system colour scheme does not flash.
+// Next.js stamps the CSP nonce from proxy.ts onto this script automatically.
 const themeScript = `(function(){try{var stored=localStorage.getItem("theme");var dark=stored?stored==="dark":matchMedia("(prefers-color-scheme:dark)").matches;document.documentElement.classList.toggle("dark",dark)}catch(e){}})();`;
-
-const Header = dynamic(
-  () => import("@/components/layout/Header").then((m) => m.Header),
-  {
-    ssr: true,
-    loading: () => (
-      <div
-        className="w-full border-b border-apex-border"
-        style={{
-          height: "70px",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          background: "var(--color-background)",
-        }}
-      />
-    ),
-  }
-);
 
 export const dynamicParams = false;
 
@@ -85,8 +66,14 @@ export default async function LangLayout({
       <head>
         <link rel="preconnect" href="https://vitals.vercel-analytics.com" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Scroll-reveal animations are driven by an IntersectionObserver; without
+            JS the observer never fires and the content would stay at opacity 0. */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
       <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
+      {/* Reserves the space taken by the fixed header so content starts below it. */}
       <div
         data-header-placeholder
         className="w-full"
@@ -95,10 +82,12 @@ export default async function LangLayout({
 
       <Header lang={lang} dictionary={dictionary} />
 
+      {/* Subtracts the header placeholder so a short page fills the viewport
+          exactly instead of overflowing it by the header's height. */}
       <main
         className={`${isAr ? "font-ar" : "font-en"}`}
         dir={isAr ? "rtl" : "ltr"}
-        style={{ minHeight: "100vh", minBlockSize: "100dvh" }}
+        style={{ minBlockSize: "calc(100dvh - 70px)" }}
       >
         {children}
       </main>

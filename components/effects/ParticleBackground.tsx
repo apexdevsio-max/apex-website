@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 
 type ElementSize = { width: number; height: number; cssWidth: number; cssHeight: number };
 
+const FRAME_INTERVAL_MS = 1000 / 30;
+
 export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef<ElementSize>({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
@@ -55,7 +57,9 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
       const w = s.cssWidth;
       const h = s.cssHeight;
       if (!nodes.length) {
-        const count = Math.max(24, Math.min(60, Math.floor(w / 30)));
+        // Link-drawing below is O(n²); 40 nodes is ~780 pair checks per frame
+        // versus ~1770 at 60, for a visually near-identical mesh.
+        const count = Math.max(20, Math.min(40, Math.floor(w / 40)));
         nodes = Array.from({ length: count }, () => ({
           x: Math.random() * w,
           y: Math.random() * h,
@@ -70,6 +74,13 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
         }, 200);
         return;
       }
+      // Throttle to ~30fps. The drift is slow enough that the extra frames are
+      // imperceptible, and this halves the O(n²) link pass on the main thread.
+      if (lastTime && time - lastTime < FRAME_INTERVAL_MS) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+
       const dt = lastTime ? Math.min((time - lastTime) / 16.67, 4) : 1;
       lastTime = time;
       ctx.clearRect(0, 0, s.width, s.height);

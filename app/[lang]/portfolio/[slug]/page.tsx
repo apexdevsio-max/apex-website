@@ -8,7 +8,7 @@ import {
   getPortfolioItemBySlug,
   getPortfolioItems,
 } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
   JsonLd,
@@ -55,12 +55,16 @@ export async function generateMetadata({
   params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
   const { lang, slug } = await params;
-  const locale = isLocale(lang) ? lang : "ar";
+  const locale = toLocale(lang);
   const mock = MOCK_PORTFOLIO[slug]?.[locale];
   let mdxItem = null;
   try {
     mdxItem = await getPortfolioItemBySlug(locale, slug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxItem = null;
   }
 
@@ -98,7 +102,11 @@ export default async function PortfolioItemPage({
   let mdxItem = null;
   try {
     mdxItem = await getPortfolioItemBySlug(lang, slug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxItem = null;
   }
   const mock = MOCK_PORTFOLIO[slug];

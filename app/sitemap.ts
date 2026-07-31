@@ -6,7 +6,7 @@ import {
   getPortfolioItems,
   getServices,
 } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locale";
 import { siteUrl } from "@/lib/seo/metadata";
 
 type StaticRoute = {
@@ -16,19 +16,32 @@ type StaticRoute = {
   lastModified?: Date;
 };
 
-const LAST_UPDATED = new Date("2026-05-17");
-
-const STATIC_ROUTES: StaticRoute[] = [
-  { route: "", changeFrequency: "weekly", priority: 1.0, lastModified: LAST_UPDATED },
-  { route: "about", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
-  { route: "services", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
-  { route: "portfolio", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
-  { route: "blog", changeFrequency: "weekly", priority: 0.8, lastModified: LAST_UPDATED },
-  { route: "academy", changeFrequency: "monthly", priority: 0.8, lastModified: LAST_UPDATED },
-  { route: "contact", changeFrequency: "monthly", priority: 0.7, lastModified: LAST_UPDATED },
-  { route: "privacy", changeFrequency: "yearly", priority: 0.3, lastModified: LAST_UPDATED },
-  { route: "terms", changeFrequency: "yearly", priority: 0.3, lastModified: LAST_UPDATED },
+const STATIC_ROUTES: Array<Omit<StaticRoute, "lastModified">> = [
+  { route: "", changeFrequency: "weekly", priority: 1.0 },
+  { route: "about", changeFrequency: "monthly", priority: 0.8 },
+  { route: "services", changeFrequency: "monthly", priority: 0.8 },
+  { route: "portfolio", changeFrequency: "monthly", priority: 0.8 },
+  { route: "blog", changeFrequency: "weekly", priority: 0.8 },
+  { route: "academy", changeFrequency: "monthly", priority: 0.8 },
+  { route: "contact", changeFrequency: "monthly", priority: 0.7 },
+  { route: "privacy", changeFrequency: "yearly", priority: 0.3 },
+  { route: "terms", changeFrequency: "yearly", priority: 0.3 },
 ];
+
+/**
+ * Newest modification time across all content, used as `lastModified` for the
+ * listing/static routes. Previously a hardcoded date, which drifted months behind
+ * reality and told crawlers the site was staler than it was.
+ */
+function newestContentDate(collections: Array<Array<{ updatedAt?: Date }>>): Date | undefined {
+  let newest: Date | undefined;
+  for (const items of collections) {
+    for (const { updatedAt } of items) {
+      if (updatedAt && (!newest || updatedAt > newest)) newest = updatedAt;
+    }
+  }
+  return newest;
+}
 
 function buildPathByLocale(route: string): Record<Locale, string> {
   return Object.fromEntries(
@@ -50,20 +63,20 @@ function buildLocalizedEntry(
   ) as Record<Locale, string> & { "x-default"?: string };
 
   return {
-    url: `${siteUrl}${pathByLocale.en}`,
+    url: `${siteUrl}${pathByLocale[DEFAULT_LOCALE]}`,
     ...(lastModified ? { lastModified: lastModified.toISOString() } : {}),
     changeFrequency,
     priority,
     alternates: {
       languages: {
         ...languages,
-        "x-default": languages.en,
+        "x-default": languages[DEFAULT_LOCALE],
       },
     },
   };
 }
 
-async function loadDynamicEntries(): Promise<MetadataRoute.Sitemap> {
+async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; newestContent?: Date }> {
   const [servicesByLocale, postsByLocale, portfolioByLocale, coursesByLocale] =
     await Promise.all([
       Promise.all(
@@ -183,15 +196,25 @@ async function loadDynamicEntries(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  return entries;
+  const newestContent = newestContentDate([
+    ...servicesByLocale.map(({ items }) => items),
+    ...postsByLocale.map(({ items }) => items),
+    ...portfolioByLocale.map(({ items }) => items),
+    ...coursesByLocale.map(({ items }) => items),
+    ...coursesByLocale.flatMap(({ items }) => items.map((course) => course.lessons)),
+  ]);
+
+  return { entries, newestContent };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ route, changeFrequency, priority, lastModified }) =>
-    buildLocalizedEntry(buildPathByLocale(route), changeFrequency, priority, lastModified)
-  );
+  const { entries: dynamicEntries, newestContent } = await loadDynamicEntries();
 
-  const dynamicEntries = await loadDynamicEntries();
+  // Listing pages change whenever any of the content they list changes, so they
+  // inherit the newest content timestamp rather than a fixed date.
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ route, changeFrequency, priority }) =>
+    buildLocalizedEntry(buildPathByLocale(route), changeFrequency, priority, newestContent)
+  );
 
   return [...staticEntries, ...dynamicEntries];
 }

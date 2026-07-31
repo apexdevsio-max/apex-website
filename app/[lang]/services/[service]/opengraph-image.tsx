@@ -1,12 +1,13 @@
 import { ImageResponse } from "next/og";
 import { MOCK_SERVICES } from "@/lib/mock/services-data";
+import { toLocale } from "@/lib/i18n/locale";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image({ params }: { params: Promise<{ lang: string; service: string }> }) {
   const { lang, service: slug } = await params;
-  const locale = lang === "ar" ? "ar" : "en";
+  const locale = toLocale(lang);
   const mock = MOCK_SERVICES[slug]?.[locale];
   const title = mock?.title ?? slug;
 

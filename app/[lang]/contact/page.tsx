@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { getDictionary } from "@/lib/i18n/i18n";
-import { isLocale } from "@/lib/i18n/locale";
+import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { socialLinks } from "@/data/social-links";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
@@ -19,7 +19,7 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(lang as "en" | "ar", {
+  return buildPageMeta(toLocale(lang), {
     title: isAr ? "تواصل معنا" : "Contact Us",
     description: isAr
       ? "تواصل مع فريق APEX عبر نموذج تواصل ذكي أو واتساب أو البريد الإلكتروني."

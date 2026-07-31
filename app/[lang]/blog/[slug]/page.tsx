@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
   JsonLd,
@@ -59,11 +59,15 @@ export async function generateMetadata({
   params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
   const { lang, slug } = await params;
-  const locale = isLocale(lang) ? lang : "ar";
+  const locale = toLocale(lang);
   let mdxPost = null;
   try {
     mdxPost = await getBlogPostBySlug(locale, slug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxPost = null;
   }
   const mock = MOCK_POSTS[slug]?.[locale];
@@ -91,7 +95,11 @@ export default async function BlogPostPage({
   let mdxPost = null;
   try {
     mdxPost = await getBlogPostBySlug(lang, slug);
-  } catch {
+  } catch (error) {
+    // Content validation errors are recoverable here (the page falls back to
+    // static metadata), but they describe real malformed content, so surface
+    // them instead of failing silently.
+    console.error("Content load failed:", error);
     mdxPost = null;
   }
   const mock = MOCK_POSTS[slug];

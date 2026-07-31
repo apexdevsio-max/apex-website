@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import dynamic            from "next/dynamic";
 
 import { getBlogPosts }  from "@/lib/content/content-loader";
-import { isLocale }      from "@/lib/i18n/locale";
+import { isLocale, toLocale }      from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
 import {
   JsonLd,
@@ -39,7 +39,7 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(lang === "ar" ? "ar" : "en", {
+  return buildPageMeta(toLocale(lang), {
     title: isAr ? "المدونة" : "Blog",
     description: isAr
       ? "مقالات تقنية وخبرات من فريق APEX."

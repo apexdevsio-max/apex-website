@@ -8,6 +8,16 @@ const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_TIMEOUT_MS = 2_000;
 
+// Prefer the header the edge rewrites and clients cannot forge. `x-forwarded-for`
+// is only a fallback: behind a proxy that does not sanitize it, a caller can set it
+// freely, so it must never be the primary rate-limit key.
+function getClientIp(request: NextRequest): string {
+  const trusted = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
+  if (trusted) return trusted;
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return forwarded || "unknown";
+}
+
 function checkMemoryRateLimit(ip: string): boolean {
   const now = Date.now();
   if (rateLimitMap.size > 1_000) {
@@ -84,7 +94,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: "Request body is too large" }, { status: 413 });
   }
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(request);
   if (!(await checkRateLimit(ip))) {
     return NextResponse.json(
       { success: false, error: "Too many requests. Please try again later." },
