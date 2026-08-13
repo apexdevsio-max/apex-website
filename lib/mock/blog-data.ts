@@ -288,6 +288,24 @@ A developer who masters these tools can work far more efficiently than one who i
 
 export const MOCK_POST_SLUGS = Object.keys(MOCK_POSTS);
 
+/**
+ * Slugs that have a real MDX article behind them in `content/blog/`. The three
+ * entries in MOCK_POSTS without one (nextjs-vs-remix-2025, react-native-expo-guide,
+ * ai-tools-developers-2025) exist only as listing placeholders — they used to be
+ * prerendered as their own routes, which published thin "Content coming soon..."
+ * pages into the index and linked to them from every article's Related section.
+ *
+ * Keep this in sync when an article gains or loses its MDX file; the
+ * content-integrity test asserts every slug here resolves to a real file.
+ */
+export const PUBLISHED_POST_SLUGS = [
+  "flutter",
+  "mobile-app-development-cost",
+  "mobile-app-development-cost-gulf",
+  "react-native",
+  "seo-vs-geo",
+] as const;
+
 export const CATEGORY_LABELS: Record<string, { ar: string; en: string }> = {
   "lang-framework": { ar: "لغات برمجة و أطر عمل", en: "Languages & Frameworks" },
   mobile: { ar: "برمجة الموبايل", en: "Mobile Programming" },

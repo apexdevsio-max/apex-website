@@ -39,7 +39,13 @@ export function AnalyticsConsent({ lang }: { lang: Locale }) {
       {consent === "granted" && (
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
+          // gtag.js is ~160 KB transferred and none of it is needed to render or
+          // hydrate the page. `afterInteractive` still injects it during hydration,
+          // where it competes with the app's own JS for main-thread time on the
+          // critical path. `lazyOnload` defers it to the browser's idle time after
+          // load, which keeps it out of LCP/FCP entirely — analytics losing a second
+          // costs nothing, unlike the paint it was delaying.
+          strategy="lazyOnload"
           onLoad={() => {
             window.dataLayer = window.dataLayer ?? [];
             window.gtag = (...args: unknown[]) => window.dataLayer?.push(args);

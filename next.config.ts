@@ -30,17 +30,19 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
-  webpack: (config, { webpack: wp, isServer }) => {
-    if (!isServer) {
-      config.plugins.push(
-        new wp.NormalModuleReplacementPlugin(
-          /polyfill-module/,
-          path.join(__dirname, 'lib/polyfill-empty.js')
-        )
-      );
-    }
-    return config;
-  },
+  // No `webpack` hook. There used to be a NormalModuleReplacementPlugin here aimed
+  // at /polyfill-module/, intended to strip the ~112 KB `polyfills-<hash>.js` that
+  // every page loads. It never removed a single byte: that chunk is Next's
+  // `polyfill-nomodule` bundle, injected via CopyFilePlugin, which copies the file
+  // to the output by path and registers it in `buildManifest.polyfillFiles`
+  // (next/dist/build/webpack-config.js). A copied asset never passes through module
+  // resolution, so no replacement regex can intercept it — the plugin looked like a
+  // size optimisation while doing nothing, and its presence forced the whole build
+  // onto the webpack path.
+  //
+  // Removing it is safe: Next serves this file only to engines that fail the
+  // module/nomodule test (essentially IE11), so browsers in this project's
+  // browserslist download it at most once from cache and parse none of it.
   async headers() {
     return [
       {

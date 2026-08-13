@@ -120,80 +120,114 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
 
   const entries: MetadataRoute.Sitemap = [];
 
-  for (const locale of SUPPORTED_LOCALES) {
-    for (const service of serviceMap.get(locale) ?? []) {
-      entries.push(
-        buildLocalizedEntry(
-          {
-            en: `/en/services/${service.slug}`,
-            ar: `/ar/services/${service.slug}`,
-          },
-          "monthly",
-          0.7,
-          service.updatedAt
-        )
-      );
-    }
-
-    for (const post of postMap.get(locale) ?? []) {
-      entries.push(
-        buildLocalizedEntry(
-          {
-            en: `/en/blog/${post.slug}`,
-            ar: `/ar/blog/${post.slug}`,
-          },
-          "weekly",
-          0.7,
-          post.dateModified
-            ? new Date(post.dateModified)
-            : post.datePublished
-              ? new Date(post.datePublished)
-              : post.updatedAt
-        )
-      );
-    }
-
-    for (const item of portfolioMap.get(locale) ?? []) {
-      entries.push(
-        buildLocalizedEntry(
-          {
-            en: `/en/portfolio/${item.slug}`,
-            ar: `/ar/portfolio/${item.slug}`,
-          },
-          "monthly",
-          0.7,
-          item.updatedAt
-        )
-      );
-    }
-
-    for (const course of courseMap.get(locale) ?? []) {
-      entries.push(
-        buildLocalizedEntry(
-          {
-            en: `/en/academy/${course.slug}`,
-            ar: `/ar/academy/${course.slug}`,
-          },
-          "monthly",
-          0.7,
-          course.updatedAt
-        )
-      );
-
-      for (const lesson of course.lessons) {
-        entries.push(
-          buildLocalizedEntry(
-            {
-              en: `/en/academy/${course.slug}/${lesson.slug}`,
-              ar: `/ar/academy/${course.slug}/${lesson.slug}`,
-            },
-            "monthly",
-            0.6,
-            lesson.updatedAt
-          )
-        );
+  // One entry per piece of content, NOT one per locale. Each entry already carries
+  // both locales in its `alternates.languages`, so iterating SUPPORTED_LOCALES here
+  // emitted every URL twice (67 entries for 38 unique URLs) while `<loc>` stayed
+  // pinned to DEFAULT_LOCALE — so no /ar/ URL was ever listed. Locale coverage comes
+  // from the hreflang alternates below, which mergeLocaleSlugs preserves.
+  //
+  // Slugs are keyed by locale because a translated item may carry its own slug; the
+  // union below keeps an item listed even if it exists in only one language.
+  const localeSlugs = <T extends { slug: string }>(
+    map: Map<Locale, T[]>,
+    select: (item: T) => Date | undefined
+  ) => {
+    const merged = new Map<string, { lastModified?: Date }>();
+    for (const locale of SUPPORTED_LOCALES) {
+      for (const item of map.get(locale) ?? []) {
+        const lastModified = select(item);
+        const existing = merged.get(item.slug);
+        if (existing) {
+          if (lastModified && (!existing.lastModified || lastModified > existing.lastModified)) {
+            existing.lastModified = lastModified;
+          }
+          continue;
+        }
+        merged.set(item.slug, { lastModified });
       }
     }
+    return merged;
+  };
+
+  const pushCollection = <T extends { slug: string }>(
+    map: Map<Locale, T[]>,
+    toPath: (locale: Locale, slug: string) => string,
+    changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>,
+    priority: number,
+    select: (item: T) => Date | undefined
+  ) => {
+    for (const [slug, { lastModified }] of localeSlugs(map, select)) {
+      const pathByLocale = Object.fromEntries(
+        SUPPORTED_LOCALES.map((locale) => [locale, toPath(locale, slug)])
+      ) as Record<Locale, string>;
+      entries.push(buildLocalizedEntry(pathByLocale, changeFrequency, priority, lastModified));
+    }
+  };
+
+  pushCollection(
+    serviceMap,
+    (locale, slug) => `/${locale}/services/${slug}`,
+    "monthly",
+    0.7,
+    (service) => service.updatedAt
+  );
+
+  pushCollection(
+    postMap,
+    (locale, slug) => `/${locale}/blog/${slug}`,
+    "weekly",
+    0.7,
+    (post) =>
+      post.dateModified
+        ? new Date(post.dateModified)
+        : post.datePublished
+          ? new Date(post.datePublished)
+          : post.updatedAt
+  );
+
+  pushCollection(
+    portfolioMap,
+    (locale, slug) => `/${locale}/portfolio/${slug}`,
+    "monthly",
+    0.7,
+    (item) => item.updatedAt
+  );
+
+  pushCollection(
+    courseMap,
+    (locale, slug) => `/${locale}/academy/${slug}`,
+    "monthly",
+    0.7,
+    (course) => course.updatedAt
+  );
+
+  // Lessons are nested, so they need the course slug as well as their own.
+  const lessonEntries = new Map<string, { course: string; lesson: string; lastModified?: Date }>();
+  for (const locale of SUPPORTED_LOCALES) {
+    for (const course of courseMap.get(locale) ?? []) {
+      for (const lesson of course.lessons) {
+        const key = `${course.slug}/${lesson.slug}`;
+        const existing = lessonEntries.get(key);
+        if (existing) {
+          if (lesson.updatedAt && (!existing.lastModified || lesson.updatedAt > existing.lastModified)) {
+            existing.lastModified = lesson.updatedAt;
+          }
+          continue;
+        }
+        lessonEntries.set(key, {
+          course: course.slug,
+          lesson: lesson.slug,
+          lastModified: lesson.updatedAt,
+        });
+      }
+    }
+  }
+
+  for (const { course, lesson, lastModified } of lessonEntries.values()) {
+    const pathByLocale = Object.fromEntries(
+      SUPPORTED_LOCALES.map((locale) => [locale, `/${locale}/academy/${course}/${lesson}`])
+    ) as Record<Locale, string>;
+    entries.push(buildLocalizedEntry(pathByLocale, "monthly", 0.6, lastModified));
   }
 
   const newestContent = newestContentDate([

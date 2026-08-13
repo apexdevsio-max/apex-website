@@ -11,9 +11,13 @@ import {
   buildBlogPostingSchema,
   buildBreadcrumbSchema,
 } from "@/lib/seo/schema";
-import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, MOCK_POST_SLUGS } from "@/lib/mock/blog-data";
+import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, PUBLISHED_POST_SLUGS } from "@/lib/mock/blog-data";
 import { MarkdownContent } from "@/components/content/MarkdownContent";
 
+// Only slugs backed by a real MDX article are prerendered. Previously every
+// MOCK_POST_SLUGS entry was added too, which published routes whose body rendered
+// "Content coming soon..." — thin pages that Google indexes and counts against
+// site quality. `dynamicParams = false` turns any other slug into a 404.
 export async function generateStaticParams() {
   const seen = new Set<string>();
   const params: { lang: string; slug: string }[] = [];
@@ -28,18 +32,12 @@ export async function generateStaticParams() {
         params.push({ lang, slug: post.slug });
       }
     }
-
-    for (const slug of MOCK_POST_SLUGS) {
-      const key = `${lang}:${slug}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        params.push({ lang, slug });
-      }
-    }
   }
 
   return params;
 }
+
+export const dynamicParams = false;
 
 function extractFirstImage(content: string): string | undefined {
   const match = /^!\[.*\]\((.*)\)$/m.exec(content);
@@ -74,6 +72,13 @@ export async function generateMetadata({
   const rawContent = mdxPost?.content ?? mock?.content ?? "";
   const ogImage = extractFirstImage(rawContent);
 
+  // If neither source resolved, the page itself 404s. Emitting metadata built from
+  // the bare slug and an empty description would otherwise hand search engines a
+  // title like "react-native-expo-guide" with no description at all.
+  if (!mdxPost && !mock) {
+    return { title: locale === "ar" ? "الصفحة غير موجودة" : "Page Not Found", robots: { index: false, follow: false } };
+  }
+
   return buildPageMeta(locale, {
     title: mdxPost?.title ?? mock?.title ?? slug,
     description: mdxPost?.excerpt ?? mock?.excerpt ?? "",
@@ -106,6 +111,10 @@ export default async function BlogPostPage({
   const mockContent = mock?.[lang];
   const fallback = FALLBACK_POST(slug, lang);
 
+  // A slug with no MDX article and no mock copy has nothing to show. Rendering the
+  // placeholder here would publish an empty page under a real URL, so 404 instead.
+  if (!mdxPost && !mockContent) notFound();
+
   const title = mdxPost?.title ?? mockContent?.title ?? fallback.title;
   const excerpt = mdxPost?.excerpt ?? mockContent?.excerpt ?? fallback.excerpt;
   const date = mdxPost?.datePublished ?? mockContent?.date ?? fallback.date;
@@ -114,7 +123,9 @@ export default async function BlogPostPage({
   const categoryKey = mock?.categories?.[0] ?? fallback.categories[0];
   const category = CATEGORY_LABELS[categoryKey]?.[lang] ?? categoryKey;
   const rawContent = mdxPost?.content ?? mockContent?.content ?? fallback.content;
-  const relatedSlugs = MOCK_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);
+  // Related links point only at articles that actually exist — linking to the
+  // placeholder slugs sent crawlers (and readers) to dead-end pages.
+  const relatedSlugs = PUBLISHED_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);
 
   return (
     <div
