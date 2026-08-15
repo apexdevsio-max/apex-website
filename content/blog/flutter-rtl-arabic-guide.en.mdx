@@ -1,0 +1,231 @@
+---
+{"slug":"flutter-rtl-arabic-guide","title":"Arabic and RTL Support in Flutter: The Complete Technical Guide","seoTitle":"Arabic and RTL Support in Flutter","excerpt":"A practical guide to building Arabic Flutter apps with correct RTL support — directional widgets, fonts, numerals, animations, and a pre-launch checklist.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Arabic and RTL Support in Flutter: The Complete Technical Guide
+
+Most localisation problems in Flutter apps aren't in the translation but in the **direction**: a drawer sliding from the wrong side, an arrow icon pointing against the flow, padding hugging the wrong edge. These are the errors that make an app look translated rather than designed for Arabic.
+
+This guide is technical and aimed at developers, covering what you actually need to do in code.
+
+> **The governing rule:** localisation is an architectural decision made on day one, not a layer added before launch. Adding it later costs several times what accounting for it upfront does — see our [Gulf app development cost guide](/en/blog/mobile-app-development-cost-gulf).
+
+---
+
+## 1. Directional widgets — the foundation of everything
+
+**This is the most important section in the guide.** The rule is simple: **never use `left` and `right`**; use `start` and `end`, which flip automatically with language direction.
+
+| Instead of | Use |
+|---|---|
+| `EdgeInsets.only(left: 16)` | `EdgeInsetsDirectional.only(start: 16)` |
+| `Alignment.centerLeft` | `AlignmentDirectional.centerStart` |
+| `BorderRadius.only(topLeft: ...)` | `BorderRadiusDirectional.only(topStart: ...)` |
+| `Positioned(left: 0)` | `PositionedDirectional(start: 0)` |
+| `Icons.arrow_back` | `Icons.arrow_back` with a flip (see below) |
+
+**Example:**
+
+```dart
+// ❌ always hugs the left — wrong in Arabic
+Padding(
+  padding: EdgeInsets.only(left: 16),
+  child: Text('مرحباً'),
+)
+
+// ✅ hugs the start of the line — right in Arabic, left in English
+Padding(
+  padding: EdgeInsetsDirectional.only(start: 16),
+  child: Text('مرحباً'),
+)
+```
+
+**Practical tip:** ban `EdgeInsets.only` with a lint rule in your project. That converts an error caught by visual review into one caught at authoring time.
+
+---
+
+## 2. Configuring locales and direction
+
+Flutter handles direction automatically when locales are configured correctly (see the [official Flutter internationalization docs](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization)):
+
+```dart
+MaterialApp(
+  localizationsDelegates: const [
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+  supportedLocales: const [Locale('ar'), Locale('en')],
+  locale: const Locale('ar'),
+)
+```
+
+**`GlobalWidgetsLocalizations` is what sets text direction automatically.** Forgetting it means the app stays LTR despite an Arabic selection — the most common configuration mistake.
+
+To force a direction on a specific subtree (for code or a phone number):
+
+```dart
+Directionality(
+  textDirection: TextDirection.ltr,
+  child: Text('+966 5X XXX XXXX'),
+)
+```
+
+---
+
+## 3. Arabic fonts
+
+**Don't rely on the default font.** Default Android fonts render Arabic with varying quality across devices.
+
+```dart
+ThemeData(
+  fontFamily: 'IBMPlexSansArabic',
+  textTheme: const TextTheme(/* ... */),
+)
+```
+
+**What to account for:**
+
+- **Line height.** Arabic needs a larger `height` than English because of dots and elongations. Start at `1.5` and adjust visually.
+- **Font weights.** Verify the font provides the weights you actually use; a missing weight is synthesised poorly.
+- **File size.** Arabic fonts are heavier than Latin ones — use `woff2` and ship only the weights you use.
+
+---
+
+## 4. Numerals — the perennially overlooked point
+
+Arabic is written with two numeral systems: **Eastern Arabic (٠١٢٣)** and **Western Arabic (0123)**. Choosing between them is a product decision, not a technical one.
+
+```dart
+// Format by locale
+final formatter = NumberFormat.decimalPattern('ar');
+formatter.format(1234.5); // ١٬٢٣٤٫٥
+
+// To force Latin numerals in an Arabic context
+final latin = NumberFormat.decimalPattern('ar_SA');
+```
+
+**A practical rule:** use Latin numerals for prices, phone numbers, and order numbers — Gulf audiences are accustomed to them in those contexts. Use Eastern Arabic numerals if your audience prefers them in body text. **Most importantly: stay consistent across the entire app.**
+
+---
+
+## 5. Icons and animations
+
+**Directional icons must flip:** back and forward arrows, send icons, progress indicators.
+
+```dart
+Transform.flip(
+  flipX: Directionality.of(context) == TextDirection.rtl,
+  child: const Icon(Icons.arrow_back),
+)
+```
+
+**Non-directional icons must never flip:** a clock, a camera, settings, any logo. Flipping them looks like an obvious bug.
+
+**Animations flip too:** the drawer slides from the right, page transitions reverse, and progress bars fill from the right. Flutter handles most of this automatically in Material widgets, but **your custom animations need manual handling**.
+
+---
+
+## 6. Mixed text (Arabic + English)
+
+The largest source of visual errors: an Arabic sentence containing an English word or a number.
+
+**The bidirectional (Bidi) algorithm** handles this automatically in most cases, but problems appear with punctuation at sentence end:
+
+```dart
+// May place the exclamation mark in the wrong position
+Text('مرحباً بك في Flutter!')
+
+// Explicit fix where needed
+Text.rich(
+  TextSpan(children: [
+    const TextSpan(text: 'مرحباً بك في '),
+    TextSpan(text: 'Flutter', style: ltrStyle),
+    const TextSpan(text: '!'),
+  ]),
+)
+```
+
+**Always test with real mixed text** rather than pure Arabic — errors surface at the boundaries.
+
+---
+
+## 7. Third-party libraries — what most often breaks localisation
+
+This is the most common source of surprises: a library that works perfectly, then breaks the layout when RTL is enabled.
+
+**Before adopting any library, verify:**
+- Does it use directional widgets internally?
+- Are there open RTL issues in its repository?
+- When was it last updated?
+
+**Test it in Arabic before building on it, not after.** Replacing a library after wiring half the app to it is expensive.
+
+---
+
+## Pre-launch checklist
+
+Go through these yourself on a real device in Arabic:
+
+- [ ] **All padding and margins** use `Directional` variants.
+- [ ] **The drawer** slides from the right.
+- [ ] **Back arrows** point right.
+- [ ] **Non-directional icons** have not flipped.
+- [ ] **Mixed text** renders in correct order with punctuation.
+- [ ] **Numerals** use one consistent system across the app.
+- [ ] **Input fields** start typing from the right.
+- [ ] **Error messages** and alerts are localised and correctly aligned.
+- [ ] **Horizontal scrolling** starts from the correct side.
+- [ ] **Switching languages** doesn't break layout or lose state.
+- [ ] **Long screens** — scroll the whole page, not just the top.
+- [ ] **Different screen sizes** — errors surface on small screens.
+
+---
+
+## Related reading
+
+- [Hijri dates in applications](/en/blog/hijri-dates-guide) — the other side of localisation.
+- [Clean Architecture](/en/blog/clean-architecture-flutter) — separating logic eases bilingual support.
+- [Mobile app testing](/en/blog/mobile-app-testing) — the RTL checklist before release.
+
+---
+
+## Frequently asked questions
+
+**Is Flutter better than React Native for Arabic support?**
+
+Yes, by a noticeable margin. RTL support in Flutter is deeply built in and mirrors layout, padding, and animations automatically through directional widgets. React Native supports RTL through `I18nManager` but needs more manual tuning, and some third-party libraries ignore RTL entirely. See the [full comparison](/en/blog/flutter-vs-react-native).
+
+**How much does Arabic support add to app cost?**
+
+$2,000–$8,000 when accounted for from the design stage. The figure rises considerably — sometimes double — if added after interfaces are complete, because it means reviewing every screen and every padding value.
+
+**Do I need two design files, Arabic and English?**
+
+No. A single design built on the `start/end` principle works in both directions. What you need is a **visual review** of the Arabic version to confirm the mirroring is logical — especially on complex screens.
+
+**How do I test RTL during development?**
+
+Switch the app's language at runtime rather than relying on device settings alone. Add a language toggle in development builds so you can move between directions with one tap — that makes testing every screen a habit rather than a separate task.
+
+**What about Hijri dates?**
+
+A separate concern from direction. Flutter has no built-in Hijri calendar and you'll need a dedicated library. The more important decision is to always store dates in Gregorian in the database and convert only at display time.
+
+**Do images and illustrations flip?**
+
+Photographs don't. Illustrations carrying direction (a person pointing, an arrow within the graphic) may need a mirrored version. The rule: flip what carries directional meaning, leave everything else.
+
+---
+
+## Conclusion
+
+**Use directional widgets exclusively** — `EdgeInsetsDirectional`, `AlignmentDirectional`, `PositionedDirectional`. These alone solve most problems.
+
+**Configure `GlobalWidgetsLocalizations`** — forgetting it keeps the app LTR despite an Arabic selection.
+
+**Test third-party libraries in Arabic before adopting them** — the most common source of late surprises.
+
+**And account for localisation from day one** — adding it later costs several times more.
+
+**Building an Arabic app?** [Get in touch](/en/contact) for a free scope assessment. See our [mobile app development services](/en/services/mobile-apps) and [previous work](/en/portfolio).

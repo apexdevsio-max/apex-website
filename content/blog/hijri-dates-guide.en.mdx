@@ -1,0 +1,189 @@
+---
+{"slug":"hijri-dates-guide","title":"Hijri Dates in Applications: A Practical Technical Guide","seoTitle":"Hijri Dates in Apps: Technical Guide","excerpt":"A guide to handling the Hijri calendar in digital products — the golden storage rule, calendar variants, correct conversion, and common mistakes.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Hijri Dates in Applications: A Practical Technical Guide
+
+Supporting the Hijri calendar is more complex than it appears, and its errors are costly: an appointment showing the wrong day, a financial report covering the wrong period, or a subscription expiring early.
+
+**The golden rule this guide comes down to: always store in Gregorian, and convert only at display time.**
+
+---
+
+## Rule one: separate storage from display
+
+This is the most important architectural decision in handling dates.
+
+**Always store in Gregorian (UTC).** In the database, in the API, in logs. The reasons:
+
+- **Calculation is simpler** — day differences, chronological ordering, and comparisons work without surprises.
+- **Compatibility** — every library and database assumes Gregorian.
+- **No ambiguity** — the Hijri calendar has multiple implementations (see below), so storing it means storing ambiguity.
+
+**Convert to Hijri only at display time** — in the presentation layer, according to user preference.
+
+```javascript
+// ✅ Correct: store Gregorian, display Hijri
+const stored = new Date('2026-08-14T10:00:00Z');   // in the database
+const shown  = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+  dateStyle: 'long'
+}).format(stored);                                   // at display time
+
+// ❌ Wrong: storing Hijri as text
+{ date: '١٤٤٨/٠٢/٢٠' }  // cannot be sorted or reliably differenced
+```
+
+---
+
+## Rule two: there is no single Hijri calendar
+
+This point surprises many developers and is the source of "off by one day" errors.
+
+The Hijri calendar is lunar, and month beginnings depend on moon sighting. Hence there are **multiple implementations** that sometimes differ by a day:
+
+| Calendar | Description | Use |
+|---|---|---|
+| **Umm al-Qura** | The official calendar in Saudi Arabia | **The standard for the Saudi market** |
+| Civil/tabular | Calculated without sighting | General estimates |
+| Traditional civil | Different calculation formulas | Varied applications |
+
+**For the Saudi market use Umm al-Qura** — it is the officially adopted calendar, and the difference from others can be a full day, which is enough to ruin an appointment or a due date.
+
+```javascript
+// Umm al-Qura specifically
+new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { dateStyle: 'long' })
+
+// ⚠️ 'islamic' alone may give a different calendar
+```
+
+---
+
+## Conversion in the browser — `Intl` is built in
+
+Most needs are covered by [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) with no library at all:
+
+```javascript
+const date = new Date('2026-08-14');
+
+// Hijri with Eastern Arabic numerals
+new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+  dateStyle: 'full'
+}).format(date);
+
+// Hijri with Latin numerals
+new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn', {
+  year: 'numeric', month: 'long', day: 'numeric'
+}).format(date);
+
+// Displaying both calendars — very useful in interfaces
+const g = new Intl.DateTimeFormat('ar', { dateStyle: 'long' }).format(date);
+const h = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { dateStyle: 'long' }).format(date);
+// `${h} (${g})`
+```
+
+**Test `Intl` output on your actual target browsers** — calendar support varies across environments, particularly older server runtimes.
+
+---
+
+## Conversion in Flutter
+
+Flutter has no built-in Hijri calendar and you will need a dedicated library.
+
+**When choosing a library, verify:**
+- Does it support **Umm al-Qura** specifically rather than a generic calculated calendar?
+- What year range is supported? Some libraries are accurate only within a limited range.
+- Is it maintained? Check the last update date.
+
+**Test with real dates whose correct equivalents you know** — especially around month boundaries, where errors concentrate.
+
+---
+
+## Common mistakes
+
+**1. Storing the Hijri date as text.** Prevents sorting, comparison, and calculation. Always store Gregorian.
+
+**2. Calculating differences in Hijri.** A Hijri month is 29 or 30 days with no fixed pattern. Calculate differences in Gregorian, then display the result.
+
+**3. Assuming a year is 12 months of fixed length.** The Hijri year is roughly 11 days shorter than the Gregorian — a "one-year subscription" in Hijri is shorter than in Gregorian.
+
+**4. Ignoring the time zone.** The Hijri day begins at sunset rather than midnight in some religious contexts. For ordinary administrative applications use the calendar day, and don't assume that in religious contexts.
+
+**5. Using `islamic` instead of `islamic-umalqura`.** Sometimes a full day's difference.
+
+**6. Displaying Hijri only.** Many users think in Gregorian in commercial contexts. **Display both calendars** in appointments and due dates — it removes ambiguity at no cost.
+
+---
+
+## Product decisions
+
+**Which calendar by default?** For a Saudi audience, Hijri by default in official and government contexts, Gregorian in commercial and technical ones. **Better still: make it a user preference** with a sensible default.
+
+**Dual display.** In appointments, due dates, and invoices, show both. The cost is zero and the benefit substantial.
+
+**Financial reports.** State explicitly which calendar you use — a "first quarter" report differs fundamentally between calendars. Put it in the report title rather than a footnote.
+
+**Seasons.** Ramadan and Hajj are peak seasons for many businesses, and their Gregorian dates shift annually. If your app is affected by them, Hijri calculation gives you more accurate planning.
+
+---
+
+## Testing checklist
+
+- [ ] All dates stored in Gregorian (UTC) in the database and API.
+- [ ] Conversion happens in the presentation layer only.
+- [ ] **Umm al-Qura** used specifically for the Saudi market.
+- [ ] Tested around month boundaries — where off-by-one errors concentrate.
+- [ ] Tested at Hijri year end and start.
+- [ ] Differences and durations calculated in Gregorian.
+- [ ] Dual display in appointments and due dates.
+- [ ] Numerals in a consistent system (Eastern or Latin) across the app.
+- [ ] Tested on actual target browsers and server environments.
+
+---
+
+## Related reading
+
+- [Arabic and RTL in Flutter](/en/blog/flutter-rtl-arabic-guide) — the other side of localisation.
+- [Arabic web fonts](/en/blog/arabic-web-fonts) — numeral rendering and typefaces.
+- [Mobile app testing](/en/blog/mobile-app-testing) — test around month boundaries.
+
+---
+
+## Frequently asked questions
+
+**Should I store dates in Hijri or Gregorian?**
+
+Always Gregorian (UTC) in the database and API, converting to Hijri only at display time. Storing Hijri prevents reliable sorting and difference calculation, and locks in a particular calendar implementation that may not be what you want later.
+
+**What is the difference between Umm al-Qura and the general Hijri calendar?**
+
+Umm al-Qura is the officially adopted calendar in Saudi Arabia, using specific criteria for month beginnings. General calculated calendars may differ from it by a day. **For the Saudi market use Umm al-Qura specifically** — the difference is enough to ruin an appointment or a due date.
+
+**Does JavaScript support the Hijri calendar?**
+
+Yes, via `Intl.DateTimeFormat` with `ar-SA-u-ca-islamic-umalqura` — with no external library. But **test on your target environments**, as calendar support varies, particularly in older server runtimes.
+
+**How do I calculate the difference between two Hijri dates?**
+
+Convert both to Gregorian, calculate the difference there, then display the result. A Hijri month is 29 or 30 days with no fixed pattern, so direct Hijri arithmetic is a source of errors.
+
+**Should I display both calendars?**
+
+In appointments, due dates, and invoices: strongly yes. The cost is zero and the benefit substantial — it removes ambiguity for a user thinking in the other calendar. In general content, follow the user's preference.
+
+**What about fiscal years and subscriptions?**
+
+The Hijri year is roughly 11 days shorter than the Gregorian. An "annual" subscription in Hijri is genuinely shorter — state explicitly in your terms which calendar governs the duration, and calculate renewal dates in Gregorian internally.
+
+---
+
+## Conclusion
+
+**Store Gregorian, display Hijri** — the rule that prevents most problems.
+
+**Use Umm al-Qura specifically** for the Saudi market, not a generic calculated calendar.
+
+**Always calculate differences in Gregorian** — the Hijri month varies in length.
+
+**And display both calendars** in appointments and due dates — no cost, substantial benefit.
+
+**Building a product for the Saudi market?** [Get in touch](/en/contact) — we account for these details at design time. See our [mobile app development services](/en/services/mobile-apps).

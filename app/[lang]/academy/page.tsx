@@ -19,12 +19,17 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
-  return buildPageMeta(toLocale(lang), {
-    title: isAr ? "الأكاديمية" : "Academy",
-    description: isAr
-      ? "أكاديمية APEX لتعلم تطوير الويب والموبايل والذكاء الاصطناعي." : "APEX Academy for learning web, mobile, and AI development.",
-    path: `/${lang}/academy`,
-  });
+  return {
+    ...buildPageMeta(toLocale(lang), {
+      title: isAr ? "الأكاديمية" : "Academy",
+      description: isAr
+        ? "أكاديمية APEX لتعلم تطوير الويب والموبايل والذكاء الاصطناعي." : "APEX Academy for learning web, mobile, and AI development.",
+      path: `/${lang}/academy`,
+    }),
+    // Hidden from navigation and the sitemap, but that only prevents discovery —
+    // not indexing. Kept out of the index until the course content is complete.
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function AcademyPage({ params }: Props) {

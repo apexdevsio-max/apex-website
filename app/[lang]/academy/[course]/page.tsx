@@ -16,15 +16,20 @@ import { JsonLd, buildOrganizationSchema, buildBreadcrumbSchema, buildCourseSche
 
 type Props = { params: Promise<{ lang: string; course: string }> };
 
+// Only courses backed by real MDX are prerendered. Adding MOCK_COURSES published
+// 15 placeholder courses (~110 words each) as indexable routes; combined with
+// their lessons that was 43 thin pages — 41% of the site — dragging the whole
+// site's quality signal down. See the `robots` block in generateMetadata below.
 export async function generateStaticParams() {
   const params: { lang: string; course: string }[] = [];
   for (const lang of SUPPORTED_LOCALES) {
     const slugs = new Set((await getAcademyCourses(lang)).map((course) => course.slug));
-    MOCK_COURSES.forEach((course) => slugs.add(course.slug));
     slugs.forEach((course) => params.push({ lang, course }));
   }
   return params;
 }
+
+export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, course: courseSlug } = await params;
@@ -49,11 +54,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       });
     }
   }
-  return buildPageMeta(locale, {
-    title: course?.title ?? courseSlug,
-    description: course?.summary ?? "",
-    path: `/${lang}/academy/${courseSlug}`,
-  });
+  return {
+    ...buildPageMeta(locale, {
+      title: course?.title ?? courseSlug,
+      description: course?.summary ?? "",
+      path: `/${lang}/academy/${courseSlug}`,
+    }),
+    // The academy is unfinished and hidden from navigation and the sitemap, but
+    // that only stops discovery — it does not stop indexing. Its pages average
+    // ~110 words, and thin pages at this volume count against the whole site.
+    // Remove this block when the course content is genuinely complete.
+    robots: { index: false, follow: true },
+  };
 }
 
 const hoverStyles = `

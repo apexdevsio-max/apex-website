@@ -1,0 +1,194 @@
+---
+{"slug":"app-performance-optimization","title":"App Performance Optimisation: A Practical Guide by Priority","seoTitle":"App Performance Optimisation Guide","excerpt":"A technical guide to optimising mobile app performance — what users actually notice, how to prioritise, and how to measure before you optimise.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# App Performance Optimisation: A Practical Guide by Priority
+
+Most performance work is spent in the wrong place — a developer spends a week optimising an algorithm while the real problem is an uncompressed image loading on every screen.
+
+**The governing rule: don't optimise before you measure.** And the second rule: **optimise what users notice, not what looks technically interesting.**
+
+---
+
+## What do users actually notice?
+
+In order, from most to least noticeable:
+
+**1. Startup time.** The first impression, and the biggest driver of deletion. Users compare your app to the fastest one on their device.
+
+**2. Touch responsiveness.** A delay after tapping reads as a malfunction. Users tap again, compounding the problem.
+
+**3. Scroll smoothness.** Stutter in long lists is noticed immediately and reads as poor quality.
+
+**4. Data loading time.** Acceptable with a clear indicator; unacceptable when the screen is blank with no explanation.
+
+**5. Battery consumption.** Not noticed immediately, but a leading cause of deletion after a week.
+
+**6. App size.** Affects the download decision itself, especially on limited connections.
+
+**What users don't notice:** the efficiency of an algorithm running once, or an optimisation saving a millisecond in a non-repeated operation.
+
+---
+
+## First: measure before optimising
+
+**Without measurement, you are guessing.** And guessing in performance is expensive because it consumes time with no noticeable result.
+
+**What to measure:**
+
+| Metric | What it tells you |
+|---|---|
+| Cold start time | The user's first impression |
+| Frame rate during scrolling | Experience smoothness |
+| API response time | Where the delay is — network or device |
+| Memory consumption | Risk of sudden termination |
+| App bundle size | The download barrier |
+
+**Measure on real mid-range devices** — and for the standard web metrics see [Google's Core Web Vitals](https://web.dev/articles/vitals) — not your latest handset. Actual users in the market run considerably slower hardware than a developer's device, and that gap hides most problems.
+
+---
+
+## Second: the biggest wins — in order
+
+### 1. Images — the biggest win in most apps
+
+Images are usually the largest consumer of network and memory, and the easiest thing to optimise.
+
+- **Correct size** — don't load a 2000px image to display at 100px. Request the right size from the server.
+- **Modern formats** — WebP or AVIF instead of JPEG/PNG where possible.
+- **Lazy loading** — don't load images below the fold before reaching them.
+- **Caching** — an image loaded once shouldn't load again.
+- **A placeholder during loading** — prevents layout shift.
+
+### 2. Long lists
+
+Use optimised lists (`ListView.builder` in Flutter, `FlatList` in React Native) that build only visible items.
+
+**Don't build 1,000 items at once.** This is the most common cause of scroll stutter.
+
+### 3. Network
+
+- **Reduce request count** — one request fetching what you need beats five.
+- **Fetch only what you need** — don't load fields you never display.
+- **Paginate results** — don't fetch 500 records to show 20.
+- **Cache** — data that doesn't change every second doesn't need fetching every time.
+- **Compress responses** — enabling compression on the server is a free win.
+
+### 4. Startup
+
+- **Defer what can be deferred** — don't initialise everything at launch.
+- **Show something immediately** — a skeleton screen beats a white one.
+- **Review third-party libraries** — some initialise heavily at startup.
+
+### 5. App size
+
+- **Delete unused assets** — images, fonts, and libraries left over from earlier experiments.
+- **Subset fonts** — see our [Arabic web fonts guide](/en/blog/arabic-web-fonts) for the same principle.
+- **Review your dependencies** — a whole library for one function is wasteful.
+
+---
+
+## Third: perception matters more than the number
+
+**An app that feels fast beats a fast app that feels slow.**
+
+**Skeleton screens.** Instead of a spinner, show the shape of the incoming content. Users perceive progress rather than waiting.
+
+**Optimistic updates.** When someone taps "like", update the interface immediately and send the request in the background. If it fails, roll back and apologise — but 99% will succeed and the experience feels instant.
+
+**Preloading.** Load the likely next screen while the user reads the current one.
+
+**Honest progress indicators.** A randomly moving bar is worse than text saying "loading 3 of 10".
+
+---
+
+## Fourth: battery and memory
+
+**Battery** — the largest consumers: continuous location tracking, frequent background syncing, and constant heavy animation.
+
+- Use lower location accuracy when it suffices.
+- Batch syncs rather than requesting every minute.
+- Pause animations when the screen isn't visible.
+
+**Memory** — leaks produce an app that slows with use then terminates suddenly.
+
+- Cancel subscriptions and listeners when screens close.
+- Don't retain references to closed screens.
+- Watch image size in memory, not just on disk.
+
+---
+
+## Fifth: when to stop?
+
+Optimisation has diminishing returns. **Stop when:**
+
+- Metrics are within an acceptable range on mid-range devices.
+- Users have stopped complaining about slowness.
+- The time invested in optimising is worth more than the gain.
+
+**Don't optimise what nobody measures and nobody notices.** That time could have built a feature.
+
+---
+
+## A quick priority checklist
+
+Go through it in order — the first item that finds a problem is where you start:
+
+1. [ ] Are images loaded larger than displayed?
+2. [ ] Do long lists build every item at once?
+3. [ ] Does the app fetch more data than it displays?
+4. [ ] Does startup initialise things that could be deferred?
+5. [ ] Is there a white screen with no indicator during loading?
+6. [ ] Are subscriptions cancelled when screens close?
+7. [ ] Is location tracking running more than necessary?
+8. [ ] Does the app bundle contain unused assets?
+
+---
+
+## Related reading
+
+- [Arabic web fonts](/en/blog/arabic-web-fonts) — the same principle on the web.
+- [Mobile app testing](/en/blog/mobile-app-testing) — measuring on real devices.
+- [Native or hybrid?](/en/blog/native-vs-hybrid-app) — execution decides more than technology.
+
+---
+
+## Frequently asked questions
+
+**Where do I start with a slow app?**
+
+With measurement rather than code. Run profiling tools on a mid-range device and identify where time actually goes. In most apps you'll find images, network, and long lists consuming the majority — those three usually resolve 80% of problems.
+
+**Is optimisation worth the cost?**
+
+It depends on commercial impact. A slow commercial app loses customers at every step, so optimisation is a direct investment. An internal app for twenty employees tolerates more. Measure impact rather than the technical number alone.
+
+**How do I test performance on weak devices?**
+
+Acquire a mid-range device for testing — don't rely on an emulator or your latest handset. Many problems appear only on slower hardware, which is what a large share of your audience actually uses.
+
+**Are native apps faster than cross-platform?**
+
+In typical business apps the difference is minimal and users don't notice it. It shows in complex graphics and media processing. **An optimised cross-platform app beats a carelessly built native one** — execution decides more than the technology. See our [native vs hybrid comparison](/en/blog/native-vs-hybrid-app).
+
+**What is an acceptable startup time?**
+
+Less is always better, and the real benchmark is the apps your audience uses daily — those are what they compare you to. More important than the number is showing something immediately (a skeleton screen) rather than a white one, because perception is affected by that more than by milliseconds.
+
+**Should I optimise before or after launch?**
+
+Fix the obvious problems before launch (oversized images, unoptimised lists, white screens). Defer fine-grained optimisation until you have real usage data — you may discover the screen you optimised is visited by 3% of users.
+
+---
+
+## Conclusion
+
+**Measure first on real mid-range devices** — optimising without measuring is expensive guesswork.
+
+**Start with images, lists, and network** — those three resolve most performance problems.
+
+**Optimise perception, not just numbers** — skeleton screens and optimistic updates change the experience more than milliseconds.
+
+**And stop at diminishing returns** — time spent on an optimisation nobody notices could have built a feature.
+
+**Is your app slow and you want a diagnosis?** [Get in touch](/en/contact) — we start with measurement rather than assumption. See our [mobile app development services](/en/services/mobile-apps).

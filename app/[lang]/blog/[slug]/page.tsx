@@ -117,6 +117,94 @@ const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
     ar: ["عقد تطوير تطبيق", "ملكية الكود المصدري", "بنود العقد", "جدول الدفعات", "معايير القبول"],
     en: ["app development contract", "source code ownership", "contract clauses", "payment schedule", "acceptance criteria"],
   },
+  "flutter-vs-react-native": {
+    ar: ["Flutter مقابل React Native", "مقارنة أطر التطوير", "تطوير تطبيقات", "دعم RTL", "اختيار التقنية"],
+    en: ["Flutter vs React Native", "cross-platform comparison", "mobile frameworks", "RTL support", "framework choice"],
+  },
+  "shopify-vs-custom-store": {
+    ar: ["Shopify مقابل متجر مخصص", "سلة", "زد", "تكلفة المتجر", "منصة جاهزة"],
+    en: ["Shopify vs custom store", "Salla", "Zid", "ecommerce TCO", "hosted platform"],
+  },
+  "native-vs-hybrid-app": {
+    ar: ["تطبيق أصيل", "تطبيق هجين", "متعدد المنصات", "WebView", "مقارنة التطوير"],
+    en: ["native vs hybrid", "cross-platform apps", "WebView", "app development comparison"],
+  },
+  "wordpress-vs-nextjs": {
+    ar: ["WordPress مقابل Next.js", "موقع شركة", "نظام إدارة محتوى", "أداء الموقع", "صيانة الموقع"],
+    en: ["WordPress vs Next.js", "company website", "CMS", "site performance", "site maintenance"],
+  },
+  "app-vs-pwa": {
+    ar: ["تطبيق أم موقع", "PWA", "تطبيق ويب تقدمي", "موقع متجاوب", "حاجز التحميل"],
+    en: ["app vs PWA", "progressive web app", "responsive website", "download barrier"],
+  },
+  "freelancer-vs-agency": {
+    ar: ["فريلانسر أم شركة", "مطور مستقل", "شركة تطوير", "تكلفة التطوير", "اختيار المزوّد"],
+    en: ["freelancer vs agency", "independent developer", "development company", "development cost"],
+  },
+  "gulf-payment-gateways": {
+    ar: ["بوابات الدفع", "مدى", "STC Pay", "تابي", "تمارا", "الدفع الآجل"],
+    en: ["Gulf payment gateways", "Mada", "STC Pay", "Tabby", "Tamara", "BNPL"],
+  },
+  "mvp-vs-full-product": {
+    ar: ["MVP", "المنتج الأدنى", "منتج كامل", "اختبار السوق", "نطاق المشروع"],
+    en: ["MVP", "minimum viable product", "full product", "market validation", "project scope"],
+  },
+  "hosting-comparison": {
+    ar: ["استضافة المواقع", "Vercel", "AWS", "إقامة البيانات", "استضافة سحابية"],
+    en: ["web hosting", "Vercel", "AWS", "data residency", "cloud hosting"],
+  },
+  "choosing-ai-model-arabic": {
+    ar: ["اختيار نموذج ذكاء اصطناعي", "نموذج لغوي عربي", "مساعد ذكي", "تقييم النماذج", "خصوصية البيانات"],
+    en: ["choosing an AI model", "Arabic language model", "AI assistant", "model evaluation", "data privacy"],
+  },
+  "template-vs-custom-design": {
+    ar: ["قالب جاهز", "تصميم مخصص", "معدل التحويل", "تصميم المواقع", "اختيار القالب"],
+    en: ["template vs custom design", "conversion rate", "web design", "choosing a template"],
+  },
+  "maintenance-inhouse-vs-contract": {
+    ar: ["صيانة المواقع", "عقد صيانة", "تكلفة الصيانة", "فريق داخلي", "دعم فني"],
+    en: ["website maintenance", "maintenance contract", "maintenance cost", "in-house team", "technical support"],
+  },
+  "flutter-rtl-arabic-guide": {
+    ar: ["دعم RTL", "Flutter عربي", "تعريب التطبيقات", "EdgeInsetsDirectional", "واجهات عربية"],
+    en: ["Flutter RTL", "Arabic Flutter", "app localisation", "directional widgets", "Arabic UI"],
+  },
+  "arabic-web-fonts": {
+    ar: ["خطوط عربية", "خطوط الويب", "أداء الموقع", "woff2", "تقليص الخط"],
+    en: ["Arabic web fonts", "web typography", "site performance", "woff2", "font subsetting"],
+  },
+  "hijri-dates-guide": {
+    ar: ["التقويم الهجري", "أم القرى", "تحويل التواريخ", "تواريخ التطبيقات", "Intl"],
+    en: ["Hijri calendar", "Umm al-Qura", "date conversion", "app dates", "Intl API"],
+  },
+  "pdpl-compliance-guide": {
+    ar: ["نظام حماية البيانات", "PDPL", "سدايا", "الموافقة", "إشعار الخرق"],
+    en: ["PDPL compliance", "Saudi data protection", "SDAIA", "consent", "breach notification"],
+  },
+  "health-apps-uae-compliance": {
+    ar: ["تطبيقات صحية", "هيئة الصحة بدبي", "DHA", "الصحة عن بعد", "نابض"],
+    en: ["health apps UAE", "Dubai Health Authority", "DHA", "telehealth", "NABIDH"],
+  },
+  "fintech-sama-compliance": {
+    ar: ["التقنية المالية", "ساما", "البنك المركزي السعودي", "الخدمات المصرفية المفتوحة", "البيئة التجريبية"],
+    en: ["fintech Saudi", "SAMA", "open banking", "regulatory sandbox", "payment licensing"],
+  },
+  "app-performance-optimization": {
+    ar: ["أداء التطبيقات", "تحسين الأداء", "زمن الإقلاع", "تحسين الصور", "استهلاك البطارية"],
+    en: ["app performance", "optimisation", "startup time", "image optimisation", "battery usage"],
+  },
+  "api-security-guide": {
+    ar: ["أمان API", "حماية الواجهات", "المصادقة", "التفويض", "ثغرات أمنية"],
+    en: ["API security", "authentication", "authorisation", "mobile security", "vulnerabilities"],
+  },
+  "clean-architecture-flutter": {
+    ar: ["Clean Architecture", "معمارية التطبيقات", "Flutter", "طبقات التطبيق", "قابلية الاختبار"],
+    en: ["Clean Architecture", "app architecture", "Flutter", "layers", "testability"],
+  },
+  "mobile-app-testing": {
+    ar: ["اختبار التطبيقات", "اختبار الوحدة", "ضمان الجودة", "تتبع الأعطال", "اختبار يدوي"],
+    en: ["mobile app testing", "unit testing", "QA", "crash reporting", "manual testing"],
+  },
 };
 
 export async function generateMetadata({
@@ -148,7 +236,7 @@ export async function generateMetadata({
   }
 
   return buildPageMeta(locale, {
-    title: mdxPost?.title ?? mock?.title ?? slug,
+    title: mdxPost?.seoTitle ?? mdxPost?.title ?? mock?.title ?? slug,
     description: mdxPost?.excerpt ?? mock?.excerpt ?? "",
     path: `/${lang}/blog/${slug}`,
     keywords: POST_KEYWORDS[slug]?.[locale],

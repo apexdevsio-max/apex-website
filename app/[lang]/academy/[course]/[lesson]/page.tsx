@@ -34,19 +34,14 @@ export async function generateStaticParams() {
       }
     }
 
-    for (const course of MOCK_COURSES) {
-      for (const lesson of course.lessons) {
-        const key = `${lang}:${course.slug}:${lesson.slug}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          params.push({ lang, course: course.slug, lesson: lesson.slug });
-        }
-      }
-    }
   }
 
   return params;
 }
+
+// Mock lessons are no longer prerendered, and this stops them rendering on
+// demand from MOCK_COURSES instead.
+export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, course, lesson } = await params;
@@ -65,13 +60,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const mockLesson = mockCourse?.lessons.find((item) => item.slug === lesson);
   const mockTitle = mockLesson?.[locale] ?? lesson;
 
-  return buildPageMeta(locale, {
-    title: mdx?.lesson.title ?? mockTitle,
-    description:
-      mdx?.lesson.summary ??
-      (locale === "ar" ? "درس تدريبي من أكاديمية APEX." : "Training lesson from APEX Academy."),
-    path: `/${lang}/academy/${course}/${lesson}`,
-  });
+  return {
+    ...buildPageMeta(locale, {
+      title: mdx?.lesson.title ?? mockTitle,
+      description:
+        mdx?.lesson.summary ??
+        (locale === "ar" ? "درس تدريبي من أكاديمية APEX." : "Training lesson from APEX Academy."),
+      path: `/${lang}/academy/${course}/${lesson}`,
+    }),
+    // Lesson pages average ~100 words. Kept out of the index until the academy
+    // content is complete — see the note on the course route.
+    robots: { index: false, follow: true },
+  };
 }
 
 const hoverStyles = `

@@ -1,0 +1,192 @@
+---
+{"slug":"mobile-app-testing","title":"Mobile App Testing: What Is Actually Worth Testing","excerpt":"A practical guide to app testing — test types, what deserves automation and what doesn't, and a manual checklist for every release.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Mobile App Testing: What Is Actually Worth Testing
+
+Testing is discussed in extremes: one team writes not a single test, another chases 100% coverage and spends more time on tests than on the product.
+
+**The practical truth sits between them: some tests repay their cost many times over, and others are maintenance burden with no return.** This guide distinguishes them.
+
+---
+
+## The testing pyramid — and reality
+
+The known rule: many unit tests, fewer integration tests, fewer still end-to-end UI tests.
+
+| Type | What it tests | Speed | Maintenance cost |
+|---|---|---|---|
+| **Unit** | A single function or class | Instant | Low |
+| **Integration** | Several components cooperating | Moderate | Moderate |
+| **UI (E2E)** | A full path as the user sees it | Slow | **High** |
+
+**Why this order?** Because end-to-end UI tests are **brittle** — they break with any minor design change, and maintaining them consumes real time. Unit tests run in milliseconds and only break when logic genuinely changes.
+
+---
+
+## What is worth testing — by priority
+
+### 1. Business logic — the highest return
+
+Calculations, validation, business rules, data transformation.
+
+**Why?** Because this is the logic whose **errors cost real money**: a wrong price calculation, a discount applied twice, an incorrect due date.
+
+And it is **the easiest to test** — pure functions with clear inputs and outputs, no UI and no network.
+
+> If your architecture separates logic from UI, this becomes very easy. See our [Clean Architecture guide](/en/blog/clean-architecture-flutter).
+
+### 2. Critical paths
+
+The path whose breakage stops your business: registration, purchase, payment, booking.
+
+**Test the whole path** end to end — even manually at first.
+
+### 3. What broke before
+
+**Every bug that appears in production deserves a test preventing its return.** These are the highest-return tests because they're built on a real failure rather than an assumption.
+
+### 4. Edge cases
+
+The empty list, a dropped connection, extremely long text, a negative number, a future date.
+
+**These are the most forgotten in development and the most surfaced by users.**
+
+---
+
+## What isn't worth automating
+
+- **Purely visual UI** — colours and spacing. Visual review is faster and more accurate.
+- **Generated code** — don't test what you didn't write.
+- **Thin wrappers** — a function passing through a parameter with no logic.
+- **What changes weekly** — testing a screen under redesign is burden with no return.
+- **Third-party libraries** — test your integration with them, not the libraries themselves.
+
+---
+
+## Manual testing — indispensable
+
+Automation doesn't notice that a button is out of thumb reach, that Arabic text is truncated, or that an animation looks janky.
+
+### A manual checklist before every release
+
+**Functionality:**
+- [ ] Critical paths work end to end.
+- [ ] Sign-in, sign-out, and password reset.
+- [ ] Payment (with a test account).
+
+**Devices:**
+- [ ] A **mid-range** Android device — not the newest.
+- [ ] An iOS device.
+- [ ] One small screen and one large.
+
+**Network:**
+- [ ] A slow connection — performance and waiting states.
+- [ ] A drop mid-operation — does it recover gracefully?
+- [ ] Reconnection — does it resume?
+
+**Language and direction:**
+- [ ] The app fully in Arabic — see our [RTL guide](/en/blog/flutter-rtl-arabic-guide).
+- [ ] Switching languages doesn't break the layout.
+- [ ] Long text isn't truncated or overflowing.
+
+**Edge cases:**
+- [ ] Empty lists — do they show a useful message?
+- [ ] Very large datasets — do they degrade gracefully?
+- [ ] Denied permissions — does the app explain and continue?
+
+---
+
+## Testing on real devices
+
+**An emulator isn't enough.** It doesn't reveal: actual performance on a slow processor, battery consumption, real camera and GPS behaviour, or how the app interacts with other apps.
+
+**The practical minimum:** a mid-range Android device + an iOS device. **The mid-range Android matters more than the newest** — it's what a large share of your audience uses, and performance problems surface there first.
+
+---
+
+## Testing before launch
+
+**Beta releases.** Distribute to a limited group before general launch — via [TestFlight](https://developer.apple.com/testflight/) or [Google Play's testing tracks](https://support.google.com/googleplay/android-developer/answer/9845334). **Real users find what your team doesn't** because they use the app the way they want rather than the way you designed it.
+
+**Upgrade testing.** If you have existing users, test upgrading from the previous version rather than only a clean install. **Data migration is a recurring source of bugs** that surfaces only for existing users.
+
+**Load testing** if your app expects a peak — a season, a campaign, or a launch. See our [hosting guide](/en/blog/hosting-comparison).
+
+---
+
+## After launch — monitoring is continuous testing
+
+**Crash reporting.** Mandatory. Without it you learn the app crashes only when a user complains — and most delete rather than complain.
+
+**Monitor:**
+- **Crash rate** and the screens causing it.
+- **Unexpected errors** on the server.
+- **Screens users abandon** — they may be slow or confusing.
+
+**This is data no pre-launch test provides**, because it comes from real usage on real devices, networks, and behaviour.
+
+---
+
+## How many tests are enough?
+
+There is no magic coverage percentage. **Better practical criteria:**
+
+- **Critical business logic is covered** — calculations and business rules.
+- **Every past production bug has a test** preventing its return.
+- **Critical paths are tested** — even manually with a fixed checklist.
+- **Tests run fast** — if they take ten minutes, the team will skip them.
+
+**A sign you're overdoing it:** if a minor change breaks twenty tests, your tests are coupled to implementation rather than behaviour — that's burden rather than protection.
+
+---
+
+## Related reading
+
+- [Clean Architecture](/en/blog/clean-architecture-flutter) — what makes testing possible.
+- [App performance optimisation](/en/blog/app-performance-optimization) — measuring on real devices.
+- [API security](/en/blog/api-security-guide) — edge-case testing surfaces vulnerabilities.
+
+---
+
+## Frequently asked questions
+
+**How much does testing add to project cost?**
+
+Writing tests for critical business logic typically adds 10–20% to development time. Comprehensive coverage with full UI automation can double it. **The return appears in maintenance** — a project with no tests becomes frightening to modify after a year.
+
+**Should I test an MVP?**
+
+Test critical business logic and the core path only. Comprehensive automation is overkill at a stage where everything may change. See our [MVP guide](/en/blog/mvp-vs-full-product).
+
+**What is the difference between manual and automated testing?**
+
+Automated verifies that what worked still works — cheap when repeated. Manual discovers what you didn't anticipate — a poor experience, truncated text, a confusing flow. **You need both**; automated for regression protection, manual for quality.
+
+**Do I need a dedicated tester?**
+
+For large projects and regulated sectors: worth it. For smaller projects, a disciplined developer with a fixed checklist covers most of the need. **What matters most is having a written checklist** rather than relying on memory before each release.
+
+**How do I test on devices I don't own?**
+
+Cloud device testing services let you run the app on a variety of real devices. Useful for covering a wide range, but they **don't replace a real device in your hand** for testing actual experience and performance.
+
+**When should I run the tests?**
+
+Automatically on every code push if possible. If you have no continuous integration, then before every release at minimum. **A test that isn't run regularly is a dead test** giving false reassurance.
+
+---
+
+## Conclusion
+
+**Test business logic first** — the highest return and the easiest to implement.
+
+**Every production bug deserves a test preventing its return** — the most valuable tests, because they're built on real failure.
+
+**Don't automate visual UI** — manual review is faster and more accurate there.
+
+**Test on real mid-range devices** — an emulator isn't enough.
+
+**And monitor after launch** — crash reporting gives you what no pre-launch test can.
+
+**Want a quality review of your project?** [Get in touch](/en/contact) — we start with what's actually worth testing. See our [mobile app development services](/en/services/mobile-apps).

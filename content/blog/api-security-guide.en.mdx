@@ -1,0 +1,180 @@
+---
+{"slug":"api-security-guide","title":"API Security: Common Mistakes and How to Avoid Them","excerpt":"A practical guide to securing APIs — authentication versus authorisation, the most common mistakes in mobile apps, and a pre-launch checklist.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# API Security: Common Mistakes and How to Avoid Them
+
+Most breaches in mobile applications don't happen in the app itself but in **the API behind it**. The reason is simple: many developers treat the app as a line of defence, when the app is **an entirely untrusted environment**.
+
+**The governing rule: everything arriving from a client is untrusted — even when your own app sent it.**
+
+> For the industry-standard reference, see the [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) — the most widely adopted reference among security teams.
+
+---
+
+## Why isn't the app a line of defence?
+
+Anyone can inspect your app's traffic and see every request it sends and every response it receives. The tools for this are freely available.
+
+**What this means:**
+- **Hiding a button in the interface is not authorisation.** An attacker calls the API directly.
+- **Validation in the app is not validation.** Always repeat it on the server.
+- **Any key inside the app is exposed.** Never put secrets in client code.
+
+---
+
+## 1. Authentication and authorisation — the decisive difference
+
+Conflating these two concepts is the source of the most dangerous vulnerabilities.
+
+**Authentication:** who are you?
+**Authorisation:** are you entitled to this specific thing?
+
+**The most common vulnerability in apps:** verifying that the user is logged in, without verifying that **this record belongs to them**.
+
+```
+GET /api/orders/12345
+```
+
+If the server only validates the token and returns order 12345 to any logged-in user — **any user can read everyone's orders** by changing the number.
+
+**The rule:** always verify the requested resource belongs to the requesting user — **at every endpoint without exception**.
+
+---
+
+## 2. Tokens — correct handling
+
+**Don't store tokens in ordinary insecure storage.** Use the platform's secure storage (Keychain on iOS, Keystore on Android).
+
+**Use two tokens:**
+- **A short-lived access token** — minutes to an hour.
+- **A longer-lived refresh token** — used to issue a new access token.
+
+**Why?** A short token narrows the damage window if it leaks.
+
+**Provide a revocation mechanism.** If a device is stolen or a compromise is suspected, you must be able to revoke a specific session or all of a user's sessions.
+
+---
+
+## 3. The most common mistakes in mobile apps
+
+**1. Keys buried in the app.** Any key inside the app bundle is extractable. Sensitive keys stay on the server, and the app calls your server rather than the external service directly.
+
+**2. Relying on client-side validation.** Client validation is for user experience only; real validation always happens on the server.
+
+**3. Returning more data than needed.** An endpoint returning the full user object — email, phone, role — to display a name. Return what is displayed.
+
+**4. Revealing error messages.** "Wrong password" confirms the email is registered. Use a uniform "invalid credentials".
+
+**5. No rate limiting.** Without limits, a login endpoint is brute-forceable and a code-sending endpoint is abusable.
+
+**6. Sequential, guessable identifiers.** `/orders/1`, `/orders/2` invites exploration. Use unguessable identifiers for sensitive resources — **while ownership checks remain mandatory**.
+
+**7. Logging sensitive data.** Logs sometimes contain passwords, tokens, or personal data. Review what you log — and logs are subject to data protection laws too. See our [PDPL compliance guide](/en/blog/pdpl-compliance-guide).
+
+---
+
+## 4. Input validation
+
+**Validate every field on the server** — type, length, range, format.
+
+**Don't trust hidden fields.** If the app sends `price` with an order, an attacker sends `price: 0`. **Calculate the price on the server** from the product ID.
+
+**Use parameterised queries** to prevent injection — never build queries by string concatenation.
+
+**Inspect uploaded files:** the actual type rather than the extension, a maximum size, and never execute them from a publicly reachable path.
+
+---
+
+## 5. Transit and storage
+
+**HTTPS is mandatory** for every connection without exception.
+
+**Encrypt sensitive data in the database** — don't rely on disk encryption alone.
+
+**Passwords are stored hashed** with an algorithm designed for it (such as bcrypt or Argon2) — not encrypted, and not hashed with fast algorithms.
+
+**Separate production and testing environments completely** — and never use real production data in development, which is a clear breach of data protection law.
+
+---
+
+## 6. Rate limiting and monitoring
+
+**Rate-limit sensitive endpoints:** login, password reset, code sending, and search.
+
+**Monitor for signals of abuse:**
+- Repeated failed login attempts from one source.
+- Requests for resources not belonging to the user (enumeration attempts).
+- A sudden spike in request rate.
+
+**Monitoring is not a luxury** — Saudi PDPL requires breach notification within 72 hours, and you cannot notify about a breach you never detect.
+
+---
+
+## Pre-launch checklist
+
+- [ ] Every endpoint verifies **ownership**, not just that someone is logged in.
+- [ ] Tokens in the platform's secure storage.
+- [ ] Short access token + refresh token, with a revocation mechanism.
+- [ ] No sensitive keys inside the app bundle.
+- [ ] Complete server-side input validation.
+- [ ] Prices and sensitive calculations computed on the server, not accepted from the client.
+- [ ] Parameterised queries everywhere.
+- [ ] HTTPS mandatory.
+- [ ] Passwords hashed with an appropriate algorithm.
+- [ ] Rate limiting on sensitive endpoints.
+- [ ] Error messages that don't leak information.
+- [ ] Responses don't return unused fields.
+- [ ] Logs free of sensitive data.
+- [ ] Monitoring that detects suspicious patterns.
+- [ ] Development environments contain no production data.
+
+---
+
+## Related reading
+
+- [PDPL compliance](/en/blog/pdpl-compliance-guide) — the regulatory side of data protection.
+- [Fintech and SAMA](/en/blog/fintech-sama-compliance) — stricter security requirements in finance.
+- [Mobile app testing](/en/blog/mobile-app-testing) — edge-case testing surfaces vulnerabilities.
+
+---
+
+## Frequently asked questions
+
+**What is the most dangerous common API vulnerability?**
+
+Missing ownership checks: verifying a user is logged in without verifying the requested resource belongs to them. This lets any user read another's data by changing an identifier in the URL, and it is both the most common and the easiest to exploit.
+
+**Is HTTPS enough to secure an API?**
+
+No. HTTPS protects data **in transit** only. It doesn't stop an authenticated user from accessing someone else's data, doesn't protect against malicious input, and doesn't compensate for missing authorisation. It is necessary but not sufficient.
+
+**How do I protect third-party service keys?**
+
+Never put them in the app. Have the app call **your server**, and your server call the external service with its key. That keeps the key beyond the reach of anyone inspecting the app.
+
+**When should I use rate limiting?**
+
+On every public endpoint, and more strictly on: login, password reset, verification code sending, and search. Those are the most commonly abused automatically.
+
+**Do I need a security audit?**
+
+For projects handling sensitive data or payments: yes, and regulated sectors may require it. For smaller projects, an internal security review against the checklist above covers most common risks.
+
+**How do I handle a vulnerability discovered after launch?**
+
+Fix it immediately and ship an update, revoke affected sessions if needed, and assess whether data actually leaked. If there is a breach touching personal data, statutory notification obligations apply — and their deadline is short.
+
+---
+
+## Conclusion
+
+**The app is an untrusted environment** — every real check happens on the server.
+
+**Verify ownership at every endpoint** — the most dangerous and most easily exploited vulnerability.
+
+**Never put secrets in client code** — everything in the bundle is extractable.
+
+**And compute what matters on the server** — prices and permissions are never accepted from the client.
+
+**Want a security review of your APIs?** [Get in touch](/en/contact) — we apply these principles during the build rather than after a breach. See [our services](/en/services).

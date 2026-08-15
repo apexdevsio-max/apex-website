@@ -1,0 +1,158 @@
+---
+{"slug":"maintenance-inhouse-vs-contract","title":"In-House Maintenance or a Contract?","excerpt":"What maintenance actually covers, realistic annual cost, and what any maintenance contract must include.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# In-House Maintenance or a Maintenance Contract? The Full Cost Model
+
+Maintenance is the most overlooked line item in digital project budgets — the build is planned carefully, then months later the owner is surprised that their product needs ongoing spending nobody accounted for.
+
+**The truth: a digital product without maintenance degrades within a year and stops working within roughly two.**
+
+---
+
+## What maintenance actually is
+
+Five different things are usually conflated under one word, and that is the source of most disputes with providers:
+
+| Type | What it is | Who pays? |
+|---|---|---|
+| **Bug fixing** | A defect in what was delivered | The provider (under warranty) |
+| **Compatibility updates** | Keeping up with iOS/Android/browser releases | You |
+| **Security updates** | Patching library vulnerabilities | You |
+| **Operational support** | Monitoring, backups, incident resolution | You |
+| **Development** | New features | You |
+
+**The decisive distinction:** a "bug fix" is free under warranty, while a "compatibility update" is paid. **Agree this distinction in writing before signing** — it is the most common source of disputes. See our [app development contract guide](/en/blog/app-development-contract).
+
+---
+
+## Why is maintenance mandatory?
+
+**Operating system updates.** [iOS](https://developer.apple.com/ios/) and [Android](https://developer.android.com/) ship major releases annually. A neglected app may partially break or be removed from the store for incompatibility.
+
+**Security vulnerabilities.** Vulnerabilities are discovered continuously in the libraries you use. A project without security updates for a year is an exposed target.
+
+**Store requirements.** Apple and Google change policies periodically — a new release without updates may be rejected.
+
+**Third-party service changes.** Your payment gateway or maps service may change its interface; without an update, the dependent feature breaks.
+
+---
+
+## Realistic cost
+
+**The rule: 15–20% of initial development cost per year.**
+
+| Project cost | Annual maintenance |
+|---|---|
+| $10,000 | $1,500 – $2,000 |
+| $30,000 | $4,500 – $6,000 |
+| $60,000 | $9,000 – $12,000 |
+| $120,000 | $18,000 – $24,000 |
+
+**What raises the percentage:** many external integrations, a regulated sector requiring compliance, high load, or carelessly built code (technical debt is paid in maintenance).
+
+---
+
+## The comparison: in-house or contract?
+
+| Criterion | In-house team | Maintenance contract |
+|---|---|---|
+| Annual cost | Developer salary + overhead | 15–20% of build cost |
+| Response time | Immediate | Per the service agreement |
+| System knowledge | Deep and accumulating | Depends on documentation |
+| **Continuity risk** | **High — one person may leave** | Low — a team |
+| Range of specialisms | Limited | Broader |
+| Flexibility to scale | Difficult | Easier |
+
+**The simple calculation:** one developer's annual salary usually exceeds the cost of a maintenance contract for a mid-size project. An in-house team earns its cost **when you have several products** justifying a dedicated person, or when immediate response is critical to your business.
+
+---
+
+## A third model: hybrid
+
+Best suited to many mid-size companies:
+
+- **An internal technical employee** handling daily monitoring, first-line support, and coordination.
+- **A contract with the provider** for deep updates, development, and complex problems.
+
+**The advantage:** immediate response to simple problems + specialist expertise when needed, at lower cost than a full in-house team.
+
+---
+
+## What a maintenance contract must include
+
+Ask for these explicitly — the absence of any one deserves a question:
+
+1. **A defined scope** — what it covers and excludes, by name.
+2. **Response time by severity** — a total outage versus a minor observation.
+3. **Included monthly development hours** — and the cost beyond them.
+4. **Monitoring and alerting** — who detects the fault, you or them?
+5. **Backups and their frequency** — and when restoration was last tested.
+6. **A periodic report** — what was done and what needs attention.
+7. **A termination process** — handing over access and documentation at the end.
+
+> **The most important item in practice: who monitors?** There is a large difference between "we fix it if you report it" and "we monitor and detect before you notice." The first means your customer may find the fault before you do.
+
+---
+
+## What happens if you don't maintain?
+
+This is what actually occurs, in order:
+
+**Months 1–6:** everything looks fine. You feel you saved money.
+
+**Months 6–12:** scattered faults, gradual slowdown, a feature breaking after a third-party service update.
+
+**Year 2:** incompatibility with new OS releases, accumulated security vulnerabilities, and a new developer needing weeks to understand undocumented code.
+
+**Year 3:** the estimated rebuild cost approaches the original build cost.
+
+**The conclusion:** maintenance is not an extra cost but **part of the cost of ownership**. Anyone selling you a project without mentioning it has given you an incomplete offer.
+
+---
+
+## Related reading
+
+- [App development contracts](/en/blog/app-development-contract) — distinguishing warranty from maintenance.
+- [API security](/en/blog/api-security-guide) — security updates are core to maintenance.
+- [App performance optimisation](/en/blog/app-performance-optimization) — gradual degradation signals neglect.
+
+---
+
+## Frequently asked questions
+
+**What does annual maintenance cost?**
+
+15–20% of initial development cost as a rule. A $30,000 project needs $4,500–$6,000 per year. The percentage rises with more integrations and compliance requirements, and rises considerably if the original code was built carelessly.
+
+**What is the difference between warranty and maintenance?**
+
+Warranty covers fixing defects in what was delivered and is typically free for 3–6 months. Maintenance covers compatibility updates, security, and new features, and is paid. Specify explicitly which category a compatibility update for a new iOS release falls into — this is the most common source of dispute.
+
+**Do I need maintenance for a simple brochure site?**
+
+Yes, but at a lighter level: security updates, backups, and uptime monitoring. A WordPress site needs more attention because of plugins. A modern static site needs considerably less. See our [WordPress vs Next.js comparison](/en/blog/wordpress-vs-nextjs).
+
+**What if I want to change maintenance providers?**
+
+You must own the code, documentation, and access credentials from the start — then changing is possible. If you don't own them, you are locked in. Verify this in the original development contract, not when a dispute arises.
+
+**Can I defer maintenance to save money?**
+
+You can defer it but you don't save — you move the cost into the future with interest. A project neglected for two years usually needs a partial rebuild costing several times the deferred maintenance, plus downtime losses and security risk.
+
+**Who should maintain: the original builder or another provider?**
+
+Whoever built it knows the code and starts immediately — a genuine saving. But don't let that become lock-in: require code ownership and documentation in the development contract, so moving stays possible if service deteriorates.
+
+---
+
+## Conclusion
+
+**Maintenance is not optional** — 15–20% annually of build cost is what owning a digital product costs.
+
+**A maintenance contract is cheaper** for most single-product companies. **An in-house team** earns its cost with multiple products or when immediate response is critical. **And the hybrid model** usually suits mid-size companies best.
+
+**And always ask: who monitors?** — the difference between you finding the fault and your customer finding it is the difference between one provider and another.
+
+**Want an estimate for maintaining your project?** [Get in touch](/en/contact) for a free assessment covering maintenance scope and cost clearly. See [our services](/en/services).

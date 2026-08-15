@@ -12,6 +12,8 @@ export type ServiceFaq = {
 export type ServiceItem = {
   slug: string;
   title: string;
+  /** Optional shorter/longer `<title>` override. See {@link BlogPost.seoTitle}. */
+  seoTitle?: string;
   summary: string;
   description: string;
   ctaLabel: string;
@@ -26,6 +28,13 @@ export type ServiceItem = {
 export type BlogPost = {
   slug: string;
   title: string;
+  /**
+   * Optional shorter title for the `<title>` tag. The on-page H1 can afford to be
+   * descriptive, but the SERP truncates around 60 characters — and the layout
+   * template appends " — APEX" to whatever is returned. Set this when `title`
+   * plus the suffix would overflow; metadata falls back to `title` when absent.
+   */
+  seoTitle?: string;
   excerpt: string;
   content: string;
   datePublished?: string;
@@ -240,6 +249,7 @@ async function loadBlogPosts(locale: Locale): Promise<BlogPost[]> {
       return {
         slug: (data.slug as string) ?? slugFromName,
         title: data.title as string,
+        seoTitle: data.seoTitle as string | undefined,
         excerpt: data.excerpt as string,
         content: body,
         datePublished: optionalIsoDate(data.datePublished ?? data.date, "datePublished", `blog.${locale}`),
@@ -263,11 +273,20 @@ async function loadPortfolioItems(locale: Locale): Promise<PortfolioItem[]> {
       const { data, body, updatedAt } = await readMdxFile(filePath);
       const slugFromName = fileName.replace(`.${locale}.mdx`, "");
 
+      // Frontmatter `description` holds the bullet summary; the MDX body holds the
+      // long-form case study. Previously the body was only a fallback, so a file
+      // carrying both rendered the bullets alone and the case study never
+      // appeared — leaving these pages at ~180 words. Both are joined here.
+      const frontmatterDescription = data.description as string | undefined;
+      const description = [frontmatterDescription, body]
+        .filter((part): part is string => Boolean(part && part.trim()))
+        .join("\n\n");
+
       return {
         slug: (data.slug as string) ?? slugFromName,
         title: data.title as string,
         summary: data.summary as string,
-        description: (data.description as string) ?? body,
+        description,
         thumbnail: data.thumbnail as string | undefined,
         images: data.images as string[] | undefined,
         driveUrl: data.driveUrl as string | undefined,
@@ -293,6 +312,7 @@ async function loadServices(locale: Locale): Promise<ServiceItem[]> {
       return {
         slug: (data.slug as string) ?? slugFromName,
         title: data.title as string,
+        seoTitle: data.seoTitle as string | undefined,
         summary: data.summary as string,
         description: (data.description as string) ?? body,
         ctaLabel: data.ctaLabel as string,

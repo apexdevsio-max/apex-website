@@ -19,9 +19,12 @@ import {
 import {
   FALLBACK_PORTFOLIO,
   MOCK_PORTFOLIO,
-  MOCK_PORTFOLIO_SLUGS,
 } from "@/lib/mock/portfolio-data";
 
+// Only projects backed by a real MDX file are prerendered. Prerendering
+// MOCK_PORTFOLIO_SLUGS too published `ai-design-brand` and `ai-video-series` as
+// indexable routes carrying ~115 words of placeholder copy, which counts against
+// site quality. An unbacked slug now 404s until its MDX is written.
 export async function generateStaticParams() {
   const seen = new Set<string>();
   const params: { lang: string; slug: string }[] = [];
@@ -36,18 +39,13 @@ export async function generateStaticParams() {
         params.push({ lang, slug: item.slug });
       }
     }
-
-    for (const slug of MOCK_PORTFOLIO_SLUGS) {
-      const key = `${lang}:${slug}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        params.push({ lang, slug });
-      }
-    }
   }
 
   return params;
 }
+
+// Without this, a slug dropped above still renders on demand from MOCK_PORTFOLIO.
+export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -265,6 +263,22 @@ export default async function PortfolioItemPage({
           {lines.map((line, index) => {
             const isBullet = line.startsWith("• ");
             const isResult = line.startsWith("النتيجة") || line.startsWith("Result");
+            // The MDX body appended by the content loader is Markdown, so `## `
+            // headings arrive here as literal text. Rendered as real headings they
+            // also give these pages the section structure crawlers read.
+            const isHeading = line.startsWith("## ");
+
+            if (isHeading) {
+              return (
+                <h2
+                  key={index}
+                  className={`mt-8 mb-3 font-bold ${isAr ? "font-ar" : "font-en"}`}
+                  style={{ fontSize: "18px", color: "var(--color-primary-text)" }}
+                >
+                  {line.replace("## ", "")}
+                </h2>
+              );
+            }
 
             if (isResult) {
               return (
@@ -297,13 +311,26 @@ export default async function PortfolioItemPage({
               );
             }
 
+            // Body paragraphs use Markdown bold for the lead-in of each point.
+            // Rendered literally it would show the asterisks, so the segments are
+            // split out and the odd ones (the delimited spans) emphasised.
+            const segments = line.split("**");
+
             return (
               <p
                 key={index}
                 className={`mb-3 leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
                 style={{ color: "var(--color-secondary-text)", fontSize: "15px" }}
               >
-                {line}
+                {segments.map((segment, segmentIndex) =>
+                  segmentIndex % 2 === 1 ? (
+                    <strong key={segmentIndex} style={{ color: "var(--color-primary-text)" }}>
+                      {segment}
+                    </strong>
+                  ) : (
+                    segment
+                  )
+                )}
               </p>
             );
           })}

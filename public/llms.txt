@@ -10,6 +10,16 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [AI Solutions](https://apex.sy/en/services/ai-solutions)
 - [Content Creation](https://apex.sy/en/services/content-creation)
 
+## Portfolio
+- [Tafawwoq — Educational App](https://apex.sy/en/portfolio/tafawwoq-educational-app) — a Flutter learning app built with Clean Architecture and full Arabic RTL support.
+- [Wifaq Qatar — AI Content](https://apex.sy/en/portfolio/wifaq-qatar-ai) — AI-assisted video content for a Qatari social foundation.
+- [Tajweed for Kids — AI Video](https://apex.sy/en/portfolio/tajweed-kids-ai) — AI-produced educational videos teaching Quranic recitation rules.
+- [Arnoub Adventure — 2D Animation](https://apex.sy/en/portfolio/arnoub-adventure-ai) — a children’s story turned into an animated short.
+- [Al-Fatiha — Family Film](https://apex.sy/en/portfolio/fatiha-family-ai) — an AI-assisted cinematic family film.
+- [Dental Clinic — Motion Graphics](https://apex.sy/en/portfolio/dental-clinic-motion) — motion graphics for a dental practice.
+- [Esthetic Clinic — Reels](https://apex.sy/en/portfolio/esthetic-clinic-reels) — short-form marketing video for an aesthetic clinic.
+- [Jewelry Showcase](https://apex.sy/en/portfolio/jewelry-showcase) — cinematic production for luxury jewellery.
+
 ## Featured Guides
 - [Mobile App Development Cost in the Gulf](https://apex.sy/en/blog/mobile-app-development-cost-gulf) — 2026 pricing for Saudi Arabia, UAE, and Qatar, including localisation, payment gateways, and compliance costs.
 - [E-Commerce Store Cost in Saudi Arabia](https://apex.sy/en/blog/ecommerce-development-cost-saudi) — platform comparison, three-year cost modelling, and ZATCA e-invoicing requirements.
@@ -28,6 +38,28 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [App Development in Abu Dhabi](https://apex.sy/en/blog/app-development-abu-dhabi) — pricing, Abu Dhabi versus Dubai, and ADGM requirements.
 - [Educational App Cost](https://apex.sy/en/blog/educational-app-cost) — course apps versus school platforms, revenue models, and minors data protection.
 - [App Development Contracts](https://apex.sy/en/blog/app-development-contract) — code ownership, payment schedules, and clauses to reject before signing.
+- [Flutter vs React Native](https://apex.sy/en/blog/flutter-vs-react-native) — a decision framework covering performance, Arabic RTL support, hiring, and cost.
+- [Shopify vs a Custom Store](https://apex.sy/en/blog/shopify-vs-custom-store) — three-year total cost, the tipping point, and Salla/Zid for the Saudi market.
+- [Native vs Hybrid Apps](https://apex.sy/en/blog/native-vs-hybrid-app) — clearing up the terminology and the four cases where native earns its cost.
+- [WordPress vs Next.js](https://apex.sy/en/blog/wordpress-vs-nextjs) — cost, performance, and who updates the content.
+- [Mobile App or Responsive Website](https://apex.sy/en/blog/app-vs-pwa) — the download barrier and the only five reasons to build an app.
+- [Freelancer or Development Agency](https://apex.sy/en/blog/freelancer-vs-agency) — total cost, continuity risk, and the small regional team model.
+- [Payment Gateways in the Gulf](https://apex.sy/en/blog/gulf-payment-gateways) — Mada, STC Pay, Tabby, Tamara — integration costs and rollout order.
+- [MVP or Full Product](https://apex.sy/en/blog/mvp-vs-full-product) — how to scope an MVP, what waits, and what to measure after launch.
+- [Hosting: Vercel, AWS, or Local](https://apex.sy/en/blog/hosting-comparison) — cost, performance, and the data residency constraints that may decide it.
+- [Choosing an AI Model for Arabic](https://apex.sy/en/blog/choosing-ai-model-arabic) — evaluation criteria and a testing methodology that outlasts model releases.
+- [Template or Custom Design](https://apex.sy/en/blog/template-vs-custom-design) — what actually drives conversion, and the middle path.
+- [In-House Maintenance or a Contract](https://apex.sy/en/blog/maintenance-inhouse-vs-contract) — what maintenance covers, realistic cost, and what a contract must include.
+- [Arabic and RTL Support in Flutter](https://apex.sy/en/blog/flutter-rtl-arabic-guide) — directional widgets, fonts, numerals, and a pre-launch checklist.
+- [Arabic Web Fonts](https://apex.sy/en/blog/arabic-web-fonts) — subsetting, woff2, font-display, and measuring performance impact.
+- [Hijri Dates in Applications](https://apex.sy/en/blog/hijri-dates-guide) — store Gregorian, display Hijri, and why Umm al-Qura matters.
+- [Saudi PDPL Compliance for Developers](https://apex.sy/en/blog/pdpl-compliance-guide) — consent, user rights, 72-hour breach notification, and transfer limits.
+- [Health Apps in the UAE](https://apex.sy/en/blog/health-apps-uae-compliance) — DHA licensing, data residency, and health information exchange integration.
+- [Fintech in Saudi Arabia](https://apex.sy/en/blog/fintech-sama-compliance) — the SAMA sandbox, open banking licensing, and technical requirements.
+- [App Performance Optimisation](https://apex.sy/en/blog/app-performance-optimization) — what users notice, priority order, and measuring before optimising.
+- [API Security](https://apex.sy/en/blog/api-security-guide) — authentication versus authorisation, common mobile mistakes, and a checklist.
+- [Clean Architecture in Flutter](https://apex.sy/en/blog/clean-architecture-flutter) — the layers, the dependency rule, and when it is overkill.
+- [Mobile App Testing](https://apex.sy/en/blog/mobile-app-testing) — what is worth testing, what to automate, and a manual release checklist.
 
 ## Site Sections
 - [Home](https://apex.sy/en)
@@ -54,6 +86,16 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [حلول الذكاء الاصطناعي](https://apex.sy/ar/services/ai-solutions)
 - [صناعة المحتوى](https://apex.sy/ar/services/content-creation)
 
+## معرض الأعمال
+- [تفوقي — تطبيق تعليمي](https://apex.sy/ar/portfolio/tafawwoq-educational-app) — تطبيق Flutter تعليمي بمعمارية Clean Architecture ودعم عربي كامل.
+- [وفاق قطر — محتوى ذكاء اصطناعي](https://apex.sy/ar/portfolio/wifaq-qatar-ai) — محتوى فيديو لمؤسسة اجتماعية قطرية.
+- [تجويد الأطفال — فيديو تعليمي](https://apex.sy/ar/portfolio/tajweed-kids-ai) — فيديوهات تعليمية لأحكام التجويد.
+- [مغامرة أرنوب — رسوم متحركة](https://apex.sy/ar/portfolio/arnoub-adventure-ai) — قصة أطفال محوّلة إلى فيديو كرتوني.
+- [الفاتحة — فيلم عائلي](https://apex.sy/ar/portfolio/fatiha-family-ai) — فيلم عائلي سينمائي بالذكاء الاصطناعي.
+- [عيادة أسنان — موشن جرافيك](https://apex.sy/ar/portfolio/dental-clinic-motion) — فيديوهات موشن جرافيك لعيادة أسنان.
+- [عيادة تجميل — ريلز](https://apex.sy/ar/portfolio/esthetic-clinic-reels) — فيديوهات تسويقية قصيرة.
+- [عرض المجوهرات](https://apex.sy/ar/portfolio/jewelry-showcase) — إنتاج سينمائي للمجوهرات الفاخرة.
+
 ## أدلة مختارة
 - [تكلفة تطوير تطبيق جوال في الخليج](https://apex.sy/ar/blog/mobile-app-development-cost-gulf) — أسعار 2026 للسعودية والإمارات وقطر، مع تكاليف التعريب وبوابات الدفع والامتثال.
 - [تكلفة تطوير متجر إلكتروني في السعودية](https://apex.sy/ar/blog/ecommerce-development-cost-saudi) — مقارنة المنصات، وحساب التكلفة على ثلاث سنوات، ومتطلبات فاتورة.
@@ -72,6 +114,28 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [تصميم تطبيقات في أبوظبي](https://apex.sy/ar/blog/app-development-abu-dhabi) — الأسعار والفرق بين أبوظبي ودبي ومتطلبات سوق أبوظبي العالمي.
 - [تكلفة تطبيق تعليمي](https://apex.sy/ar/blog/educational-app-cost) — تطبيق الدورات مقابل المنصة المدرسية ونماذج الربح وحماية بيانات القاصرين.
 - [عقد تطوير تطبيق](https://apex.sy/ar/blog/app-development-contract) — ملكية الكود وجدول الدفعات والبنود التي يجب رفضها قبل التوقيع.
+- [Flutter مقابل React Native](https://apex.sy/ar/blog/flutter-vs-react-native) — إطار قرار يشمل الأداء ودعم العربية RTL والتوظيف والتكلفة.
+- [Shopify مقابل المتجر المخصص](https://apex.sy/ar/blog/shopify-vs-custom-store) — التكلفة على ثلاث سنوات ونقطة الانقلاب وسلة وزد للسوق السعودي.
+- [تطبيق أصيل أم هجين](https://apex.sy/ar/blog/native-vs-hybrid-app) — توضيح المصطلحات وأربع حالات يستحق فيها الأصيل ثمنه.
+- [WordPress مقابل Next.js](https://apex.sy/ar/blog/wordpress-vs-nextjs) — التكلفة والأداء ومن يحدّث المحتوى.
+- [تطبيق جوال أم موقع متجاوب](https://apex.sy/ar/blog/app-vs-pwa) — حاجز التحميل وخمسة أسباب فقط تبرر بناء تطبيق.
+- [فريلانسر أم شركة تطوير](https://apex.sy/ar/blog/freelancer-vs-agency) — التكلفة الكلية ومخاطر الاستمرارية ونموذج الفريق الإقليمي.
+- [بوابات الدفع في الخليج](https://apex.sy/ar/blog/gulf-payment-gateways) — مدى وSTC Pay وتابي وتمارا — تكاليف التكامل وترتيب الإضافة.
+- [MVP أم المنتج الكامل](https://apex.sy/ar/blog/mvp-vs-full-product) — كيف تحدد نطاق MVP وما يُؤجَّل وما تقيسه بعد الإطلاق.
+- [الاستضافة: Vercel أم AWS أم محلية](https://apex.sy/ar/blog/hosting-comparison) — التكلفة والأداء وقيود إقامة البيانات التي قد تحسم القرار.
+- [اختيار نموذج ذكاء اصطناعي عربي](https://apex.sy/ar/blog/choosing-ai-model-arabic) — معايير التقييم ومنهجية اختبار تبقى صالحة رغم تغيّر النماذج.
+- [تصميم جاهز أم مخصص](https://apex.sy/ar/blog/template-vs-custom-design) — ما يؤثر على التحويل فعلاً والنهج الوسط.
+- [صيانة داخلية أم عقد صيانة](https://apex.sy/ar/blog/maintenance-inhouse-vs-contract) — ما تشملها الصيانة وتكلفتها الواقعية وما يجب أن يتضمنه العقد.
+- [دعم العربية وRTL في Flutter](https://apex.sy/ar/blog/flutter-rtl-arabic-guide) — الودجات الاتجاهية والخطوط والأرقام وقائمة اختبار قبل الإطلاق.
+- [الخطوط العربية على الويب](https://apex.sy/ar/blog/arabic-web-fonts) — التقليص وwoff2 وfont-display وقياس الأثر على الأداء.
+- [التواريخ الهجرية في التطبيقات](https://apex.sy/ar/blog/hijri-dates-guide) — خزّن ميلادياً واعرض هجرياً، ولماذا أم القرى تحديداً.
+- [الامتثال لنظام حماية البيانات السعودي](https://apex.sy/ar/blog/pdpl-compliance-guide) — الموافقة وحقوق المستخدم وإشعار الخرق وقيود النقل.
+- [تطبيقات الصحة في الإمارات](https://apex.sy/ar/blog/health-apps-uae-compliance) — تراخيص هيئة الصحة بدبي وإقامة البيانات والتكامل مع نابض.
+- [التقنية المالية في السعودية](https://apex.sy/ar/blog/fintech-sama-compliance) — البيئة التجريبية لساما وترخيص الخدمات المصرفية المفتوحة.
+- [تحسين أداء التطبيقات](https://apex.sy/ar/blog/app-performance-optimization) — ما يلاحظه المستخدم وترتيب الأولويات والقياس قبل التحسين.
+- [أمان واجهات API](https://apex.sy/ar/blog/api-security-guide) — المصادقة والتفويض والأخطاء الشائعة وقائمة تحقق.
+- [معمارية Clean Architecture في Flutter](https://apex.sy/ar/blog/clean-architecture-flutter) — الطبقات وقاعدة الاعتماد ومتى تكون مبالغة.
+- [اختبار تطبيقات الجوال](https://apex.sy/ar/blog/mobile-app-testing) — ما يستحق الاختبار وما يستحق الأتمتة وقائمة يدوية.
 
 ## أقسام الموقع
 - [الرئيسية](https://apex.sy/ar)

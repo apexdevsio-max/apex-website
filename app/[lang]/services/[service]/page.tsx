@@ -12,9 +12,14 @@ import {
   buildBreadcrumbSchema,
   buildFaqSchema,
 } from "@/lib/seo/schema";
-import { MOCK_SERVICES, MOCK_SERVICE_SLUGS } from "@/lib/mock/services-data";
+import { MOCK_SERVICES } from "@/lib/mock/services-data";
 import { MarkdownContent } from "@/components/content/MarkdownContent";
 
+// Only services backed by a real MDX file are prerendered. Prerendering
+// MOCK_SERVICE_SLUGS too published `ecommerce` and `uiux-design` as indexable
+// routes whose body rendered ~130 words of placeholder copy — against ~1,000 for
+// a real service page. Thin pages at that ratio drag the whole site's quality
+// signal down, so an unbacked slug now 404s until its MDX is written.
 export async function generateStaticParams() {
   const seen = new Set<string>();
   const params: { lang: string; service: string }[] = [];
@@ -29,18 +34,14 @@ export async function generateStaticParams() {
         params.push({ lang, service: service.slug });
       }
     }
-
-    for (const slug of MOCK_SERVICE_SLUGS) {
-      const key = `${lang}:${slug}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        params.push({ lang, service: slug });
-      }
-    }
   }
 
   return params;
 }
+
+// Without this, a slug dropped from generateStaticParams still renders on demand
+// from MOCK_SERVICES — which would defeat the thin-page fix above.
+export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -62,7 +63,7 @@ export async function generateMetadata({
   const mock = MOCK_SERVICES[slug]?.[locale];
 
   return buildPageMeta(locale, {
-    title: mdx?.title ?? mock?.title ?? slug,
+    title: mdx?.seoTitle ?? mdx?.title ?? mock?.title ?? slug,
     description: mdx?.summary ?? mock?.summary ?? "",
     keywords: mdx?.keywords,
     path: `/${lang}/services/${slug}`,

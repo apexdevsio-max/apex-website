@@ -1,0 +1,167 @@
+---
+{"slug":"health-apps-uae-compliance","title":"Health Apps in the UAE: Dubai Health Authority Requirements","seoTitle":"Health Apps in the UAE: DHA Rules","excerpt":"Building a health app in Dubai — DHA licensing, data residency, NABIDH integration, and technical requirements.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Health Apps in the UAE: Dubai Health Authority Requirements
+
+Building a health app in Dubai is not purely a technical project — **licensing and compliance precede code**, and ignoring them means a well-engineered platform you cannot legally operate.
+
+This guide explains the requirements as published and what each means for the technical build.
+
+> **Important note:** health regulatory frameworks in the UAE evolve quickly — an **updated telehealth standard took effect in November 2025**. **Consult a specialist legal advisor and the regulator directly** before relying on any interpretation here.
+
+---
+
+## First: licensing precedes technology
+
+This point surprises many founders. The technical platform alone is not enough:
+
+**1. Facility licence.** The organisation must obtain a facility licence from the [Dubai Health Authority](https://www.dha.gov.ae/) to provide regulated health services. Without it, patients cannot be treated however good the platform.
+
+**2. Telehealth as an approved scope of service.** It is not automatically assumed within a facility licence — it must be explicitly approved as a scope of service.
+
+**3. Individual professional licences.** Every doctor providing consultations on your platform needs an individual professional licence from the authority.
+
+**4. A licensed medical director.** Appointed to oversee clinical operations.
+
+**What this means for you as a product owner:** if you are a technology company building a platform, you most likely **need a licensed partner** or your own licence. Start that path early — the licensing cycle is often longer than the development cycle.
+
+---
+
+## Second: data residency — an architectural constraint, not an option
+
+**Health data generated in Dubai must remain inside UAE borders** unless specific government approval is granted.
+
+**And critically:** this covers **live databases, backups, logs, and failover servers** — not the primary database alone.
+
+**What this means technically:**
+
+| Item | What to verify |
+|---|---|
+| **Hosting** | A data region inside the UAE |
+| **Backups** | Not automatically replicated to external regions |
+| **Logs** | Your logging service may store outside the country |
+| **Analytics** | Many tools process externally |
+| **Notifications and email** | External providers move data |
+| **AI** | Passing data to an external model is a transfer |
+
+> **The most common mistake:** verifying the primary database location and feeling reassured. **Most default cloud configurations replicate backups geographically** for resilience — a transfer that breaches the requirement without you noticing. See our [hosting comparison guide](/en/blog/hosting-comparison).
+
+---
+
+## Third: integration with the health information exchange
+
+The service must integrate with the emirate's health information exchange — **NABIDH in Dubai**.
+
+**What this means for the build:**
+- Planning your data architecture to align with health exchange standards.
+- Allocating time and budget for the integration and approval cycle — typically longer than estimated.
+- **Design for this from the start**; restructuring your data model after building is very expensive.
+
+---
+
+## Fourth: the published technical requirements
+
+**Encryption in transit and at rest.** Not optional.
+
+**Multi-factor authentication.** For clinicians and administrators at minimum.
+
+**A recognised security certification** such as ISO 27001. This is a requirement rather than a marketing badge — and obtaining it takes months, so start early.
+
+**Arabic and English support.** Interfaces must work in both languages — meaning correct RTL support rather than translated text. See our [Flutter RTL guide](/en/blog/flutter-rtl-arabic-guide).
+
+---
+
+## Fifth: what makes your app "regulated"?
+
+Not every health app falls under the full framework. The difference lies in **clinical function**:
+
+| Type | Likely classification |
+|---|---|
+| Appointment booking only | Usually outside the clinical framework |
+| Medication reminders | Depends on the level of guidance provided |
+| Electronic medical records | Subject to health data requirements |
+| Video consultation | **Telehealth — the full framework** |
+| Diagnosis or clinical decision support | **Most heavily regulated** |
+
+**The practical recommendation:** if your goal is booking and appointment management, **don't add clinical features in the first version**. You stay outside the heavier framework, launch faster, and carry far lower compliance cost. See our [clinic booking app cost guide](/en/blog/clinic-booking-app-cost).
+
+---
+
+## Impact on cost and timeline
+
+| Item | Impact |
+|---|---|
+| Licensing cycle | **Months** — often longer than development |
+| In-country hosting | Higher cost than global options |
+| Health exchange integration | A separate development line item |
+| Security certification | Months + audit cost |
+| Legal review | Practically mandatory |
+
+**The practical conclusion:** plan for a considerably longer timeline than an ordinary technical project. **Start the licensing path in parallel with design rather than after the build is complete.**
+
+---
+
+## Pre-start checklist
+
+- [ ] Your app's regulatory classification determined precisely with a specialist advisor.
+- [ ] A clear licensing path — your own licence or partnership with a licensed facility?
+- [ ] Telehealth approved as a scope of service if it is in your plan.
+- [ ] Hosting inside the UAE — **including backups, logs, and failover**.
+- [ ] Every third-party service reviewed for data transfer.
+- [ ] An integration plan for the health information exchange.
+- [ ] Encryption in transit and at rest.
+- [ ] Multi-factor authentication.
+- [ ] The security certification path started.
+- [ ] Interfaces in Arabic and English with correct RTL support.
+- [ ] Documented access controls — who sees which patient data.
+
+---
+
+## Related reading
+
+- [Clinic booking app cost](/en/blog/clinic-booking-app-cost) — the numbers and features.
+- [Saudi PDPL compliance](/en/blog/pdpl-compliance-guide) — for comparison with the Saudi framework.
+- [Hosting and data residency](/en/blog/hosting-comparison) — the key architectural constraint here.
+
+---
+
+## Frequently asked questions
+
+**Do I need a licence if I'm only a technology company?**
+
+A platform used to deliver a health service falls under the licensed facility framework. It is common for a technology company to operate **in partnership with a licensed health facility** that carries the clinical licence. Determine your model with a legal advisor before building.
+
+**Can I host on a global cloud?**
+
+Yes, if you use a **data region inside the UAE** and verify that backups and logs are not replicated externally. Default configurations frequently distribute data geographically — review them explicitly rather than assuming compliance.
+
+**What is the difference between a booking app and a telehealth app?**
+
+A booking app manages appointments only and usually sits outside the heavier clinical framework. Telehealth involves delivering remote medical consultation and enters the full framework: facility licence, approved scope of service, professional licences, and health information exchange integration.
+
+**How long does licensing take?**
+
+It varies by case, but the realistic expectation is months rather than weeks — often longer than the development cycle itself. **Start the regulatory path in parallel with design**, not after the platform is complete.
+
+**Do the same requirements apply in Abu Dhabi?**
+
+Not necessarily. Each emirate has its own regulator and health information exchange. If you target more than one emirate, verify each authority's requirements separately. See our [Abu Dhabi app development guide](/en/blog/app-development-abu-dhabi).
+
+**What about using AI in the app?**
+
+AI components in a medical context carry additional requirements, and passing patient data to an external model is a data transfer subject to residency restrictions. Consult the regulator directly before building any diagnostic or clinical decision support feature.
+
+---
+
+## Conclusion
+
+**Licensing precedes code** — facility licence, approved telehealth scope, professional licences, and a medical director.
+
+**Data residency is an architectural constraint** covering backups, logs, and failover servers, not the database alone.
+
+**Health information exchange integration is designed in from the start** — restructuring later is expensive.
+
+**And if your goal is booking only, don't add clinical features in the first version.**
+
+**Building a health product in the UAE?** [Get in touch](/en/contact) — we discuss the regulatory side before the technical one. See [our services](/en/services).

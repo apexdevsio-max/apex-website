@@ -1,0 +1,167 @@
+---
+{"slug":"fintech-sama-compliance","title":"Fintech in Saudi Arabia: The SAMA Framework","excerpt":"Building a fintech product in Saudi Arabia — the regulatory sandbox, open banking licensing, and technical requirements.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Fintech in Saudi Arabia: The Central Bank Framework for Developers
+
+Saudi Arabia's fintech sector is among the fastest-growing and most heavily regulated at once. The **[Saudi Central Bank (SAMA)](https://www.sama.gov.sa/)** is the supervising authority, and any product touching payments or banking data falls within its scope.
+
+This guide explains the regulatory path and what it means for the technical build.
+
+> **Important note:** financial regulatory frameworks evolve quickly, and 2026 saw substantial developments (see below). **Consult a specialist legal advisor and engage the regulator directly** before any financial or technical commitment.
+
+---
+
+## First: is your product regulated?
+
+This is the first question, and its answer determines everything that follows.
+
+| Activity | Likely regulatory status |
+|---|---|
+| Displaying general financial information | Usually out of scope |
+| Personal budgeting tool with manual entry | Usually out of scope |
+| **Accepting payments on behalf of merchants** | **In scope — licence required** |
+| **Accessing bank account data** | **In scope — open banking** |
+| **Initiating payments** | **In scope — open banking** |
+| Lending or financing | Subject to dedicated frameworks |
+| Digital wallet | In scope |
+
+**The practical rule:** if your product **touches other people's money or banking data**, assume it is regulated until proven otherwise — not the reverse.
+
+---
+
+## Second: the regulatory sandbox
+
+SAMA operates a **regulatory sandbox** allowing fintech companies to test products before full market launch.
+
+**What it means for the product:**
+- Genuine testing with users within a limited, supervised scope.
+- **Substantive supervisory requirements during testing** — ongoing reporting obligations, cyber security safeguards, and operational resilience standards.
+- A structured path from testing to full licensing.
+
+**The sandbox is not an exemption from requirements** — it is a managed path toward meeting them progressively. Plan for reporting and security requirements from day one, not at application time.
+
+---
+
+## Third: open banking — the 2026 development
+
+**In March 2026, SAMA commenced licensing fintech companies to provide open banking services**, following successful completion of the sandbox phase.
+
+This is a substantial transition: from testing inside the sandbox to a **fully licensed and supervised regime**.
+
+**The framework covers two main activities:**
+
+**1. Account Information Services (AIS)** — accessing a customer's account data across multiple banks and presenting it in one place.
+
+**2. Payment Initiation Services (PIS)** — initiating a payment directly from a customer's bank account.
+
+**What this means for a developer:** if your product does either, **it is a licensed activity** — you need a SAMA licence and must demonstrate adherence to the established framework. This is no longer a grey area.
+
+---
+
+## Fourth: technical requirements
+
+**Cyber security.** SAMA imposes cyber security controls on supervised entities. This is not an optional line item but an operating condition.
+
+**Operational resilience.** The system's ability to continue and recover — tested backups, a continuity plan, and effective monitoring.
+
+**Periodic reporting.** Ongoing reporting obligations to the regulator. **Design your system to produce these reports automatically** — extracting them manually each time is a permanent operational burden.
+
+**Data protection.** Financial data is sensitive, and the Personal Data Protection Law applies alongside SAMA requirements. See our [PDPL compliance guide](/en/blog/pdpl-compliance-guide).
+
+**Licensed payment service providers.** If you accept payments, work exclusively with a SAMA-licensed provider. See our [Gulf payment gateways guide](/en/blog/gulf-payment-gateways).
+
+---
+
+## Fifth: what this means for timeline and budget
+
+| Item | Impact |
+|---|---|
+| Determining regulatory status | **The first step — before any code** |
+| Sandbox / licensing | Months, with documentation requirements |
+| Cyber security controls | A separate budgeted development line |
+| Reporting architecture | Design it from the start |
+| Legal review | Practically mandatory |
+| Security auditing | Recurring rather than one-off |
+
+**The conclusion:** a fintech project is not a technical project on a technical timeline. **The regulatory cycle is often longer than the development cycle** — start it in parallel with design.
+
+---
+
+## Sixth: common mistakes
+
+**1. Building first and asking about regulation later.** The most expensive mistake in this sector. You may discover your business model needs a licence you cannot obtain in your current form.
+
+**2. Assuming "just an interface" exempts you.** If your product touches money or banking data, supervision reaches you whatever your technical layer.
+
+**3. Ignoring reporting in the design.** Manually extracting compliance reports every month is a permanent burden avoidable with correct design.
+
+**4. Relying on an unlicensed payment provider.** Verifying your provider's licence is your responsibility.
+
+**5. Storing card data in your system.** Don't. Let the licensed gateway handle it — storing it puts you under heavy security requirements needlessly.
+
+---
+
+## Pre-start checklist
+
+- [ ] Your product's regulatory status determined precisely with a specialist advisor.
+- [ ] Knowing whether your activity needs a licence or goes through the sandbox.
+- [ ] A documented rather than improvised cyber security plan.
+- [ ] Architecture that produces compliance reports automatically.
+- [ ] A continuity plan and **genuinely tested** backups.
+- [ ] A SAMA-licensed payment service provider.
+- [ ] No card data stored in your system.
+- [ ] Compliance with the Personal Data Protection Law.
+- [ ] Data residency reviewed — including backups and logs.
+- [ ] Encryption in transit and at rest.
+- [ ] Access controls and audit logging for every sensitive operation.
+
+---
+
+## Related reading
+
+- [Gulf payment gateways](/en/blog/gulf-payment-gateways) — SAMA-licensed providers.
+- [API security](/en/blog/api-security-guide) — the technical implementation of security controls.
+- [PDPL compliance](/en/blog/pdpl-compliance-guide) — applies alongside SAMA requirements.
+
+---
+
+## Frequently asked questions
+
+**Does a personal budgeting app need a licence?**
+
+If the user enters data manually and the app doesn't connect to bank accounts, it is usually out of scope. But the moment it connects to bank accounts to fetch data, it enters **account information services** — a licensed activity. Determine this before building.
+
+**What is the difference between the sandbox and a full licence?**
+
+The sandbox is a managed path for testing a product at limited scope under supervision, with substantive reporting and security requirements. A full licence permits complete commercial operation. The usual path runs through the former to reach the latter.
+
+**Can I build a payments app without a licence?**
+
+If you accept payments on behalf of merchants, that is a licensed activity. The common alternative for unlicensed companies is **integrating with a licensed payment service provider** that handles the regulated side while you build the product layer on top.
+
+**How long does the regulatory cycle take?**
+
+It varies by activity and how complete your file is, but the realistic expectation is months — often longer than the development cycle. Start it in parallel with design rather than after the build is complete.
+
+**Can I host outside Saudi Arabia?**
+
+This needs careful verification. Financial data is sensitive, the Personal Data Protection Law restricts transfers outside the Kingdom, and additional requirements may apply depending on your activity. See our [hosting comparison guide](/en/blog/hosting-comparison) and verify with your advisor before choosing an architecture.
+
+**What about using AI in a financial product?**
+
+It carries additional considerations — particularly where it affects credit or financial decisions. And passing financial data to an external model is a data transfer subject to restrictions. Consult the regulator before building.
+
+---
+
+## Conclusion
+
+**Determine your regulatory status before writing a line of code** — the most expensive mistake in this sector is building first and asking later.
+
+**Open banking is now a licensed activity** following the March 2026 start of licensing — no longer a grey area.
+
+**Design reporting and security architecture from the start** — adding them later is costly and a permanent operational burden.
+
+**And never store card data in your system** — let the licensed provider handle it.
+
+**Building a fintech product?** [Get in touch](/en/contact) — we start with the regulatory side before the technical one. See [our services](/en/services).

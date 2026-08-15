@@ -1,0 +1,207 @@
+---
+{"slug":"arabic-web-fonts","title":"Arabic Web Fonts: Performance and Quality Together","excerpt":"A technical guide to using Arabic fonts on the web — reducing file size, avoiding text flash, choosing the right typeface, and measuring performance impact.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Arabic Web Fonts: Performance and Quality Together
+
+Arabic fonts are inherently heavier than their Latin counterparts — the glyph count is larger because each letter takes different forms (initial, medial, final, isolated), and every form needs its own design.
+
+This creates a genuine tradeoff: **a beautiful Arabic font can cost you a second of load time**, which affects both your search ranking and how long visitors stay.
+
+This guide explains how to get both.
+
+---
+
+## Why are Arabic fonts heavier?
+
+An Arabic letter changes shape depending on its position in a word. The letter "ع" has four forms, and each form is a separate glyph in the font file. Add diacritics, vocalisation marks, and numerals in two systems.
+
+**The practical result:** a complete Arabic font file can be several times the size of a Latin one at the same weight.
+
+---
+
+## 1. File format — the first decision
+
+**Use `woff2` exclusively.** It compresses most efficiently and is supported in every modern browser — see the [MDN `@font-face` documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face).
+
+```css
+@font-face {
+  font-family: 'MyArabicFont';
+  src: url('/fonts/my-arabic.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+```
+
+**Don't ship `ttf` or `otf` to the web** — those are design formats rather than delivery formats, and they are considerably larger with no benefit.
+
+---
+
+## 2. Ship only the weights you use
+
+**The most common mistake:** loading five weights (thin, regular, medium, bold, black) and using two.
+
+Every weight is a separate file that downloads. **Restrict yourself to two or three at most:**
+
+- Regular (400) for body text.
+- Bold (700) for headings.
+- Medium (500) if you genuinely need it.
+
+**And most importantly:** don't rely on synthesised weights. Browsers can algorithmically embolden a non-bold font, but the result looks worse in Arabic than in Latin.
+
+---
+
+## 3. Subsetting — the biggest win
+
+If your site is Arabic only, why ship Latin, Cyrillic, and symbol glyphs you never use?
+
+**Subsetting** strips unused glyphs from the font file and can reduce size substantially.
+
+**Common tools:** `pyftsubset` (from the fonttools package) and `glyphhanger`.
+
+```bash
+pyftsubset my-arabic.ttf \
+  --output-file=my-arabic.woff2 \
+  --flavor=woff2 \
+  --unicodes="U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+0020-007E"
+```
+
+**The ranges above cover:** basic Arabic, the Arabic supplement, Arabic presentation forms, and basic Latin characters (for numerals and English terms).
+
+> **A warning:** don't over-subset. If you strip glyphs your content uses (names with special characters, currency symbols), empty boxes appear. Test with your real content after subsetting.
+
+---
+
+## 4. `font-display` — preventing invisible text
+
+Without configuration, some browsers hide text until the font loads — meaning a blank page for your visitor.
+
+```css
+font-display: swap;
+```
+
+**`swap`** displays text immediately in a fallback font, then swaps when the custom font arrives. The visitor reads instantly, with a brief "flash" at the swap.
+
+**To reduce the flash:** choose a fallback with similar metrics, and adjust `size-adjust` if needed:
+
+```css
+@font-face {
+  font-family: 'ArabicFallback';
+  src: local('Tahoma');
+  size-adjust: 95%;
+}
+
+body {
+  font-family: 'MyArabicFont', 'ArabicFallback', sans-serif;
+}
+```
+
+---
+
+## 5. Preloading the critical font
+
+The font used in what visitors see first deserves priority:
+
+```html
+<link
+  rel="preload"
+  href="/fonts/my-arabic-regular.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+```
+
+**`crossorigin` is mandatory** even when the font is on your own domain — fonts are always fetched in CORS mode. Omitting it means downloading the font twice.
+
+**Don't preload more than one or two fonts** — overdoing it competes with more important resources.
+
+---
+
+## 6. Self-hosting versus third-party services
+
+**Host fonts on your own domain.** The reasons:
+
+- **Faster** — no connection to an external domain (DNS + TLS + request).
+- **More private** — no leaking visitor data to a third party, a genuine consideration in regulated sectors. See our [PDPL compliance guide](/en/blog/pdpl-compliance-guide).
+- **More stable** — no dependence on an external service's availability.
+
+**Verify the licence** before self-hosting — some commercial fonts prohibit it or attach conditions.
+
+---
+
+## 7. Choosing the typeface itself
+
+Practical criteria beyond taste:
+
+**Legibility at small sizes.** Many beautiful Arabic fonts become unreadable at 14px. Test at the size you will actually use.
+
+**Weight support.** A single-weight font limits your visual hierarchy.
+
+**Support for both numeral systems** — Eastern Arabic and Latin.
+
+**Latin compatibility.** Most Arabic content mixes in English terms. A font providing harmonised Latin glyphs beats one that lets the browser substitute another face — the visual mismatch looks poor.
+
+**Licensing.** Verify commercial use and self-hosting are permitted.
+
+---
+
+## 8. Measuring — don't guess
+
+After implementing, measure the actual impact:
+
+- **Total font file size** — check it in the network panel of your developer tools.
+- **Largest Contentful Paint (LCP)** — a heavy font delays it.
+- **Cumulative Layout Shift (CLS)** — swapping between fallback and custom font can shift content.
+
+**A practical rule:** total fonts under 150KB is a realistic target for an Arabic site with two weights. Exceeding 300KB warrants review.
+
+---
+
+## Related reading
+
+- [Arabic and RTL in Flutter](/en/blog/flutter-rtl-arabic-guide) — localisation in apps.
+- [Template or custom design?](/en/blog/template-vs-custom-design) — test the template in Arabic before buying.
+- [WordPress vs Next.js](/en/blog/wordpress-vs-nextjs) — how the platform affects performance.
+
+---
+
+## Frequently asked questions
+
+**What is the best Arabic web font?**
+
+There is no single answer — it depends on your brand identity and content type. Practical criteria matter more than the name: legibility at small sizes, sufficient weights, support for both numeral systems, harmonised Latin glyphs, and a licence permitting your use. Test your candidates with real content at actual size.
+
+**How large should an Arabic font file be?**
+
+After subsetting and `woff2` conversion, a well-subset single weight typically lands in the tens of kilobytes. The figure varies by typeface and the glyph ranges you keep. **Measure your own file after subsetting** rather than relying on a general estimate.
+
+**Should I use one font for Arabic and English?**
+
+If you find one providing both at consistent quality, yes — simpler and lighter. If you must use two, ensure their metrics (x-height, width) are close so mixed text doesn't look disjointed.
+
+**Why does my text appear in a different font briefly?**
+
+That is `font-display: swap` working as intended — displaying text immediately in a fallback then swapping. The alternative (hiding text until load) is worse for experience. To reduce the flash, choose a metrically similar fallback and adjust `size-adjust`.
+
+**Do fonts affect search ranking?**
+
+Indirectly but genuinely: page speed is a stated ranking factor, and heavy fonts slow Largest Contentful Paint. An unoptimised Arabic font can cost you part of your performance score.
+
+**What about diacritics and vocalisation marks?**
+
+Most fonts support them but not all at equal quality. If your content includes vocalisation (religious or educational content), test it explicitly — some fonts position marks incorrectly or overlap the following line.
+
+---
+
+## Conclusion
+
+**Use `woff2` exclusively**, and **subset the font** to the glyph range you actually use — those two alone are the biggest win.
+
+**Restrict yourself to two or three weights**, and **self-host** for better speed and privacy.
+
+**Set `font-display: swap`** so visitors read immediately, and **preload the critical font** with `crossorigin`.
+
+**And measure the result** — under 150KB total is a realistic target.
+
+**Building an Arabic site where performance matters?** [Get in touch](/en/contact) — we account for these details during the build. See our [web development services](/en/services/web-development).

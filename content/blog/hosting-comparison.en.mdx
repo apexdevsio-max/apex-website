@@ -1,0 +1,146 @@
+---
+{"slug":"hosting-comparison","title":"Hosting Your Site: Vercel, AWS, or Local Hosting?","excerpt":"A comparison of hosting options for Gulf projects — cost, performance, and the data residency constraints that may dictate your choice.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Hosting Your Site: Vercel, AWS, or Local Hosting?
+
+The hosting decision looks purely technical, but in the Gulf market it **may be a regulatory decision** — some sectors impose constraints on where data is stored that settle the choice before any technical consideration.
+
+**The short answer: modern deployment platforms for most websites, major cloud for complex platforms, and local hosting when data residency requirements demand it.**
+
+---
+
+## The four options
+
+| Option | Suits | Monthly cost |
+|---|---|---|
+| **Shared hosting** | Small WordPress sites | $5 – $30 |
+| **Deployment platforms** (Vercel, Netlify) | Modern sites, Next.js | $0 – $150 |
+| **Major cloud** (AWS, Azure, GCP) | Complex platforms, variable load | $50 – $2,000+ |
+| **Local/regional hosting** | Data residency requirements | $30 – $500 |
+
+---
+
+## Deployment platforms — the default for most sites
+
+**[Vercel](https://vercel.com/)**, **[Netlify](https://www.netlify.com/)**, and similar services are built to deploy modern websites with minimal operational effort: connect a code repository, every update deploys automatically, and a global content delivery network is included.
+
+**Advantages:** no server management, automatic deployment, excellent CDN performance, automatic SSL certificates.
+
+**Drawbacks:** cost jumps as traffic grows, less infrastructure control, and they may not satisfy data residency requirements.
+
+**Suits:** brochure sites, blogs, mid-size stores, any Next.js project.
+
+---
+
+## Major cloud — for complex platforms
+
+**AWS**, **Azure**, and **Google Cloud** give you complete control and practically unlimited scaling.
+
+**Advantages:** full control, integrated services (databases, storage, queues), and **data regions in the Middle East** — which resolves data residency requirements for many cases.
+
+**Drawbacks:** genuine administrative complexity requiring expertise, bills that are hard to predict without controls, and higher operating cost.
+
+**Suits:** platforms with variable load, enterprise systems, projects needing specific data regions.
+
+> **A cost warning:** cloud bills escalate quietly — a forgotten service running for months with no usage. Set budget alerts from day one.
+
+---
+
+## Data residency — the factor that may settle it
+
+This point is overlooked in global comparisons and is **the most important one in certain Gulf sectors**.
+
+**In Saudi Arabia**, the Personal Data Protection Law places restrictions on transferring personal data outside the Kingdom and requires specific safeguards when transferring. Regulated sectors (healthcare, fintech, government entities) usually face stricter requirements.
+
+**What this means practically:**
+- If you process health or sensitive financial data, **verify data residency requirements before choosing hosting**, not after.
+- Major providers offer data regions in the region — this usually resolves the issue.
+- **Local hosting** remains the clearest option when requirements are strict.
+
+> **A practical rule:** if your project is in a regulated sector, make "where is the data stored?" your first question to a provider rather than your last. Changing hosting after building is expensive; breaching residency requirements is more expensive still.
+
+---
+
+## Performance and geography
+
+The distance between server and visitor genuinely affects speed. A server in Europe serving a visitor in Riyadh is slower than a regional one.
+
+**But the gap narrows considerably** with content delivery networks that cache copies close to the visitor. For a content site, a good CDN handles most of the problem.
+
+**When does geography still matter?** For interactive platforms that hit the database on every request — here a CDN doesn't help, and proximity to users makes a noticeable difference.
+
+---
+
+## Realistic costs
+
+| Project type | Recommended option | Monthly cost |
+|---|---|---|
+| Brochure site | Deployment platform (often the free tier) | $0 – $20 |
+| Company site with blog | Paid deployment platform | $20 – $100 |
+| Mid-size online store | Deployment platform or cloud | $50 – $300 |
+| SaaS platform | Major cloud | $200 – $2,000+ |
+| System in a regulated sector | Regional or local cloud | $100 – $1,000 |
+
+See our [website design cost guide](/en/blog/website-design-cost) to place hosting within the overall budget.
+
+---
+
+## The decision framework
+
+**1. Is your project in a regulated sector (health, finance, government)?**
+Yes → start with data residency requirements, then choose within what they permit.
+
+**2. Do you need complex infrastructure (multiple databases, background processing, variable load)?**
+Yes → major cloud.
+
+**3. Is your site content or ordinary commerce?**
+Yes → a modern deployment platform. This is the correct default for most projects.
+
+---
+
+## Related reading
+
+- [PDPL compliance](/en/blog/pdpl-compliance-guide) — restrictions on transferring data outside the Kingdom.
+- [API security](/en/blog/api-security-guide) — securing what you host.
+- [In-house maintenance or a contract?](/en/blog/maintenance-inhouse-vs-contract) — who monitors the infrastructure?
+
+---
+
+## Frequently asked questions
+
+**Do I need hosting inside Saudi Arabia?**
+
+It depends on your sector and data type. For ordinary brochure and commercial sites, global hosting with a CDN is usually sufficient. For regulated sectors or sensitive data, verify data residency requirements with your advisor before choosing a provider.
+
+**What does hosting cost annually?**
+
+Brochure site: $0–$240 per year. Company site: $240–$1,200. Mid-size store: $600–$3,600. Complex platform: $2,400+. The biggest variable is traffic volume and infrastructure complexity rather than the provider itself.
+
+**Is cheap shared hosting enough?**
+
+For a small WordPress site with limited traffic: yes. But it degrades quickly with growth, and its security depends on the provider and on neighbouring sites on the same server. For any serious commercial project, the difference between it and a better option is a few tens of dollars monthly — a justified investment.
+
+**How do I avoid surprise cloud bills?**
+
+Set budget alerts from day one, review active services monthly and delete unused ones, and avoid auto-scaling without a ceiling. Most shocking bills come from a forgotten service running unused rather than genuine growth.
+
+**Can I change hosting later?**
+
+Yes, but difficulty varies. A static site moves within hours. A platform with a database and integrations needs planning and potential downtime. **If data residency requirements are plausible in your future, plan for them from the start** — changing later is far more expensive.
+
+**Who is responsible for backups?**
+
+Ask explicitly. Some platforms provide them automatically and others don't. Regular, tested backups — ones you have actually tried restoring — are the difference between an incident and a catastrophe.
+
+---
+
+## Conclusion
+
+**Modern deployment platforms** are the correct default for most websites — excellent performance with no server management.
+
+**Major cloud** for complex platforms and variable load, provided you set budget alerts.
+
+**And data residency may settle the decision before any technical consideration** — if you're in a regulated sector, start there.
+
+**Want a recommendation for your project?** [Get in touch](/en/contact) for a free assessment covering hosting and operating cost. See our [web development services](/en/services/web-development).

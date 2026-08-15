@@ -40,11 +40,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(toLocale(lang), {
-    title: isAr ? "المدونة" : "Blog",
+    title: isAr ? "المدونة — أدلة تطوير البرمجيات" : "Blog — Software Development Guides",
     description: isAr
-      ? "مقالات تقنية وخبرات من فريق APEX."
-      : "Technical articles and insights from the APEX team.",
+      ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج — أسعار واقعية، مقارنات تقنية، ومتطلبات الامتثال المحلية."
+      : "Practical guides to app and web development costs in the Gulf — realistic pricing, technical comparisons, and local compliance requirements.",
     path: `/${lang}/blog`,
+    keywords: isAr
+      ? ["مدونة تقنية", "تكلفة تطوير التطبيقات", "أدلة برمجية", "تطوير الويب", "الخليج"]
+      : ["technology blog", "app development cost", "developer guides", "web development", "Gulf market"],
   });
 }
 

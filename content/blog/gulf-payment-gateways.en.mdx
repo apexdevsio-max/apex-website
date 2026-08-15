@@ -1,0 +1,159 @@
+---
+{"slug":"gulf-payment-gateways","title":"Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara","seoTitle":"Gulf Payment Gateways: Mada and STC Pay","excerpt":"Mada, STC Pay, Tabby, and Tamara — integration costs, rollout order, and which gateways your store actually needs.","date":"2026-08-14","dateModified":"2026-08-14"}
+---
+
+# Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara
+
+Choosing payment gateways is a commercial decision rather than a technical one — and its effect on checkout completion is larger than most design improvements. A store that doesn't accept **Mada** in Saudi Arabia loses a large share of buyers at the final step.
+
+This guide explains the available options, the cost of each integration, and which you actually need at your stage.
+
+---
+
+## The quick map
+
+| Method | What it is | Importance in Saudi Arabia |
+|---|---|---|
+| **Mada** | Saudi national payment network | **Essential — non-negotiable** |
+| **Apple Pay** | Payment via Apple devices | Very high |
+| **STC Pay** | Digital wallet | High |
+| **Tabby / Tamara** | Buy now, pay later (BNPL) | High and growing |
+| Visa / Mastercard | International cards | Needed for international buyers |
+| **Cash on delivery** | Cash at handover | Still expected |
+
+**The most important note:** relying on Visa and Mastercard alone is a common mistake among those building with global templates — Saudi buyers use Mada for a large share of transactions.
+
+---
+
+## Mada — the gateway you cannot skip
+
+**Mada** is Saudi Arabia's national payment network, and its cards are the most widely held locally. In practice: anyone with a Saudi bank account has a Mada card.
+
+**What this means for your store:** the absence of Mada means losing customers at the final step of the purchase journey — after you have already paid the cost of attracting and convincing them. That is the most expensive point at which to lose a customer.
+
+**Integration:** hosted platforms (Salla, Zid) support it natively. A custom store needs integration through a licensed payment service provider, costing **$1,500 – $4,000**.
+
+---
+
+## Buy now, pay later (Tabby and Tamara) — bigger than you'd expect
+
+**Tabby** and **Tamara** are the most widely adopted buy-now-pay-later services in the Gulf. The buyer splits the amount across instalments while you receive the full value from the provider immediately, in exchange for a higher commission.
+
+**Why do they matter?** Because they **raise average basket value** and remove the price barrier on higher-priced products. Their share of Gulf e-commerce payments is substantial and growing.
+
+**When should you add them?** If your average basket exceeds roughly 300–500 SAR. For low-priced products, the higher commission may not justify itself.
+
+**Cost:** a higher commission than standard cards (varying by agreement and sales volume) plus **$1,500 – $3,000** integration per service.
+
+---
+
+## STC Pay and digital wallets
+
+**STC Pay** is among the most widely used digital wallets in Saudi Arabia, particularly among younger demographics and those who prefer not to enter card details.
+
+**Cost:** $1,500 – $3,000 to integrate.
+
+**Priority:** after Mada and Apple Pay, and before expanding into international cards if your audience is local.
+
+---
+
+## Cash on delivery — don't write it off
+
+Despite substantial growth in digital payment, **cash on delivery remains expected** in the region, particularly among first-time buyers from a store they don't know.
+
+**The genuine drawbacks:** a higher refusal-on-delivery rate, cash collection requiring settlement with the shipping company or drivers, and slower cash flow.
+
+**The recommendation:** offer it initially to build trust, and reduce reliance on it gradually through prepayment incentives (a small discount or free shipping).
+
+---
+
+## Total costs
+
+| Item | Cost |
+|---|---|
+| Single gateway integration (custom store) | $1,500 – $4,000 |
+| Full set (Mada + Apple Pay + STC Pay + BNPL) | $6,000 – $15,000 |
+| Transaction commission (cards) | Roughly 2.5% – 3% |
+| BNPL commission | Higher — set by agreement |
+| Setup and monthly fees | Varies by provider |
+
+**On a hosted platform:** most of these integrations are built in — one of the strongest reasons to choose Salla or Zid for the Saudi market. See our [Saudi e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi).
+
+---
+
+## The recommended order
+
+**Phase one (mandatory):**
+1. **Mada** — do not launch without it in Saudi Arabia.
+2. **Apple Pay** — iPhone usage is high in the region.
+3. **Cash on delivery** — to build new-buyer trust.
+
+**Phase two (after proving sales):**
+4. **STC Pay** — a wide segment prefers wallets.
+5. **Tabby or Tamara** — if your average basket is high.
+
+**Phase three (when expanding):**
+6. **International Visa / Mastercard** — for buyers outside the region.
+
+**Why this order?** Because every integration costs money, time, and testing. Start with what covers the majority of your audience, and add the rest when your data shows genuine need.
+
+---
+
+## The regulatory side
+
+**Payment service providers in Saudi Arabia are licensed by the [Saudi Central Bank (SAMA)](https://www.sama.gov.sa/).** Work only with a licensed provider — this is not an administrative detail but protection for you and your customers' money.
+
+**Also verify:**
+- **E-invoicing (Fatoora)** — Zakat, Tax and Customs Authority requirements for electronic invoices.
+- **Data protection (PDPL)** — payment data is among the most sensitive categories.
+- **Card data security standards** — never store card data in your own system; let the gateway handle it.
+
+> **A security rule:** if a provider suggests storing card numbers in your database, that alone is reason to end the conversation.
+
+---
+
+## Related reading
+
+- [Fintech and SAMA](/en/blog/fintech-sama-compliance) — when your product becomes a licensed activity.
+- [Shopify vs a custom store](/en/blog/shopify-vs-custom-store) — which platform supports which gateway.
+- [API security](/en/blog/api-security-guide) — never store card data.
+
+---
+
+## Frequently asked questions
+
+**Can I launch without Mada in Saudi Arabia?**
+
+Technically yes, commercially no. Mada is the most widely held card locally, and its absence means losing customers at the final step after you've paid to attract them. Treat it as mandatory for any store selling inside Saudi Arabia.
+
+**What does adding a payment gateway to a custom store cost?**
+
+Between $1,500 and $4,000 per gateway, covering integration, testing, and approval. The full set (Mada + Apple Pay + STC Pay + BNPL) runs $6,000 to $15,000. On hosted platforms most are built in with no integration cost.
+
+**Is buy-now-pay-later worth its higher commission?**
+
+It depends on your average basket. For products above roughly 300–500 SAR, the lift in completion rate and average order value usually offsets the commission. For low-priced products it may not. Test it and measure the difference in your own data rather than guessing.
+
+**What is the difference between a payment gateway and a payment service provider?**
+
+The gateway is the method (Mada, Apple Pay). The service provider is the licensed company that connects you to it, processes transactions, and transfers funds to your account. You contract with a SAMA-licensed provider, which usually gives you several gateways through one integration.
+
+**Do I need a special licence to accept payments?**
+
+You need a commercial registration and store documentation, plus a contract with a licensed payment service provider. The provider is the one licensed by SAMA, not you. Verify your current requirements with your advisor, as regulations change.
+
+**How do I reduce refusal on cash-on-delivery orders?**
+
+Confirm the order by message or call before shipping, offer a small prepayment incentive (discount or free shipping), and restrict cash on delivery for new customers until after a first successful transaction.
+
+---
+
+## Conclusion
+
+**Mada is not optional but necessary** for any store selling in Saudi Arabia — its absence loses you customers at the most expensive possible point.
+
+**Start with Mada, Apple Pay, and cash on delivery**, add STC Pay and buy-now-pay-later after proving sales, and international cards when expanding beyond the region.
+
+**And work only with a SAMA-licensed provider** — never storing card data in your own system.
+
+**Want an estimate for your store's integrations?** [Get in touch](/en/contact) for a free assessment — including a recommendation for a hosted platform if it covers your needs with no integration cost. See our [web development services](/en/services/web-development).

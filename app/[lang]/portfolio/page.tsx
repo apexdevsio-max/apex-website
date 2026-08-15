@@ -41,11 +41,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(toLocale(lang), {
-    title: isAr ? "أعمالنا" : "Portfolio",
+    title: isAr ? "أعمالنا — مشاريع تطوير منفّذة" : "Portfolio — Delivered Software Projects",
     description: isAr
-      ? "أعمال ومشاريع APEX في الويب، الموبايل، والذكاء الاصطناعي."
-      : "APEX portfolio across web, mobile, and AI projects.",
+      ? "مشاريع APEX المنفّذة في تطوير الويب وتطبيقات الموبايل والذكاء الاصطناعي — أمثلة حقيقية من عملنا مع عملاء في الخليج."
+      : "Projects delivered by APEX across web development, mobile apps, and AI — real examples of our work with clients across the Gulf.",
     path: `/${lang}/portfolio`,
+    keywords: isAr
+      ? ["أعمالنا", "مشاريع برمجية", "معرض أعمال", "تطبيقات منفذة", "دراسات حالة"]
+      : ["portfolio", "software projects", "case studies", "delivered apps", "our work"],
   });
 }
 

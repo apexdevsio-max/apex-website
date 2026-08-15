@@ -33,10 +33,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(toLocale(lang), {
-    title: isAr ? "الشروط والأحكام" : "Terms & Conditions",
+    title: isAr ? "الشروط والأحكام لاستخدام الخدمات" : "Terms and Conditions of Service",
     description: isAr
-      ? "الشروط والأحكام الخاصة بخدمات APEX للبرمجيات."
-      : "Terms and conditions for APEX Software services.",
+      ? "الشروط والأحكام التي تحكم استخدام موقع APEX للبرمجيات وخدماتها، وتشمل نطاق الخدمة والملكية الفكرية وحدود المسؤولية."
+      : "The terms governing use of the APEX Software website and services, covering scope of service, intellectual property, and limitations of liability.",
     path: `/${lang}/terms`,
   });
 }
