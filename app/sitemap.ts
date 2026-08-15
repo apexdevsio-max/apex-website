@@ -22,7 +22,9 @@ const STATIC_ROUTES: Array<Omit<StaticRoute, "lastModified">> = [
   { route: "services", changeFrequency: "monthly", priority: 0.8 },
   { route: "portfolio", changeFrequency: "monthly", priority: 0.8 },
   { route: "blog", changeFrequency: "weekly", priority: 0.8 },
-  { route: "academy", changeFrequency: "monthly", priority: 0.8 },
+  // Academy is hidden for now, so it is kept out of the sitemap to avoid
+  // advertising pages the navigation no longer links to. See data/navigation.ts.
+  // { route: "academy", changeFrequency: "monthly", priority: 0.8 },
   { route: "contact", changeFrequency: "monthly", priority: 0.7 },
   { route: "privacy", changeFrequency: "yearly", priority: 0.3 },
   { route: "terms", changeFrequency: "yearly", priority: 0.3 },
@@ -193,13 +195,14 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
     (item) => item.updatedAt
   );
 
-  pushCollection(
-    courseMap,
-    (locale, slug) => `/${locale}/academy/${slug}`,
-    "monthly",
-    0.7,
-    (course) => course.updatedAt
-  );
+  // Academy course URLs are withheld while the section is hidden.
+  // pushCollection(
+  //   courseMap,
+  //   (locale, slug) => `/${locale}/academy/${slug}`,
+  //   "monthly",
+  //   0.7,
+  //   (course) => course.updatedAt
+  // );
 
   // Lessons are nested, so they need the course slug as well as their own.
   const lessonEntries = new Map<string, { course: string; lesson: string; lastModified?: Date }>();
@@ -223,12 +226,14 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
     }
   }
 
-  for (const { course, lesson, lastModified } of lessonEntries.values()) {
-    const pathByLocale = Object.fromEntries(
-      SUPPORTED_LOCALES.map((locale) => [locale, `/${locale}/academy/${course}/${lesson}`])
-    ) as Record<Locale, string>;
-    entries.push(buildLocalizedEntry(pathByLocale, "monthly", 0.6, lastModified));
-  }
+  // Academy lesson URLs are withheld while the section is hidden. lessonEntries
+  // above is still built so re-enabling is a matter of uncommenting this loop.
+  // for (const { course, lesson, lastModified } of lessonEntries.values()) {
+  //   const pathByLocale = Object.fromEntries(
+  //     SUPPORTED_LOCALES.map((locale) => [locale, `/${locale}/academy/${course}/${lesson}`])
+  //   ) as Record<Locale, string>;
+  //   entries.push(buildLocalizedEntry(pathByLocale, "monthly", 0.6, lastModified));
+  // }
 
   const newestContent = newestContentDate([
     ...servicesByLocale.map(({ items }) => items),

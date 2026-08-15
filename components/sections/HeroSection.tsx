@@ -248,8 +248,10 @@ export function HeroSection({
                 background: `linear-gradient(${rtl.gradientDir},var(--color-primary),transparent)`,
               }}
             />
+            {/* No opacity on the tagline: at 75% the primary colour drops to
+                3.86:1 on the light background, under the 4.5:1 WCAG AA floor. */}
             <span
-              className={`text-xs font-semibold tracking-[0.2em] opacity-75 ${rtl.fontClass}`}
+              className={`text-xs font-semibold tracking-[0.2em] ${rtl.fontClass}`}
               style={{ color: "var(--color-primary)" }}
             >
               {heroSection.tagline}
