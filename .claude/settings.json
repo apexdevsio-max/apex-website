@@ -10,7 +10,9 @@
       "Bash(GIT_TERMINAL_PROMPT=0 git -c credential.helper='!gh auth git-credential' push https://github.com/apexdevsio-max/apex-website.git main:main)",
       "Bash(npm test *)",
       "WebSearch",
-      "Bash(node assemble.mjs)"
+      "Bash(node assemble.mjs)",
+      "PowerShell(git config --get-all credential.helper)",
+      "PowerShell(git config --get-all credential.https://github.com.helper)"
     ]
   }
 }
