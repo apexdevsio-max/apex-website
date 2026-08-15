@@ -43,6 +43,15 @@ function getDarkMode() {
   );
 }
 
+// Resolves the effective theme the same way the pre-paint script in the layout
+// does, so both agree on what "no stored preference" means.
+function resolveStoredDark() {
+  const stored = localStorage.getItem("theme");
+  return stored
+    ? stored === "dark"
+    : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
 export function Header({ lang, dictionary }: Props) {
   const pathname = usePathname() || `/${lang}`;
   const [open, setOpen] = useState(false);
@@ -88,6 +97,18 @@ export function Header({ lang, dictionary }: Props) {
     () => false
   );
   const darkMode = useSyncExternalStore(subscribeTheme, getDarkMode, () => false);
+
+  // Switching language swaps the [lang] layout, and <html> is rendered there, so
+  // the `dark` class set on documentElement is dropped on client-side navigation.
+  // The layout's pre-paint script only runs on a full document load, so re-apply
+  // the stored preference here whenever the path changes.
+  useEffect(() => {
+    const dark = resolveStoredDark();
+    if (dark !== document.documentElement.classList.contains("dark")) {
+      document.documentElement.classList.toggle("dark", dark);
+      window.dispatchEvent(new Event(THEME_EVENT));
+    }
+  }, [pathname]);
 
   const toggleTheme = () => {
     const nextDark = !document.documentElement.classList.contains("dark");
