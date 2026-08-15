@@ -10,8 +10,10 @@ import {
   buildOrganizationSchema,
   buildServiceSchema,
   buildBreadcrumbSchema,
+  buildFaqSchema,
 } from "@/lib/seo/schema";
 import { MOCK_SERVICES, MOCK_SERVICE_SLUGS } from "@/lib/mock/services-data";
+import { MarkdownContent } from "@/components/content/MarkdownContent";
 
 export async function generateStaticParams() {
   const seen = new Set<string>();
@@ -62,6 +64,7 @@ export async function generateMetadata({
   return buildPageMeta(locale, {
     title: mdx?.title ?? mock?.title ?? slug,
     description: mdx?.summary ?? mock?.summary ?? "",
+    keywords: mdx?.keywords,
     path: `/${lang}/services/${slug}`,
   });
 }
@@ -102,6 +105,8 @@ export default async function ServiceDetailsPage({
   const features = mockContent?.features ?? [];
   const process = mockContent?.process ?? [];
   const result = mockContent?.result ?? "";
+  const body = mdxItem?.body ?? "";
+  const faq = mdxItem?.faq ?? [];
 
   const breadcrumbItems = [
     { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
@@ -114,6 +119,7 @@ export default async function ServiceDetailsPage({
       <JsonLd schema={buildOrganizationSchema(lang)} />
       <JsonLd schema={buildServiceSchema(slug, title, summary, lang)} />
       <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
+      {faq.length > 0 && <JsonLd schema={buildFaqSchema(faq)} />}
       <div
         className="min-h-screen pt-24 pb-24 px-6"
         style={{ background: "var(--color-background)" }}
@@ -199,6 +205,15 @@ export default async function ServiceDetailsPage({
           >
             {description}
           </div>
+        )}
+
+        {/* The long-form body carries the substance search engines rank on. It is
+            markdown rather than the plain-text `description` above, so it renders
+            through the shared prose renderer used by the blog. */}
+        {body && (
+          <article className="mb-14">
+            <MarkdownContent source={body} lang={lang} />
+          </article>
         )}
 
         {(features.length > 0 || process.length > 0) && (
@@ -306,6 +321,46 @@ export default async function ServiceDetailsPage({
               </div>
             </div>
           </div>
+        )}
+
+        {/* Rendered from the same `faq` array that feeds the FAQPage JSON-LD above,
+            so the markup and the visible content can never disagree. */}
+        {faq.length > 0 && (
+          <section className="mb-12">
+            <h2
+              className={`font-bold mb-6 ${isAr ? "font-ar" : "font-en"}`}
+              style={{ fontSize: "clamp(20px,2.6vw,28px)", color: "var(--color-primary-text)" }}
+            >
+              {isAr ? "أسئلة شائعة" : "Frequently Asked Questions"}
+            </h2>
+            <div className="space-y-3">
+              {faq.map((item) => (
+                <details
+                  key={item.question}
+                  className="rounded-2xl border overflow-hidden"
+                  style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
+                >
+                  <summary
+                    className={`cursor-pointer list-none p-5 font-bold flex items-center justify-between gap-4 ${
+                      isAr ? "font-ar" : "font-en"
+                    }`}
+                    style={{ fontSize: "15px", color: "var(--color-primary-text)" }}
+                  >
+                    <span>{item.question}</span>
+                    <span aria-hidden="true" style={{ color: accentColor }}>
+                      +
+                    </span>
+                  </summary>
+                  <p
+                    className={`px-5 pb-5 leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+                    style={{ fontSize: "14px", color: "var(--color-secondary-text)" }}
+                  >
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
         )}
 
         <div className={`flex flex-wrap gap-4 ${isAr ? "flex-row-reverse" : ""}`}>

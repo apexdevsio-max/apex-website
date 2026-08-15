@@ -11,10 +11,23 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [Content Creation](https://apex.sy/en/services/content-creation)
 
 ## Featured Guides
-- [SEO vs GEO](https://apex.sy/en/blog/seo-vs-geo)
-- [React Native Guide](https://apex.sy/en/blog/react-native)
-- [Flutter Guide](https://apex.sy/en/blog/flutter)
-- [Mobile App Development Cost](https://apex.sy/en/blog/mobile-app-development-cost)
+- [Mobile App Development Cost in the Gulf](https://apex.sy/en/blog/mobile-app-development-cost-gulf) — 2026 pricing for Saudi Arabia, UAE, and Qatar, including localisation, payment gateways, and compliance costs.
+- [E-Commerce Store Cost in Saudi Arabia](https://apex.sy/en/blog/ecommerce-development-cost-saudi) — platform comparison, three-year cost modelling, and ZATCA e-invoicing requirements.
+- [Choosing an App Development Company in Riyadh](https://apex.sy/en/blog/app-development-company-riyadh) — evaluation criteria, expected pricing, and the questions to ask before signing.
+- [Mobile App Development Cost](https://apex.sy/en/blog/mobile-app-development-cost) — general pricing factors across screens, platforms, and features.
+- [Flutter Guide](https://apex.sy/en/blog/flutter) — complete guide to Flutter for cross-platform apps.
+- [React Native Guide](https://apex.sy/en/blog/react-native) — architecture, limitations, and how it compares to Flutter.
+- [SEO vs GEO](https://apex.sy/en/blog/seo-vs-geo) — optimising content for AI answer engines alongside search.
+- [Website Design Cost in 2026](https://apex.sy/en/blog/website-design-cost) — website types, ongoing annual costs, and hidden items in quotes.
+- [Web Design Company in Dubai](https://apex.sy/en/blog/web-design-company-dubai) — Dubai pricing, UAE requirements, and provider evaluation criteria.
+- [Clinic Booking App Cost](https://apex.sy/en/blog/clinic-booking-app-cost) — features, Saudi MOH/SFDA requirements, and ROI calculation.
+- [App Development in Jeddah](https://apex.sy/en/blog/app-development-jeddah) — pricing, the Jeddah commercial market, and system integration.
+- [Delivery App Cost](https://apex.sy/en/blog/delivery-app-cost) — why it is three apps, operational costs, and cheaper alternatives.
+- [Software Company in Qatar](https://apex.sy/en/blog/software-company-qatar) — Qatari pricing and the two data protection regimes inside and outside the QFC.
+- [AI Chatbot Cost](https://apex.sy/en/blog/ai-chatbot-cost) — rule-based versus LLM bots, monthly running costs, and Arabic-specific challenges.
+- [App Development in Abu Dhabi](https://apex.sy/en/blog/app-development-abu-dhabi) — pricing, Abu Dhabi versus Dubai, and ADGM requirements.
+- [Educational App Cost](https://apex.sy/en/blog/educational-app-cost) — course apps versus school platforms, revenue models, and minors data protection.
+- [App Development Contracts](https://apex.sy/en/blog/app-development-contract) — code ownership, payment schedules, and clauses to reject before signing.
 
 ## Site Sections
 - [Home](https://apex.sy/en)
@@ -42,10 +55,23 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [صناعة المحتوى](https://apex.sy/ar/services/content-creation)
 
 ## أدلة مختارة
-- [SEO وGEO](https://apex.sy/ar/blog/seo-vs-geo)
-- [دليل React Native](https://apex.sy/ar/blog/react-native)
-- [دليل Flutter](https://apex.sy/ar/blog/flutter)
-- [تكلفة تطوير تطبيقات الموبايل](https://apex.sy/ar/blog/mobile-app-development-cost)
+- [تكلفة تطوير تطبيق جوال في الخليج](https://apex.sy/ar/blog/mobile-app-development-cost-gulf) — أسعار 2026 للسعودية والإمارات وقطر، مع تكاليف التعريب وبوابات الدفع والامتثال.
+- [تكلفة تطوير متجر إلكتروني في السعودية](https://apex.sy/ar/blog/ecommerce-development-cost-saudi) — مقارنة المنصات، وحساب التكلفة على ثلاث سنوات، ومتطلبات فاتورة.
+- [اختيار شركة تطوير تطبيقات في الرياض](https://apex.sy/ar/blog/app-development-company-riyadh) — معايير التقييم والأسعار المتوقعة والأسئلة قبل التوقيع.
+- [تكلفة تطوير تطبيقات الموبايل](https://apex.sy/ar/blog/mobile-app-development-cost) — عوامل التسعير العامة حسب الشاشات والمنصات والميزات.
+- [دليل Flutter](https://apex.sy/ar/blog/flutter) — الدليل الكامل لـ Flutter لتطبيقات متعددة المنصات.
+- [دليل React Native](https://apex.sy/ar/blog/react-native) — المعمارية والقيود والمقارنة مع Flutter.
+- [SEO وGEO](https://apex.sy/ar/blog/seo-vs-geo) — تحسين المحتوى لمحركات الإجابة إلى جانب البحث.
+- [تكلفة تصميم موقع إلكتروني](https://apex.sy/ar/blog/website-design-cost) — أنواع المواقع والتكاليف السنوية المستمرة والبنود المخفية في العروض.
+- [شركة تصميم مواقع في دبي](https://apex.sy/ar/blog/web-design-company-dubai) — أسعار دبي ومتطلبات السوق الإماراتي ومعايير تقييم المزوّد.
+- [تكلفة تطبيق حجز مواعيد العيادات](https://apex.sy/ar/blog/clinic-booking-app-cost) — الميزات ومتطلبات وزارة الصحة والغذاء والدواء وحساب العائد.
+- [تطوير تطبيقات في جدة](https://apex.sy/ar/blog/app-development-jeddah) — الأسعار وخصوصية السوق التجاري والتكامل مع الأنظمة القائمة.
+- [تكلفة تطبيق توصيل](https://apex.sy/ar/blog/delivery-app-cost) — لماذا هو ثلاثة تطبيقات، والتكاليف التشغيلية، والبدائل الأرخص.
+- [شركة برمجيات في قطر](https://apex.sy/ar/blog/software-company-qatar) — الأسعار القطرية ونظاما حماية البيانات داخل مركز قطر للمال وخارجه.
+- [تكلفة شات بوت ذكي](https://apex.sy/ar/blog/ai-chatbot-cost) — الفرق بين البوت القاعدي والذكي والتكلفة الشهرية وتحديات العربية.
+- [تصميم تطبيقات في أبوظبي](https://apex.sy/ar/blog/app-development-abu-dhabi) — الأسعار والفرق بين أبوظبي ودبي ومتطلبات سوق أبوظبي العالمي.
+- [تكلفة تطبيق تعليمي](https://apex.sy/ar/blog/educational-app-cost) — تطبيق الدورات مقابل المنصة المدرسية ونماذج الربح وحماية بيانات القاصرين.
+- [عقد تطوير تطبيق](https://apex.sy/ar/blog/app-development-contract) — ملكية الكود وجدول الدفعات والبنود التي يجب رفضها قبل التوقيع.
 
 ## أقسام الموقع
 - [الرئيسية](https://apex.sy/ar)

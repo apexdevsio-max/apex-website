@@ -4,12 +4,22 @@ import type { Locale } from "@/lib/i18n/locale";
 import path from "path";
 import { readdir, readFile, stat } from "fs/promises";
 
+export type ServiceFaq = {
+  question: string;
+  answer: string;
+};
+
 export type ServiceItem = {
   slug: string;
   title: string;
   summary: string;
   description: string;
   ctaLabel: string;
+  /** Long-form markdown body. Empty when a service has only frontmatter. */
+  body: string;
+  /** Rendered on the page and emitted as FAQPage JSON-LD for rich results. */
+  faq: ServiceFaq[];
+  keywords?: string[];
   updatedAt?: Date;
 };
 
@@ -82,6 +92,19 @@ function optionalIsoDate(value: unknown, path: string, dataset: string): string 
   return value;
 }
 
+function assertServiceFaq(value: unknown, path: string, dataset: string): asserts value is ServiceFaq[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`Invalid ${dataset}: "${path}" must be an array`);
+  }
+  value.forEach((entry, index) => {
+    if (!isRecord(entry)) {
+      throw new Error(`Invalid ${dataset}: "${path}[${index}]" must be an object`);
+    }
+    assertString(entry.question, `${path}[${index}].question`, dataset);
+    assertString(entry.answer, `${path}[${index}].answer`, dataset);
+  });
+}
+
 function assertServiceItem(value: unknown, index: number, dataset: string): asserts value is ServiceItem {
   if (!isRecord(value)) throw new Error(`Invalid ${dataset}: item[${index}] must be an object`);
   assertSlug(value.slug, `item[${index}].slug`, dataset);
@@ -89,6 +112,11 @@ function assertServiceItem(value: unknown, index: number, dataset: string): asse
   assertString(value.summary, `item[${index}].summary`, dataset);
   assertString(value.description, `item[${index}].description`, dataset);
   assertString(value.ctaLabel, `item[${index}].ctaLabel`, dataset);
+  assertServiceFaq(value.faq, `item[${index}].faq`, dataset);
+  assertOptionalStringArray(value.keywords, `item[${index}].keywords`, dataset);
+  if (typeof value.body !== "string") {
+    throw new Error(`Invalid ${dataset}: "item[${index}].body" must be a string`);
+  }
 }
 
 function assertBlogPost(value: unknown, index: number, dataset: string): asserts value is BlogPost {
@@ -268,6 +296,9 @@ async function loadServices(locale: Locale): Promise<ServiceItem[]> {
         summary: data.summary as string,
         description: (data.description as string) ?? body,
         ctaLabel: data.ctaLabel as string,
+        body,
+        faq: (data.faq as ServiceFaq[]) ?? [],
+        keywords: data.keywords as string[] | undefined,
         updatedAt,
       } satisfies ServiceItem;
     })

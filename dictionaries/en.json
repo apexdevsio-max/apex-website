@@ -22,10 +22,10 @@
     "subtitle": "A software company building integrated digital solutions powered by modern AI.",
     "description": "At APEX, we believe technology should be accessible and practical. We combine engineering depth with product thinking to deliver digital solutions that create measurable business value.",
     "stats": [
-      { "value": "24+", "label": "Projects Delivered" },
-      { "value": "100+", "label": "Tech Articles" },
-      { "value": "5", "label": "Specializations" },
-      { "value": "∞", "label": "AI Possibilities" }
+      { "value": "9", "label": "Documented Projects" },
+      { "value": "6", "label": "Specialized Services" },
+      { "value": "2", "label": "Full Working Languages" },
+      { "value": "100%", "label": "Arabic & RTL Support" }
     ],
     "checks": [
       "Design that tells your story",
@@ -92,45 +92,7 @@
     "title": "Projects That Prove Excellence",
     "subtitle": "From education platforms to commerce and mobile products, every project tells a success story.",
     "viewAll": "View All Work",
-    "viewProject": "View Project",
-    "projects": [
-      {
-        "title": "Full E-Commerce Platform",
-        "category": "E-Commerce",
-        "tag": "Store",
-        "emoji": "🛒"
-      },
-      {
-        "title": "Interactive Learning App",
-        "category": "Mobile App",
-        "tag": "Education",
-        "emoji": "📚"
-      },
-      {
-        "title": "AI-Powered Video Series",
-        "category": "AI Content",
-        "tag": "AI",
-        "emoji": "🎬"
-      },
-      {
-        "title": "Analytics SaaS Dashboard",
-        "category": "Web Platform",
-        "tag": "SaaS",
-        "emoji": "💻"
-      },
-      {
-        "title": "Real Estate Platform",
-        "category": "Web Platform",
-        "tag": "Real Estate",
-        "emoji": "🏠"
-      },
-      {
-        "title": "Food Delivery App",
-        "category": "Mobile App",
-        "tag": "Delivery",
-        "emoji": "🍔"
-      }
-    ]
+    "viewProject": "View Project"
   },
   "testimonials": {
     "badge": "Client Testimonials",
@@ -138,22 +100,22 @@
     "subtitle": "Our clients' words are our strongest proof.",
     "items": [
       {
-        "name": "Ahmed Al-Shammari",
-        "role": "E-Commerce Owner",
-        "text": "APEX helped transform our online business. The team was responsive, structured, and focused on outcomes from day one.",
-        "initial": "A"
+        "name": "Real Engineering Depth",
+        "role": "Tafawwoq — Education App",
+        "text": "A Flutter app built on Clean Architecture with the BLoC pattern, featuring a smart assessment engine, secure API integration, local storage, and full Arabic RTL support.",
+        "initial": "1"
       },
       {
-        "name": "Sarah Al-Mutairi",
-        "role": "Training Center Director",
-        "text": "The education product they delivered exceeded expectations in usability and technical quality, with strong support after launch.",
-        "initial": "S"
+        "name": "Delivery Across Domains",
+        "role": "9 Documented Projects",
+        "text": "From education apps to AI-generated content, clinic branding, and commerce — every project is documented with a detailed page and real implementation screenshots.",
+        "initial": "2"
       },
       {
-        "name": "Khalid Al-Balawi",
-        "role": "Digital Product Lead",
-        "text": "Working with APEX felt like working with a real product partner. They understood the vision quickly and executed with care.",
-        "initial": "K"
+        "name": "Arabic & RTL Mastery",
+        "role": "A Rare Regional Standard",
+        "text": "Genuine RTL support with locally hosted Arabic typefaces, not surface-level translation. This very site runs on Next.js 16 with a fully bilingual architecture — a working sample of our engineering.",
+        "initial": "3"
       }
     ]
   },

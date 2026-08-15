@@ -35,6 +35,40 @@ test("blog frontmatter contains a valid publication date and safe markdown links
   }
 });
 
+/**
+ * Internal links in content must carry a locale prefix.
+ *
+ * A bare `/contact` matches KNOWN_ROUTES in proxy.ts and is 308-redirected to
+ * `/en/contact` — so an Arabic reader who clicked a call-to-action inside an
+ * Arabic article landed on the English page, at the exact moment they were
+ * converting. Because the redirect is permanent, crawlers cache it and treat the
+ * English URL as the destination, which also drains authority from the Arabic
+ * pages. Six such links shipped in the Gulf cost article before this test existed.
+ */
+test("internal content links are locale-prefixed", async () => {
+  for (const directory of ["blog", "projects", "services", "courses"]) {
+    for (const file of await localizedFiles(directory)) {
+      const source = await readFile(path.join(contentRoot, directory, file), "utf8");
+      const locale = file.endsWith(".ar.mdx") ? "ar" : "en";
+
+      for (const [, href] of source.matchAll(/\]\((\/[^)]*)\)/g)) {
+        // Static assets are locale-independent and served straight from /public.
+        if (href.startsWith("/images/") || href.startsWith("/videos/")) continue;
+
+        assert.match(
+          href,
+          /^\/(ar|en)\//,
+          `${directory}/${file} links to "${href}" without a locale prefix — it will 308-redirect to the default locale`
+        );
+        assert.ok(
+          href.startsWith(`/${locale}/`),
+          `${directory}/${file} is a ${locale} document but links to "${href}" in the other locale`
+        );
+      }
+    }
+  }
+});
+
 test("public discovery files expose canonical URLs", async () => {
   const llms = await readFile(path.join(root, "public", "llms.txt"), "utf8");
   assert.match(llms, /https:\/\/apex\.sy\/en\/services/);

@@ -28,10 +28,10 @@ const ServicesSection = dynamic(
   { ssr: true }
 );
 
-const PortfolioPreview = dynamic(
-  () => import("@/components/sections/PortfolioPreview").then((m) => m.PortfolioPreview),
-  { ssr: true }
-);
+// Imported directly rather than through next/dynamic: this is an async server
+// component that awaits real portfolio content, and next/dynamic does not support
+// awaiting an async server component's data during SSR.
+import { PortfolioPreview } from "@/components/sections/PortfolioPreview";
 
 const Testimonials = dynamic(
   () => import("@/components/sections/Testimonials").then((m) => m.Testimonials),

@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(git check-ignore *)",
+      "Bash(node -e ' *)",
+      "Bash(gh api *)",
+      "Bash(npx tsc *)",
+      "Bash(gh auth *)",
+      "Bash(GIT_TERMINAL_PROMPT=0 git -c credential.helper='!gh auth git-credential' push https://github.com/apexdevsio-max/apex-website.git main:main)",
+      "Bash(npm test *)",
+      "WebSearch",
+      "Bash(node assemble.mjs)"
     ]
   }
 }

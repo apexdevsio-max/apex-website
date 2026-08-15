@@ -58,32 +58,8 @@ export function Testimonials({
                   className="apex-card-base apex-card-hover relative rounded-2xl p-5 md:p-8 h-full flex flex-col"
                   dir={isAr ? "rtl" : "ltr"}
                 >
-                  <div
-                    className="absolute text-[72px] leading-none font-serif select-none pointer-events-none"
-                    style={{
-                      top: "10px",
-                      insetInlineEnd: "16px",
-                      color: "var(--color-primary)",
-                      opacity: 0.09,
-                    }}
-                    aria-hidden="true"
-                  >
-                    &ldquo;
-                  </div>
-
-                  <div className="flex gap-1 mb-5" aria-label="5 stars">
-                    {Array.from({ length: 5 }).map((_, starIndex) => (
-                      <span
-                        key={starIndex}
-                        style={{ color: "var(--color-gold)", fontSize: "16px" }}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-
                   <p
-                    className={`leading-relaxed flex-1 italic mb-7 ${
+                    className={`leading-relaxed flex-1 mb-7 ${
                       isAr ? "font-ar" : "font-en"
                     }`}
                     style={{ fontSize: "clamp(14px, 1.5vw, 16px)", color: "var(--color-secondary-text)" }}

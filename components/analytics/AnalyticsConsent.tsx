@@ -8,7 +8,11 @@ import type { Locale } from "@/lib/i18n/locale";
 
 type Consent = "granted" | "denied" | null;
 const STORAGE_KEY = "analytics-consent";
-const GA_ID = "G-TFJWH33D6R";
+
+// Configurable so the property can be changed (or analytics disabled entirely for
+// a preview deployment) without a code edit. Falls back to the original hardcoded
+// property so existing deployments keep reporting if the var is not set.
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-TFJWH33D6R";
 
 export function AnalyticsConsent({ lang }: { lang: Locale }) {
   const pathname = usePathname();

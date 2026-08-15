@@ -10,6 +10,8 @@ import {
   buildOrganizationSchema,
   buildBlogPostingSchema,
   buildBreadcrumbSchema,
+  buildFaqSchema,
+  extractFaqs,
 } from "@/lib/seo/schema";
 import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, PUBLISHED_POST_SLUGS } from "@/lib/mock/blog-data";
 import { MarkdownContent } from "@/components/content/MarkdownContent";
@@ -44,10 +46,76 @@ function extractFirstImage(content: string): string | undefined {
   return match?.[1] ?? undefined;
 }
 
+// Every published article carries its own keyword set. Previously only `flutter`
+// had one, so the other posts shipped with no keywords meta at all.
 const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
   flutter: {
     ar: ["Flutter", "دارت", "تطوير تطبيقات", "تطبيقات متعددة المنصات", "Google Flutter", "تطوير الموبايل"],
     en: ["Flutter", "Dart", "cross-platform", "mobile development", "Google Flutter", "app development"],
+  },
+  "react-native": {
+    ar: ["React Native", "تطوير تطبيقات", "جافاسكريبت", "تطبيقات متعددة المنصات", "Flutter مقابل React Native", "تطوير الموبايل"],
+    en: ["React Native", "JavaScript", "cross-platform", "mobile development", "React Native vs Flutter", "app development"],
+  },
+  "seo-vs-geo": {
+    ar: ["SEO", "GEO", "تحسين محركات البحث", "الذكاء الاصطناعي", "التسويق الرقمي", "محركات الإجابة"],
+    en: ["SEO", "GEO", "generative engine optimization", "AI search", "digital marketing", "answer engines"],
+  },
+  "mobile-app-development-cost": {
+    ar: ["تكلفة تطوير تطبيق", "أسعار تطبيقات الموبايل", "تكلفة تطبيق", "ميزانية تطبيق", "تطوير تطبيقات"],
+    en: ["mobile app development cost", "app pricing", "app development budget", "cost to build an app"],
+  },
+  "mobile-app-development-cost-gulf": {
+    ar: ["تكلفة تطوير تطبيق في الخليج", "أسعار التطبيقات السعودية", "تطوير تطبيقات الإمارات", "تكلفة تطبيق قطر", "مدى", "تعريب التطبيقات"],
+    en: ["app development cost Gulf", "Saudi app pricing", "UAE app development", "Qatar app cost", "Mada integration", "Arabic localisation"],
+  },
+  "ecommerce-development-cost-saudi": {
+    ar: ["تكلفة متجر إلكتروني", "متجر إلكتروني السعودية", "سلة", "زد", "فاتورة", "تجارة إلكترونية"],
+    en: ["ecommerce cost Saudi Arabia", "online store pricing", "Salla", "Zid", "ZATCA e-invoicing", "ecommerce development"],
+  },
+  "app-development-company-riyadh": {
+    ar: ["شركة تطوير تطبيقات", "تطوير تطبيقات الرياض", "شركة برمجيات السعودية", "اختيار شركة تطوير", "أسعار تطوير التطبيقات"],
+    en: ["app development company Riyadh", "Saudi software company", "choosing a development partner", "app development pricing"],
+  },
+  "website-design-cost": {
+    ar: ["تكلفة تصميم موقع", "أسعار تصميم المواقع", "تصميم موقع إلكتروني", "تكلفة موقع شركة", "استضافة ونطاق"],
+    en: ["website design cost", "web design pricing", "website development cost", "company website cost", "hosting and domain"],
+  },
+  "web-design-company-dubai": {
+    ar: ["شركة تصميم مواقع دبي", "تصميم مواقع الإمارات", "تطوير ويب دبي", "أسعار تصميم المواقع دبي", "DIFC"],
+    en: ["web design company Dubai", "UAE web design", "Dubai web development", "Dubai website pricing", "DIFC"],
+  },
+  "clinic-booking-app-cost": {
+    ar: ["تطبيق حجز مواعيد", "تطبيق عيادة", "تكلفة تطبيق طبي", "حجز مواعيد العيادات", "الهيئة العامة للغذاء والدواء"],
+    en: ["clinic booking app", "appointment booking app cost", "medical app development", "healthcare app Saudi", "SFDA"],
+  },
+  "app-development-jeddah": {
+    ar: ["تطوير تطبيقات جدة", "شركة تطبيقات جدة", "أسعار تطوير التطبيقات", "تطبيقات المنطقة الغربية", "تكامل الأنظمة"],
+    en: ["app development Jeddah", "Jeddah app company", "app development pricing", "western region apps", "system integration"],
+  },
+  "delivery-app-cost": {
+    ar: ["تكلفة تطبيق توصيل", "تطبيق توصيل طلبات", "تطبيق سائقين", "تتبع GPS", "منصة توصيل"],
+    en: ["delivery app cost", "food delivery app", "driver app development", "GPS tracking", "delivery platform"],
+  },
+  "software-company-qatar": {
+    ar: ["شركة برمجيات قطر", "تطوير تطبيقات الدوحة", "أسعار البرمجيات قطر", "مركز قطر للمال", "حماية البيانات قطر"],
+    en: ["software company Qatar", "Doha app development", "Qatar software pricing", "QFC", "Qatar data protection"],
+  },
+  "ai-chatbot-cost": {
+    ar: ["تكلفة شات بوت", "شات بوت عربي", "روبوت محادثة", "ذكاء اصطناعي خدمة العملاء", "نماذج لغوية"],
+    en: ["AI chatbot cost", "Arabic chatbot", "customer service bot", "LLM chatbot", "conversational AI"],
+  },
+  "app-development-abu-dhabi": {
+    ar: ["تطوير تطبيقات أبوظبي", "شركة تطبيقات أبوظبي", "سوق أبوظبي العالمي", "ADGM", "أسعار التطبيقات الإمارات"],
+    en: ["app development Abu Dhabi", "Abu Dhabi app company", "ADGM", "UAE app pricing", "government apps UAE"],
+  },
+  "educational-app-cost": {
+    ar: ["تكلفة تطبيق تعليمي", "منصة تعليمية", "تطبيق دورات", "التعليم الرقمي", "حماية بيانات الطلاب"],
+    en: ["educational app cost", "e-learning platform", "course app development", "digital education", "student data protection"],
+  },
+  "app-development-contract": {
+    ar: ["عقد تطوير تطبيق", "ملكية الكود المصدري", "بنود العقد", "جدول الدفعات", "معايير القبول"],
+    en: ["app development contract", "source code ownership", "contract clauses", "payment schedule", "acceptance criteria"],
   },
 };
 
@@ -126,6 +194,7 @@ export default async function BlogPostPage({
   // Related links point only at articles that actually exist — linking to the
   // placeholder slugs sent crawlers (and readers) to dead-end pages.
   const relatedSlugs = PUBLISHED_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);
+  const faqs = extractFaqs(rawContent);
 
   return (
     <div
@@ -152,6 +221,11 @@ export default async function BlogPostPage({
           lang,
         })}
       />
+      {/* Articles that end with a FAQ section get FAQPage markup, which is what
+          makes the questions eligible to appear as expandable rich results and
+          gives AI answer engines discrete Q&A pairs to quote. Articles without a
+          FAQ section emit nothing rather than an empty mainEntity array. */}
+      {faqs.length > 0 && <JsonLd schema={buildFaqSchema(faqs)} />}
       <div className="max-w-3xl mx-auto">
         <Link
           href={`/${lang}/blog`}
@@ -224,22 +298,42 @@ export default async function BlogPostPage({
           }}
         >
           <p
-            className={`font-bold mb-4 ${isAr ? "font-ar" : "font-en"}`}
-            style={{ fontSize: "18px", color: "var(--color-primary-text)" }}
+            className={`font-bold mb-3 ${isAr ? "font-ar" : "font-en"}`}
+            style={{ fontSize: "20px", color: "var(--color-primary-text)" }}
           >
             {isAr ? "هل تريد تطبيق هذه الأفكار في مشروعك؟" : "Want to apply these ideas to your project?"}
           </p>
-          <Link
-            href={`/${lang}/contact`}
-            className="inline-flex items-center gap-2 px-8 min-h-[44px] rounded-full font-bold text-sm text-white"
-            style={{
-              background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-              boxShadow: "0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)",
-            }}
+          {/* Readers of these guides are researching a purchase, so the CTA states
+              what they actually get and what it costs them — a vague "contact us"
+              converts far worse than a concrete, low-commitment offer. */}
+          <p
+            className={`mx-auto mb-6 leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
+            style={{ fontSize: "14px", color: "var(--color-secondary-text)", maxWidth: "460px" }}
           >
-            {isAr ? "تواصل مع فريق APEX" : "Contact the APEX Team"}
-            <span className={isAr ? "rotate-180 inline-block" : ""}>→</span>
-          </Link>
+            {isAr
+              ? "أرسل لنا فكرتك وسنرد بتقدير أولي للنطاق والمدة والتكلفة — دون التزام منك."
+              : "Send us your idea and we will reply with an initial estimate of scope, timeline, and cost — with no obligation."}
+          </p>
+          <div className={`flex flex-wrap gap-3 justify-center ${isAr ? "flex-row-reverse" : ""}`}>
+            <Link
+              href={`/${lang}/contact`}
+              className="inline-flex items-center gap-2 px-8 min-h-[44px] rounded-full font-bold text-sm text-white"
+              style={{
+                background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
+                boxShadow: "0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)",
+              }}
+            >
+              {isAr ? "اطلب تقديراً مجانياً" : "Get a Free Estimate"}
+              <span className={isAr ? "rotate-180 inline-block" : ""}>→</span>
+            </Link>
+            <Link
+              href={`/${lang}/portfolio`}
+              className="inline-flex items-center gap-2 px-8 min-h-[44px] rounded-full border-2 font-bold text-sm"
+              style={{ color: "var(--color-primary)", borderColor: "var(--color-primary)" }}
+            >
+              {isAr ? "شاهد أعمالنا" : "See Our Work"}
+            </Link>
+          </div>
         </div>
 
         <div>
