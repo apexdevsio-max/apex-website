@@ -16,7 +16,11 @@
       "PowerShell($p=\"c:\\\\next_app\\\\apex_website\\\\.next\\\\server\\\\edge-chunks\"; if \\(Test-Path $p\\) { Get-ChildItem $p -Recurse -File | Sort-Object Length -Descending | Select-Object -First 12 @{N='File';E={$_.Name}}, @{N='KB';E={[math]::Round\\($_.Length/1KB,1\\)}} | Format-Table -AutoSize; Write-Output \"--- TOTAL edge-chunks ---\"; \"{0:N0} KB\" -f \\(\\(Get-ChildItem $p -Recurse -File | Measure-Object Length -Sum\\).Sum/1KB\\) } else { \"no edge-chunks dir\" })",
       "PowerShell(npm run build 2>&1)",
       "PowerShell($p=\"c:\\\\next_app\\\\apex_website\\\\.next\\\\server\\\\edge-chunks\"; if \\(Test-Path $p\\) { $f=Get-ChildItem $p -Recurse -File; if\\($f\\){ $f | Sort-Object Length -Descending | Select-Object -First 6 @{N='File';E={$_.Name}}, @{N='KB';E={[math]::Round\\($_.Length/1KB,1\\)}} | Format-Table -AutoSize; \"TOTAL: {0:N0} KB\" -f \\(\\($f|Measure-Object Length -Sum\\).Sum/1KB\\) } else { \"edge-chunks dir is EMPTY\" } } else { \"NO edge-chunks dir - all functions are Node.js runtime\" })",
-      "PowerShell(git status --short | Select-Object -First 60; Write-Output \"--- count ---\"; \\(git status --short | Measure-Object\\).Count)"
+      "PowerShell(git status --short | Select-Object -First 60; Write-Output \"--- count ---\"; \\(git status --short | Measure-Object\\).Count)",
+      "PowerShell(npx tsc --noEmit --pretty false 2>&1 | Select-Object -Last 15; Write-Output \"--- tsc exit: $LASTEXITCODE ---\")",
+      "PowerShell(npm run lint 2>&1 | Select-Object -Last 20; Write-Output \"--- lint exit: $LASTEXITCODE ---\")",
+      "PowerShell(npm test 2>&1 | Select-Object -Last 12; Write-Output \"--- test exit: $LASTEXITCODE ---\")",
+      "PowerShell(node \"C:\\\\Users\\\\TECHNO~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--next-app-apex-website\\\\d4ccb24d-aaba-485c-a114-06bf4adce91c\\\\scratchpad\\\\contrast.mjs\")"
     ]
   }
 }
