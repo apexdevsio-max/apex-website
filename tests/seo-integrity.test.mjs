@@ -86,6 +86,47 @@ test("every published blog slug resolves to a real MDX article", async () => {
       );
     }
   }
+
+  // The reverse direction. Checking only that listed slugs have files let the
+  // list sit at five entries while 34 further articles shipped, so every article
+  // recommended the same three unrelated posts under "Related".
+  const onDisk = new Set(
+    [...files].filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.(en|ar)\.mdx$/, ""))
+  );
+  for (const slug of onDisk) {
+    assert.ok(
+      slugs.includes(slug),
+      `content/blog/${slug}.*.mdx exists but PUBLISHED_POST_SLUGS does not list it`
+    );
+  }
+});
+
+test("every published article has presentation metadata", async () => {
+  const mockData = await readFile(path.join(root, "lib", "mock", "blog-data.ts"), "utf8");
+  const block = /export const POST_META: Record<string, PostMeta> = \{([\s\S]*?)\n\};/.exec(mockData);
+  assert.ok(block, "POST_META is missing");
+
+  const labels = /export const CATEGORY_LABELS[^{]*\{([\s\S]*?)\n\};/.exec(mockData);
+  assert.ok(labels, "CATEGORY_LABELS is missing");
+  const knownCategories = new Set([...labels[1].matchAll(/^\s{2}"?([a-z-]+)"?:/gm)].map((m) => m[1]));
+
+  const files = await readdir(path.join(root, "content", "blog"));
+  const slugs = new Set(
+    files.filter((file) => file.endsWith(".mdx")).map((file) => file.replace(/\.(en|ar)\.mdx$/, ""))
+  );
+
+  for (const slug of slugs) {
+    const row = new RegExp(`"${slug}":\\s*\\{([^}]*)\\}`).exec(block[1]);
+    assert.ok(row, `POST_META has no entry for "${slug}" — its card falls back to a generic icon and the "selected" filter`);
+
+    // A category outside CATEGORY_LABELS renders as its raw key and is
+    // unreachable from the filter bar.
+    const cats = [...row[1].matchAll(/"([a-z-]+)"/g)].map((m) => m[1]).filter((value) => knownCategories.has(value));
+    assert.ok(
+      cats.length > 0,
+      `POST_META["${slug}"] lists no category present in CATEGORY_LABELS`
+    );
+  }
 });
 
 test("blog routes do not prerender placeholder articles", async () => {

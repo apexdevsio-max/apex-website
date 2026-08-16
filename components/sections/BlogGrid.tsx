@@ -7,7 +7,7 @@ import { useState, useMemo } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import type { BlogPost } from "@/lib/content/content-loader";
 import type { Locale } from "@/lib/i18n/locale";
-import { MOCK_POSTS } from "@/lib/mock/blog-data";
+import { MOCK_POSTS, POST_META } from "@/lib/mock/blog-data";
 
 function extractFirstImage(content: string): string | undefined {
   const match = /^!\[.*\]\((.*)\)$/m.exec(content);
@@ -215,13 +215,17 @@ export function BlogGrid({
           },
         };
       }
+      // Articles with no MOCK_POSTS entry take their presentation from POST_META.
+      // Falling straight through to "selected"/📝 put every such article in one
+      // filter bucket behind one icon.
+      const meta = POST_META[post.slug];
       return {
         slug: post.slug,
         image: mdxImage,
-        categories: ["selected"],
-        emoji: "📝",
-        readTime: Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200)),
-        accentColor: "#00BCD4",
+        categories: meta?.categories ?? ["selected"],
+        emoji: meta?.emoji ?? "📝",
+        readTime: meta?.readTime ?? Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200)),
+        accentColor: meta?.accentColor ?? "#00BCD4",
         ar: { title: post.title, excerpt: post.excerpt, date: post.datePublished ?? "" },
         en: { title: post.title, excerpt: post.excerpt, date: post.datePublished ?? "" },
       };

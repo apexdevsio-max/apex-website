@@ -7,6 +7,68 @@ export type MockPost = {
   en: { title: string; excerpt: string; date: string; content: string };
 };
 
+
+/**
+ * Presentation metadata for every published article: the card emoji, accent
+ * colour, category tags that drive the blog filter, and reading time.
+ *
+ * MOCK_POSTS below carries full placeholder copy and predates the MDX content;
+ * it is kept only for the three listing-only slugs. Articles backed by real MDX
+ * take their title, excerpt and date from the file and only need what is here,
+ * so a new article means one row in this table — not a duplicated body.
+ *
+ * Without an entry, BlogGrid falls back to the "selected" category and a generic
+ * emoji, which is what made 34 articles share one filter bucket and one icon.
+ */
+export type PostMeta = {
+  emoji: string;
+  accentColor: string;
+  categories: string[];
+  readTime: number;
+};
+
+export const POST_META: Record<string, PostMeta> = {
+"ai-chatbot-cost": { emoji: "🤖", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 7 },
+  "api-security-guide": { emoji: "🔐", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 6 },
+  "app-development-abu-dhabi": { emoji: "🕌", accentColor: "#FF7043", categories: ["practical"], readTime: 6 },
+  "app-development-company-riyadh": { emoji: "🏙️", accentColor: "#FF7043", categories: ["practical"], readTime: 8 },
+  "app-development-contract": { emoji: "📜", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 8 },
+  "app-development-jeddah": { emoji: "🌊", accentColor: "#FF7043", categories: ["practical"], readTime: 6 },
+  "app-performance-optimization": { emoji: "🚄", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 7 },
+  "app-vs-pwa": { emoji: "📲", accentColor: "#4CAF50", categories: ["mobile","comparisons"], readTime: 6 },
+  "arabic-web-fonts": { emoji: "🔤", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 6 },
+  "choosing-ai-model-arabic": { emoji: "🧠", accentColor: "#FFBF00", categories: ["selected","comparisons"], readTime: 7 },
+  "clean-architecture-flutter": { emoji: "🏛️", accentColor: "#54C5F8", categories: ["lang-framework","mobile"], readTime: 6 },
+  "clinic-booking-app-cost": { emoji: "🏥", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 7 },
+  "delivery-app-cost": { emoji: "🚚", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 7 },
+  "ecommerce-development-cost-saudi": { emoji: "🛒", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 8 },
+  "educational-app-cost": { emoji: "🎓", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 6 },
+  "fintech-sama-compliance": { emoji: "🏦", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 7 },
+  "flutter": { emoji: "💙", accentColor: "#54C5F8", categories: ["lang-framework","comparisons"], readTime: 6 },
+  "flutter-rtl-arabic-guide": { emoji: "🔄", accentColor: "#54C5F8", categories: ["lang-framework","mobile"], readTime: 7 },
+  "flutter-vs-react-native": { emoji: "⚔️", accentColor: "#54C5F8", categories: ["lang-framework","comparisons"], readTime: 7 },
+  "freelancer-vs-agency": { emoji: "🤝", accentColor: "#7C3AED", categories: ["comparisons","practical"], readTime: 6 },
+  "gulf-payment-gateways": { emoji: "💳", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 7 },
+  "health-apps-uae-compliance": { emoji: "⚕️", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 6 },
+  "hijri-dates-guide": { emoji: "📅", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 6 },
+  "hosting-comparison": { emoji: "☁️", accentColor: "#00BCD4", categories: ["web","comparisons"], readTime: 6 },
+  "maintenance-inhouse-vs-contract": { emoji: "🔧", accentColor: "#7C3AED", categories: ["comparisons","practical"], readTime: 6 },
+  "mobile-app-development-cost": { emoji: "📱", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 9 },
+  "mobile-app-development-cost-gulf": { emoji: "🌍", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 6 },
+  "mobile-app-testing": { emoji: "🧪", accentColor: "#4CAF50", categories: ["mobile","practical"], readTime: 7 },
+  "mvp-vs-full-product": { emoji: "🚀", accentColor: "#7C3AED", categories: ["comparisons","practical"], readTime: 6 },
+  "native-vs-hybrid-app": { emoji: "🔀", accentColor: "#4CAF50", categories: ["mobile","comparisons"], readTime: 6 },
+  "pdpl-compliance-guide": { emoji: "🛡️", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 7 },
+  "react-native": { emoji: "⚙️", accentColor: "#54C5F8", categories: ["lang-framework","comparisons"], readTime: 7 },
+  "seo-vs-geo": { emoji: "🔍", accentColor: "#7C3AED", categories: ["comparisons","selected"], readTime: 8 },
+  "shopify-vs-custom-store": { emoji: "🏪", accentColor: "#00BCD4", categories: ["web","comparisons"], readTime: 6 },
+  "software-company-qatar": { emoji: "🇶🇦", accentColor: "#FF7043", categories: ["practical"], readTime: 6 },
+  "template-vs-custom-design": { emoji: "🎨", accentColor: "#00BCD4", categories: ["web","comparisons"], readTime: 6 },
+  "web-design-company-dubai": { emoji: "🏗️", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 7 },
+  "website-design-cost": { emoji: "💻", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 7 },
+  "wordpress-vs-nextjs": { emoji: "⚡", accentColor: "#00BCD4", categories: ["web","comparisons"], readTime: 6 },
+};
+
 export const MOCK_POSTS: Record<string, MockPost> = {
   "nextjs-vs-remix-2025": {
     emoji: "\u26a1",
@@ -295,15 +357,52 @@ export const MOCK_POST_SLUGS = Object.keys(MOCK_POSTS);
  * prerendered as their own routes, which published thin "Content coming soon..."
  * pages into the index and linked to them from every article's Related section.
  *
- * Keep this in sync when an article gains or loses its MDX file; the
- * content-integrity test asserts every slug here resolves to a real file.
+ * Keep this in sync when an article gains or loses its MDX file. Tests assert
+ * both directions: every slug here resolves to a real file, and every file on
+ * disk is listed here. The one-way check alone let this list sit at five entries
+ * while 34 further articles shipped, which left every article showing the same
+ * three "Related" links.
  */
 export const PUBLISHED_POST_SLUGS = [
+"ai-chatbot-cost",
+  "api-security-guide",
+  "app-development-abu-dhabi",
+  "app-development-company-riyadh",
+  "app-development-contract",
+  "app-development-jeddah",
+  "app-performance-optimization",
+  "app-vs-pwa",
+  "arabic-web-fonts",
+  "choosing-ai-model-arabic",
+  "clean-architecture-flutter",
+  "clinic-booking-app-cost",
+  "delivery-app-cost",
+  "ecommerce-development-cost-saudi",
+  "educational-app-cost",
+  "fintech-sama-compliance",
   "flutter",
+  "flutter-rtl-arabic-guide",
+  "flutter-vs-react-native",
+  "freelancer-vs-agency",
+  "gulf-payment-gateways",
+  "health-apps-uae-compliance",
+  "hijri-dates-guide",
+  "hosting-comparison",
+  "maintenance-inhouse-vs-contract",
   "mobile-app-development-cost",
   "mobile-app-development-cost-gulf",
+  "mobile-app-testing",
+  "mvp-vs-full-product",
+  "native-vs-hybrid-app",
+  "pdpl-compliance-guide",
   "react-native",
   "seo-vs-geo",
+  "shopify-vs-custom-store",
+  "software-company-qatar",
+  "template-vs-custom-design",
+  "web-design-company-dubai",
+  "website-design-cost",
+  "wordpress-vs-nextjs",
 ] as const;
 
 export const CATEGORY_LABELS: Record<string, { ar: string; en: string }> = {

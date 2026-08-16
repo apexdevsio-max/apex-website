@@ -13,7 +13,7 @@ import {
   buildFaqSchema,
   extractFaqs,
 } from "@/lib/seo/schema";
-import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, PUBLISHED_POST_SLUGS } from "@/lib/mock/blog-data";
+import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, POST_META, PUBLISHED_POST_SLUGS } from "@/lib/mock/blog-data";
 import { MarkdownContent } from "@/components/content/MarkdownContent";
 
 // Only slugs backed by a real MDX article are prerendered. Previously every
@@ -44,6 +44,29 @@ export const dynamicParams = false;
 function extractFirstImage(content: string): string | undefined {
   const match = /^!\[.*\]\((.*)\)$/m.exec(content);
   return match?.[1] ?? undefined;
+}
+
+/**
+ * Picks related articles by shared category, most overlap first, falling back to
+ * other articles once the topical matches run out so the section always fills.
+ *
+ * This used to be `PUBLISHED_POST_SLUGS.slice(0, 3)` — a fixed list, so every
+ * article recommended the same three regardless of subject, and an API security
+ * guide pointed readers at a Flutter article.
+ */
+function getRelatedSlugs(current: string, count: number): string[] {
+  const mine = POST_META[current]?.categories ?? [];
+
+  const scored = PUBLISHED_POST_SLUGS.filter((item) => item !== current)
+    .map((item) => ({
+      slug: item,
+      overlap: (POST_META[item]?.categories ?? []).filter((c) => mine.includes(c)).length,
+    }))
+    // Ties keep PUBLISHED_POST_SLUGS order, which is alphabetical and therefore
+    // stable across builds — important because this renders into static HTML.
+    .sort((a, b) => b.overlap - a.overlap);
+
+  return scored.slice(0, count).map((entry) => entry.slug);
 }
 
 // Every published article carries its own keyword set. Previously only `flutter`
@@ -274,14 +297,29 @@ export default async function BlogPostPage({
   const title = mdxPost?.title ?? mockContent?.title ?? fallback.title;
   const excerpt = mdxPost?.excerpt ?? mockContent?.excerpt ?? fallback.excerpt;
   const date = mdxPost?.datePublished ?? mockContent?.date ?? fallback.date;
-  const readTime = mock?.readTime ?? fallback.readTime;
-  const accentColor = mock?.accentColor ?? fallback.accentColor;
-  const categoryKey = mock?.categories?.[0] ?? fallback.categories[0];
+  // POST_META covers every published article; MOCK_POSTS only the five that
+  // predate the MDX content. Reading meta first stops the other 34 from showing
+  // a generic accent colour and the placeholder "Articles" category.
+  const meta = POST_META[slug];
+  const readTime = meta?.readTime ?? mock?.readTime ?? fallback.readTime;
+  const accentColor = meta?.accentColor ?? mock?.accentColor ?? fallback.accentColor;
+  const categoryKey = meta?.categories?.[0] ?? mock?.categories?.[0] ?? fallback.categories[0];
   const category = CATEGORY_LABELS[categoryKey]?.[lang] ?? categoryKey;
   const rawContent = mdxPost?.content ?? mockContent?.content ?? fallback.content;
   // Related links point only at articles that actually exist — linking to the
   // placeholder slugs sent crawlers (and readers) to dead-end pages.
-  const relatedSlugs = PUBLISHED_POST_SLUGS.filter((item) => item !== slug).slice(0, 3);
+  const relatedSlugs = getRelatedSlugs(slug, 3);
+  // Titles come from the MDX files, since only five articles have MOCK_POSTS copy
+  // and the card renders nothing without a title.
+  const relatedPosts = (
+    await Promise.all(
+      relatedSlugs.map(async (item) => {
+        const post = await getBlogPostBySlug(lang, item).catch(() => null);
+        const title = post?.title ?? MOCK_POSTS[item]?.[lang]?.title;
+        return title ? { slug: item, title, emoji: POST_META[item]?.emoji ?? MOCK_POSTS[item]?.emoji ?? "📝" } : null;
+      }),
+    )
+  ).filter((item): item is { slug: string; title: string; emoji: string } => item !== null);
   const faqs = extractFaqs(rawContent);
 
   return (
@@ -432,9 +470,8 @@ export default async function BlogPostPage({
             {isAr ? "مقالات ذات صلة" : "Related Articles"}
           </h3>
           <div className="grid sm:grid-cols-3 gap-4">
-            {relatedSlugs.map((item) => {
-              const related = MOCK_POSTS[item]?.[lang];
-              if (!related) return null;
+            {relatedPosts.map((related) => {
+              const item = related.slug;
 
               return (
                 <Link
@@ -448,7 +485,7 @@ export default async function BlogPostPage({
                   }}
                   dir={isAr ? "rtl" : "ltr"}
                 >
-                  <div className="text-2xl mb-2">{MOCK_POSTS[item].emoji}</div>
+                  <div className="text-2xl mb-2">{related.emoji}</div>
                   <p
                     className={`text-xs font-semibold leading-snug ${isAr ? "font-ar" : "font-en"}`}
                     style={{ color: "var(--color-primary-text)" }}
