@@ -1,0 +1,1362 @@
+[
+  {
+    "slug": "ai-chatbot-cost",
+    "title": "How Much Does an AI Customer Service Chatbot Cost? (2026 Guide)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/ai-chatbot-cost/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"How Much Does an AI Customer Service Chatbot Cost? (2026 Guide)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "ai-chatbot-cost",
+    "title": "How Much Does an AI Customer Service Chatbot Cost? (2026 Guide)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/ai-chatbot-cost/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Criterion | Rule-based | LLM-based). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "ai-chatbot-cost",
+    "title": "How Much Does an AI Customer Service Chatbot Cost? (2026 Guide)",
+    "file": "two-kinds-difference.jpeg",
+    "path": "/images/blog/ai-chatbot-cost/two-kinds-difference.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The two kinds: the difference that decides everything\"."
+  },
+  {
+    "slug": "ai-chatbot-cost",
+    "title": "How Much Does an AI Customer Service Chatbot Cost? (2026 Guide)",
+    "file": "cost-table-2026.jpeg",
+    "path": "/images/blog/ai-chatbot-cost/cost-table-2026.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Cost table — 2026\"."
+  },
+  {
+    "slug": "ai-chatbot-cost",
+    "title": "How Much Does an AI Customer Service Chatbot Cost? (2026 Guide)",
+    "file": "cost-quotes-omit.jpeg",
+    "path": "/images/blog/ai-chatbot-cost/cost-quotes-omit.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The cost most quotes omit: operations\"."
+  },
+  {
+    "slug": "api-security-guide",
+    "title": "API Security: Common Mistakes and How to Avoid Them",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/api-security-guide/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"API Security: Common Mistakes and How to Avoid Them\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "api-security-guide",
+    "title": "API Security: Common Mistakes and How to Avoid Them",
+    "file": "isnt-app-line.jpeg",
+    "path": "/images/blog/api-security-guide/isnt-app-line.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Why isn't the app a line of defence?\"."
+  },
+  {
+    "slug": "api-security-guide",
+    "title": "API Security: Common Mistakes and How to Avoid Them",
+    "file": "authentication-authorisation-decisive.jpeg",
+    "path": "/images/blog/api-security-guide/authentication-authorisation-decisive.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"1. Authentication and authorisation — the decisive difference\"."
+  },
+  {
+    "slug": "api-security-guide",
+    "title": "API Security: Common Mistakes and How to Avoid Them",
+    "file": "tokens-correct-handling.jpeg",
+    "path": "/images/blog/api-security-guide/tokens-correct-handling.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"2. Tokens — correct handling\"."
+  },
+  {
+    "slug": "api-security-guide",
+    "title": "API Security: Common Mistakes and How to Avoid Them",
+    "file": "common-mistakes-mobile.jpeg",
+    "path": "/images/blog/api-security-guide/common-mistakes-mobile.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"3. The most common mistakes in mobile apps\"."
+  },
+  {
+    "slug": "app-development-abu-dhabi",
+    "title": "App Development in Abu Dhabi: Pricing and Selection Guide (2026)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/app-development-abu-dhabi/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"App Development in Abu Dhabi: Pricing and Selection Guide (2026)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "app-development-abu-dhabi",
+    "title": "App Development in Abu Dhabi: Pricing and Selection Guide (2026)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/app-development-abu-dhabi/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: App type | Abu Dhabi firm | Remote regional team). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "app-development-abu-dhabi",
+    "title": "App Development in Abu Dhabi: Pricing and Selection Guide (2026)",
+    "file": "expected-pricing-2026.jpeg",
+    "path": "/images/blog/app-development-abu-dhabi/expected-pricing-2026.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Expected pricing — 2026\"."
+  },
+  {
+    "slug": "app-development-abu-dhabi",
+    "title": "App Development in Abu Dhabi: Pricing and Selection Guide (2026)",
+    "file": "abu-dhabi-versus.jpeg",
+    "path": "/images/blog/app-development-abu-dhabi/abu-dhabi-versus.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Abu Dhabi versus Dubai: the differences that matter\"."
+  },
+  {
+    "slug": "app-development-abu-dhabi",
+    "title": "App Development in Abu Dhabi: Pricing and Selection Guide (2026)",
+    "file": "abu-dhabi-global.jpeg",
+    "path": "/images/blog/app-development-abu-dhabi/abu-dhabi-global.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Abu Dhabi Global Market (ADGM): what you need to know\"."
+  },
+  {
+    "slug": "app-development-company-riyadh",
+    "title": "App Development Company in Riyadh: How to Choose",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/app-development-company-riyadh/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"App Development Company in Riyadh: How to Choose\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "app-development-company-riyadh",
+    "title": "App Development Company in Riyadh: How to Choose",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/app-development-company-riyadh/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Type | Hourly rate | Best for | Primary risk). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "app-development-company-riyadh",
+    "title": "App Development Company in Riyadh: How to Choose",
+    "file": "types-provider-riyadh.jpeg",
+    "path": "/images/blog/app-development-company-riyadh/types-provider-riyadh.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Types of provider in Riyadh\"."
+  },
+  {
+    "slug": "app-development-company-riyadh",
+    "title": "App Development Company in Riyadh: How to Choose",
+    "file": "seven-criteria-evaluating.jpeg",
+    "path": "/images/blog/app-development-company-riyadh/seven-criteria-evaluating.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Seven criteria for evaluating any firm\"."
+  },
+  {
+    "slug": "app-development-company-riyadh",
+    "title": "App Development Company in Riyadh: How to Choose",
+    "file": "expected-pricing-riyadh.jpeg",
+    "path": "/images/blog/app-development-company-riyadh/expected-pricing-riyadh.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Expected pricing in Riyadh — 2026\"."
+  },
+  {
+    "slug": "app-development-contract",
+    "title": "App Development Contracts: Clauses That Protect You",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/app-development-contract/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"App Development Contracts: Clauses That Protect You\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "app-development-contract",
+    "title": "App Development Contracts: Clauses That Protect You",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/app-development-contract/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Milestone | Instalment). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "app-development-contract",
+    "title": "App Development Contracts: Clauses That Protect You",
+    "file": "first-critical-clauses.jpeg",
+    "path": "/images/blog/app-development-contract/first-critical-clauses.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: critical clauses — do not sign without them\"."
+  },
+  {
+    "slug": "app-development-contract",
+    "title": "App Development Contracts: Clauses That Protect You",
+    "file": "second-clauses-protect.jpeg",
+    "path": "/images/blog/app-development-contract/second-clauses-protect.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Second: clauses that protect you from surprise costs\"."
+  },
+  {
+    "slug": "app-development-contract",
+    "title": "App Development Contracts: Clauses That Protect You",
+    "file": "third-commonly-overlooked.jpeg",
+    "path": "/images/blog/app-development-contract/third-commonly-overlooked.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Third: commonly overlooked clauses that cost a lot\"."
+  },
+  {
+    "slug": "app-development-jeddah",
+    "title": "App Development in Jeddah: Pricing and Available Options (2026)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/app-development-jeddah/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"App Development in Jeddah: Pricing and Available Options (2026)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "app-development-jeddah",
+    "title": "App Development in Jeddah: Pricing and Available Options (2026)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/app-development-jeddah/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: App type | Cost range | Timeline). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "app-development-jeddah",
+    "title": "App Development in Jeddah: Pricing and Available Options (2026)",
+    "file": "expected-pricing-2026.jpeg",
+    "path": "/images/blog/app-development-jeddah/expected-pricing-2026.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Expected pricing — 2026\"."
+  },
+  {
+    "slug": "app-development-jeddah",
+    "title": "App Development in Jeddah: Pricing and Available Options (2026)",
+    "file": "makes-jeddah-projects.jpeg",
+    "path": "/images/blog/app-development-jeddah/makes-jeddah-projects.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What makes Jeddah projects distinct?\"."
+  },
+  {
+    "slug": "app-development-jeddah",
+    "title": "App Development in Jeddah: Pricing and Available Options (2026)",
+    "file": "three-options.jpeg",
+    "path": "/images/blog/app-development-jeddah/three-options.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Your three options\"."
+  },
+  {
+    "slug": "app-performance-optimization",
+    "title": "App Performance Optimisation: A Practical Guide by Priority",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/app-performance-optimization/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"App Performance Optimisation: A Practical Guide by Priority\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "app-performance-optimization",
+    "title": "App Performance Optimisation: A Practical Guide by Priority",
+    "file": "users-actually-notice.jpeg",
+    "path": "/images/blog/app-performance-optimization/users-actually-notice.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What do users actually notice?\"."
+  },
+  {
+    "slug": "app-performance-optimization",
+    "title": "App Performance Optimisation: A Practical Guide by Priority",
+    "file": "first-measure-before.jpeg",
+    "path": "/images/blog/app-performance-optimization/first-measure-before.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: measure before optimising\"."
+  },
+  {
+    "slug": "app-performance-optimization",
+    "title": "App Performance Optimisation: A Practical Guide by Priority",
+    "file": "second-biggest-wins.jpeg",
+    "path": "/images/blog/app-performance-optimization/second-biggest-wins.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Second: the biggest wins — in order\"."
+  },
+  {
+    "slug": "app-performance-optimization",
+    "title": "App Performance Optimisation: A Practical Guide by Priority",
+    "file": "third-perception-matters.jpeg",
+    "path": "/images/blog/app-performance-optimization/third-perception-matters.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Third: perception matters more than the number\"."
+  },
+  {
+    "slug": "app-vs-pwa",
+    "title": "Mobile App or Responsive Website (PWA)?",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/app-vs-pwa/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Mobile App or Responsive Website (PWA)?\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "app-vs-pwa",
+    "title": "Mobile App or Responsive Website (PWA)?",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/app-vs-pwa/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Criterion | Native app | PWA / responsive site). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "app-vs-pwa",
+    "title": "Mobile App or Responsive Website (PWA)?",
+    "file": "pwa.jpeg",
+    "path": "/images/blog/app-vs-pwa/pwa.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What is a PWA?\"."
+  },
+  {
+    "slug": "app-vs-pwa",
+    "title": "Mobile App or Responsive Website (PWA)?",
+    "file": "reference-table.jpeg",
+    "path": "/images/blog/app-vs-pwa/reference-table.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The reference table\"."
+  },
+  {
+    "slug": "app-vs-pwa",
+    "title": "Mobile App or Responsive Website (PWA)?",
+    "file": "download-barrier-biggest.jpeg",
+    "path": "/images/blog/app-vs-pwa/download-barrier-biggest.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The download barrier — the biggest overlooked factor\"."
+  },
+  {
+    "slug": "arabic-web-fonts",
+    "title": "Arabic Web Fonts: Performance and Quality Together",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/arabic-web-fonts/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Arabic Web Fonts: Performance and Quality Together\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "arabic-web-fonts",
+    "title": "Arabic Web Fonts: Performance and Quality Together",
+    "file": "arabic-fonts-heavier.jpeg",
+    "path": "/images/blog/arabic-web-fonts/arabic-fonts-heavier.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Why are Arabic fonts heavier?\"."
+  },
+  {
+    "slug": "arabic-web-fonts",
+    "title": "Arabic Web Fonts: Performance and Quality Together",
+    "file": "file-format-first.jpeg",
+    "path": "/images/blog/arabic-web-fonts/file-format-first.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"1. File format — the first decision\"."
+  },
+  {
+    "slug": "arabic-web-fonts",
+    "title": "Arabic Web Fonts: Performance and Quality Together",
+    "file": "ship-only-weights.jpeg",
+    "path": "/images/blog/arabic-web-fonts/ship-only-weights.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"2. Ship only the weights you use\"."
+  },
+  {
+    "slug": "arabic-web-fonts",
+    "title": "Arabic Web Fonts: Performance and Quality Together",
+    "file": "subsetting-biggest-win.jpeg",
+    "path": "/images/blog/arabic-web-fonts/subsetting-biggest-win.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"3. Subsetting — the biggest win\"."
+  },
+  {
+    "slug": "choosing-ai-model-arabic",
+    "title": "Choosing an AI Model for an Arabic Assistant: Decision Criteria",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/choosing-ai-model-arabic/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Choosing an AI Model for an Arabic Assistant: Decision Criteria\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "choosing-ai-model-arabic",
+    "title": "Choosing an AI Model for an Arabic Assistant: Decision Criteria",
+    "file": "first-decision-comes.jpeg",
+    "path": "/images/blog/choosing-ai-model-arabic/first-decision-comes.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: a decision that comes before choosing a model\"."
+  },
+  {
+    "slug": "choosing-ai-model-arabic",
+    "title": "Choosing an AI Model for an Arabic Assistant: Decision Criteria",
+    "file": "six-selection-criteria.jpeg",
+    "path": "/images/blog/choosing-ai-model-arabic/six-selection-criteria.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Six selection criteria\"."
+  },
+  {
+    "slug": "choosing-ai-model-arabic",
+    "title": "Choosing an AI Model for an Arabic Assistant: Decision Criteria",
+    "file": "test-yourself.jpeg",
+    "path": "/images/blog/choosing-ai-model-arabic/test-yourself.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"How to test for yourself\"."
+  },
+  {
+    "slug": "choosing-ai-model-arabic",
+    "title": "Choosing an AI Model for an Arabic Assistant: Decision Criteria",
+    "file": "reducing-cost-without.jpeg",
+    "path": "/images/blog/choosing-ai-model-arabic/reducing-cost-without.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Reducing cost without reducing quality\"."
+  },
+  {
+    "slug": "clean-architecture-flutter",
+    "title": "Clean Architecture in Flutter: When Is the Complexity Worth It?",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/clean-architecture-flutter/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Clean Architecture in Flutter: When Is the Complexity Worth It?\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "clean-architecture-flutter",
+    "title": "Clean Architecture in Flutter: When Is the Complexity Worth It?",
+    "file": "problem-solves.jpeg",
+    "path": "/images/blog/clean-architecture-flutter/problem-solves.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The problem it solves\"."
+  },
+  {
+    "slug": "clean-architecture-flutter",
+    "title": "Clean Architecture in Flutter: When Is the Complexity Worth It?",
+    "file": "three-layers.jpeg",
+    "path": "/images/blog/clean-architecture-flutter/three-layers.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The three layers\"."
+  },
+  {
+    "slug": "clean-architecture-flutter",
+    "title": "Clean Architecture in Flutter: When Is the Complexity Worth It?",
+    "file": "dependency-rule-foundation.jpeg",
+    "path": "/images/blog/clean-architecture-flutter/dependency-rule-foundation.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The dependency rule — the foundation of everything\"."
+  },
+  {
+    "slug": "clean-architecture-flutter",
+    "title": "Clean Architecture in Flutter: When Is the Complexity Worth It?",
+    "file": "simplified-practical-example.jpeg",
+    "path": "/images/blog/clean-architecture-flutter/simplified-practical-example.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"A simplified practical example\"."
+  },
+  {
+    "slug": "clinic-booking-app-cost",
+    "title": "How Much Does a Clinic Appointment Booking App Cost? (2026 Guide)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/clinic-booking-app-cost/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"How Much Does a Clinic Appointment Booking App Cost? (2026 Guide)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "clinic-booking-app-cost",
+    "title": "How Much Does a Clinic Appointment Booking App Cost? (2026 Guide)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/clinic-booking-app-cost/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Tier | Features | Cost | Timeline). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "clinic-booking-app-cost",
+    "title": "How Much Does a Clinic Appointment Booking App Cost? (2026 Guide)",
+    "file": "determines-cost.jpeg",
+    "path": "/images/blog/clinic-booking-app-cost/determines-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What determines the cost?\"."
+  },
+  {
+    "slug": "clinic-booking-app-cost",
+    "title": "How Much Does a Clinic Appointment Booking App Cost? (2026 Guide)",
+    "file": "cost-table-2026.jpeg",
+    "path": "/images/blog/clinic-booking-app-cost/cost-table-2026.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Cost table — 2026\"."
+  },
+  {
+    "slug": "clinic-booking-app-cost",
+    "title": "How Much Does a Clinic Appointment Booking App Cost? (2026 Guide)",
+    "file": "features-price-impact.jpeg",
+    "path": "/images/blog/clinic-booking-app-cost/features-price-impact.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Features and their price impact\"."
+  },
+  {
+    "slug": "delivery-app-cost",
+    "title": "Delivery App Development Cost: The Full Breakdown (2026)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/delivery-app-cost/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Delivery App Development Cost: The Full Breakdown (2026)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "delivery-app-cost",
+    "title": "Delivery App Development Cost: The Full Breakdown (2026)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/delivery-app-cost/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Component | What it does | Share of budget). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "delivery-app-cost",
+    "title": "Delivery App Development Cost: The Full Breakdown (2026)",
+    "file": "cost-high-three.jpeg",
+    "path": "/images/blog/delivery-app-cost/cost-high-three.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Why is the cost high? Three apps, not one\"."
+  },
+  {
+    "slug": "delivery-app-cost",
+    "title": "Delivery App Development Cost: The Full Breakdown (2026)",
+    "file": "cost-table-2026.jpeg",
+    "path": "/images/blog/delivery-app-cost/cost-table-2026.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Cost table — 2026\"."
+  },
+  {
+    "slug": "delivery-app-cost",
+    "title": "Delivery App Development Cost: The Full Breakdown (2026)",
+    "file": "features-price-impact.jpeg",
+    "path": "/images/blog/delivery-app-cost/features-price-impact.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Features and their price impact\"."
+  },
+  {
+    "slug": "ecommerce-development-cost-saudi",
+    "title": "E-Commerce Store Cost in Saudi Arabia (2026)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/ecommerce-development-cost-saudi/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"E-Commerce Store Cost in Saudi Arabia (2026)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "ecommerce-development-cost-saudi",
+    "title": "E-Commerce Store Cost in Saudi Arabia (2026)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/ecommerce-development-cost-saudi/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Store type | Upfront cost | Annual running cost | Timeline | Best for). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "ecommerce-development-cost-saudi",
+    "title": "E-Commerce Store Cost in Saudi Arabia (2026)",
+    "file": "three-options-actually.jpeg",
+    "path": "/images/blog/ecommerce-development-cost-saudi/three-options-actually.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The three options: what you are actually buying\"."
+  },
+  {
+    "slug": "ecommerce-development-cost-saudi",
+    "title": "E-Commerce Store Cost in Saudi Arabia (2026)",
+    "file": "saudi-e-commerce-cost.jpeg",
+    "path": "/images/blog/ecommerce-development-cost-saudi/saudi-e-commerce-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Saudi e-commerce cost table — 2026\"."
+  },
+  {
+    "slug": "ecommerce-development-cost-saudi",
+    "title": "E-Commerce Store Cost in Saudi Arabia (2026)",
+    "file": "calculation-changes-decision.jpeg",
+    "path": "/images/blog/ecommerce-development-cost-saudi/calculation-changes-decision.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The calculation that changes the decision: three-year cost\"."
+  },
+  {
+    "slug": "educational-app-cost",
+    "title": "Educational App Cost: MVP to Full Platform",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/educational-app-cost/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Educational App Cost: MVP to Full Platform\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "educational-app-cost",
+    "title": "Educational App Cost: MVP to Full Platform",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/educational-app-cost/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Type | What it does | Cost). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "educational-app-cost",
+    "title": "Educational App Cost: MVP to Full Platform",
+    "file": "first-which-type.jpeg",
+    "path": "/images/blog/educational-app-cost/first-which-type.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: which type do you need?\"."
+  },
+  {
+    "slug": "educational-app-cost",
+    "title": "Educational App Cost: MVP to Full Platform",
+    "file": "features-price-impact.jpeg",
+    "path": "/images/blog/educational-app-cost/features-price-impact.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Features and their price impact\"."
+  },
+  {
+    "slug": "educational-app-cost",
+    "title": "Educational App Cost: MVP to Full Platform",
+    "file": "ongoing-cost-video.jpeg",
+    "path": "/images/blog/educational-app-cost/ongoing-cost-video.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Ongoing cost: video is the decisive item\"."
+  },
+  {
+    "slug": "fintech-sama-compliance",
+    "title": "Fintech in Saudi Arabia: The SAMA Framework",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/fintech-sama-compliance/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Fintech in Saudi Arabia: The SAMA Framework\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "fintech-sama-compliance",
+    "title": "Fintech in Saudi Arabia: The SAMA Framework",
+    "file": "first-product-regulated.jpeg",
+    "path": "/images/blog/fintech-sama-compliance/first-product-regulated.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: is your product regulated?\"."
+  },
+  {
+    "slug": "fintech-sama-compliance",
+    "title": "Fintech in Saudi Arabia: The SAMA Framework",
+    "file": "second-regulatory-sandbox.jpeg",
+    "path": "/images/blog/fintech-sama-compliance/second-regulatory-sandbox.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Second: the regulatory sandbox\"."
+  },
+  {
+    "slug": "fintech-sama-compliance",
+    "title": "Fintech in Saudi Arabia: The SAMA Framework",
+    "file": "third-open-banking.jpeg",
+    "path": "/images/blog/fintech-sama-compliance/third-open-banking.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Third: open banking — the 2026 development\"."
+  },
+  {
+    "slug": "fintech-sama-compliance",
+    "title": "Fintech in Saudi Arabia: The SAMA Framework",
+    "file": "fourth-technical-requirements.jpeg",
+    "path": "/images/blog/fintech-sama-compliance/fourth-technical-requirements.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Fourth: technical requirements\"."
+  },
+  {
+    "slug": "flutter-rtl-arabic-guide",
+    "title": "Arabic and RTL Support in Flutter: The Complete Technical Guide",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/flutter-rtl-arabic-guide/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Arabic and RTL Support in Flutter: The Complete Technical Guide\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "flutter-rtl-arabic-guide",
+    "title": "Arabic and RTL Support in Flutter: The Complete Technical Guide",
+    "file": "directional-widgets-foundation.jpeg",
+    "path": "/images/blog/flutter-rtl-arabic-guide/directional-widgets-foundation.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"1. Directional widgets — the foundation of everything\"."
+  },
+  {
+    "slug": "flutter-rtl-arabic-guide",
+    "title": "Arabic and RTL Support in Flutter: The Complete Technical Guide",
+    "file": "configuring-locales-direction.jpeg",
+    "path": "/images/blog/flutter-rtl-arabic-guide/configuring-locales-direction.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"2. Configuring locales and direction\"."
+  },
+  {
+    "slug": "flutter-rtl-arabic-guide",
+    "title": "Arabic and RTL Support in Flutter: The Complete Technical Guide",
+    "file": "arabic-fonts.jpeg",
+    "path": "/images/blog/flutter-rtl-arabic-guide/arabic-fonts.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"3. Arabic fonts\"."
+  },
+  {
+    "slug": "flutter-rtl-arabic-guide",
+    "title": "Arabic and RTL Support in Flutter: The Complete Technical Guide",
+    "file": "numerals-perennially-overlooked.jpeg",
+    "path": "/images/blog/flutter-rtl-arabic-guide/numerals-perennially-overlooked.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"4. Numerals — the perennially overlooked point\"."
+  },
+  {
+    "slug": "flutter-vs-react-native",
+    "title": "Flutter vs React Native: Which Should You Choose? (2026)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/flutter-vs-react-native/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Flutter vs React Native: Which Should You Choose? (2026)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "flutter-vs-react-native",
+    "title": "Flutter vs React Native: Which Should You Choose? (2026)",
+    "file": "reference-table.jpeg",
+    "path": "/images/blog/flutter-vs-react-native/reference-table.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The reference table\"."
+  },
+  {
+    "slug": "flutter-vs-react-native",
+    "title": "Flutter vs React Native: Which Should You Choose? (2026)",
+    "file": "differences-actually-matter.jpeg",
+    "path": "/images/blog/flutter-vs-react-native/differences-actually-matter.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The differences that actually matter\"."
+  },
+  {
+    "slug": "flutter-vs-react-native",
+    "title": "Flutter vs React Native: Which Should You Choose? (2026)",
+    "file": "decision-framework-four.jpeg",
+    "path": "/images/blog/flutter-vs-react-native/decision-framework-four.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The decision framework: four questions\"."
+  },
+  {
+    "slug": "flutter-vs-react-native",
+    "title": "Flutter vs React Native: Which Should You Choose? (2026)",
+    "file": "choose-neither.jpeg",
+    "path": "/images/blog/flutter-vs-react-native/choose-neither.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"When to choose neither\"."
+  },
+  {
+    "slug": "freelancer-vs-agency",
+    "title": "Freelancer or Development Agency? A Total Cost Comparison",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/freelancer-vs-agency/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Freelancer or Development Agency? A Total Cost Comparison\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "freelancer-vs-agency",
+    "title": "Freelancer or Development Agency? A Total Cost Comparison",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/freelancer-vs-agency/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Criterion | Freelancer | Development agency). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "freelancer-vs-agency",
+    "title": "Freelancer or Development Agency? A Total Cost Comparison",
+    "file": "reference-table.jpeg",
+    "path": "/images/blog/freelancer-vs-agency/reference-table.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The reference table\"."
+  },
+  {
+    "slug": "freelancer-vs-agency",
+    "title": "Freelancer or Development Agency? A Total Cost Comparison",
+    "file": "real-risk-single.jpeg",
+    "path": "/images/blog/freelancer-vs-agency/real-risk-single.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The real risk: a single point of failure\"."
+  },
+  {
+    "slug": "freelancer-vs-agency",
+    "title": "Freelancer or Development Agency? A Total Cost Comparison",
+    "file": "total-cost-over.jpeg",
+    "path": "/images/blog/freelancer-vs-agency/total-cost-over.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Total cost over three years\"."
+  },
+  {
+    "slug": "gulf-payment-gateways",
+    "title": "Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/gulf-payment-gateways/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "gulf-payment-gateways",
+    "title": "Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/gulf-payment-gateways/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Method | What it is | Importance in Saudi Arabia). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "gulf-payment-gateways",
+    "title": "Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara",
+    "file": "quick-map.jpeg",
+    "path": "/images/blog/gulf-payment-gateways/quick-map.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The quick map\"."
+  },
+  {
+    "slug": "gulf-payment-gateways",
+    "title": "Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara",
+    "file": "mada-gateway-cannot.jpeg",
+    "path": "/images/blog/gulf-payment-gateways/mada-gateway-cannot.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Mada — the gateway you cannot skip\"."
+  },
+  {
+    "slug": "gulf-payment-gateways",
+    "title": "Payment Gateways in the Gulf: Mada, STC Pay, Tabby, and Tamara",
+    "file": "buy-now-pay.jpeg",
+    "path": "/images/blog/gulf-payment-gateways/buy-now-pay.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Buy now, pay later (Tabby and Tamara) — bigger than you'd expect\"."
+  },
+  {
+    "slug": "health-apps-uae-compliance",
+    "title": "Health Apps in the UAE: Dubai Health Authority Requirements",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/health-apps-uae-compliance/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Health Apps in the UAE: Dubai Health Authority Requirements\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "health-apps-uae-compliance",
+    "title": "Health Apps in the UAE: Dubai Health Authority Requirements",
+    "file": "first-licensing-precedes.jpeg",
+    "path": "/images/blog/health-apps-uae-compliance/first-licensing-precedes.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: licensing precedes technology\"."
+  },
+  {
+    "slug": "health-apps-uae-compliance",
+    "title": "Health Apps in the UAE: Dubai Health Authority Requirements",
+    "file": "second-data-residency.jpeg",
+    "path": "/images/blog/health-apps-uae-compliance/second-data-residency.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Second: data residency — an architectural constraint, not an option\"."
+  },
+  {
+    "slug": "health-apps-uae-compliance",
+    "title": "Health Apps in the UAE: Dubai Health Authority Requirements",
+    "file": "third-integration-with.jpeg",
+    "path": "/images/blog/health-apps-uae-compliance/third-integration-with.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Third: integration with the health information exchange\"."
+  },
+  {
+    "slug": "health-apps-uae-compliance",
+    "title": "Health Apps in the UAE: Dubai Health Authority Requirements",
+    "file": "fourth-published-technical.jpeg",
+    "path": "/images/blog/health-apps-uae-compliance/fourth-published-technical.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Fourth: the published technical requirements\"."
+  },
+  {
+    "slug": "hijri-dates-guide",
+    "title": "Hijri Dates in Applications: A Practical Technical Guide",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/hijri-dates-guide/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Hijri Dates in Applications: A Practical Technical Guide\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "hijri-dates-guide",
+    "title": "Hijri Dates in Applications: A Practical Technical Guide",
+    "file": "rule-one-separate.jpeg",
+    "path": "/images/blog/hijri-dates-guide/rule-one-separate.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Rule one: separate storage from display\"."
+  },
+  {
+    "slug": "hijri-dates-guide",
+    "title": "Hijri Dates in Applications: A Practical Technical Guide",
+    "file": "rule-two-there.jpeg",
+    "path": "/images/blog/hijri-dates-guide/rule-two-there.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Rule two: there is no single Hijri calendar\"."
+  },
+  {
+    "slug": "hijri-dates-guide",
+    "title": "Hijri Dates in Applications: A Practical Technical Guide",
+    "file": "conversion-browser-intl.jpeg",
+    "path": "/images/blog/hijri-dates-guide/conversion-browser-intl.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Conversion in the browser — `Intl` is built in\"."
+  },
+  {
+    "slug": "hijri-dates-guide",
+    "title": "Hijri Dates in Applications: A Practical Technical Guide",
+    "file": "conversion-flutter.jpeg",
+    "path": "/images/blog/hijri-dates-guide/conversion-flutter.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Conversion in Flutter\"."
+  },
+  {
+    "slug": "hosting-comparison",
+    "title": "Hosting Your Site: Vercel, AWS, or Local Hosting?",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/hosting-comparison/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Hosting Your Site: Vercel, AWS, or Local Hosting?\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "hosting-comparison",
+    "title": "Hosting Your Site: Vercel, AWS, or Local Hosting?",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/hosting-comparison/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Option | Suits | Monthly cost). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "hosting-comparison",
+    "title": "Hosting Your Site: Vercel, AWS, or Local Hosting?",
+    "file": "four-options.jpeg",
+    "path": "/images/blog/hosting-comparison/four-options.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The four options\"."
+  },
+  {
+    "slug": "hosting-comparison",
+    "title": "Hosting Your Site: Vercel, AWS, or Local Hosting?",
+    "file": "deployment-platforms-default.jpeg",
+    "path": "/images/blog/hosting-comparison/deployment-platforms-default.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Deployment platforms — the default for most sites\"."
+  },
+  {
+    "slug": "hosting-comparison",
+    "title": "Hosting Your Site: Vercel, AWS, or Local Hosting?",
+    "file": "major-cloud-complex.jpeg",
+    "path": "/images/blog/hosting-comparison/major-cloud-complex.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Major cloud — for complex platforms\"."
+  },
+  {
+    "slug": "maintenance-inhouse-vs-contract",
+    "title": "In-House Maintenance or a Contract?",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/maintenance-inhouse-vs-contract/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"In-House Maintenance or a Contract?\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "maintenance-inhouse-vs-contract",
+    "title": "In-House Maintenance or a Contract?",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/maintenance-inhouse-vs-contract/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Type | What it is | Who pays?). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "maintenance-inhouse-vs-contract",
+    "title": "In-House Maintenance or a Contract?",
+    "file": "maintenance-actually.jpeg",
+    "path": "/images/blog/maintenance-inhouse-vs-contract/maintenance-actually.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What maintenance actually is\"."
+  },
+  {
+    "slug": "maintenance-inhouse-vs-contract",
+    "title": "In-House Maintenance or a Contract?",
+    "file": "maintenance-mandatory.jpeg",
+    "path": "/images/blog/maintenance-inhouse-vs-contract/maintenance-mandatory.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Why is maintenance mandatory?\"."
+  },
+  {
+    "slug": "maintenance-inhouse-vs-contract",
+    "title": "In-House Maintenance or a Contract?",
+    "file": "realistic-cost.jpeg",
+    "path": "/images/blog/maintenance-inhouse-vs-contract/realistic-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Realistic cost\"."
+  },
+  {
+    "slug": "mobile-app-testing",
+    "title": "Mobile App Testing: What Is Actually Worth Testing",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/mobile-app-testing/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Mobile App Testing: What Is Actually Worth Testing\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "mobile-app-testing",
+    "title": "Mobile App Testing: What Is Actually Worth Testing",
+    "file": "testing-pyramid-reality.jpeg",
+    "path": "/images/blog/mobile-app-testing/testing-pyramid-reality.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The testing pyramid — and reality\"."
+  },
+  {
+    "slug": "mobile-app-testing",
+    "title": "Mobile App Testing: What Is Actually Worth Testing",
+    "file": "worth-testing-by.jpeg",
+    "path": "/images/blog/mobile-app-testing/worth-testing-by.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What is worth testing — by priority\"."
+  },
+  {
+    "slug": "mobile-app-testing",
+    "title": "Mobile App Testing: What Is Actually Worth Testing",
+    "file": "isnt-worth-automating.jpeg",
+    "path": "/images/blog/mobile-app-testing/isnt-worth-automating.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What isn't worth automating\"."
+  },
+  {
+    "slug": "mobile-app-testing",
+    "title": "Mobile App Testing: What Is Actually Worth Testing",
+    "file": "manual-testing-indispensable.jpeg",
+    "path": "/images/blog/mobile-app-testing/manual-testing-indispensable.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Manual testing — indispensable\"."
+  },
+  {
+    "slug": "mvp-vs-full-product",
+    "title": "MVP or Full Product? Where to Start and Why",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/mvp-vs-full-product/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"MVP or Full Product? Where to Start and Why\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "mvp-vs-full-product",
+    "title": "MVP or Full Product? Where to Start and Why",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/mvp-vs-full-product/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Not an MVP | Is an MVP). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "mvp-vs-full-product",
+    "title": "MVP or Full Product? Where to Start and Why",
+    "file": "mvp-actually.jpeg",
+    "path": "/images/blog/mvp-vs-full-product/mvp-actually.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What an MVP actually is\"."
+  },
+  {
+    "slug": "mvp-vs-full-product",
+    "title": "MVP or Full Product? Where to Start and Why",
+    "file": "building-full-product.jpeg",
+    "path": "/images/blog/mvp-vs-full-product/building-full-product.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Why does building the full product fail?\"."
+  },
+  {
+    "slug": "mvp-vs-full-product",
+    "title": "MVP or Full Product? Where to Start and Why",
+    "file": "difference-cost-timeline.jpeg",
+    "path": "/images/blog/mvp-vs-full-product/difference-cost-timeline.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The difference in cost and timeline\"."
+  },
+  {
+    "slug": "native-vs-hybrid-app",
+    "title": "Native vs Hybrid Apps: When Is the Cost Difference Worth It?",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/native-vs-hybrid-app/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Native vs Hybrid Apps: When Is the Cost Difference Worth It?\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "native-vs-hybrid-app",
+    "title": "Native vs Hybrid Apps: When Is the Cost Difference Worth It?",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/native-vs-hybrid-app/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Type | How it works | Result quality). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "native-vs-hybrid-app",
+    "title": "Native vs Hybrid Apps: When Is the Cost Difference Worth It?",
+    "file": "first-clearing-up.jpeg",
+    "path": "/images/blog/native-vs-hybrid-app/first-clearing-up.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"First: clearing up the terminology\"."
+  },
+  {
+    "slug": "native-vs-hybrid-app",
+    "title": "Native vs Hybrid Apps: When Is the Cost Difference Worth It?",
+    "file": "cost-difference.jpeg",
+    "path": "/images/blog/native-vs-hybrid-app/cost-difference.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The cost difference\"."
+  },
+  {
+    "slug": "native-vs-hybrid-app",
+    "title": "Native vs Hybrid Apps: When Is the Cost Difference Worth It?",
+    "file": "native-earn-cost.jpeg",
+    "path": "/images/blog/native-vs-hybrid-app/native-earn-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"When does native earn its cost? Four cases\"."
+  },
+  {
+    "slug": "pdpl-compliance-guide",
+    "title": "A Developer's Guide to Saudi PDPL Compliance",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/pdpl-compliance-guide/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"A Developer's Guide to Saudi PDPL Compliance\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "pdpl-compliance-guide",
+    "title": "A Developer's Guide to Saudi PDPL Compliance",
+    "file": "who-apply.jpeg",
+    "path": "/images/blog/pdpl-compliance-guide/who-apply.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Who does it apply to?\"."
+  },
+  {
+    "slug": "pdpl-compliance-guide",
+    "title": "A Developer's Guide to Saudi PDPL Compliance",
+    "file": "consent-lawful-basis.jpeg",
+    "path": "/images/blog/pdpl-compliance-guide/consent-lawful-basis.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"1. Consent — the lawful basis for processing\"."
+  },
+  {
+    "slug": "pdpl-compliance-guide",
+    "title": "A Developer's Guide to Saudi PDPL Compliance",
+    "file": "user-rights-product.jpeg",
+    "path": "/images/blog/pdpl-compliance-guide/user-rights-product.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"2. User rights — what your product must provide\"."
+  },
+  {
+    "slug": "pdpl-compliance-guide",
+    "title": "A Developer's Guide to Saudi PDPL Compliance",
+    "file": "breach-notification-within.jpeg",
+    "path": "/images/blog/pdpl-compliance-guide/breach-notification-within.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"3. Breach notification within 72 hours\"."
+  },
+  {
+    "slug": "shopify-vs-custom-store",
+    "title": "Shopify vs a Custom Store: The Real Three-Year Calculation",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/shopify-vs-custom-store/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Shopify vs a Custom Store: The Real Three-Year Calculation\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "shopify-vs-custom-store",
+    "title": "Shopify vs a Custom Store: The Real Three-Year Calculation",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/shopify-vs-custom-store/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Line item | Hosted platform | Custom store). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "shopify-vs-custom-store",
+    "title": "Shopify vs a Custom Store: The Real Three-Year Calculation",
+    "file": "two-options-one.jpeg",
+    "path": "/images/blog/shopify-vs-custom-store/two-options-one.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The two options in one sentence each\"."
+  },
+  {
+    "slug": "shopify-vs-custom-store",
+    "title": "Shopify vs a Custom Store: The Real Three-Year Calculation",
+    "file": "three-year-calculation.jpeg",
+    "path": "/images/blog/shopify-vs-custom-store/three-year-calculation.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The three-year calculation\"."
+  },
+  {
+    "slug": "shopify-vs-custom-store",
+    "title": "Shopify vs a Custom Store: The Real Three-Year Calculation",
+    "file": "tipping-point-maths.jpeg",
+    "path": "/images/blog/shopify-vs-custom-store/tipping-point-maths.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The tipping point: when does the maths flip?\"."
+  },
+  {
+    "slug": "software-company-qatar",
+    "title": "Software Company in Qatar: Selection Criteria and Pricing (2026)",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/software-company-qatar/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Software Company in Qatar: Selection Criteria and Pricing (2026)\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "software-company-qatar",
+    "title": "Software Company in Qatar: Selection Criteria and Pricing (2026)",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/software-company-qatar/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Project type | Doha-based firm | Remote regional team). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "software-company-qatar",
+    "title": "Software Company in Qatar: Selection Criteria and Pricing (2026)",
+    "file": "expected-pricing-qatar.jpeg",
+    "path": "/images/blog/software-company-qatar/expected-pricing-qatar.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Expected pricing in Qatar — 2026\"."
+  },
+  {
+    "slug": "software-company-qatar",
+    "title": "Software Company in Qatar: Selection Criteria and Pricing (2026)",
+    "file": "makes-qatari-market.jpeg",
+    "path": "/images/blog/software-company-qatar/makes-qatari-market.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What makes the Qatari market distinct?\"."
+  },
+  {
+    "slug": "software-company-qatar",
+    "title": "Software Company in Qatar: Selection Criteria and Pricing (2026)",
+    "file": "data-protection-two.jpeg",
+    "path": "/images/blog/software-company-qatar/data-protection-two.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Data protection: two regimes, not one\"."
+  },
+  {
+    "slug": "template-vs-custom-design",
+    "title": "Template or Custom Design? And Its Effect on Conversion",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/template-vs-custom-design/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Template or Custom Design? And Its Effect on Conversion\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "template-vs-custom-design",
+    "title": "Template or Custom Design? And Its Effect on Conversion",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/template-vs-custom-design/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Approach | Cost | Timeline). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "template-vs-custom-design",
+    "title": "Template or Custom Design? And Its Effect on Conversion",
+    "file": "cost-difference.jpeg",
+    "path": "/images/blog/template-vs-custom-design/cost-difference.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The cost difference\"."
+  },
+  {
+    "slug": "template-vs-custom-design",
+    "title": "Template or Custom Design? And Its Effect on Conversion",
+    "file": "actually-affects-conversion.jpeg",
+    "path": "/images/blog/template-vs-custom-design/actually-affects-conversion.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What actually affects conversion\"."
+  },
+  {
+    "slug": "template-vs-custom-design",
+    "title": "Template or Custom Design? And Its Effect on Conversion",
+    "file": "template-suffices.jpeg",
+    "path": "/images/blog/template-vs-custom-design/template-suffices.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"When a template suffices\"."
+  },
+  {
+    "slug": "web-design-company-dubai",
+    "title": "Web Design Company in Dubai: Choosing and Pricing",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/web-design-company-dubai/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Web Design Company in Dubai: Choosing and Pricing\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "web-design-company-dubai",
+    "title": "Web Design Company in Dubai: Choosing and Pricing",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/web-design-company-dubai/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Website type | Dubai agency | Remote regional team). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "web-design-company-dubai",
+    "title": "Web Design Company in Dubai: Choosing and Pricing",
+    "file": "expected-pricing-dubai.jpeg",
+    "path": "/images/blog/web-design-company-dubai/expected-pricing-dubai.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Expected pricing in Dubai — 2026\"."
+  },
+  {
+    "slug": "web-design-company-dubai",
+    "title": "Web Design Company in Dubai: Choosing and Pricing",
+    "file": "requirements-uae-market.jpeg",
+    "path": "/images/blog/web-design-company-dubai/requirements-uae-market.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Requirements specific to the UAE market\"."
+  },
+  {
+    "slug": "web-design-company-dubai",
+    "title": "Web Design Company in Dubai: Choosing and Pricing",
+    "file": "seven-criteria-choosing.jpeg",
+    "path": "/images/blog/web-design-company-dubai/seven-criteria-choosing.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Seven criteria for choosing a firm\"."
+  },
+  {
+    "slug": "website-design-cost",
+    "title": "Professional Website Design Cost in 2026",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/website-design-cost/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"Professional Website Design Cost in 2026\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "website-design-cost",
+    "title": "Professional Website Design Cost in 2026",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/website-design-cost/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Website type | Cost | Timeline | Best for). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "website-design-cost",
+    "title": "Professional Website Design Cost in 2026",
+    "file": "determines-website-cost.jpeg",
+    "path": "/images/blog/website-design-cost/determines-website-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"What determines website cost?\"."
+  },
+  {
+    "slug": "website-design-cost",
+    "title": "Professional Website Design Cost in 2026",
+    "file": "website-design-cost.jpeg",
+    "path": "/images/blog/website-design-cost/website-design-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Website design cost table — 2026\"."
+  },
+  {
+    "slug": "website-design-cost",
+    "title": "Professional Website Design Cost in 2026",
+    "file": "annual-costs-everyone.jpeg",
+    "path": "/images/blog/website-design-cost/annual-costs-everyone.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The annual costs everyone forgets\"."
+  },
+  {
+    "slug": "wordpress-vs-nextjs",
+    "title": "WordPress vs Next.js for Your Company Website in 2026",
+    "file": "hero-banner.jpeg",
+    "path": "/images/blog/wordpress-vs-nextjs/hero-banner.jpeg",
+    "kind": "Hero",
+    "desc": "Wide title banner for \"WordPress vs Next.js for Your Company Website in 2026\". Establishes the article subject; the only image guaranteed to be seen, and the one used as the OpenGraph preview."
+  },
+  {
+    "slug": "wordpress-vs-nextjs",
+    "title": "WordPress vs Next.js for Your Company Website in 2026",
+    "file": "cost-breakdown.jpeg",
+    "path": "/images/blog/wordpress-vs-nextjs/cost-breakdown.jpeg",
+    "kind": "Data figure",
+    "desc": "Chart of the article's pricing table (columns: Criterion | WordPress | Next.js). Restates the numbers visually so the key figures survive skim-reading."
+  },
+  {
+    "slug": "wordpress-vs-nextjs",
+    "title": "WordPress vs Next.js for Your Company Website in 2026",
+    "file": "reference-table.jpeg",
+    "path": "/images/blog/wordpress-vs-nextjs/reference-table.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The reference table\"."
+  },
+  {
+    "slug": "wordpress-vs-nextjs",
+    "title": "WordPress vs Next.js for Your Company Website in 2026",
+    "file": "differences-actually-matter.jpeg",
+    "path": "/images/blog/wordpress-vs-nextjs/differences-actually-matter.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"The differences that actually matter\"."
+  },
+  {
+    "slug": "wordpress-vs-nextjs",
+    "title": "WordPress vs Next.js for Your Company Website in 2026",
+    "file": "three-year-cost.jpeg",
+    "path": "/images/blog/wordpress-vs-nextjs/three-year-cost.jpeg",
+    "kind": "Section",
+    "desc": "Illustrates the section \"Three-year cost\"."
+  }
+]
