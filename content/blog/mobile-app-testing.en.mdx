@@ -151,27 +151,27 @@ There is no magic coverage percentage. **Better practical criteria:**
 
 ## Frequently asked questions
 
-**How much does testing add to project cost?**
+### How much does testing add to project cost?
 
 Writing tests for critical business logic typically adds 10–20% to development time. Comprehensive coverage with full UI automation can double it. **The return appears in maintenance** — a project with no tests becomes frightening to modify after a year.
 
-**Should I test an MVP?**
+### Should I test an MVP?
 
 Test critical business logic and the core path only. Comprehensive automation is overkill at a stage where everything may change. See our [MVP guide](/en/blog/mvp-vs-full-product).
 
-**What is the difference between manual and automated testing?**
+### What is the difference between manual and automated testing?
 
 Automated verifies that what worked still works — cheap when repeated. Manual discovers what you didn't anticipate — a poor experience, truncated text, a confusing flow. **You need both**; automated for regression protection, manual for quality.
 
-**Do I need a dedicated tester?**
+### Do I need a dedicated tester?
 
 For large projects and regulated sectors: worth it. For smaller projects, a disciplined developer with a fixed checklist covers most of the need. **What matters most is having a written checklist** rather than relying on memory before each release.
 
-**How do I test on devices I don't own?**
+### How do I test on devices I don't own?
 
 Cloud device testing services let you run the app on a variety of real devices. Useful for covering a wide range, but they **don't replace a real device in your hand** for testing actual experience and performance.
 
-**When should I run the tests?**
+### When should I run the tests?
 
 Automatically on every code push if possible. If you have no continuous integration, then before every release at minimum. **A test that isn't run regularly is a dead test** giving false reassurance.
 

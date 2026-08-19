@@ -125,27 +125,27 @@ This is the most important section — because it stays valid however the models
 
 ## Frequently asked questions
 
-**Which model is best for Arabic?**
+### Which model is best for Arabic?
 
 There is no fixed answer — models evolve quickly and any specific recommendation dates within months. The sounder approach is to test candidates on **data from your domain and your audience's dialect** using the methodology above. Modern models are generally good at Arabic; differences show up in dialects and specialised terminology.
 
-**What does running an AI assistant cost monthly?**
+### What does running an AI assistant cost monthly?
 
 It depends on conversation volume, length, and the model used. See our [chatbot cost guide](/en/blog/ai-chatbot-cost) for the line items. The rule: calculate with a real sample of your conversations rather than a theoretical estimate — and Arabic text consumes more tokens than English.
 
-**Is my data safe with model providers?**
+### Is my data safe with model providers?
 
 It varies by provider and plan. Ask explicitly about processing location, use of data in training, and retention period. Do not pass sensitive personal data before verifying compliance with the Personal Data Protection Law with your legal advisor.
 
-**What if the model gives wrong information?**
+### What if the model gives wrong information?
 
 This is the primary risk. Three practices reduce it: **restricting the model to answer only from your approved content**, setting a confidence threshold below which it hands off to a human, and periodically reviewing conversation logs. Human handoff is a necessity, not an optional extra.
 
-**Can I switch models later?**
+### Can I switch models later?
 
 Yes if you design for it — make the model a swappable setting rather than something embedded in code. You will usually need to retune the prompt and retest, but the architecture holds. This is the single most important design decision in the project.
 
-**Do I need a custom model trained on my data?**
+### Do I need a custom model trained on my data?
 
 Rarely. Most cases are solved by a general model plus search over your documents (RAG) — cheaper, faster, and easier to update. Custom training earns its cost only with large, highly specialised datasets and a budget that justifies it.
 

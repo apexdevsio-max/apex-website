@@ -163,27 +163,27 @@ If Clean Architecture is overkill for your project, there are middle grounds:
 
 ## Frequently asked questions
 
-**Is Clean Architecture necessary for every Flutter app?**
+### Is Clean Architecture necessary for every Flutter app?
 
 Not at all. It earns its place in large, long-lived applications with real logic and multiple developers. For small apps and prototypes, its complexity exceeds its benefit and slows delivery.
 
-**What is the difference between it and BLoC or Riverpod?**
+### What is the difference between it and BLoC or Riverpod?
 
 Two different levels: Clean Architecture is an architecture organising the whole application's responsibilities. BLoC and Riverpod are tools for managing state in the presentation layer. **You use them together** — the architecture defines the layers, and the state tool manages state within presentation.
 
-**How much does it add to development time?**
+### How much does it add to development time?
 
 Initially it slows things noticeably — more files and a more complex structure. The gain appears in maintenance, scaling, and testing over the long term. **For a short project, you may never reach the break-even point.**
 
-**Can it be applied gradually?**
+### Can it be applied gradually?
 
 Yes, and that is usually best. Start by separating the data layer behind repositories, then extract logic into use cases when it becomes clear it repeats. Gradual application beats a wholesale restructure.
 
-**What is its relationship to testing?**
+### What is its relationship to testing?
 
 This is the biggest practical benefit: the domain layer is independent of Flutter and the network, so your business logic can be tested quickly with no infrastructure. See our [app testing guide](/en/blog/mobile-app-testing).
 
-**Does it apply to React Native too?**
+### Does it apply to React Native too?
 
 The principles yes — separating responsibilities and pointing dependencies inward are general principles rather than Flutter-specific ones. The details differ by ecosystem tooling.
 

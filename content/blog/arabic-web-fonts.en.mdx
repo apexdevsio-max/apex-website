@@ -168,27 +168,27 @@ After implementing, measure the actual impact:
 
 ## Frequently asked questions
 
-**What is the best Arabic web font?**
+### What is the best Arabic web font?
 
 There is no single answer — it depends on your brand identity and content type. Practical criteria matter more than the name: legibility at small sizes, sufficient weights, support for both numeral systems, harmonised Latin glyphs, and a licence permitting your use. Test your candidates with real content at actual size.
 
-**How large should an Arabic font file be?**
+### How large should an Arabic font file be?
 
 After subsetting and `woff2` conversion, a well-subset single weight typically lands in the tens of kilobytes. The figure varies by typeface and the glyph ranges you keep. **Measure your own file after subsetting** rather than relying on a general estimate.
 
-**Should I use one font for Arabic and English?**
+### Should I use one font for Arabic and English?
 
 If you find one providing both at consistent quality, yes — simpler and lighter. If you must use two, ensure their metrics (x-height, width) are close so mixed text doesn't look disjointed.
 
-**Why does my text appear in a different font briefly?**
+### Why does my text appear in a different font briefly?
 
 That is `font-display: swap` working as intended — displaying text immediately in a fallback then swapping. The alternative (hiding text until load) is worse for experience. To reduce the flash, choose a metrically similar fallback and adjust `size-adjust`.
 
-**Do fonts affect search ranking?**
+### Do fonts affect search ranking?
 
 Indirectly but genuinely: page speed is a stated ranking factor, and heavy fonts slow Largest Contentful Paint. An unoptimised Arabic font can cost you part of your performance score.
 
-**What about diacritics and vocalisation marks?**
+### What about diacritics and vocalisation marks?
 
 Most fonts support them but not all at equal quality. If your content includes vocalisation (religious or educational content), test it explicitly — some fonts position marks incorrectly or overlap the following line.
 

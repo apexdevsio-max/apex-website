@@ -15,6 +15,8 @@ import {
 } from "@/lib/seo/schema";
 import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, POST_META, PUBLISHED_POST_SLUGS } from "@/lib/mock/blog-data";
 import { MarkdownContent } from "@/components/content/MarkdownContent";
+import { TableOfContents } from "@/components/content/TableOfContents";
+import { collectHeadings } from "@/lib/content/headings";
 
 // Only slugs backed by a real MDX article are prerendered. Previously every
 // MOCK_POST_SLUGS entry was added too, which published routes whose body rendered
@@ -54,17 +56,30 @@ function extractFirstImage(content: string): string | undefined {
  * article recommended the same three regardless of subject, and an API security
  * guide pointed readers at a Flutter article.
  */
-function getRelatedSlugs(current: string, count: number): string[] {
+function getRelatedSlugs(
+  current: string,
+  count: number,
+  dateBySlug: Map<string, string>
+): string[] {
   const mine = POST_META[current]?.categories ?? [];
 
   const scored = PUBLISHED_POST_SLUGS.filter((item) => item !== current)
     .map((item) => ({
       slug: item,
       overlap: (POST_META[item]?.categories ?? []).filter((c) => mine.includes(c)).length,
+      date: dateBySlug.get(item) ?? "",
     }))
-    // Ties keep PUBLISHED_POST_SLUGS order, which is alphabetical and therefore
-    // stable across builds — important because this renders into static HTML.
-    .sort((a, b) => b.overlap - a.overlap);
+    .sort((a, b) => {
+      if (b.overlap !== a.overlap) return b.overlap - a.overlap;
+      // Ties used to fall back to PUBLISHED_POST_SLUGS order, which is
+      // alphabetical — and with only two categories per article, dozens of pairs
+      // tie at an overlap of 2. The result was that the same handful of
+      // alphabetically-early slugs was recommended site-wide while later ones
+      // were never surfaced. Newest-first breaks the tie usefully and is still
+      // deterministic, which matters because this renders into static HTML.
+      if (a.date !== b.date) return b.date.localeCompare(a.date);
+      return a.slug.localeCompare(b.slug);
+    });
 
   return scored.slice(0, count).map((entry) => entry.slug);
 }
@@ -308,19 +323,38 @@ export default async function BlogPostPage({
   const rawContent = mdxPost?.content ?? mockContent?.content ?? fallback.content;
   // Related links point only at articles that actually exist — linking to the
   // placeholder slugs sent crawlers (and readers) to dead-end pages.
-  const relatedSlugs = getRelatedSlugs(slug, 3);
+  // `getBlogPosts` is React-cached and the page already loaded this collection to
+  // resolve the current slug, so reading the whole list here costs nothing extra
+  // and avoids a per-related-slug lookup.
+  const allPosts = await getBlogPosts(lang).catch(() => []);
+  const postBySlug = new Map(allPosts.map((post) => [post.slug, post]));
+  const relatedSlugs = getRelatedSlugs(
+    slug,
+    3,
+    new Map(allPosts.map((post) => [post.slug, post.datePublished ?? ""]))
+  );
   // Titles come from the MDX files, since only five articles have MOCK_POSTS copy
   // and the card renders nothing without a title.
-  const relatedPosts = (
-    await Promise.all(
-      relatedSlugs.map(async (item) => {
-        const post = await getBlogPostBySlug(lang, item).catch(() => null);
-        const title = post?.title ?? MOCK_POSTS[item]?.[lang]?.title;
-        return title ? { slug: item, title, emoji: POST_META[item]?.emoji ?? MOCK_POSTS[item]?.emoji ?? "📝" } : null;
-      }),
-    )
-  ).filter((item): item is { slug: string; title: string; emoji: string } => item !== null);
+  const relatedPosts = relatedSlugs
+    .map((item) => {
+      const post = postBySlug.get(item);
+      const title = post?.title ?? MOCK_POSTS[item]?.[lang]?.title;
+      if (!title) return null;
+      return {
+        slug: item,
+        title,
+        // The card showed only an emoji and a title, which gave the reader no
+        // basis to pick one link over another. The excerpt is the same sentence
+        // the blog index uses.
+        excerpt: post?.excerpt ?? MOCK_POSTS[item]?.[lang]?.excerpt ?? "",
+        emoji: POST_META[item]?.emoji ?? MOCK_POSTS[item]?.emoji ?? "📝",
+      };
+    })
+    .filter((item): item is { slug: string; title: string; excerpt: string; emoji: string } => item !== null);
   const faqs = extractFaqs(rawContent);
+  // Built from the same source the renderer receives, so the anchors it emits
+  // match the ids MarkdownContent stamps onto the headings.
+  const headings = collectHeadings(rawContent);
 
   return (
     <div
@@ -385,6 +419,19 @@ export default async function BlogPostPage({
           >
             {category}
           </span>
+          {/* Named attribution. These guides cover regulated subjects — SAMA
+              licensing, PDPL, DHA health requirements — where an unattributed page
+              is held to a stricter standard. The byline links to /about, which is
+              the page that substantiates who is making the claims. */}
+          <Link
+            href={`/${lang}/about`}
+            rel="author"
+            className="apex-byline font-semibold"
+            style={{ color: "var(--color-secondary-text)" }}
+          >
+            {isAr ? "فريق APEX" : "APEX Team"}
+          </Link>
+          <span>·</span>
           {date && <span>{date}</span>}
           {date && <span>·</span>}
           <span>
@@ -406,6 +453,8 @@ export default async function BlogPostPage({
           {excerpt}
         </p>
 
+        {rawContent.trim() && <TableOfContents entries={headings} lang={lang} />}
+
         <article className="mb-14">
           {!rawContent.trim() ? (
             <div className="text-center py-16" style={{ color: "var(--color-secondary-text)" }}>
@@ -415,6 +464,51 @@ export default async function BlogPostPage({
             </div>
           ) : <MarkdownContent source={rawContent} lang={lang} />}
         </article>
+
+        {/* Who wrote this and why they are qualified to. Google's guidance for
+            "your money or your life" subjects — and several of these guides are
+            exactly that — treats a stated, checkable author as a baseline
+            expectation rather than an enhancement. It also gives answer engines
+            an entity to attribute a quoted claim to. */}
+        <div
+          className="rounded-2xl p-6 border mb-8 flex items-start gap-4"
+          style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
+        >
+          <span
+            className="flex-none rounded-xl flex items-center justify-center text-2xl"
+            style={{
+              width: "56px",
+              height: "56px",
+              background: "color-mix(in srgb,var(--color-primary) 12%,transparent)",
+            }}
+            aria-hidden="true"
+          >
+            🅰️
+          </span>
+          <div>
+            <p
+              className={`font-bold mb-1 ${isAr ? "font-ar" : "font-en"}`}
+              style={{ fontSize: "15px", color: "var(--color-primary-text)" }}
+            >
+              {isAr ? "فريق APEX" : "APEX Team"}
+            </p>
+            <p
+              className={`leading-relaxed mb-2 ${isAr ? "font-ar" : "font-en"}`}
+              style={{ fontSize: "13.5px", color: "var(--color-secondary-text)" }}
+            >
+              {isAr
+                ? "مطوّرون ومهندسو برمجيات نبني تطبيقات موبايل ومواقع ومتاجر إلكترونية لعملاء في السعودية والإمارات وقطر. الأرقام والتقديرات في أدلتنا مأخوذة من مشاريع نفّذناها فعلياً، لا من تقديرات عامة."
+                : "Developers and software engineers building mobile apps, websites, and e-commerce platforms for clients in Saudi Arabia, the UAE, and Qatar. The figures and estimates in our guides come from projects we have actually delivered, not from generic benchmarks."}
+            </p>
+            <Link
+              href={`/${lang}/about`}
+              className={`apex-byline text-xs font-semibold ${isAr ? "font-ar" : "font-en"}`}
+              style={{ color: "var(--color-primary)" }}
+            >
+              {isAr ? "تعرّف على الفريق ←" : "More about the team →"}
+            </Link>
+          </div>
+        </div>
 
         <div
           className="rounded-2xl p-8 text-center border mb-14"
@@ -474,10 +568,13 @@ export default async function BlogPostPage({
               const item = related.slug;
 
               return (
+                // `flex items-center` laid the emoji out beside the title on one
+                // line and made the `mb-2` below a no-op; the card stacks now that
+                // it carries an excerpt as well.
                 <Link
                   key={item}
                   href={`/${lang}/blog/${item}`}
-                  className="rounded-xl p-4 min-h-[44px] flex items-center border transition-all duration-200"
+                  className="rounded-xl p-4 min-h-[44px] flex flex-col border transition-all duration-200"
                   style={{
                     background: "var(--color-card)",
                     borderColor: "var(--color-border)",
@@ -487,11 +584,19 @@ export default async function BlogPostPage({
                 >
                   <div className="text-2xl mb-2">{related.emoji}</div>
                   <p
-                    className={`text-xs font-semibold leading-snug ${isAr ? "font-ar" : "font-en"}`}
+                    className={`text-xs font-semibold leading-snug mb-1.5 ${isAr ? "font-ar" : "font-en"}`}
                     style={{ color: "var(--color-primary-text)" }}
                   >
                     {related.title}
                   </p>
+                  {related.excerpt && (
+                    <p
+                      className={`text-xs leading-relaxed line-clamp-2 ${isAr ? "font-ar" : "font-en"}`}
+                      style={{ color: "var(--color-secondary-text)" }}
+                    >
+                      {related.excerpt}
+                    </p>
+                  )}
                 </Link>
               );
             })}

@@ -141,27 +141,27 @@ If the server only validates the token and returns order 12345 to any logged-in 
 
 ## Frequently asked questions
 
-**What is the most dangerous common API vulnerability?**
+### What is the most dangerous common API vulnerability?
 
 Missing ownership checks: verifying a user is logged in without verifying the requested resource belongs to them. This lets any user read another's data by changing an identifier in the URL, and it is both the most common and the easiest to exploit.
 
-**Is HTTPS enough to secure an API?**
+### Is HTTPS enough to secure an API?
 
 No. HTTPS protects data **in transit** only. It doesn't stop an authenticated user from accessing someone else's data, doesn't protect against malicious input, and doesn't compensate for missing authorisation. It is necessary but not sufficient.
 
-**How do I protect third-party service keys?**
+### How do I protect third-party service keys?
 
 Never put them in the app. Have the app call **your server**, and your server call the external service with its key. That keeps the key beyond the reach of anyone inspecting the app.
 
-**When should I use rate limiting?**
+### When should I use rate limiting?
 
 On every public endpoint, and more strictly on: login, password reset, verification code sending, and search. Those are the most commonly abused automatically.
 
-**Do I need a security audit?**
+### Do I need a security audit?
 
 For projects handling sensitive data or payments: yes, and regulated sectors may require it. For smaller projects, an internal security review against the checklist above covers most common risks.
 
-**How do I handle a vulnerability discovered after launch?**
+### How do I handle a vulnerability discovered after launch?
 
 Fix it immediately and ship an update, revoke affected sessions if needed, and assess whether data actually leaked. If there is a breach touching personal data, statutory notification obligations apply — and their deadline is short.
 

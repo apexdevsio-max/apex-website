@@ -153,27 +153,27 @@ Flutter has no built-in Hijri calendar and you will need a dedicated library.
 
 ## Frequently asked questions
 
-**Should I store dates in Hijri or Gregorian?**
+### Should I store dates in Hijri or Gregorian?
 
 Always Gregorian (UTC) in the database and API, converting to Hijri only at display time. Storing Hijri prevents reliable sorting and difference calculation, and locks in a particular calendar implementation that may not be what you want later.
 
-**What is the difference between Umm al-Qura and the general Hijri calendar?**
+### What is the difference between Umm al-Qura and the general Hijri calendar?
 
 Umm al-Qura is the officially adopted calendar in Saudi Arabia, using specific criteria for month beginnings. General calculated calendars may differ from it by a day. **For the Saudi market use Umm al-Qura specifically** — the difference is enough to ruin an appointment or a due date.
 
-**Does JavaScript support the Hijri calendar?**
+### Does JavaScript support the Hijri calendar?
 
 Yes, via `Intl.DateTimeFormat` with `ar-SA-u-ca-islamic-umalqura` — with no external library. But **test on your target environments**, as calendar support varies, particularly in older server runtimes.
 
-**How do I calculate the difference between two Hijri dates?**
+### How do I calculate the difference between two Hijri dates?
 
 Convert both to Gregorian, calculate the difference there, then display the result. A Hijri month is 29 or 30 days with no fixed pattern, so direct Hijri arithmetic is a source of errors.
 
-**Should I display both calendars?**
+### Should I display both calendars?
 
 In appointments, due dates, and invoices: strongly yes. The cost is zero and the benefit substantial — it removes ambiguity for a user thinking in the other calendar. In general content, follow the user's preference.
 
-**What about fiscal years and subscriptions?**
+### What about fiscal years and subscriptions?
 
 The Hijri year is roughly 11 days shorter than the Gregorian. An "annual" subscription in Hijri is genuinely shorter — state explicitly in your terms which calendar governs the duration, and calculate renewal dates in Gregorian internally.
 

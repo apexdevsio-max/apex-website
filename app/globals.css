@@ -192,6 +192,105 @@ html, body {
   font-style: italic;
 }
 
+/* Fenced code blocks. `text-align: start` would follow the Arabic article's RTL
+   direction, so alignment is pinned to `left` to match the `dir="ltr"` the
+   renderer sets on the element. `white-space: pre` (not pre-wrap) keeps the
+   author's line breaks and indentation, with the overflow scrolling inside the
+   block rather than widening the article. */
+.apex-prose-pre {
+  margin: 18px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-card);
+  color: var(--color-primary-text);
+  overflow-x: auto;
+  white-space: pre;
+  text-align: left;
+  font-size: 13.5px;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+/* The inner <code> inherits the block's own background and padding — repeating
+   them here would draw a second panel inside the first. */
+.apex-prose-pre code {
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+
+.apex-byline {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.apex-byline:hover,
+.apex-byline:focus-visible {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* In-article table of contents. Counters are used rather than `list-decimal` so
+   the number can be styled and sit in the accent colour alongside the link. */
+.apex-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: apex-toc;
+  display: grid;
+  gap: 8px;
+}
+
+.apex-toc-list li {
+  counter-increment: apex-toc;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.apex-toc-list li::before {
+  content: counter(apex-toc);
+  flex: none;
+  min-width: 1.4em;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary);
+  opacity: 0.75;
+}
+
+.apex-toc-link {
+  color: var(--color-secondary-text);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.apex-toc-link:hover,
+.apex-toc-link:focus-visible {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Inline `code` spans inside prose, which keep the pill treatment. */
+.apex-prose-code {
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  font-size: 0.88em;
+  color: var(--color-primary-text);
+  unicode-bidi: embed;
+  direction: ltr;
+}
+
 .apex-contact-bg {
   background: linear-gradient(
     135deg,

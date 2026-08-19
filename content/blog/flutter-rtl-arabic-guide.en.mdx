@@ -192,27 +192,27 @@ Go through these yourself on a real device in Arabic:
 
 ## Frequently asked questions
 
-**Is Flutter better than React Native for Arabic support?**
+### Is Flutter better than React Native for Arabic support?
 
 Yes, by a noticeable margin. RTL support in Flutter is deeply built in and mirrors layout, padding, and animations automatically through directional widgets. React Native supports RTL through `I18nManager` but needs more manual tuning, and some third-party libraries ignore RTL entirely. See the [full comparison](/en/blog/flutter-vs-react-native).
 
-**How much does Arabic support add to app cost?**
+### How much does Arabic support add to app cost?
 
 $2,000–$8,000 when accounted for from the design stage. The figure rises considerably — sometimes double — if added after interfaces are complete, because it means reviewing every screen and every padding value.
 
-**Do I need two design files, Arabic and English?**
+### Do I need two design files, Arabic and English?
 
 No. A single design built on the `start/end` principle works in both directions. What you need is a **visual review** of the Arabic version to confirm the mirroring is logical — especially on complex screens.
 
-**How do I test RTL during development?**
+### How do I test RTL during development?
 
 Switch the app's language at runtime rather than relying on device settings alone. Add a language toggle in development builds so you can move between directions with one tap — that makes testing every screen a habit rather than a separate task.
 
-**What about Hijri dates?**
+### What about Hijri dates?
 
 A separate concern from direction. Flutter has no built-in Hijri calendar and you'll need a dedicated library. The more important decision is to always store dates in Gregorian in the database and convert only at display time.
 
-**Do images and illustrations flip?**
+### Do images and illustrations flip?
 
 Photographs don't. Illustrations carrying direction (a person pointing, an arrow within the graphic) may need a mirrored version. The rule: flip what carries directional meaning, leave everything else.
 
