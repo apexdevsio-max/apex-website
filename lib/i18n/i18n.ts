@@ -35,6 +35,7 @@ function assertDictionary(value: unknown, locale: Locale): asserts value is Dict
   const requiredStringPaths: Array<readonly string[]> = [
     ["navigation", "home"],
     ["navigation", "portfolio"],
+    ["navigation", "services"],
     ["navigation", "academy"],
     ["navigation", "blog"],
     ["navigation", "letsTalk"],

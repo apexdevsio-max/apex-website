@@ -17,11 +17,23 @@ type BreadcrumbItem = {
   url: string;
 };
 
+/**
+ * The social profile URLs, minus the blanks. data/social-links.ts intentionally
+ * defaults these to empty strings, and an empty `sameAs: []` is a weaker signal
+ * than omitting the property, so callers spread this only when it is non-empty.
+ */
+function organizationSameAs(): string[] {
+  return [socialLinks.instagram, socialLinks.linkedin, socialLinks.twitter].filter(Boolean);
+}
+
 export function buildOrganizationSchema(lang: Locale) {
   const isAr = lang === "ar";
   return {
     "@context": "https://schema.org",
     "@type": ["Organization", "LocalBusiness"],
+    // Stable @id so BlogPosting's author/publisher references resolve to this
+    // node rather than declaring separate same-named entities.
+    "@id": `${siteUrl}/#organization`,
     name: "APEX",
     url: siteUrl,
     logo: `${siteUrl}/images/Apex_logo.png`,
@@ -31,7 +43,7 @@ export function buildOrganizationSchema(lang: Locale) {
     slogan: isAr ? "تقنية تتحدث عنك" : "Technology That Speaks for You",
     foundingLocation: "Syria",
     areaServed: ["SA", "AE", "QA", "SY"],
-    sameAs: [socialLinks.instagram, socialLinks.linkedin, socialLinks.twitter].filter(Boolean),
+    sameAs: organizationSameAs(),
     knowsAbout: [
       "Software Development",
       "Mobile App Development",
@@ -173,15 +185,31 @@ export function buildBlogPostingSchema(params: {
     url,
     ...(datePublished ? { datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
+    // Both author and publisher point at the same @id as the Organization schema
+    // on the page, so the two graphs resolve to one entity instead of three
+    // loosely-named copies of "APEX". `sameAs` repeats the social profiles for
+    // the same reason it exists on Organization: it is what ties the entity to
+    // off-site profiles. It stays empty until data/social-links.ts is filled in.
     author: {
       "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
       name: "APEX",
       url: siteUrl,
+      ...(organizationSameAs().length ? { sameAs: organizationSameAs() } : {}),
     },
     publisher: {
       "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
       name: "APEX",
-      logo: `${siteUrl}/images/Apex_logo.png`,
+      url: siteUrl,
+      // Google requires publisher.logo to be an ImageObject, not a bare URL
+      // string; as a string the logo is ignored for article rich results.
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/images/Apex_logo.png`,
+        width: 1200,
+        height: 630,
+      },
     },
     image: image || `${siteUrl}/images/Apex_logo.png`,
     inLanguage: isAr ? "ar" : "en",
@@ -271,7 +299,7 @@ export function buildLocalBusinessSchema(lang: Locale) {
       addressCountry: "SY",
     },
     areaServed: ["SY", "MENA"],
-    sameAs: [socialLinks.instagram, socialLinks.linkedin, socialLinks.twitter].filter(Boolean),
+    sameAs: organizationSameAs(),
     contactPoint: {
       "@type": "ContactPoint",
       telephone: socialLinks.whatsapp,
