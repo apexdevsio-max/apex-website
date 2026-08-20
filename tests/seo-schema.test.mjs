@@ -121,3 +121,35 @@ test("llms.txt lists every published article in both locales", async () => {
     }
   }
 });
+
+test("llms.txt never advertises a section that is noindexed", async () => {
+  const llms = await readFile(path.join(root, "public", "llms.txt"), "utf8");
+
+  // Academy is noindex,follow on all three of its route levels while the course
+  // content is incomplete. Listing it in llms.txt contradicts that: the file
+  // exists so AI answer engines discover content, and pointing them at pages the
+  // site asks search engines to skip is the same mixed signal in a different
+  // channel. If Academy is ever re-enabled, drop the noindex first, then re-add
+  // the links here.
+  const academyRoutes = [
+    "app/[lang]/academy/page.tsx",
+    "app/[lang]/academy/[course]/page.tsx",
+    "app/[lang]/academy/[course]/[lesson]/page.tsx",
+  ];
+
+  const noindexed = await Promise.all(
+    academyRoutes.map(async (route) => {
+      const source = await readFile(path.join(root, route), "utf8");
+      return /robots\s*:\s*\{[^}]*index\s*:\s*false/.test(source);
+    })
+  );
+
+  if (noindexed.every(Boolean)) {
+    for (const locale of ["en", "ar"]) {
+      assert.ok(
+        !llms.includes(`https://apex.sy/${locale}/academy`),
+        `llms.txt links /${locale}/academy while every academy route sets robots.index = false`
+      );
+    }
+  }
+});

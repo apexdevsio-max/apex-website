@@ -35,10 +35,27 @@ function checkMemoryRateLimit(ip: string): boolean {
   return true;
 }
 
+// The in-memory fallback is per-instance and resets on every cold start, so on
+// serverless the 3-per-hour limit is trivially bypassed by spreading submissions
+// across instances. That is acceptable as a temporary state but must not be
+// silent: without this warning an unconfigured deployment looks identical to a
+// correctly configured one. Logged once per process rather than per request so a
+// burst of traffic cannot flood the logs.
+let warnedAboutMissingRateLimitStore = false;
+
 async function checkRateLimit(ip: string): Promise<boolean> {
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!redisUrl || !redisToken) return checkMemoryRateLimit(ip);
+  if (!redisUrl || !redisToken) {
+    if (!warnedAboutMissingRateLimitStore) {
+      warnedAboutMissingRateLimitStore = true;
+      console.warn(
+        "[apex] UPSTASH_REDIS_REST_URL/TOKEN are unset; contact rate limiting is " +
+          "per-instance only and resets on cold start. Set both to make it durable."
+      );
+    }
+    return checkMemoryRateLimit(ip);
+  }
 
   const key = `contact:${createHash("sha256").update(ip).digest("hex")}`;
   try {

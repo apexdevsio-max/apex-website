@@ -67,7 +67,6 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [Services](https://apex.sy/en/services)
 - [Portfolio](https://apex.sy/en/portfolio)
 - [Blog](https://apex.sy/en/blog)
-- [Academy](https://apex.sy/en/academy)
 - [Contact](https://apex.sy/en/contact)
 
 This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
@@ -143,7 +142,6 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [الخدمات](https://apex.sy/ar/services)
 - [أعمالنا](https://apex.sy/ar/portfolio)
 - [المدونة](https://apex.sy/ar/blog)
-- [الأكاديمية](https://apex.sy/ar/academy)
 - [اتصل بنا](https://apex.sy/ar/contact)
 
 هذا الموقع ثنائي اللغة (عربي/إنجليزي). استخدم /ar/ للعربية و /en/ للإنجليزية.
