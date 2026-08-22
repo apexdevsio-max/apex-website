@@ -1,0 +1,177 @@
+---
+{"slug":"rag-knowledge-base","title":"RAG: Making AI Answer From Your Own Documents","seoTitle":"RAG and AI Knowledge Bases Explained","excerpt":"How retrieval-augmented generation works, why chunking and Arabic retrieval decide quality, what it costs to build, and when a simpler approach wins.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# RAG: Making AI Answer From Your Own Documents
+
+A language model knows nothing about your refund policy, your product catalogue, or the contract you signed last March. Ask it anyway and you get a fluent, confident answer that is entirely invented — which is worse than no answer at all.
+
+**The short answer: RAG retrieves the relevant passages from your own documents and gives them to the model as context, so it answers from your material rather than from memory. The quality of a RAG system is decided almost entirely by retrieval, not by the model.**
+
+This guide covers how it works, what breaks, and how Arabic changes the calculation. For whether an AI project is worth building at all, start with [AI for business](/en/blog/ai-for-business-guide).
+
+---
+
+## How it actually works
+
+Four steps, and only one of them involves the model.
+
+**1. Indexing (once, then on updates).** Your documents are split into passages and converted into vectors — numerical representations that place similar meanings near each other. These are stored in a vector database.
+
+**2. Retrieval (every question).** The user's question is converted the same way, and the system finds the passages closest to it in meaning.
+
+**3. Augmentation.** Those passages are inserted into the prompt: *"Answer using only the following context…"*
+
+**4. Generation.** The model answers from what it was given.
+
+**The critical consequence:** if step 2 retrieves the wrong passages, the model answers confidently from the wrong material. The model cannot rescue bad retrieval, and swapping in a better model does not fix it. **Almost every disappointing RAG system is a retrieval problem.**
+
+---
+
+## Chunking decides more than model choice
+
+How you split documents is the highest-leverage decision in the whole system, and it is usually made carelessly.
+
+**Chunks too large:** retrieval returns a page when the answer is one sentence. The model gets diluted context, costs rise, and accuracy falls.
+
+**Chunks too small:** a passage loses the context that makes it meaningful. "The fee is 5%" is useless without knowing which fee.
+
+**What works in practice:**
+
+- **Split on structure, not character count.** Headings, sections, and clauses are natural boundaries. Splitting every 500 characters cuts sentences in half.
+- **Overlap adjacent chunks** by 10–20% so an answer spanning a boundary is not lost.
+- **Keep the heading with the chunk.** A passage carrying "Section 4: Refund Policy" retrieves far better than the same text bare.
+- **Store metadata** — source document, section, date. It powers filtering and, more importantly, citations.
+
+> **The test that tells you the truth:** take twenty real user questions and check whether the correct passage appears in the top three retrieved results. If it does not, no model will save you — fix chunking first.
+
+---
+
+## Arabic changes the retrieval problem
+
+Two issues make Arabic RAG measurably harder, and neither is obvious from an English pilot.
+
+**Embedding quality varies by language.** Models that convert text to vectors are trained predominantly on English. Arabic performance is generally weaker, and it differs a great deal between providers. **Test embedding models on your own Arabic content** rather than trusting a benchmark — this is the single most valuable evaluation you can run.
+
+**The same word has several written forms.** Alef variants, taa marbuta versus haa, and optional diacritics mean a question and the document may not match even when they say the same thing. Normalise both sides before indexing — [Arabic search](/en/blog/arabic-search-guide) covers the transformations, and they apply identically here.
+
+**Mixed-script content** is normal in real documents: Arabic prose with English product names. Index both scripts in the same field so a mixed question matches.
+
+**Practical guidance:** run hybrid retrieval — combine vector similarity with traditional keyword search. Keyword matching catches exact product codes and names that embeddings handle poorly, and the combination outperforms either alone on Arabic content in particular.
+
+---
+
+## Citations are not optional
+
+The single most valuable feature you can add, and the cheapest.
+
+**Show which document and section each answer came from.** This does three things:
+
+1. **Users can verify.** A confident wrong answer is dangerous; a confident wrong answer with a link the user can check is a correctable error.
+2. **You can debug.** When an answer is wrong, the citation tells you instantly whether retrieval failed or the model misread correct material. Without it you are guessing.
+3. **Trust rises.** Users treat a cited answer as a research aid rather than an oracle, which is the correct mental model.
+
+**Also handle "I don't know" properly.** Instruct the model to say so when the retrieved context does not contain the answer, and test that it actually does. A system that invents an answer rather than admitting a gap is worse than a search box.
+
+---
+
+## What it costs
+
+| Item | Indicative cost |
+|---|---|
+| Document ingestion and chunking pipeline | $4,000 – $12,000 |
+| Vector database setup and indexing | $2,000 – $6,000 |
+| Retrieval and generation logic | $4,000 – $10,000 |
+| Evaluation harness and tuning | $3,000 – $8,000 |
+| Interface with citations | $3,000 – $10,000 |
+| **Build total** | **$16,000 – $46,000** |
+
+**Running costs** are per query — embedding the question, plus the model generating from retrieved context. Retrieved passages count toward what you pay, so **chunk size directly drives your bill**. Vector database hosting is usually modest by comparison.
+
+**Re-indexing** is the item people forget. Documents change, and stale answers are a support problem rather than a technical one. Budget for a pipeline that keeps the index current, not a one-time load.
+
+For estimating running cost honestly, use the sampling method in [AI for business](/en/blog/ai-for-business-guide) — and measure with Arabic text, which consumes more tokens.
+
+---
+
+## When something simpler wins
+
+RAG is fashionable, which means it gets built where it is not needed.
+
+**Use good search instead when** users are looking for a document rather than an answer. If the outcome is "show me the leave policy," a search box that returns the document is faster, cheaper, and cannot hallucinate. [Arabic search](/en/blog/arabic-search-guide) covers doing that well.
+
+**Use a curated FAQ when** the questions are few and stable. Twenty common questions with written answers beats a RAG system on accuracy, cost, and maintenance — and it takes days rather than months.
+
+**Put the content in the prompt when** your knowledge base is genuinely small. A few thousand words of policy can go directly into the system prompt with no retrieval layer at all. This is dramatically simpler and, at that size, more accurate.
+
+**RAG earns its complexity when** the corpus is too large to fit in context, changes regularly, and users ask open-ended questions that a fixed FAQ cannot anticipate.
+
+---
+
+## How to evaluate it
+
+Most RAG projects have no evaluation, which is why teams argue about quality from anecdotes.
+
+**Build a test set of 30–50 real questions** with known correct answers, drawn from actual user questions rather than invented ones.
+
+**Measure retrieval and generation separately.** Retrieval: is the correct passage in the top results? Generation: given correct context, is the answer right? Separating these tells you which half to fix — and teams that measure only the final answer usually tune the wrong half.
+
+**Track refusals.** How often does it say "I don't know" when the answer was available? Too often and retrieval is weak; never, and it is probably inventing.
+
+**Re-run after every change.** Chunking tweaks, model swaps, and prompt edits all shift quality in ways that are invisible without a fixed test set.
+
+---
+
+## Related reading
+
+- [AI for business](/en/blog/ai-for-business-guide) — deciding whether to build at all.
+- [Arabic search](/en/blog/arabic-search-guide) — normalisation, which RAG needs too.
+- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) — evaluating Arabic quality.
+- [AI chatbot costs](/en/blog/ai-chatbot-cost) — the most common RAG application.
+- [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) — rules for sending documents to a model.
+- [Internal AI assistant](/en/blog/internal-ai-assistant) — RAG with a permission layer.
+- [AI privacy and security risks](/en/blog/ai-privacy-risks) — where retrieval filtering prevents leakage.
+
+---
+
+## Frequently asked questions
+
+### What is RAG?
+
+Retrieval-augmented generation. The system finds relevant passages in your own documents, inserts them into the prompt, and asks the model to answer from that material rather than from memory. It is how you get an AI assistant that knows your refund policy instead of inventing one.
+
+### Why does my RAG system give wrong answers?
+
+Almost always retrieval, not the model. If the wrong passages are fetched, the model answers confidently from the wrong material, and a better model will not fix it. Test whether the correct passage appears in the top three results for twenty real questions — if it does not, fix chunking and retrieval first.
+
+### How should I split documents for RAG?
+
+On structure rather than character count — headings, sections, and clauses are natural boundaries. Overlap adjacent chunks by 10 to 20 percent so answers spanning a boundary are not lost, keep the section heading attached to each chunk, and store metadata for filtering and citations.
+
+### Does RAG work well in Arabic?
+
+It works, but it is harder. Embedding models are trained predominantly on English, so Arabic retrieval quality varies considerably between providers — test on your own content rather than trusting benchmarks. You also need Arabic normalisation on both documents and questions, since alef variants and taa marbuta mean matching text may not compare as equal.
+
+### How much does a RAG system cost to build?
+
+Roughly $16,000 to $46,000 for the ingestion pipeline, vector database, retrieval logic, evaluation harness, and an interface with citations. Running cost is per query and scales with chunk size, since retrieved passages count toward what you pay. Budget for re-indexing as documents change — that is the item most often forgotten.
+
+### Do I need RAG or is search enough?
+
+If users want a document, search is faster, cheaper, and cannot hallucinate. If the questions are few and stable, a curated FAQ beats RAG on accuracy and maintenance. If your knowledge base is small enough to fit in the prompt, put it there directly. RAG earns its complexity with a large, changing corpus and open-ended questions.
+
+### How do I stop RAG from making things up?
+
+Instruct the model to answer only from the retrieved context and to say it does not know otherwise — then test that it actually does. Add citations showing the source document and section, which lets users verify and lets you debug. A system that invents rather than admitting a gap is worse than a search box.
+
+---
+
+## Conclusion
+
+**Retrieval decides quality, not the model.** Teams that swap models to fix a disappointing RAG system are tuning the wrong half.
+
+**Chunking is the highest-leverage decision** and the one most often made without thought. Split on structure, overlap slightly, keep the headings.
+
+**And add citations from day one.** They convert a system users must trust blindly into one they can verify — and they are the difference between debugging in minutes and guessing for days.
+
+**Building an AI knowledge base?** [Get in touch](/en/contact) — including if a search box or a curated FAQ would serve you better. See our [AI solutions](/en/services/ai-solutions).

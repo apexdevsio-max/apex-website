@@ -1,0 +1,210 @@
+---
+{"slug":"arabic-localization-guide","title":"Arabic Localisation for Apps and Websites: The Complete Guide","seoTitle":"Arabic Localisation Guide (2026)","excerpt":"What Arabic localisation actually involves — RTL layout, fonts, numerals, dates, content, and QA. Real cost ranges, a phased plan, and the mistakes that make apps feel foreign.","date":"2026-08-21","dateModified":"2026-08-21"}
+---
+
+# Arabic Localisation for Apps and Websites: The Complete Guide
+
+Most teams budget for Arabic as a translation line item. Then they ship, and Arabic users describe the result as "translated" rather than "Arabic" — and nobody can quite explain the difference.
+
+**The short answer: Arabic localisation is a design and engineering problem that happens to include translation. The translation is typically 20–30% of the work. Layout mirroring, typography, numerals, dates, and content adaptation are the rest — and they are what determines whether the product feels native or foreign.**
+
+This guide covers the full scope, realistic costs, and the specific failures that make an Arabic interface feel wrong. Each technical area has a dedicated deep-dive linked from here.
+
+---
+
+## Six layers, not one
+
+Localisation failures are almost always scope failures — a team plans for layer one and discovers the other five during QA.
+
+| Layer | What it involves | Commonly missed? |
+|---|---|---|
+| **1. Translation** | Text converted to Arabic | Planned for |
+| **2. Direction (RTL)** | Layout, navigation, icons mirrored | Underestimated |
+| **3. Typography** | Arabic fonts, sizing, line height | Usually missed |
+| **4. Numerals & formats** | Digits, currency, phone numbers | Almost always missed |
+| **5. Dates** | Hijri alongside Gregorian | Almost always missed |
+| **6. Content adaptation** | Tone, examples, imagery, cultural fit | Rarely considered |
+
+A product that handles only layers 1 and 2 is what users mean by "translated." Layers 3 through 6 are what make it feel like it was built for them.
+
+---
+
+## Layer 2: direction is not a CSS property
+
+The instinct is to set `direction: rtl` and consider it done. What actually needs to mirror:
+
+**Mirrors:** overall layout, text alignment, navigation order, progress bars, sliders, carousels, back/forward arrows, dropdown alignment, table column order, and drawer position.
+
+**Does not mirror:** clocks, media playback controls (play always points right), charts with a time axis, phone numbers, email addresses, code, and most logos.
+
+That second list is the one that causes bugs. A blanket mirror flips the play button and makes the video player nonsensical.
+
+**The engineering habit that prevents most of this:** use logical properties rather than physical ones. `margin-inline-start` instead of `margin-left`, `padding-inline-end` instead of `padding-right`. Written this way, the layout mirrors correctly by default rather than through a parallel RTL stylesheet that drifts out of sync.
+
+For the framework-specific implementation, [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) covers directional widgets and the third-party packages that break localisation.
+
+---
+
+## Layer 3: Arabic typography is not Latin typography resized
+
+Arabic script is cursive — letters connect and change shape by position. This has consequences most design systems do not account for:
+
+**Line height must increase.** Arabic ascenders and descenders extend further than Latin. A `line-height` of 1.5 that looks comfortable in English feels cramped in Arabic; 1.7 to 1.8 is a better starting point.
+
+**Optical size differs.** At the same point size, Arabic often reads smaller. Arabic text frequently needs 1–2px more than its Latin equivalent to feel equal.
+
+**Letter-spacing must be zero.** Applying `letter-spacing` to Arabic breaks the connections between letters. It does not merely look wrong — it renders the text visually broken. This is one of the most common CSS mistakes in bilingual sites.
+
+**Text expands and contracts unpredictably.** Arabic is often 20–25% shorter than English in character count but taller in rendered height. Fixed-height buttons and cards designed around English will break in both directions.
+
+**Font files are heavier.** Arabic typefaces carry far more glyphs than Latin ones — a full Arabic font can be several times the size. [Arabic web fonts](/en/blog/arabic-web-fonts) covers subsetting, `woff2`, and `font-display` for keeping this from wrecking your load time.
+
+---
+
+## Layer 4: numerals, the detail that quietly signals "foreign"
+
+Arabic has two numeral systems in active use: Western Arabic (`1234`) and Eastern Arabic (`١٢٣٤`). Which to use is a **product decision that varies by region** — Egypt and the Levant lean toward Eastern; the Gulf commonly uses Western, especially in commercial contexts.
+
+**Choose deliberately, then apply consistently.** Mixing them in one interface is the actual error. A price in `١٢٣` next to an order number in `123` reads as an unfinished product.
+
+**Never mirror these,** regardless of numeral choice: phone numbers, IBANs, credit card numbers, version numbers, and anything else where digit order carries meaning.
+
+**Also part of this layer:** currency placement and formatting (`ر.س ١٢٣` versus `123 SAR`), decimal separators, and percentage sign position. These are locale settings, not translations, and they belong in your i18n layer rather than in translated strings.
+
+---
+
+## Layer 5: dates
+
+Hijri dates matter in the Gulf, particularly for government-facing, religious, and HR products.
+
+**The rule that prevents most bugs: store Gregorian, display Hijri.** Storing Hijri dates in your database creates conversion problems you will not enjoy debugging, because there is no single Hijri calendar — Umm al-Qura, tabular, and sighting-based calendars disagree by a day or more.
+
+[Hijri dates in applications](/en/blog/hijri-dates-guide) covers the conversion approach in both browser and Flutter, and why picking a specific calendar authority matters.
+
+---
+
+## Layer 6: what translation alone never fixes
+
+This is the layer that separates products that feel Arabic from products that feel translated, and it is almost never in scope.
+
+**Search behaviour differs, not just vocabulary.** Arabic speakers search with different phrasings, and often mix Arabic and English in one query. Literally translating your English keywords produces content nobody searches for. This is why [we treat Arabic content as an original rather than a translation](/en/blog/seo-vs-geo) — the search intent behind an Arabic query is frequently different from its English counterpart.
+
+**Formality register is a real decision.** Modern Standard Arabic reads as formal and works everywhere. Dialect feels warmer but fragments your audience — Gulf, Levantine, and Egyptian dialects differ substantially. Most products should default to MSA with light regional vocabulary; consumer products aimed at a single country can go further.
+
+**Examples and imagery need adapting.** Names, cities, currencies, and photographs of people all carry signals. An interface using "John" and dollar amounts in a Saudi product is technically translated and practically foreign.
+
+**Diacritics (tashkeel) are usually wrong to include.** They clutter body text for fluent readers. Reserve them for children's content, religious text, and genuinely ambiguous words.
+
+---
+
+## What it costs
+
+Ranges assume localisation is planned from the start. Adding Arabic to a shipped English-only product costs substantially more, because layout assumptions are already baked in.
+
+| Work | Effort | Indicative cost |
+|---|---|---|
+| RTL layout implementation | 5 – 15 days | $2,500 – $8,000 |
+| Arabic typography and font optimisation | 2 – 4 days | $1,000 – $2,500 |
+| i18n infrastructure (if absent) | 4 – 8 days | $2,000 – $5,000 |
+| Numerals, dates, currency formatting | 2 – 5 days | $1,000 – $3,000 |
+| Translation (professional, technical) | — | $0.08 – $0.15 per word |
+| Content adaptation (rewriting, not translating) | — | 1.5 – 2× translation rate |
+| Arabic QA by a native speaker | 3 – 6 days | $1,500 – $3,500 |
+
+**Built in from the start: roughly 15–25% on top of a single-language build.**
+
+**Retrofitted after launch: 40–70%.** The difference is not translation volume — it is that every fixed-width component, every `margin-left`, and every hardcoded string has to be found and rewritten.
+
+> **The cheapest decision available:** if Arabic is anywhere in your roadmap, build the i18n layer in phase one even if you launch English-only. Externalising strings and using logical CSS properties costs days upfront and saves weeks later.
+
+---
+
+## A phased plan
+
+**Phase 1 — Foundation (before writing UI code)**
+Set up the i18n framework, externalise every string, use logical CSS properties throughout, and test the layout in RTL early even with placeholder text. Catching a broken layout in week two is trivial; catching it in month four is not.
+
+**Phase 2 — Core localisation**
+Professional translation of UI strings, Arabic font selection and subsetting, numeral and date formatting, and RTL layout verification screen by screen.
+
+**Phase 3 — Content adaptation**
+Rewrite marketing copy rather than translating it, adapt examples and imagery, and do Arabic keyword research independently of the English set.
+
+**Phase 4 — QA by a native speaker**
+This is not optional and it is not the same as proofreading. A fluent Arabic speaker using the product on a real device finds problems no automated check catches — awkward line breaks, wrong register, mirrored icons that should not be, and text that is technically correct but reads as machine-produced.
+
+---
+
+## The failures worth naming
+
+1. **`letter-spacing` applied to Arabic** — breaks letter connections and renders text visually broken.
+2. **A separate RTL stylesheet** — drifts out of sync with the LTR one within weeks. Use logical properties instead.
+3. **Mirroring things that should not mirror** — play buttons, clocks, phone numbers.
+4. **Mixed numeral systems** in one interface.
+5. **Hardcoded strings** discovered in QA, scattered across the codebase.
+6. **Fixed-height components** that break when Arabic text renders taller.
+7. **Machine translation shipped without native review** — the fastest way to make a product feel unserious.
+8. **Storing Hijri dates** instead of converting at display time.
+9. **Ignoring the mixed-content problem** — Arabic sentences containing English product names or numbers need bidirectional handling, or the punctuation lands in the wrong place.
+10. **Treating Arabic SEO as translated English keywords** — the queries are genuinely different.
+
+---
+
+## Related reading
+
+- [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) — directional widgets, packages, and a pre-launch checklist.
+- [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic) — I18nManager, logical styles, and the libraries that break.
+- [Arabic numerals, currency, and formats](/en/blog/arabic-numerals-formats) — digit systems, Intl APIs, and bidirectional bugs.
+- [RTL in CSS](/en/blog/rtl-css-guide) — logical properties and one stylesheet for both directions.
+- [i18n for Arabic products](/en/blog/i18n-arabic-guide) — plurals, interpolation, and translation workflow.
+- [Arabic search](/en/blog/arabic-search-guide) — normalisation and why search misses results.
+- [12 localisation mistakes](/en/blog/localization-mistakes) — what goes wrong, with fixes.
+- [Arabic web fonts](/en/blog/arabic-web-fonts) — subsetting, `woff2`, and measuring the performance impact.
+- [Hijri dates in applications](/en/blog/hijri-dates-guide) — storage, conversion, and calendar authorities.
+- [Flutter vs React Native](/en/blog/flutter-vs-react-native) — RTL support is a genuine differentiator between them.
+- [App development cost in the Gulf](/en/blog/mobile-app-development-cost-gulf) — where localisation sits in a regional budget.
+- [SEO vs GEO](/en/blog/seo-vs-geo) — why Arabic content needs its own keyword research.
+
+---
+
+## Frequently asked questions
+
+### How much does Arabic localisation cost?
+
+Built in from the start, roughly 15 to 25 percent on top of a single-language build — commonly $8,000 to $20,000 for a typical commercial app. Retrofitted into a shipped product, 40 to 70 percent, because every layout assumption has to be found and rewritten. Translation itself is only 20 to 30 percent of that total.
+
+### Is Google Translate good enough for an Arabic app?
+
+No. Machine translation has improved considerably and is a reasonable first draft for volume content, but shipping it without native review produces text that fluent readers immediately identify as machine-produced. It also cannot make register decisions or adapt examples, which is where most of the perceived quality lives.
+
+### Should I use Eastern Arabic numerals (١٢٣) or Western (123)?
+
+It depends on your market. The Gulf commonly uses Western digits, especially commercially; Egypt and the Levant lean toward Eastern. The real error is mixing them in one interface. Choose deliberately and apply consistently — and never mirror phone numbers, IBANs, or card numbers regardless of the choice.
+
+### Do I need Hijri dates?
+
+For consumer products in the Gulf, usually as a secondary display alongside Gregorian. For government-facing, HR, and religious products, often as the primary. Always store Gregorian and convert for display, since there is no single Hijri calendar and storing it creates conversion problems.
+
+### Which framework handles Arabic RTL best?
+
+Flutter has the deepest built-in directionality support — mirroring, bidirectional text, and directional widgets work correctly with less manual correction. React Native is capable but needs more hand-tuning. For an Arabic-first product this is a real differentiator, not a marketing point.
+
+### Should I write in Modern Standard Arabic or dialect?
+
+Modern Standard Arabic for most products: it reads as professional and works across every Arabic-speaking market. Dialect feels warmer but fragments your audience, since Gulf, Levantine, and Egyptian dialects differ substantially. A reasonable default is MSA with light regional vocabulary.
+
+### Can I add Arabic later instead of now?
+
+You can, but it costs roughly triple. The cheap middle path: build the i18n layer and use logical CSS properties in phase one even if you launch English-only. That costs a few days now and saves weeks later, because the expensive part of retrofitting is not translation — it is undoing layout assumptions.
+
+---
+
+## Conclusion
+
+**Arabic localisation is six layers and translation is one of them.** Teams that budget only for translation ship products that Arabic users politely describe as translated.
+
+**The cost difference between planning for it and retrofitting it is roughly threefold** — and the decision that captures most of that saving is simply building the i18n layer and using logical CSS properties from the start, whether or not Arabic ships in version one.
+
+**And the layer that most determines perceived quality is the one usually left out**: content adapted rather than converted, reviewed by someone who actually reads Arabic.
+
+**Planning an Arabic product?** [Get in touch](/en/contact) for a free scoping conversation — we build Arabic-first and can tell you honestly which layers your product actually needs. See our [mobile app](/en/services/mobile-apps) and [web development services](/en/services/web-development).

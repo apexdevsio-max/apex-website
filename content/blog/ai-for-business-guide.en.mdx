@@ -1,0 +1,201 @@
+---
+{"slug":"ai-for-business-guide","title":"AI for Business: What Actually Works and What It Costs","seoTitle":"AI for Business: A Practical Guide","excerpt":"Which business problems AI genuinely solves, how to evaluate a use case before building, what running costs look like, and the compliance constraints that decide architecture.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# AI for Business: What Actually Works and What It Costs
+
+Most AI projects that fail did not fail technically. They were built because AI was available, not because a problem needed solving — and the resulting system worked exactly as specified while changing nothing about the business.
+
+**The short answer: AI is worth building when a task is high-volume, language-heavy, and tolerant of occasional error. If any one of those three is missing, conventional software is usually cheaper, faster, and more reliable.**
+
+This guide covers how to evaluate a use case, what ongoing costs actually look like, and the constraints that shape what you can build in Gulf markets.
+
+---
+
+## The three-part test
+
+Before any AI project, check all three. A "no" on any one is a strong signal to build something conventional instead.
+
+**1. Is it high-volume?**
+AI carries a per-use cost that never goes away. Automating something that happens ten times a month rarely repays the build. Automating something that happens ten thousand times a month usually does.
+
+**2. Is it language-heavy?**
+Language models are exceptional at understanding and producing unstructured text, and unremarkable at everything else. If your problem is arithmetic, scheduling, or exact lookup, a database query is more accurate and costs nothing per call.
+
+**3. Can it tolerate being occasionally wrong?**
+This is the one teams skip. Language models are probabilistic — they will sometimes produce confident, plausible, wrong output. If a single error is unacceptable and undetectable, either add human review or do not build it.
+
+> **The reframe that saves projects:** ask "what happens when this is wrong?" before "how accurate is it?" A system that is 95% accurate is excellent for drafting replies and unacceptable for calculating salaries.
+
+---
+
+## What genuinely works
+
+Ordered by reliability of return, based on what actually holds up in production.
+
+**Customer service assistance.** Answering repetitive questions from your own documented knowledge. High volume, language-heavy, and errors are recoverable because a human can take over. This is the most reliable AI business case there is — see [AI chatbot costs](/en/blog/ai-chatbot-cost).
+
+**Document processing.** Extracting structured data from invoices, contracts, and forms. Replaces manual data entry, which is expensive, slow, and error-prone in its own right. Arabic documents add difficulty — see [Arabic document processing](/en/blog/arabic-ocr-document-processing).
+
+**Internal knowledge search.** Employees asking questions of company documentation, policies, and procedures. The value is time recovered, and it scales with how much documentation you have.
+
+**Content drafting.** First drafts of product descriptions, summaries, and routine correspondence. The output is reviewed before use by definition, which makes the error tolerance question easy.
+
+**Classification and routing.** Sorting incoming requests by type, urgency, or department. High volume, and a misroute is cheap to correct.
+
+**What works less often than people expect:** anything requiring exact numerical reasoning, anything where the model must know facts it was not given, and anything where being wrong is invisible until it causes damage.
+
+---
+
+## Buy, configure, or build
+
+Most companies over-build. The order below is roughly cheapest to most expensive, and you should exhaust each before moving down.
+
+| Approach | Cost | Time | Suits |
+|---|---|---|---|
+| **Existing SaaS with AI features** | Subscription | Days | Common problems already solved |
+| **Configured platform** | Subscription + setup | 2 – 6 weeks | Standard use case, your data |
+| **Custom build on an API** | Development + running cost | 1 – 4 months | Real differentiation or unusual integration |
+| **Fine-tuned or self-hosted model** | High | Months | Strict data constraints, very high volume |
+
+**Start at the top.** If your support tool already has an AI reply feature, use it before commissioning anything. The build only makes sense when a configured product genuinely cannot do the job.
+
+**Self-hosting deserves scepticism.** Teams reach for it to control data or cut costs, and usually find that infrastructure, expertise, and maintenance exceed the API fees they were avoiding. It becomes correct at genuinely high volume, or when data residency rules leave no alternative — see [data residency in the Gulf](/en/blog/data-residency-gulf).
+
+---
+
+## What it actually costs
+
+AI has a cost structure most software does not: **it costs money every time it runs.**
+
+**The three components:**
+
+**Build cost** — engineering to integrate, design the prompts, connect your data, and handle failure cases. Comparable to any software feature.
+
+**Running cost** — charged per unit of text processed, in both directions. This scales directly with usage, and it never goes to zero.
+
+**Maintenance** — models are updated and deprecated, prompts drift as your business changes, and quality needs monitoring. Budget for it as you would any dependency.
+
+**How to estimate the running cost honestly:**
+
+1. Take a **real sample** of the work — twenty actual customer conversations, not invented examples
+2. Measure what each one consumes, including whatever context you supply
+3. Multiply by realistic monthly volume
+4. **Add 50%** for retries, failures, longer-than-expected inputs, and growth
+
+> **The Arabic-specific factor:** Arabic text consumes noticeably more tokens than English for the same meaning. Any estimate built on English samples will understate an Arabic workload — measure with real Arabic text from your own domain. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers the evaluation method.
+
+**Prices change constantly**, and any figure printed in an article ages badly. Get current rates from the provider and build your own estimate with the method above — that is the number that matters, not a published price per unit.
+
+---
+
+## The compliance constraint that shapes architecture
+
+This decides your options, so establish it before designing anything.
+
+**Sending user data to an external model is both a cross-border transfer and a processing operation.** Both carry obligations under Gulf data protection law.
+
+**Three questions to answer before choosing a provider:**
+
+1. **Where does inference run?** If personal data cannot leave the country, most consumer-tier APIs are unavailable to you.
+2. **Are inputs retained?** For how long, and who can access them?
+3. **Are inputs used for training?** Many default consumer tiers permit this. Enterprise tiers usually do not — and the difference is contractual, not technical.
+
+**What this rules in and out:** for ordinary commercial data, external APIs with appropriate terms are usually fine. For health data in the UAE, or regulated financial data, the residency requirement may leave regional deployment or self-hosting as the only compliant paths.
+
+[Gulf regulatory compliance](/en/blog/gulf-compliance-guide) covers the wider picture, and [Saudi PDPL](/en/blog/pdpl-compliance-guide) the specific transfer restrictions.
+
+---
+
+## Measuring whether it worked
+
+Most AI projects have no success criteria, which is why so many are described as "interesting" rather than "profitable."
+
+**Define the baseline before you build.** How long does the task take today, how many happen, and what does that cost in salary time? Without this number, you cannot demonstrate improvement.
+
+**Pick a metric that maps to money:**
+
+- Support: percentage of conversations resolved without a human
+- Documents: minutes of manual entry eliminated per week
+- Internal search: hours of employee time recovered
+- Content: drafts produced per week and the edit ratio
+
+**Track quality alongside volume.** A support bot resolving 60% of conversations sounds good until you learn customer satisfaction dropped. Measure both, always.
+
+**Set a kill criterion up front.** "If this does not reach X by month three, we stop." Projects without one continue indefinitely on the strength of being technically interesting.
+
+---
+
+## The failures worth knowing
+
+**Building before defining the problem.** "We should use AI" is a technology decision looking for a justification. Start from a costly, repetitive, language-heavy task.
+
+**Ignoring the running cost.** A pilot with fifty users looks cheap. Fifty thousand users on the same architecture can cost more than the staff it replaced.
+
+**No human fallback.** Every AI system needs a path to a person. Without one, the failure cases become customer-facing failures.
+
+**Treating output as authoritative.** Language models produce confident, well-formed text whether or not it is correct. Design for verification, especially where the output feeds a decision.
+
+**Testing in English for an Arabic product.** Quality, token consumption, and failure modes all differ. An English evaluation tells you very little about Arabic performance.
+
+**Skipping the compliance question until launch.** Discovering a residency constraint after integration is a rebuild, not a configuration change.
+
+---
+
+## Related reading
+
+- [AI chatbot costs](/en/blog/ai-chatbot-cost) — the most common use case, costed in detail.
+- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) — evaluation criteria and a testing method.
+- [Arabic document processing](/en/blog/arabic-ocr-document-processing) — extracting data from Arabic documents.
+- [RAG and AI knowledge bases](/en/blog/rag-knowledge-base) — making AI answer from your own documents.
+- [What AI costs to run](/en/blog/llm-running-costs) — token pricing and the levers that cut spend.
+- [AI in online stores](/en/blog/ecommerce-ai-features) — which e-commerce features lift revenue.
+- [Internal AI assistant](/en/blog/internal-ai-assistant) — answering employee questions from your documentation.
+- [AI privacy and security risks](/en/blog/ai-privacy-risks) — prompt injection, leakage, and the controls that work.
+- [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) — the rules that constrain architecture.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf) — where processing may happen.
+- [Mobile app development cost](/en/blog/mobile-app-development-cost) — how AI features affect a build budget.
+
+---
+
+## Frequently asked questions
+
+### Is AI worth it for my business?
+
+Apply three tests: is the task high-volume, language-heavy, and tolerant of occasional error? All three need to be true. If the task happens rarely, involves exact calculation, or cannot survive being wrong without detection, conventional software is cheaper, faster, and more reliable.
+
+### How much does an AI feature cost to run?
+
+It varies with usage because AI charges per unit of text processed. Estimate it by taking a real sample of the work, measuring what each item consumes, multiplying by realistic monthly volume, and adding 50% for retries and growth. Published per-unit prices change constantly — your own measured estimate is the number that matters.
+
+### Should we build a custom AI solution or buy one?
+
+Start with existing tools. If your support platform already has an AI reply feature, use it before commissioning anything. A custom build only makes sense when a configured product genuinely cannot do the job, or when the integration is unusual enough that no product covers it.
+
+### Can I use AI with customer data under Gulf regulations?
+
+Only after establishing three things: where inference runs, whether inputs are retained, and whether they are used for training. Sending personal data to an external model is both a cross-border transfer and a processing operation. Many consumer-tier terms permit training on inputs, which is incompatible with most compliance positions; enterprise tiers usually do not.
+
+### Why does Arabic AI cost more than English?
+
+Arabic text consumes noticeably more tokens than English for the same meaning, and cost is charged per token. Any estimate built on English samples will understate an Arabic workload. Measure with real Arabic text from your own domain rather than adjusting an English figure.
+
+### Should we self-host an AI model?
+
+Usually not. Teams reach for self-hosting to control data or cut costs, then find infrastructure, expertise, and maintenance exceed the API fees they were avoiding. It becomes correct at genuinely high volume, or when data residency rules leave no compliant alternative.
+
+### How do I know if our AI project succeeded?
+
+Define the baseline before building — how long the task takes today, how often it happens, what that costs in salary time — then pick a metric that maps to money, such as conversations resolved without a human. Track quality alongside volume, and set a kill criterion up front so the project has a defined end if it does not work.
+
+---
+
+## Conclusion
+
+**The three-part test does most of the work.** High-volume, language-heavy, error-tolerant. Projects that fail one of those and get built anyway are the ones that end up described as interesting rather than profitable.
+
+**Cost per use is the structural difference** from other software, and the reason pilots mislead. Estimate with real samples and real volume, in the language your users actually write.
+
+**And settle compliance before architecture.** Where inference may run is a constraint on your options, not a detail to resolve at launch.
+
+**Considering an AI project?** [Get in touch](/en/contact) for a free scoping conversation — including an honest answer if your problem is better solved without AI. See our [AI solutions](/en/services/ai-solutions).

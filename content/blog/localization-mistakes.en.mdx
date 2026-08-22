@@ -1,0 +1,202 @@
+---
+{"slug":"localization-mistakes","title":"12 Arabic Localisation Mistakes and How to Fix Them","seoTitle":"Common Arabic Localisation Mistakes","excerpt":"The mistakes that make an Arabic app feel translated rather than native — each with the symptom, the cause, and the fix.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# 12 Arabic Localisation Mistakes and How to Fix Them
+
+Every one of these has shipped in a real product. Most are individually small, and collectively they are the difference between an app Arabic users trust and one they describe as "translated."
+
+They are ordered by how often they occur, not by severity. For the underlying method, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+
+---
+
+## 1. Letter-spacing applied to Arabic
+
+**Symptom:** Arabic text looks broken — letters appear disconnected, like a word cut into pieces.
+
+**Cause:** a `letter-spacing` value inherited from a design system built for Latin type.
+
+**Why it matters more than it sounds:** Arabic is cursive. Letters connect and change shape by position. Adding letter-spacing severs those connections, so the text is not merely oddly spaced — it is visually wrong in a way every native reader notices instantly.
+
+**Fix:** `letter-spacing: 0` for all Arabic text. Audit your design tokens, because this usually comes from a global heading style rather than an intentional decision.
+
+---
+
+## 2. A separate RTL stylesheet
+
+**Symptom:** RTL layout is correct for old components and broken for anything added in the last few months.
+
+**Cause:** `styles-rtl.css` overriding physical properties. Every new component needs two implementations, and only one gets tested.
+
+**Fix:** [logical CSS properties](/en/blog/rtl-css-guide). `margin-inline-start` instead of `margin-left`, one stylesheet, correct in both directions. Add a lint rule banning physical properties in new code and convert existing components as you touch them.
+
+---
+
+## 3. Mirroring things that must not mirror
+
+**Symptom:** the play button points left. The clock runs backwards. Phone numbers display with the country code at the wrong end.
+
+**Cause:** a blanket `transform: scaleX(-1)` applied to all icons under RTL.
+
+**Fix:** flip only directional icons — back arrows, next/previous, send. Media controls, clocks, charts with a time axis, and anything where character order carries meaning stay as they are.
+
+---
+
+## 4. Mixed numeral systems
+
+**Symptom:** a price in `١٢٣` beside an order number in `123`.
+
+**Cause:** no single decision about numerals, so different developers made different choices.
+
+**Fix:** choose one system, put it in locale configuration, and never hardcode a digit. Use `Intl.NumberFormat` with an explicit numbering system — see [Arabic numerals and formats](/en/blog/arabic-numerals-formats).
+
+---
+
+## 5. Fixed-height components
+
+**Symptom:** Arabic text clipped in buttons and cards, or overflowing its container.
+
+**Cause:** components sized around English text. Arabic is often shorter in character count but taller in rendered height, and it needs more line-height.
+
+**Fix:** `min-height` instead of `height`, and test every component with real Arabic content — not with Latin placeholder text, which hides the problem entirely.
+
+---
+
+## 6. Hardcoded strings found during QA
+
+**Symptom:** English text appearing in an otherwise Arabic interface, discovered late and scattered everywhere.
+
+**Cause:** no i18n layer at the start, so strings went straight into components.
+
+**Fix:** build the [i18n layer](/en/blog/i18n-arabic-guide) in phase one. Check the places strings hide: validation messages, email templates, error handlers, chart labels, PDF generators, and push notification text.
+
+---
+
+## 7. Two plural forms instead of six
+
+**Symptom:** Arabic quantities read as grammatically wrong to native speakers, particularly for two items.
+
+**Cause:** an i18n setup that handles only singular and plural, because that is what English needs. Arabic has six CLDR plural categories: zero, one, two, few, many, other.
+
+**Fix:** verify your library supports CLDR plural rules and define all six forms. The dual form for exactly two is the one most noticeably missing.
+
+---
+
+## 8. Concatenated sentence fragments
+
+**Symptom:** Arabic sentences with words in nonsensical order.
+
+**Cause:** building sentences from pieces — `t("youHave") + count + t("items")` — which assumes English word order.
+
+**Fix:** one string per sentence with named interpolation variables. Never assemble sentences from translated fragments.
+
+---
+
+## 9. Broken bidirectional punctuation
+
+**Symptom:** a full stop appearing at the start of a line, or a currency symbol on the wrong side of a price.
+
+**Cause:** Latin text or numbers embedded in Arabic without isolation. The bidirectional algorithm resolves neutral characters against surrounding context.
+
+**Fix:** wrap embedded content in `<bdi>`, force `dir="ltr"` on phone numbers and IBANs, and use `Intl.NumberFormat` for currency rather than concatenating a symbol and a number.
+
+---
+
+## 10. Machine translation shipped without review
+
+**Symptom:** text that is technically correct and reads as machine-produced. Native users describe the product as unserious.
+
+**Cause:** treating translation as a mechanical step rather than a content step.
+
+**Fix:** machine translation is a reasonable first draft for volume content. Always have a fluent speaker review before release. It cannot make register decisions or adapt examples, and those are where perceived quality lives.
+
+---
+
+## 11. Backend surfaces left in English
+
+**Symptom:** a fully Arabic app that sends English confirmation emails and English PDF invoices.
+
+**Cause:** localisation scoped to the interface only.
+
+**Fix:** include emails, SMS, PDF documents, and API error messages in the translation scope from the start. This is the single most commonly overlooked surface.
+
+---
+
+## 12. Arabic SEO as translated English keywords
+
+**Symptom:** Arabic content that ranks for nothing.
+
+**Cause:** translating the English keyword list literally. Arabic speakers search with different phrasings, and frequently mix Arabic and English in one query.
+
+**Fix:** do Arabic keyword research independently, as an original exercise rather than a translation. See [SEO vs GEO](/en/blog/seo-vs-geo). The same applies inside your product — see [Arabic search](/en/blog/arabic-search-guide) for why exact matching fails.
+
+---
+
+## The pattern behind all twelve
+
+Ten of these twelve are cheap to prevent and expensive to fix, and the reason is the same in every case: **they are decisions baked into the first weeks of a project.**
+
+Design tokens, style property conventions, the i18n layer, and translation scope are all set early and touched by everything afterwards. Changing them later means revisiting every component.
+
+**The three habits that prevent most of this list:**
+
+1. **Build the i18n layer in phase one**, whatever your launch language.
+2. **Use logical properties from the first component.**
+3. **Test in RTL in week one**, with real Arabic text, not placeholder Latin.
+
+None of these costs meaningful time upfront. Together they eliminate most of what appears above.
+
+---
+
+## Related reading
+
+- [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers and what it costs.
+- [RTL in CSS](/en/blog/rtl-css-guide) — logical properties in depth.
+- [i18n for Arabic products](/en/blog/i18n-arabic-guide) — plurals and workflow.
+- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — digits, currency, bidirectional text.
+- [Arabic search](/en/blog/arabic-search-guide) — why search misses obvious results.
+- [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic) — mobile specifics.
+
+---
+
+## Frequently asked questions
+
+### Why does my Arabic text look disconnected?
+
+Letter-spacing. Arabic is cursive, so letters connect and change shape by position, and any non-zero letter-spacing severs those connections. Set `letter-spacing: 0` for Arabic text, and check your design tokens — it usually comes from a global heading style rather than a deliberate choice.
+
+### What is the most common Arabic localisation mistake?
+
+Applying letter-spacing to Arabic text, closely followed by maintaining a separate RTL stylesheet. Both come from applying Latin typography and CSS habits to a script that works differently, and both are avoidable with a single convention decision at the start.
+
+### Why is my Arabic text getting clipped in buttons?
+
+The component has a fixed height sized around English text. Arabic renders taller and needs more line-height, so it overflows or clips. Use `min-height` instead of `height`, and test with real Arabic content rather than Latin placeholder text, which hides the problem.
+
+### Why do I only need two plural forms in English but six in Arabic?
+
+Arabic grammar distinguishes zero, one, two, few, many, and other as separate categories, including a specific dual form for exactly two. An i18n setup built for English handles only singular and plural, so it produces grammatically wrong Arabic for most quantities — and the error is invisible to reviewers who do not read Arabic.
+
+### Can I fix these problems after launch?
+
+Some, cheaply — letter-spacing and icon mirroring are quick. But the expensive ones are architectural: the i18n layer, physical style properties, and fixed-height components are decisions touched by every part of the codebase. Retrofitting typically costs three times what building it in would have.
+
+### Why does my Arabic content not rank in search?
+
+Usually because the keywords were translated from an English list rather than researched independently. Arabic speakers search with different phrasings and frequently mix Arabic and English in one query, so a literal translation of English keywords produces content matching queries nobody types.
+
+### What should I do first if my Arabic app already has these problems?
+
+Fix the typography issues first — letter-spacing and line-height are quick and produce the most visible improvement. Then add a lint rule preventing new physical CSS properties, so the problem stops growing while you convert existing components as you touch them.
+
+---
+
+## Conclusion
+
+**Most of this list is decided in the first two weeks of a project.** Design tokens, CSS conventions, the i18n layer, and translation scope are all early decisions that everything afterwards depends on.
+
+**The typography mistakes are the most visible and the cheapest to fix.** If your Arabic app has problems today, start with letter-spacing and line-height.
+
+**And test in RTL with real Arabic content in week one.** Nearly every item above is obvious on first sight to someone reading Arabic on a real device — and nearly invisible to a team reviewing Latin placeholder text.
+
+**Want a review of your Arabic product?** [Get in touch](/en/contact) — we build Arabic-first, so this list is a checklist we run rather than a set of problems we discover. See our [mobile app](/en/services/mobile-apps) and [web development services](/en/services/web-development).

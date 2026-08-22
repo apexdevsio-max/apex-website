@@ -1,0 +1,184 @@
+---
+{"slug":"app-store-requirements","title":"App Store Rejections: Why Apps Get Rejected and How to Avoid It","seoTitle":"App Store Rejection Reasons and Fixes","excerpt":"The rejection reasons that actually cost time on Apple and Google — privacy declarations, account deletion, payment rules — plus Gulf-specific requirements and realistic review timelines.","date":"2026-08-15","dateModified":"2026-08-15"}
+---
+
+# App Store Rejections: Why Apps Get Rejected and How to Avoid It
+
+Store review is the one project milestone entirely outside your control, and it is routinely left out of the schedule. A first submission rejected twice can add two to three weeks to a launch that was otherwise on time.
+
+**The short answer: budget one to two weeks for first review. Most rejections are avoidable and come from a small set of causes — privacy declarations that do not match the binary, missing account deletion, payment rules, and incomplete review information.**
+
+This guide covers what actually gets apps rejected and the Gulf-specific requirements that catch regional launches.
+
+---
+
+## Realistic timelines
+
+| Stage | Typical duration |
+|---|---|
+| Apple first review | 24 – 48 hours |
+| Apple resubmission after rejection | 24 – 48 hours |
+| Google first review (new account) | Up to several days |
+| Google subsequent reviews | Hours to 2 days |
+| **Budget for first launch** | **1 – 2 weeks including one rejection** |
+
+**Plan for at least one rejection on a first submission.** It is the normal case, not a failure. Teams that schedule zero review buffer are the ones that miss launch dates.
+
+**New Google Play developer accounts face additional requirements**, including a closed testing period with a minimum number of testers before production access for personal accounts. Check the current rules when you create the account, not when you are ready to ship — this requirement has stranded launches.
+
+---
+
+## The rejections that actually happen
+
+### 1. Privacy declarations that do not match the binary
+
+The most common technical rejection. Apple's privacy labels and Google's Data Safety form must match what your app actually does — and automated analysis inspects your binary.
+
+**Why it happens:** a third-party SDK collects data the developer never audited. Advertising, analytics, and attribution SDKs are the usual sources.
+
+**The fix:** audit what every dependency transmits before filling in either form. Your [privacy policy](/en/blog/privacy-policy-guide) must agree with both.
+
+### 2. Missing account deletion
+
+Both stores require that an app allowing account creation also allows account deletion **from within the app**. A support email address does not satisfy this.
+
+This catches a lot of apps because deletion is genuinely more work than it looks — it must actually delete, including from backups and logs, which is also what data protection law requires.
+
+### 3. Payment rules
+
+Digital goods and services consumed inside the app generally must use the platform's in-app purchase system. Physical goods and real-world services use external payment.
+
+**Where teams get caught:** a subscription unlocking in-app content routed through an external payment gateway. Both stores treat this as a violation. The boundary between "digital content" and "real-world service" is where most disputes arise — if you are unsure, ask before building the flow, not after.
+
+### 4. Incomplete review information
+
+Reviewers must be able to use your app fully. Rejections follow from:
+
+- No demo account for a login-gated app
+- Demo credentials that stopped working
+- Features requiring hardware or a backend the reviewer cannot access
+- No explanation of region-locked functionality
+
+**The fix is administrative:** provide working demo credentials, and verify they still work on the day you submit.
+
+### 5. Broken links and placeholder content
+
+Privacy policy URLs returning 404, support pages that do not exist, and "Lorem ipsum" left in a settings screen. Trivially avoidable and genuinely common.
+
+### 6. Insufficient functionality
+
+Apps that are a thin wrapper around a website, or that duplicate functionality already available without adding value, get rejected as not providing enough app-like utility. If your app is essentially your website in a shell, see [mobile app or responsive website](/en/blog/app-vs-pwa) — the store may be telling you something true.
+
+### 7. Permissions without justification
+
+Requesting location, contacts, camera, or microphone access without a clear in-app reason. Each permission needs a usage description string explaining **why**, and the reason must be evident from the app's actual behaviour.
+
+---
+
+## Gulf-specific requirements
+
+Regional launches carry considerations that global guides omit.
+
+**Content standards are stricter.** Content acceptable elsewhere may not be in Gulf markets. This affects apps with user-generated content, dating features, or anything touching alcohol, gambling, or religious material. Regional app store fronts apply local standards.
+
+**Arabic listing metadata.** Not strictly required, but a listing in English only performs poorly in Arabic-speaking markets and looks unserious. Localise the title, description, keywords, and screenshots. This is store optimisation as much as compliance — see the [Arabic localisation guide](/en/blog/arabic-localization-guide).
+
+**RTL screenshots.** If your app supports Arabic, submit Arabic screenshots showing the RTL layout. Reviewers checking an Arabic listing against LTR-only screenshots notice.
+
+**Payment integration.** Local gateways like Mada must still respect platform payment rules for digital goods. Physical goods and real-world services are fine — see [Gulf payment gateways](/en/blog/gulf-payment-gateways).
+
+**Health and finance apps face additional scrutiny**, and both stores may request evidence of licensing. Have your regulatory documentation ready at submission rather than scrambling after a rejection. See [health apps in the UAE](/en/blog/health-apps-uae-compliance) and [fintech in Saudi Arabia](/en/blog/fintech-sama-compliance).
+
+---
+
+## A pre-submission checklist
+
+**Accounts and access**
+- [ ] Working demo account with credentials in review notes
+- [ ] Credentials verified on submission day
+- [ ] Any special access or hardware requirements explained
+
+**Privacy**
+- [ ] Every SDK audited for what it actually transmits
+- [ ] Apple privacy labels match the binary
+- [ ] Google Data Safety form matches the binary
+- [ ] Privacy policy URL live and matching both
+- [ ] Policy reachable from inside the app
+
+**Functionality**
+- [ ] Account deletion available in-app, and it genuinely deletes
+- [ ] No placeholder content or dead links anywhere
+- [ ] Every permission has a clear usage description
+- [ ] Payment method correct for what you are selling
+
+**Regional**
+- [ ] Arabic listing metadata and screenshots
+- [ ] RTL screenshots if Arabic is supported
+- [ ] Content reviewed against regional standards
+- [ ] Licensing documentation ready for regulated sectors
+
+---
+
+## When you are rejected
+
+**Read the actual reason.** Rejection notices cite a specific guideline. The cited guideline is the thing to fix — not what you assume the reviewer meant.
+
+**You can reply.** Both stores allow a response, and if you believe the rejection is mistaken, explaining clearly with specifics often resolves it faster than resubmitting blind. This is genuinely useful when a reviewer has misunderstood a feature.
+
+**Fix and resubmit promptly.** Turnaround is usually fast. The cost of rejection is mostly the round trip, so a same-day fix keeps the delay to a day or two rather than a week.
+
+**Do not stack changes.** Fix what was cited and resubmit. Bundling unrelated improvements into a rejection fix adds new surface area for a second rejection.
+
+---
+
+## Related reading
+
+- [Privacy policy guide](/en/blog/privacy-policy-guide) — the document both stores check.
+- [Arabic localisation guide](/en/blog/arabic-localization-guide) — listing and screenshot localisation.
+- [Mobile app or responsive website](/en/blog/app-vs-pwa) — when a store is right that you do not need an app.
+- [Mobile app testing](/en/blog/mobile-app-testing) — catching problems before review does.
+- [Mobile app development cost](/en/blog/mobile-app-development-cost) — where review time sits in a timeline.
+
+---
+
+## Frequently asked questions
+
+### How long does app store review take?
+
+Apple typically reviews within 24 to 48 hours, and Google usually within hours to a couple of days, though new developer accounts can take longer. Budget one to two weeks for a first launch, since at least one rejection on a first submission is normal rather than exceptional.
+
+### Why do apps get rejected most often?
+
+Privacy declarations that do not match what the binary actually does, missing in-app account deletion, payment rule violations for digital goods, and incomplete reviewer access such as a broken demo account. The privacy mismatch is usually caused by a third-party SDK the developer never audited.
+
+### Do I need account deletion inside my app?
+
+Yes, if your app allows account creation. Both stores require deletion to be available from within the app — a support email does not satisfy it. The deletion must also genuinely remove data, including from backups and logs, which data protection law requires anyway.
+
+### Can I use my own payment gateway instead of in-app purchase?
+
+For physical goods and real-world services, yes. For digital content and services consumed inside the app, both stores generally require their in-app purchase systems. The boundary is where most disputes happen — confirm your case before building the flow rather than after a rejection.
+
+### Do I need Arabic screenshots for Gulf markets?
+
+Not strictly required, but strongly advisable. An English-only listing performs poorly in Arabic-speaking markets, and if your app supports Arabic, submitting only LTR screenshots is something reviewers notice. Localised listing metadata is also store optimisation, not just presentation.
+
+### What should I do if my app is rejected?
+
+Read the specific guideline cited, fix exactly that, and resubmit promptly. If you believe the rejection is mistaken, both stores allow a reply — explaining clearly often resolves misunderstandings faster than resubmitting. Avoid bundling unrelated changes into the fix, since that creates new rejection surface.
+
+### Are there extra requirements for health or finance apps?
+
+Yes. Both stores apply additional scrutiny and may request evidence of licensing for regulated functionality. Have your regulatory documentation ready at submission. In the Gulf this stacks on top of local licensing requirements, which are a separate and usually longer process.
+
+---
+
+## Conclusion
+
+**Budget for review time and at least one rejection.** It is the normal path, and the teams that miss launch dates are the ones who scheduled zero buffer.
+
+**Most rejections trace to a handful of causes** — privacy declarations that do not match the binary, missing account deletion, payment rules, and reviewer access. All four are checkable before you submit.
+
+**And for Gulf launches, localise the listing properly.** Arabic metadata and RTL screenshots are cheap, and an English-only listing quietly costs you installs in your target market.
+
+**Launching in the Gulf?** [Get in touch](/en/contact) — we handle submission and the regional requirements that come with it. See our [mobile app development services](/en/services/mobile-apps).

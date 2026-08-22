@@ -1,0 +1,164 @@
+---
+{"slug":"ai-privacy-risks","title":"AI Privacy and Security Risks in Production","seoTitle":"AI Privacy and Security Risks","excerpt":"Prompt injection, training on your inputs, data leakage between users, and the controls that actually reduce risk — the build-side view of AI security.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# AI Privacy and Security Risks in Production
+
+AI systems fail differently from ordinary software. A conventional bug produces an error you can see. An AI failure produces a fluent, confident, plausible answer that happens to contain another customer's data — and nothing in your logs looks wrong.
+
+**The short answer: the risks that actually materialise are prompt injection, over-broad retrieval, and inputs being retained or trained on. All three are architectural, and all three are cheaper to prevent than to remediate.**
+
+This guide is the build-side view. For the regulatory obligations, see [Gulf regulatory compliance](/en/blog/gulf-compliance-guide).
+
+---
+
+## Prompt injection
+
+The security problem with no complete solution, and the one most teams have not considered.
+
+**What it is:** a language model cannot reliably distinguish your instructions from text it is processing. If untrusted content reaches the model, that content can issue instructions.
+
+**Where untrusted content comes from** — more places than teams expect:
+
+- User messages, obviously
+- **Documents users upload**, including résumés, invoices, and support attachments
+- **Web pages the system fetches**
+- **Database fields users populated** — a product review, a profile bio
+- **Email content** in an automated processing flow
+
+**What an injection attempts:** revealing your system prompt, ignoring your restrictions, extracting data from context, or — most damaging — triggering a tool the model can call.
+
+**What actually reduces the risk:**
+
+**Least privilege on tools.** This is the highest-value control by a wide margin. If the model can only read, injection cannot cause it to write. If it can delete records, injection eventually will. **Ask what the worst instruction the model could follow would do, then remove that capability.**
+
+**Confirm consequential actions.** Anything that sends, pays, deletes, or changes permissions should require human approval. This converts a silent compromise into a visible request.
+
+**Treat model output as untrusted input.** If output flows into another system, validate it as you would any user input. Output rendered as HTML without escaping is a cross-site scripting vector.
+
+**Separate instructions from data structurally**, using whatever mechanism your provider offers, and never assemble prompts by concatenating user text into instruction text.
+
+> **The realistic posture:** you cannot fully prevent injection. You can ensure that a successful injection cannot do anything expensive. Architecture beats filtering here — a model that lacks a dangerous capability cannot be tricked into using it.
+
+---
+
+## Data leakage between users
+
+The failure that ends internal projects, and it is almost always a retrieval bug rather than a model failure.
+
+**How it happens:** a shared vector index without per-user filtering. User A asks a question, retrieval returns the closest matching passages, and one of them came from User B's document. The model summarises it faithfully.
+
+**The prevention is architectural:**
+
+- **Filter at retrieval, never at generation.** Exclude documents the user cannot access *before* the model sees them. Instructing the model to withhold information is a suggestion to a probabilistic system.
+- **Check permissions at query time**, not at indexing time, so revoked access takes effect immediately.
+- **Test adversarially.** Create two accounts with distinct documents and deliberately try to retrieve one from the other. Teams that skip this test find the bug in production.
+
+**Conversation history is the same class of problem.** Session state keyed carelessly — a shared cache, a mis-scoped identifier — surfaces one user's history to another. Scope every cache key to the user.
+
+---
+
+## Retention and training
+
+The question teams answer last and should answer first.
+
+**Three things to establish before choosing any provider:**
+
+1. **Are inputs retained?** For how long, and who can access them?
+2. **Are inputs used for training?** Many default consumer tiers permit this. Enterprise tiers usually do not — and the difference is contractual, not technical.
+3. **Where does inference run?** This determines whether you have a cross-border transfer.
+
+**Why it matters concretely:** if your support assistant sends customer messages to a provider that trains on inputs, customer data is now in a training corpus. That is not recoverable, and it is a straightforward violation of most compliance positions.
+
+**The pattern to watch for:** a developer prototypes on a personal consumer account with permissive terms, the prototype becomes the production integration, and nobody revisits the terms. Check what your production system is actually using.
+
+**Log what you send.** You cannot answer "what data went to which provider" retrospectively without it — and that is precisely the question asked during an incident or a procurement review.
+
+---
+
+## What you are storing
+
+AI systems accumulate sensitive data in places teams do not think of as data stores.
+
+**Conversation logs** contain whatever users typed, and users type things you did not ask for — identification numbers, medical details, credentials. Apply the same retention policy you apply to any personal data, and consider redacting obvious patterns before storage.
+
+**Vector embeddings are not anonymous.** Text can be partially reconstructed from embeddings. Treat your vector database as containing the source data, because effectively it does — including for residency purposes.
+
+**Prompt caches** hold recent context on the provider side. Usually short-lived, but worth understanding when handling sensitive material.
+
+**Debug traces** are the quiet one. Systems that log full prompts for troubleshooting frequently send them to a third-party logging service — often in another country. That is a transfer nobody documented. See [data residency](/en/blog/data-residency-gulf).
+
+---
+
+## Controls worth building
+
+Ordered by value relative to effort:
+
+**1. Minimise what you send.** The cheapest control available. Redact identifiers before they reach the model. A support assistant rarely needs the customer's full record to answer a question about return policy.
+
+**2. Constrain tool capability.** Read-only wherever possible. Confirmation on anything consequential.
+
+**3. Filter retrieval by user.** Hard constraint, checked at query time.
+
+**4. Log requests without logging content.** Record that a request happened, its size, and which feature made it — without storing the text itself where possible.
+
+**5. Rate-limit per user.** Bounds both cost and bulk extraction attempts.
+
+**6. Monitor for anomalies.** A sudden spike in requests or token usage usually indicates a bug or abuse. Catching it in hours rather than at invoice time is the difference between an incident and a write-off.
+
+**7. Keep a human in the loop** for consequential outputs. The most reliable control there is, and the one teams remove first under efficiency pressure.
+
+---
+
+## Related reading
+
+- [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) — the legal obligations.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf) — where processing may happen.
+- [AI for business](/en/blog/ai-for-business-guide) — evaluating a use case.
+- [RAG and AI knowledge bases](/en/blog/rag-knowledge-base) — where retrieval filtering belongs.
+- [API security](/en/blog/api-security-guide) — the conventional layer underneath.
+- [Internal AI assistant](/en/blog/internal-ai-assistant) — permissions in practice.
+
+---
+
+## Frequently asked questions
+
+### What is prompt injection?
+
+Text a model processes that contains instructions, which the model may follow because it cannot reliably distinguish your instructions from content. It arrives through user messages, uploaded documents, fetched web pages, and even database fields users populated. There is no complete defence, so the control that matters is limiting what the model is able to do.
+
+### How do I protect against prompt injection?
+
+Architecturally rather than by filtering. Give the model the minimum tool capability the task requires — if it can only read, injection cannot make it write. Require human confirmation for anything that sends, pays, or deletes. Treat model output as untrusted input if it flows into another system.
+
+### Can an AI system leak one customer's data to another?
+
+Yes, and it is usually a retrieval bug rather than a model failure. A shared vector index without per-user filtering returns the closest matching passages regardless of ownership. Filter at retrieval before the model sees anything, check permissions at query time, and test adversarially with two accounts.
+
+### Is my data used to train the AI model?
+
+It depends entirely on your provider tier. Many default consumer tiers permit training on inputs; enterprise tiers usually do not. The difference is contractual, not technical. Check what your production system actually uses — the common pattern is a prototype built on a permissive personal account that quietly becomes the production integration.
+
+### Are vector embeddings anonymous?
+
+No. Text can be partially reconstructed from embeddings, so a vector database should be treated as containing the source data — including for data residency purposes. Teams that classify their document store carefully and then treat the vector index as derived metadata have misclassified it.
+
+### What should I log in an AI system?
+
+Enough to answer "what data went where" without creating a second sensitive data store. Record that a request happened, its size, and which feature made it. Be careful with debug traces that capture full prompts — these frequently ship to third-party logging services in other countries, which is an undocumented cross-border transfer.
+
+### What is the single most effective AI security control?
+
+Limiting tool capability. Most severe AI incidents require the model to take an action — sending, deleting, paying, changing permissions. A model that lacks the capability cannot be tricked into using it, which is why architecture beats filtering. Ask what the worst instruction the model could follow would do, then remove that capability.
+
+---
+
+## Conclusion
+
+**Assume injection will succeed and design for it.** You cannot reliably prevent it; you can ensure a successful injection cannot do anything expensive.
+
+**Filter retrieval by user with a hard constraint.** Cross-user leakage is a retrieval bug, and instructing the model to be discreet is not a permission system.
+
+**And settle retention and training terms before integrating**, not after. Data in a training corpus is not recoverable, and the prototype-becomes-production path is how most teams get there without noticing.
+
+**Building an AI feature with sensitive data?** [Get in touch](/en/contact) — we scope the controls alongside the feature rather than after. See our [AI solutions](/en/services/ai-solutions).

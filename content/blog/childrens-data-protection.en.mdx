@@ -1,0 +1,169 @@
+---
+{"slug":"childrens-data-protection","title":"Children's Data in Apps: Guardian Consent and What It Requires","seoTitle":"Children's Data Protection in Apps","excerpt":"Verifiable guardian consent, age assurance that actually works, and the store rules for apps reaching under-18 users — plus what this means for education products.","date":"2026-08-17","dateModified":"2026-08-17"}
+---
+
+# Children's Data in Apps: Guardian Consent and What It Requires
+
+Most teams building education, gaming, or family products treat children's data as a checkbox: add an age field, and move on. That approach satisfies nothing — not the law, not the app stores, and not a parent who asks what you know about their child.
+
+**The short answer: if under-18 users plausibly reach your product, you need verifiable guardian consent — not a self-declared birth date. And the obligation attaches to whether children actually use it, not to whether you intended them to.**
+
+This guide covers what that means in practice across Gulf markets. For the wider regulatory picture, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
+
+> **This is practical guidance, not legal advice.** Children's data is among the most strictly treated categories in every jurisdiction. Engage a qualified local advisor before launching a product aimed at minors.
+
+---
+
+## Does this apply to you?
+
+The threshold is lower than teams assume. It is not "is this a kids' app" — it is whether minors realistically use it.
+
+**Clearly in scope:** education platforms, children's games, family products, tutoring services, school management systems, and anything marketed to parents for their children.
+
+**Often in scope without intending to be:** general social features, user-generated content platforms, and consumer apps with no meaningful age barrier. If your analytics show under-18 users, the obligation exists regardless of your intent.
+
+**The test regulators and stores apply** is whether the service is *directed to* children or whether you have *actual knowledge* that children use it. Both routes trigger the requirements, and "we didn't mean to" is not a defence once your own data shows the users are there.
+
+---
+
+## Guardian consent is not an age checkbox
+
+Across Gulf data protection regimes, processing a minor's personal data requires the consent of a parent or guardian. The operative word is **verifiable**.
+
+**What does not qualify:**
+- A checkbox asserting "I am over 18"
+- A self-entered date of birth with no verification
+- A tick labelled "my parent agrees"
+- Consent from the child themselves, in any form
+
+**Verification methods that are actually used:**
+
+| Method | Strength | Friction |
+|---|---|---|
+| Payment instrument verification (small charge, refunded) | Strong | Moderate |
+| Government or national digital identity | Strongest | Low where available |
+| Signed consent form with ID | Strong | High |
+| Guardian email confirmation with follow-up step | Moderate | Low |
+| Video or call verification | Strong | Very high |
+
+**In the Gulf, national digital identity is the practical answer.** Where a parent can authenticate through a government identity service, you get strong verification with low friction — which is otherwise a difficult tradeoff. See [digital identity integration](/en/blog/digital-identity-integration) for what that involves.
+
+**The design principle:** verification strength should be proportionate to the sensitivity of what you collect. A reading app storing progress needs less than a platform with messaging between users.
+
+---
+
+## Age assurance in practice
+
+Before you can ask for guardian consent, you need to know a user is a minor — and this is genuinely difficult.
+
+**Self-declaration is weak but standard.** Children learn to enter a false birth year within about one attempt. It is still the baseline, and it is what stores expect at minimum.
+
+**Neutral age screens perform better.** Asking "what is your date of birth?" without first showing that a certain answer unlocks more produces more honest answers than "are you over 18?". Do not display the consequence before collecting the answer.
+
+**Do not let users retry freely.** If someone enters an under-18 date and immediately gets a form again, they will enter a different one. Persist the first answer.
+
+**Behavioural signals exist but carry their own risk.** Inferring age from usage patterns means profiling children to determine whether you may process children's data — which is circular, and regulators are sceptical of it.
+
+**The honest position:** perfect age assurance does not exist. What matters is that you made a reasonable, documented effort proportionate to the risk, and that you act on what you do learn.
+
+---
+
+## Data minimisation matters more here
+
+The strongest position with children's data is having less of it.
+
+**Collect nothing you do not need.** Every field is a liability multiplied by the sensitivity of the subject. A learning app does not need a phone number.
+
+**No behavioural advertising to children.** Both stores prohibit it in child-directed apps, and it is regulated separately in most jurisdictions. This affects your monetisation model, so decide early — see [educational app costs](/en/blog/educational-app-cost).
+
+**Restrict third-party SDKs severely.** Analytics and advertising SDKs designed for general audiences frequently collect identifiers unsuitable for child-directed apps. Both stores maintain families-specific requirements limiting which SDKs may be used.
+
+**Be careful with user-generated content and messaging.** Any feature letting children communicate raises safety obligations well beyond data protection. If you do not need it, do not build it.
+
+**Retention should be shorter.** Keeping a child's data after they stop using the service is difficult to justify, and the justification bar is higher than for adults.
+
+---
+
+## App store family requirements
+
+Both stores run separate programmes for child-directed apps with requirements exceeding the general rules.
+
+**Apple's Kids Category** requires no third-party analytics or advertising without meeting specific conditions, a parental gate before external links or purchases, and no collection of personally identifiable information from children.
+
+**Google Play's Families programme** requires compliance with its Families policy, use of approved SDKs only, and correct target-age declaration. Misdeclaring your target age is treated seriously.
+
+**The parental gate** is a specific pattern: before any child can reach an external link, a purchase, or social features, they must pass a check a young child cannot — typically arithmetic or an instruction requiring reading fluency. Not a simple button.
+
+For the wider submission picture, see [app store requirements](/en/blog/app-store-requirements).
+
+---
+
+## What to build
+
+- [ ] Neutral age screen that does not reveal the consequence first
+- [ ] First age answer persisted, not freely retryable
+- [ ] Verifiable guardian consent flow proportionate to data sensitivity
+- [ ] Guardian consent records: who consented, when, and how verified
+- [ ] Separate, reduced data collection path for minor accounts
+- [ ] Behavioural advertising disabled for under-18 accounts
+- [ ] Third-party SDKs audited against store family requirements
+- [ ] Parental gate before external links, purchases, and social features
+- [ ] Guardian-accessible view of what you hold about the child
+- [ ] Guardian-initiated deletion that genuinely deletes
+- [ ] Shorter retention for minor accounts
+- [ ] Privacy policy section specifically covering children
+- [ ] Correct target-age declaration in both stores
+
+---
+
+## Related reading
+
+- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide) — which regime applies to you.
+- [Educational app costs](/en/blog/educational-app-cost) — where these requirements hit the budget.
+- [Digital identity integration](/en/blog/digital-identity-integration) — strong guardian verification with low friction.
+- [Privacy policy guide](/en/blog/privacy-policy-guide) — the children's section.
+- [App store requirements](/en/blog/app-store-requirements) — family programme rules.
+
+---
+
+## Frequently asked questions
+
+### Do I need parental consent if my app is not aimed at children?
+
+If children actually use it, yes. The obligation attaches either to services directed at children or to having actual knowledge that children use the service. If your analytics show under-18 users, intent does not exempt you — and both regulators and app stores apply that standard.
+
+### Is an "I am over 18" checkbox enough?
+
+No. Every Gulf data protection regime requires verifiable guardian consent for minors, and a self-declared checkbox verifies nothing. Acceptable methods include payment instrument verification, government digital identity, signed consent with identification, or a multi-step guardian email confirmation.
+
+### How do I verify a parent's identity without excessive friction?
+
+National digital identity services are the practical answer in Gulf markets, since they give strong verification with low friction. Where unavailable, a small refunded payment verification or a multi-step guardian email confirmation is common. Match verification strength to how sensitive the data actually is.
+
+### Can I show ads in a children's app?
+
+Not behavioural or personalised advertising. Both stores prohibit it in child-directed apps and it is separately regulated in most jurisdictions. Contextual, non-tracking advertising may be permitted under the family programme rules, but it changes your monetisation model, so decide before building.
+
+### What is a parental gate?
+
+A check placed before external links, purchases, or social features that a young child cannot pass — typically arithmetic or an instruction requiring reading fluency. A simple "are you a parent?" button does not qualify. Both stores require it in child-directed apps.
+
+### What age counts as a minor?
+
+It varies by jurisdiction and is tied to the local age of majority, which is commonly 18 in Gulf countries. Some regimes set a lower threshold for certain online consent purposes. Confirm the applicable age with a local advisor rather than assuming a figure from another market.
+
+### How does this affect an education product's cost?
+
+Expect meaningful additions: the guardian consent flow, a separate minor-account data path, guardian access and deletion tooling, and SDK restrictions that may rule out your default analytics stack. Budgeting for this from the start is considerably cheaper than retrofitting, since minor-account handling touches the data model itself.
+
+---
+
+## Conclusion
+
+**The threshold is whether children use your product, not whether you aimed it at them.** Check your analytics before concluding this does not apply.
+
+**Verifiable means verified.** A birth-date field and a checkbox satisfy no regulator and no store, and national digital identity is the one method that gives strength without punishing friction.
+
+**And minimisation is your strongest protection.** Every field you do not collect from a child is a risk you do not carry — which makes "do we actually need this?" the most valuable question in the design review.
+
+**Building for education or families?** [Get in touch](/en/contact) — these requirements shape the data model, so they belong in the first architecture conversation. See our [mobile app development services](/en/services/mobile-apps).

@@ -50,6 +50,7 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [Choosing an AI Model for Arabic](https://apex.sy/en/blog/choosing-ai-model-arabic) — evaluation criteria and a testing methodology that outlasts model releases.
 - [Template or Custom Design](https://apex.sy/en/blog/template-vs-custom-design) — what actually drives conversion, and the middle path.
 - [In-House Maintenance or a Contract](https://apex.sy/en/blog/maintenance-inhouse-vs-contract) — what maintenance covers, realistic cost, and what a contract must include.
+- [Arabic Localisation Guide](https://apex.sy/en/blog/arabic-localization-guide) — the six layers of localisation beyond translation, real cost ranges, and the mistakes that make an app feel foreign.
 - [Arabic and RTL Support in Flutter](https://apex.sy/en/blog/flutter-rtl-arabic-guide) — directional widgets, fonts, numerals, and a pre-launch checklist.
 - [Arabic Web Fonts](https://apex.sy/en/blog/arabic-web-fonts) — subsetting, woff2, font-display, and measuring performance impact.
 - [Hijri Dates in Applications](https://apex.sy/en/blog/hijri-dates-guide) — store Gregorian, display Hijri, and why Umm al-Qura matters.
@@ -59,6 +60,7 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [App Performance Optimisation](https://apex.sy/en/blog/app-performance-optimization) — what users notice, priority order, and measuring before optimising.
 - [API Security](https://apex.sy/en/blog/api-security-guide) — authentication versus authorisation, common mobile mistakes, and a checklist.
 - [Clean Architecture in Flutter](https://apex.sy/en/blog/clean-architecture-flutter) — the layers, the dependency rule, and when it is overkill.
+- [Gulf Regulatory Compliance](https://apex.sy/en/blog/gulf-compliance-guide) — which data protection and sector rules apply across Saudi Arabia, the UAE, and Qatar, what compliance costs, and when to involve a lawyer.
 - [Mobile App Testing](https://apex.sy/en/blog/mobile-app-testing) — what is worth testing, what to automate, and a manual release checklist.
 
 ## Site Sections
@@ -68,6 +70,36 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [Portfolio](https://apex.sy/en/portfolio)
 - [Blog](https://apex.sy/en/blog)
 - [Contact](https://apex.sy/en/contact)
+
+## Blog Categories
+- [Languages & Frameworks](https://apex.sy/en/blog/category/languages-frameworks) — Flutter, React Native, Next.js, and how to choose between them.
+- [Mobile Programming](https://apex.sy/en/blog/category/mobile-development) — app costs, performance, testing, and technology selection.
+- [Web Programming](https://apex.sy/en/blog/category/web-development) — web and e-commerce development, hosting, and API security.
+- [Reviews & Comparisons](https://apex.sy/en/blog/category/comparisons) — neutral technology comparisons with decision frameworks.
+- [Selected Topics](https://apex.sy/en/blog/category/selected-topics) — Gulf compliance, payment gateways, Arabic localisation, and AI.
+- [Practical Experiences](https://apex.sy/en/blog/category/practical-guides) — contracts, maintenance, and choosing a development partner.
+- [UAE Data Protection Law](https://apex.sy/en/blog/uae-data-protection-guide) — lawful bases beyond consent, the six user rights, breach notification, and why DIFC and ADGM are separate laws.
+- [Data Residency in the Gulf](https://apex.sy/en/blog/data-residency-gulf) — where data must live in Saudi Arabia, the UAE, and Qatar, and the five places residency actually breaks.
+- [Arabic and RTL in React Native](https://apex.sy/en/blog/react-native-rtl-arabic) — I18nManager and its restart problem, logical style properties, fonts, and the libraries that break RTL.
+- [Arabic Numerals, Currency, and Formats](https://apex.sy/en/blog/arabic-numerals-formats) — Eastern versus Western digits, currency placement, three-decimal dinars, and the bidirectional bugs that display prices wrong.
+- [Writing a Privacy Policy That Works](https://apex.sy/en/blog/privacy-policy-guide) — why templates create liability, deriving a policy from a data map, and matching app store privacy declarations.
+- [App Store Rejections and How to Avoid Them](https://apex.sy/en/blog/app-store-requirements) — the rejection causes that cost real time, Gulf-specific requirements, and realistic review timelines.
+- [Children's Data in Apps](https://apex.sy/en/blog/childrens-data-protection) — verifiable guardian consent, age assurance that works, and app store family programme rules.
+- [Gulf Digital Identity Integration](https://apex.sy/en/blog/digital-identity-integration) — Nafath, UAE Pass, and QDI — eligibility, the approval process, and when verified identity is worth it.
+- [RTL in CSS](https://apex.sy/en/blog/rtl-css-guide) — logical properties, automatic flexbox mirroring, what must never flip, and one stylesheet for both directions.
+- [Arabic Search: Why It Fails](https://apex.sy/en/blog/arabic-search-guide) — normalising alef variants, taa marbuta, and diacritics, plus stemming and mixed-script queries.
+- [i18n for Arabic Products](https://apex.sy/en/blog/i18n-arabic-guide) — translation file structure, Arabic's six plural forms, interpolation, and the workflow that keeps translations accurate.
+- [12 Arabic Localisation Mistakes](https://apex.sy/en/blog/localization-mistakes) — the errors that make an app feel translated rather than native, each with symptom, cause, and fix.
+- [How to Choose a Software Development Company](https://apex.sy/en/blog/choosing-development-company) — the four sourcing models, verifying delivery before comparing price, and the signals that predict delivery.
+- [Outsourcing or an In-House Team?](https://apex.sy/en/blog/outsourcing-vs-inhouse) — the real cost of an in-house team, the utilisation question that decides it, and the hybrid model that usually wins.
+- [Writing an RFP for a Software Project](https://apex.sy/en/blog/writing-rfp-software) — specify the problem not the solution, state a budget range, and ask for the assumptions behind each quote.
+- [AI for Business](https://apex.sy/en/blog/ai-for-business-guide) — the three-part test for an AI use case, what actually works, running costs, and the compliance constraints that shape architecture.
+- [Arabic Document Processing and OCR](https://apex.sy/en/blog/arabic-ocr-document-processing) — why Arabic OCR is harder, traditional OCR versus vision models, and building extraction that fails safely.
+- [RAG and AI Knowledge Bases](https://apex.sy/en/blog/rag-knowledge-base) — how retrieval decides quality, chunking strategy, Arabic retrieval challenges, and when search or an FAQ wins instead.
+- [What AI Costs to Run in Production](https://apex.sy/en/blog/llm-running-costs) — how token pricing works, why Arabic costs more, the three levers that cut spend, and estimating before launch.
+- [AI in Online Stores](https://apex.sy/en/blog/ecommerce-ai-features) — which AI features lift revenue, why Arabic search is the highest-return fix, and what to build last.
+- [Internal AI Assistant](https://apex.sy/en/blog/internal-ai-assistant) — why permissions and documentation quality decide success, and why these projects get abandoned.
+- [AI Privacy and Security Risks](https://apex.sy/en/blog/ai-privacy-risks) — prompt injection, cross-user data leakage, retention and training terms, and the controls that reduce risk.
 
 This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 
@@ -125,6 +157,7 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [اختيار نموذج ذكاء اصطناعي عربي](https://apex.sy/ar/blog/choosing-ai-model-arabic) — معايير التقييم ومنهجية اختبار تبقى صالحة رغم تغيّر النماذج.
 - [تصميم جاهز أم مخصص](https://apex.sy/ar/blog/template-vs-custom-design) — ما يؤثر على التحويل فعلاً والنهج الوسط.
 - [صيانة داخلية أم عقد صيانة](https://apex.sy/ar/blog/maintenance-inhouse-vs-contract) — ما تشملها الصيانة وتكلفتها الواقعية وما يجب أن يتضمنه العقد.
+- [دليل تعريب التطبيقات والمواقع](https://apex.sy/ar/blog/arabic-localization-guide) — طبقات التعريب الست بعد الترجمة، ونطاقات التكلفة، والأخطاء التي تجعل التطبيق يبدو غريباً.
 - [دعم العربية وRTL في Flutter](https://apex.sy/ar/blog/flutter-rtl-arabic-guide) — الودجات الاتجاهية والخطوط والأرقام وقائمة اختبار قبل الإطلاق.
 - [الخطوط العربية على الويب](https://apex.sy/ar/blog/arabic-web-fonts) — التقليص وwoff2 وfont-display وقياس الأثر على الأداء.
 - [التواريخ الهجرية في التطبيقات](https://apex.sy/ar/blog/hijri-dates-guide) — خزّن ميلادياً واعرض هجرياً، ولماذا أم القرى تحديداً.
@@ -134,6 +167,7 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [تحسين أداء التطبيقات](https://apex.sy/ar/blog/app-performance-optimization) — ما يلاحظه المستخدم وترتيب الأولويات والقياس قبل التحسين.
 - [أمان واجهات API](https://apex.sy/ar/blog/api-security-guide) — المصادقة والتفويض والأخطاء الشائعة وقائمة تحقق.
 - [معمارية Clean Architecture في Flutter](https://apex.sy/ar/blog/clean-architecture-flutter) — الطبقات وقاعدة الاعتماد ومتى تكون مبالغة.
+- [الامتثال التنظيمي في الخليج](https://apex.sy/ar/blog/gulf-compliance-guide) — أي أنظمة حماية البيانات وأنظمة القطاعات تنطبق في السعودية والإمارات وقطر، وكم يكلف الامتثال، ومتى تحتاج محامياً.
 - [اختبار تطبيقات الجوال](https://apex.sy/ar/blog/mobile-app-testing) — ما يستحق الاختبار وما يستحق الأتمتة وقائمة يدوية.
 
 ## أقسام الموقع
@@ -143,5 +177,35 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [أعمالنا](https://apex.sy/ar/portfolio)
 - [المدونة](https://apex.sy/ar/blog)
 - [اتصل بنا](https://apex.sy/ar/contact)
+
+## أقسام المدونة
+- [لغات برمجة و أطر عمل](https://apex.sy/ar/blog/category/languages-frameworks) — Flutter و React Native و Next.js ومعايير الاختيار بينها.
+- [برمجة الموبايل](https://apex.sy/ar/blog/category/mobile-development) — تكاليف التطبيقات والأداء والاختبار واختيار التقنية.
+- [برمجة الويب](https://apex.sy/ar/blog/category/web-development) — تطوير الويب والمتاجر الإلكترونية والاستضافة وأمن الواجهات البرمجية.
+- [تقييمات و مقارنات](https://apex.sy/ar/blog/category/comparisons) — مقارنات تقنية محايدة بأطر قرار واضحة.
+- [مواضيع منتقاة](https://apex.sy/ar/blog/category/selected-topics) — الامتثال الخليجي وبوابات الدفع والتعريب والذكاء الاصطناعي.
+- [تجارب عملية](https://apex.sy/ar/blog/category/practical-guides) — العقود والصيانة واختيار شريك التطوير.
+- [قانون حماية البيانات الإماراتي](https://apex.sy/ar/blog/uae-data-protection-guide) — الأسس النظامية غير الموافقة، وحقوق المستخدم الستة، والإبلاغ عن الخرق، ولماذا DIFC وADGM قانونان منفصلان.
+- [إقامة البيانات في الخليج](https://apex.sy/ar/blog/data-residency-gulf) — أين يجب أن تقيم البيانات في السعودية والإمارات وقطر، والمواضع الخمسة التي يُكسَر فيها الشرط.
+- [دعم العربية وRTL في React Native](https://apex.sy/ar/blog/react-native-rtl-arabic) — I18nManager ومشكلة إعادة التشغيل، والأنماط المنطقية، والخطوط، والمكتبات التي تكسر RTL.
+- [الأرقام والعملات والصيغ في الواجهات العربية](https://apex.sy/ar/blog/arabic-numerals-formats) — الأرقام الشرقية أم الغربية، وموضع العملة، والدنانير ثلاثية المنازل، وأخطاء الاتجاه في عرض الأسعار.
+- [كتابة سياسة خصوصية تعمل فعلاً](https://apex.sy/ar/blog/privacy-policy-guide) — لماذا تخلق القوالب مسؤولية قانونية، واشتقاق السياسة من خريطة بيانات، ومطابقة إفصاحات المتاجر.
+- [رفض متاجر التطبيقات وكيف تتفاداه](https://apex.sy/ar/blog/app-store-requirements) — أسباب الرفض التي تكلّف وقتاً فعلياً، والمتطلبات الخليجية، ومُدد المراجعة الواقعية.
+- [بيانات الأطفال في التطبيقات](https://apex.sy/ar/blog/childrens-data-protection) — موافقة ولي أمر قابلة للتحقق، والتحقق من العمر، وقواعد برامج العائلات في المتاجر.
+- [تكامل الهوية الرقمية الخليجية](https://apex.sy/ar/blog/digital-identity-integration) — نفاذ وUAE Pass وQDI — الأهلية وعملية الاعتماد ومتى تستحق الهوية المتحقَّقة.
+- [RTL في CSS](https://apex.sy/ar/blog/rtl-css-guide) — الخصائص المنطقية، وانعكاس flexbox التلقائي، وما لا ينقلب أبداً، وملف أنماط واحد للاتجاهين.
+- [البحث العربي: لماذا يفشل](https://apex.sy/ar/blog/arabic-search-guide) — توحيد صور الألف والتاء المربوطة والتشكيل، والتجذير والاستعلامات المختلطة.
+- [i18n للمنتجات العربية](https://apex.sy/ar/blog/i18n-arabic-guide) — هيكلة ملفات الترجمة، وصيغ الجمع الست، والاستيفاء، وسير العمل الذي يبقي الترجمات دقيقة.
+- [12 خطأً شائعاً في التعريب](https://apex.sy/ar/blog/localization-mistakes) — الأخطاء التي تجعل التطبيق يبدو مترجماً لا أصيلاً، كل خطأ مع عَرَضه وسببه وحلّه.
+- [كيف تختار شركة تطوير برمجيات](https://apex.sy/ar/blog/choosing-development-company) — نماذج التعاقد الأربعة، والتحقق من التسليم قبل مقارنة السعر، والإشارات التي تتنبأ بالتسليم.
+- [التعهيد الخارجي أم فريق داخلي؟](https://apex.sy/ar/blog/outsourcing-vs-inhouse) — التكلفة الحقيقية للفريق الداخلي، وسؤال الاستغلال الذي يحسمه، والنموذج الهجين الذي يفوز عادةً.
+- [كتابة كراسة شروط لمشروع برمجي](https://apex.sy/ar/blog/writing-rfp-software) — حدّد المشكلة لا الحل، واذكر نطاق ميزانية، واطلب الافتراضات خلف كل عرض.
+- [الذكاء الاصطناعي للأعمال](https://apex.sy/ar/blog/ai-for-business-guide) — الاختبار الثلاثي لحالة الاستخدام، وما ينجح فعلاً، وتكاليف التشغيل، والقيود التنظيمية التي تحدد البنية.
+- [معالجة المستندات العربية وOCR](https://apex.sy/ar/blog/arabic-ocr-document-processing) — لماذا OCR العربي أصعب، وOCR التقليدي مقابل النماذج البصرية، وبناء استخراج يفشل بأمان.
+- [RAG وقواعد المعرفة الذكية](https://apex.sy/ar/blog/rag-knowledge-base) — كيف يحسم الاسترجاع الجودة، واستراتيجية التقسيم، وتحديات الاسترجاع العربي، ومتى يفوز البحث أو الأسئلة الشائعة.
+- [تكلفة تشغيل الذكاء الاصطناعي في الإنتاج](https://apex.sy/ar/blog/llm-running-costs) — كيف يعمل التسعير بالرموز، ولماذا تكلف العربية أكثر، والروافع الثلاث لخفض الإنفاق، والتقدير قبل الإطلاق.
+- [الذكاء الاصطناعي في المتاجر](https://apex.sy/ar/blog/ecommerce-ai-features) — أي الميزات ترفع الإيراد، ولماذا البحث العربي أعلى عائد، وما تبنيه أخيراً.
+- [المساعد الذكي الداخلي](https://apex.sy/ar/blog/internal-ai-assistant) — لماذا تحسم الصلاحيات وجودة التوثيق النجاح، ولماذا تُهجَر هذه المشاريع.
+- [مخاطر الخصوصية والأمن في الذكاء الاصطناعي](https://apex.sy/ar/blog/ai-privacy-risks) — حقن التوجيهات، والتسريب بين المستخدمين، وشروط الحفظ والتدريب، والضوابط التي تقلل المخاطرة.
 
 هذا الموقع ثنائي اللغة (عربي/إنجليزي). استخدم /ar/ للعربية و /en/ للإنجليزية.

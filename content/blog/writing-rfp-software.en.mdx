@@ -1,0 +1,179 @@
+---
+{"slug":"writing-rfp-software","title":"Writing an RFP for a Software Project","seoTitle":"How to Write a Software RFP","excerpt":"How much detail a brief actually needs, what to specify and what to leave open, and why over-specifying costs you the best proposals — with a reusable structure.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# Writing an RFP for a Software Project
+
+Most software briefs fail in one of two directions. Either they are a paragraph — "we need an app like Uber but for laundry" — which produces quotes that cannot be compared because every firm guessed differently. Or they are a sixty-page specification that prescribes the solution, which filters out every firm that would have proposed something better.
+
+**The short answer: specify the problem precisely and the solution loosely. A good brief makes quotes comparable without telling experienced teams how to do their job.**
+
+This guide covers what to include and, more usefully, what to leave out. For what happens after the proposals arrive, see [how to choose a development company](/en/blog/choosing-development-company).
+
+---
+
+## Why the brief determines the quotes
+
+A quote is a priced interpretation of your brief. Vague input produces divergent interpretations, and you end up comparing numbers that describe different projects.
+
+**What actually happens with a thin brief:**
+
+- Each firm assumes a different scope, so quotes vary by 300% for reasons unrelated to capability
+- The lowest quote usually assumed the least, which is why it later produces change requests
+- You cannot tell whether a high quote reflects rigour or padding
+
+**The purpose of a brief is not to be comprehensive.** It is to make responses comparable and to surface the assumptions that drive cost. A three-page brief that pins down scope beats a thirty-page one that pins down implementation.
+
+---
+
+## Specify the problem, not the solution
+
+This is the distinction that separates useful briefs from counterproductive ones.
+
+| Over-specified (avoid) | Problem-stated (better) |
+|---|---|
+| "Build in React Native with Firebase" | "Must run on iOS and Android; we have no existing team" |
+| "Add a MySQL table for bookings" | "Customers book appointments and receive reminders" |
+| "Use Stripe for payments" | "Accept local card payments in Saudi Arabia" |
+| "The dashboard must have six tabs" | "Managers need to see today's bookings and this month's revenue" |
+
+**Why prescribing the solution hurts you:** you paid for expertise and then prevented its use. A firm that would have told you Stripe does not serve your market well now quotes Stripe, because that is what you asked for. The [Gulf payment gateways guide](/en/blog/gulf-payment-gateways) exists because that specific mistake is common.
+
+**The exception is real constraints.** If you have an existing React team, a mandated hosting region, or a system you must integrate with, state it — those are facts about your situation, not implementation preferences. Say *why*, so a firm can tell you if the constraint is costing you more than it is worth.
+
+---
+
+## What a brief needs
+
+Seven sections. Three pages is usually enough.
+
+**1. Context.** Who you are, what the business does, and why this project exists now. Two paragraphs. Firms that understand the business propose better solutions — and this is the section most briefs omit entirely.
+
+**2. The problem.** What is broken or missing today, and what it costs you. "Bookings are taken by phone, which means we lose calls after hours and staff spend two hours a day on scheduling."
+
+**3. Users and what they need to do.** Who uses this and what job they are doing. List the roles — customer, staff, manager — and the core actions each performs. This is the section that most determines cost, because roles multiply screens.
+
+**4. Must-have versus nice-to-have.** Be honest about the split. Everything marked essential means nothing is, and the quote reflects that. A clear MVP boundary is the single most cost-reducing thing in a brief — see [MVP or full product?](/en/blog/mvp-vs-full-product).
+
+**5. Real constraints.** Existing systems to integrate with, regulatory requirements, hosting or data residency rules, budget range, and deadline. State *why* for each.
+
+**6. Success criteria.** How you will know it worked. "Fifty percent of bookings come through the app within three months" is a criterion; "the app is successful" is not.
+
+**7. Process and timeline.** When proposals are due, how you will decide, and when you want to start.
+
+---
+
+## Say your budget
+
+The most common objection to briefs: "if I state a budget, they will quote up to it."
+
+**State a range anyway.** Withholding it costs more than it saves:
+
+- Firms quote a scope that fits *their* assumed budget, and you get proposals for projects you cannot afford or that are smaller than you wanted
+- You waste weeks discovering that everyone quoted double what you have
+- Serious firms decline to bid rather than guess, so you lose the ones worth having
+
+**What to say:** "Our budget is $25,000–$40,000. Tell us what is achievable in that range, and what you would recommend deferring."
+
+This turns the response into a useful conversation. A firm that says "that budget delivers the booking flow but not the analytics dashboard — here is what I would cut" is more valuable than one that quietly quotes a stripped version without telling you.
+
+**If you genuinely do not know**, say what the project is worth to you, or ask for tiered options. Both beat silence.
+
+---
+
+## Ask for the assumptions
+
+Add one line to your brief and it will improve every proposal you receive:
+
+> **List the assumptions your quote depends on, and what would change the price.**
+
+This does three things. It surfaces the scope gaps you did not know existed. It makes quotes genuinely comparable — you can see who assumed what. And it tells you which firms actually thought about your project, because a proposal with three vague assumptions came from someone who did not.
+
+**Also ask for the quote broken into phases**, with a price per phase. A single total is impossible to interrogate and hard to negotiate. Phased pricing shows you where the cost sits and gives you a natural place to reduce scope.
+
+---
+
+## What to leave out
+
+**Do not include an NDA at the brief stage.** Most firms will sign one before detailed discussions, but requiring it to receive a brief adds friction that costs you responses. Your idea is rarely the valuable part.
+
+**Do not ask for free work.** Requesting mockups, a prototype, or a detailed technical architecture as part of a proposal is asking for unpaid consulting. Good firms decline. If you want design work, pay for a discovery phase — which is often a sensible first engagement anyway.
+
+**Do not specify the team structure.** "We require two senior developers and a QA engineer" prices a team, not an outcome. Let firms propose what the work needs.
+
+**Do not run an unrealistic timeline.** Two weeks to respond is reasonable. Two days signals disorganisation and filters out the firms with existing commitments — which is to say, the ones with clients.
+
+---
+
+## A reusable structure
+
+```
+1. About us — who we are, what we do
+2. Why now — what triggered this project
+3. The problem — what is broken, what it costs
+4. Users and roles — who does what
+5. Must-have / nice-to-have — clearly separated
+6. Constraints — systems, regulations, budget range, deadline
+7. Success criteria — how we will measure it
+8. What we want from you:
+   - Phased scope and pricing
+   - Timeline with milestones
+   - Who will work on it
+   - Assumptions your price depends on
+   - Two references
+9. Process — response deadline, decision date, start date
+```
+
+---
+
+## Related reading
+
+- [How to choose a development company](/en/blog/choosing-development-company) — evaluating the proposals you receive.
+- [MVP or full product?](/en/blog/mvp-vs-full-product) — drawing the must-have boundary.
+- [Mobile app development cost](/en/blog/mobile-app-development-cost) — setting a realistic budget range.
+- [App development contracts](/en/blog/app-development-contract) — turning a proposal into an agreement.
+- [Freelancer or development agency?](/en/blog/freelancer-vs-agency) — who to send the brief to.
+
+---
+
+## Frequently asked questions
+
+### How detailed should a software RFP be?
+
+Three pages is usually enough. Specify the problem precisely — users, roles, what they need to do, real constraints — and leave the solution open. Over-specifying implementation filters out firms that would have proposed something better, and under-specifying scope produces quotes that cannot be compared.
+
+### Should I include my budget in an RFP?
+
+Yes, as a range. Withholding it means firms quote against their own assumed budget, so you receive proposals for projects you cannot afford or that are smaller than intended, and serious firms often decline to bid rather than guess. Say the range and ask what is achievable within it.
+
+### Why do quotes for the same project vary so much?
+
+Usually because the brief left scope open and each firm assumed differently. A 300% spread is normal with a thin brief and has little to do with capability. Asking every firm to list the assumptions their price depends on makes the differences visible and the quotes comparable.
+
+### Should I specify the technology in my brief?
+
+Only if it is a genuine constraint — an existing team, a system you must integrate with, a mandated hosting region — and then say why. Prescribing technology as a preference means you paid for expertise and then prevented its use, and firms will quote what you asked for even when they know something better fits.
+
+### How many companies should I send an RFP to?
+
+Four or five. Fewer gives no pricing baseline; more becomes unmanageable and you will skip the verification that actually matters. Give at least two weeks to respond — a very short deadline filters out firms with existing client commitments.
+
+### Can I ask for mockups or a prototype in the proposal?
+
+You can, but good firms will decline, because it is unpaid consulting. If you want design work before committing, pay for a short discovery phase. That is often a sensible first engagement anyway, and it lets you evaluate how a firm actually works before signing for the full build.
+
+### What is the most useful thing to add to an RFP?
+
+A line asking each firm to list the assumptions their price depends on and what would change it. It surfaces scope gaps you did not know existed, makes quotes genuinely comparable, and reveals which firms thought carefully about your project.
+
+---
+
+## Conclusion
+
+**Precise on the problem, loose on the solution.** That combination gets you comparable quotes without excluding the firms that would have improved your plan.
+
+**State a budget range.** It is the single change that most improves the quality of responses, and withholding it costs more time than it protects.
+
+**And ask for assumptions.** One extra line turns a set of unexplained numbers into a set of comparable proposals — and shows you who actually read the brief.
+
+**Preparing a brief?** [Get in touch](/en/contact) — we are happy to review a draft before you send it out, including if you end up sending it to someone else. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).

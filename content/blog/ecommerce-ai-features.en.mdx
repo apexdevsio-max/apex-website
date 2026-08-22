@@ -1,0 +1,175 @@
+---
+{"slug":"ecommerce-ai-features","title":"AI in Online Stores: What Increases Sales and What Doesn't","seoTitle":"AI Features for E-Commerce Stores","excerpt":"Which AI features genuinely lift revenue in an online store, what they cost, why Arabic product search is the highest-return fix, and what to build last.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# AI in Online Stores: What Increases Sales and What Doesn't
+
+Every e-commerce platform now sells AI features, and most store owners buy them in the wrong order — starting with a chatbot because it is visible, and never fixing the search box that loses them sales every day.
+
+**The short answer: for Arabic stores, search is almost always the highest-return AI investment, and recommendations second. Chatbots are visible and rarely the thing that moves revenue first.**
+
+This guide ranks the features by return, with realistic costs. For evaluating AI projects generally, see [AI for business](/en/blog/ai-for-business-guide).
+
+---
+
+## Ranked by return
+
+| Feature | Revenue impact | Cost to build | Build order |
+|---|---|---|---|
+| **Improved product search** | High | $6,000 – $18,000 | First |
+| **Product recommendations** | High | $8,000 – $25,000 | Second |
+| **Product description generation** | Medium (saves cost) | $3,000 – $10,000 | Third |
+| **Customer service bot** | Medium (saves cost) | $8,000 – $60,000 | Fourth |
+| **Visual / image search** | Low to medium | $15,000 – $40,000 | Last |
+| **Dynamic pricing** | Situational | $20,000+ | Rarely |
+
+The ordering reflects a simple asymmetry: **search and recommendations increase revenue; description generation and support bots reduce cost.** Revenue features are worth more, and they are consistently built later than they should be.
+
+---
+
+## Search is where Arabic stores lose money
+
+This is the most under-appreciated problem in Arabic e-commerce, and the numbers behind it are stark: **visitors who use site search convert at several times the rate of those who do not** — but only when search works. A shopper who searches and gets nothing usually leaves rather than browsing.
+
+**Why Arabic search fails more often:**
+
+Arabic has multiple written forms of the same word. A shopper searching `احمد` will not match a product stored as `أحمد` unless you normalise. Taa marbuta versus haa, optional diacritics, and alef variants all produce misses on products that are definitely in your catalogue.
+
+**Then there is the mixed-script problem.** Real shoppers type `ايفون` and `iPhone` interchangeably, and `لابتوب` and `laptop`. If your catalogue stores one form, the other returns nothing.
+
+**What to build, in order:**
+
+1. **Arabic normalisation** on both the index and the query. This is the single highest-return fix, and it is not expensive — [Arabic search](/en/blog/arabic-search-guide) covers the exact transformations.
+2. **Transliteration aliases** for brand and product names so both scripts match.
+3. **Typo tolerance** — Arabic keyboard errors differ from English ones, so use fuzzy matching tuned on real queries.
+4. **Semantic search** for intent-based queries like "gift for a child" that no keyword matches.
+
+> **The diagnostic that pays for itself:** log every search returning zero results, then read that list weekly. It tells you exactly which normalisation cases you are missing and which products shoppers want that you do not stock. It is a few hours of work and consistently the highest-value thing you can add.
+
+---
+
+## Recommendations, honestly
+
+Recommendations lift average order value reliably — but the implementation matters more than the algorithm.
+
+**Where they work:**
+- **"Frequently bought together"** on the product page — the highest-converting placement
+- **"Similar products"** when an item is out of stock, which rescues an otherwise lost sale
+- **Post-purchase suggestions** in confirmation emails
+
+**Where they underperform:**
+- Generic "you might also like" carousels on the homepage
+- Recommendations on a first visit with no behavioural data
+
+**The cold-start problem is real.** A recommendation engine needs behavioural data. A new store, or a catalogue with few orders per product, has nothing to learn from. **Start with rules** — same category, complementary items, manually curated pairs — and move to learned recommendations once you have volume. A rules-based system built in a week often outperforms a learned one built in two months on a small catalogue.
+
+**Measure incremental lift, not clicks.** Recommendations that get clicked but replace purchases the shopper would have made anyway add nothing. The honest test is an A/B comparison against no recommendations.
+
+---
+
+## Product descriptions
+
+The clearest cost-saving case in e-commerce AI, and the easiest to get wrong.
+
+**Why it works:** writing five hundred product descriptions is expensive, slow, and nobody enjoys it. Generation produces a usable first draft in seconds.
+
+**Why it fails:** published without review. Generated descriptions confidently invent specifications — a material, a dimension, a compatibility claim that is simply wrong. In a store, that is not an embarrassment; it is a returns problem and potentially a consumer protection issue.
+
+**How to do it properly:**
+- Give the model **real specifications** as input rather than asking it to describe from a product name
+- Treat output as a **draft requiring approval**, not as published copy
+- **Write Arabic descriptions as originals**, not translations of English ones — shoppers search differently in each language, and a translated description matches queries nobody types
+- Watch for repetitive phrasing across the catalogue, which reads as machine-generated and looks unprofessional at scale
+
+---
+
+## What to build last, or not at all
+
+**Visual search** — photograph an item, find similar products. Genuinely impressive, and it typically drives a small fraction of sessions outside fashion and home décor. Expensive to build and maintain. Build it when text search is already excellent, not before.
+
+**Dynamic pricing** — algorithmic price adjustment by demand. Technically feasible and commercially risky: shoppers notice, screenshot, and share. In Gulf markets where price fairness matters commercially and reputationally, the downside frequently exceeds the margin gain.
+
+**A chatbot before your FAQ is good.** Most store support questions are "where is my order?" and "what is your return policy?" Order tracking and a clear returns page solve both, more reliably and far more cheaply than a bot. [AI chatbot costs](/en/blog/ai-chatbot-cost) covers when a bot does earn its cost — and it usually does so after these basics, not instead of them.
+
+---
+
+## Cost and payback
+
+**Estimate the return before building.** For search, the calculation is unusually clean:
+
+```
+monthly visitors using search × current conversion rate
+vs. the same with an improved conversion rate
+× average order value
+```
+
+A store with 10,000 monthly search users, a 2% search conversion rate, and a $60 average order value earns roughly $12,000 monthly from search. **Improving that by a fifth is $2,400 monthly** — which pays back a $12,000 search project in five months.
+
+**Do the same arithmetic for recommendations** using average order value uplift, and for descriptions using hours of copywriting saved.
+
+**Running costs** apply to anything calling a model — semantic search, description generation, and chatbots all charge per use. Rules-based recommendations and normalised keyword search do not, which is another argument for doing those first. [What AI costs to run](/en/blog/llm-running-costs) covers estimating this properly.
+
+---
+
+## Compliance
+
+**Recommendation engines profile shoppers**, which is personal data processing under Gulf data protection law. You need a lawful basis, and behavioural profiling for marketing generally requires consent rather than being covered by contract performance.
+
+**Sending product data to an external model is usually low-risk** — a product description is not personal data. **Sending customer data is not.** Purchase histories, browsing behaviour, and support conversations all carry obligations.
+
+**And check the training question** before wiring up any provider: many default consumer tiers permit training on inputs. See [Gulf regulatory compliance](/en/blog/gulf-compliance-guide).
+
+---
+
+## Related reading
+
+- [AI for business](/en/blog/ai-for-business-guide) — evaluating whether a use case justifies building.
+- [Arabic search](/en/blog/arabic-search-guide) — the normalisation that fixes store search.
+- [AI chatbot costs](/en/blog/ai-chatbot-cost) — when a support bot earns its cost.
+- [What AI costs to run](/en/blog/llm-running-costs) — ongoing cost of model-based features.
+- [E-commerce cost in Saudi Arabia](/en/blog/ecommerce-development-cost-saudi) — where these features sit in a store budget.
+- [Shopify vs a custom store](/en/blog/shopify-vs-custom-store) — platform choice and what it constrains.
+
+---
+
+## Frequently asked questions
+
+### Which AI feature should an online store build first?
+
+Search, in almost every case — particularly for Arabic stores. Visitors who use site search convert at several times the rate of those who do not, but only when it works, and Arabic search fails frequently without normalisation. Recommendations come second. Chatbots are the most visible feature and rarely the one that moves revenue first.
+
+### Why does my Arabic store search miss products that exist?
+
+Arabic has multiple written forms of the same word — alef variants, taa marbuta versus haa, optional diacritics — so a shopper's query and your product title may not compare as equal even though they read identically. You need normalisation on both the index and the query, plus transliteration aliases so `iPhone` and `ايفون` both match.
+
+### Do AI product recommendations actually increase sales?
+
+Reliably, when placed well: "frequently bought together" on the product page and "similar products" for out-of-stock items are the highest-converting placements. Generic homepage carousels underperform. Measure incremental lift against no recommendations rather than counting clicks, since clicked recommendations that replace purchases already intended add nothing.
+
+### Can I use AI to write product descriptions?
+
+Yes, as a first draft with human approval before publishing. Generated descriptions confidently invent specifications, and a wrong material or dimension in a store is a returns problem rather than an embarrassment. Give the model real specifications as input, and write Arabic descriptions as originals rather than translations.
+
+### Is visual search worth building for my store?
+
+Usually not first. It is impressive and typically drives a small fraction of sessions outside fashion and home décor, while costing considerably more than text search to build and maintain. Make text search excellent before considering it.
+
+### How do I calculate whether AI search pays for itself?
+
+Multiply monthly search users by conversion rate by average order value to get current revenue from search, then model an improved conversion rate. A store with 10,000 monthly search users at 2% conversion and a $60 order value earns roughly $12,000 monthly from search; a fifth improvement is $2,400 monthly, paying back a $12,000 project in about five months.
+
+### Are there compliance issues with recommendation engines?
+
+Yes. Recommendations profile shoppers, which is personal data processing under Gulf data protection law, and behavioural profiling for marketing generally requires consent rather than being covered by contract performance. Sending product data to an external model is usually low-risk; sending customer purchase histories is not.
+
+---
+
+## Conclusion
+
+**Fix search first.** For Arabic stores it is the highest-return AI investment available, it is comparatively cheap, and the zero-result log tells you exactly what to fix.
+
+**Build revenue features before cost-saving ones.** Search and recommendations increase sales; description generation and support bots reduce cost. The first pair is worth more and consistently gets built later.
+
+**And start recommendations with rules.** A rules-based system built in a week frequently outperforms a learned one built in two months on a catalogue that does not yet have the data to learn from.
+
+**Adding AI to your store?** [Get in touch](/en/contact) — we will tell you honestly which feature earns its cost for your catalogue size. See our [AI solutions](/en/services/ai-solutions) and [web development services](/en/services/web-development).

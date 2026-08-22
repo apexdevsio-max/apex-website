@@ -1,0 +1,251 @@
+---
+{"slug":"rtl-css-guide","title":"RTL in CSS: Building Bidirectional Layouts Properly","seoTitle":"RTL CSS Guide for Bidirectional Sites","excerpt":"Logical properties, the flexbox and grid rules that mirror automatically, what must never flip, and how to build one stylesheet that works in both directions.","date":"2026-08-19","dateModified":"2026-08-19"}
+---
+
+# RTL in CSS: Building Bidirectional Layouts Properly
+
+The old way of supporting Arabic on the web was a second stylesheet — `styles-rtl.css`, loaded when the language was Arabic, overriding every `margin-left` with a `margin-right`. It worked, and it drifted out of sync within weeks, because every new component needed two implementations and only one of them got tested.
+
+**The short answer: modern CSS has logical properties. Write `margin-inline-start` instead of `margin-left`, and one stylesheet mirrors correctly in both directions with no overrides at all.**
+
+This guide covers how to do that properly. For the wider scope of Arabic support, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+
+---
+
+## Set direction once, correctly
+
+Direction belongs on the `<html>` element, alongside the language:
+
+```html
+<html lang="ar" dir="rtl">
+```
+
+**Both attributes matter.** `dir` drives layout; `lang` drives font selection, hyphenation, and screen reader pronunciation. Setting one without the other is a common and quiet mistake.
+
+**Never set `direction` in CSS as your primary mechanism.** The HTML attribute is what assistive technology and the browser's bidirectional algorithm read. CSS `direction` exists, but the attribute is the source of truth.
+
+---
+
+## Logical properties: the whole trick
+
+Physical properties refer to fixed sides. Logical properties refer to the *start* and *end* of the text flow — which swap automatically under RTL.
+
+| Physical | Logical |
+|---|---|
+| `margin-left` | `margin-inline-start` |
+| `margin-right` | `margin-inline-end` |
+| `padding-left` | `padding-inline-start` |
+| `padding-right` | `padding-inline-end` |
+| `border-left` | `border-inline-start` |
+| `left` / `right` | `inset-inline-start` / `inset-inline-end` |
+| `text-align: left` | `text-align: start` |
+| `width` | `inline-size` |
+| `height` | `block-size` |
+
+**The shorthand forms are convenient:**
+
+```css
+.card {
+  margin-inline: 1rem 2rem;  /* start, end */
+  padding-block: 1rem;        /* top and bottom */
+  border-start-start-radius: 8px;
+}
+```
+
+**Browser support is no longer a reason to avoid these.** Logical properties are supported across all current browsers. If you are on a modern framework, you can adopt them today.
+
+**The migration strategy that works:** enable a lint rule banning physical properties in new code, and convert existing components as you touch them. A big-bang rewrite is rarely justified; the drift stops the moment new code stops adding to it.
+
+---
+
+## Flexbox and grid mirror for free
+
+This is the part people do not expect: **flex and grid layouts mirror automatically** under RTL, because their axes are defined logically already.
+
+```css
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;  /* becomes visual right under RTL */
+}
+```
+
+`flex-start`, `flex-end`, `justify-content`, and grid's `start`/`end` line names all follow text direction. You get correct mirroring with no RTL-specific code.
+
+**When you need a row that does not mirror** — a media player's controls, for instance — set direction explicitly on that container:
+
+```css
+.player-controls {
+  direction: ltr;
+}
+```
+
+**Avoid `row-reverse` as an RTL solution.** It flips in *both* directions, so a layout using it will be wrong in one of them. Use logical alignment and let direction handle it.
+
+---
+
+## What must never mirror
+
+Automatic mirroring is a blunt tool. These stay put regardless of direction:
+
+- **Media controls** — play always points right
+- **Clocks and timers**
+- **Charts with a time axis**
+- **Phone numbers, IBANs, card numbers, version numbers**
+- **Code blocks and terminal output**
+- **Most logos**
+
+**For code blocks specifically:**
+
+```css
+pre, code {
+  direction: ltr;
+  text-align: left;
+}
+```
+
+Without this, code in an Arabic article renders with punctuation scattered to the wrong ends of lines — a bug that makes technical content unusable.
+
+**For icons**, flip only directional ones:
+
+```css
+[dir="rtl"] .icon-arrow-back,
+[dir="rtl"] .icon-chevron-next {
+  transform: scaleX(-1);
+}
+```
+
+Never apply this globally. A mirrored play button or clock is exactly the bug this section prevents.
+
+---
+
+## Typography rules that differ
+
+Three CSS rules matter more for Arabic than font choice does.
+
+**`letter-spacing` must be zero.** Arabic script is cursive — letters connect and change form by position. Any letter-spacing breaks those connections, rendering text visually broken rather than merely oddly spaced.
+
+```css
+:lang(ar) {
+  letter-spacing: 0;
+  line-height: 1.8;
+}
+```
+
+**Line height needs more room.** Arabic ascenders and descenders extend further than Latin. The 1.4–1.5 that reads comfortably in English feels cramped; 1.7–1.8 is a better baseline.
+
+**`text-transform` does nothing useful.** Arabic has no letter case, so `uppercase` is a no-op on Arabic text — but it will still affect any embedded Latin text, often unintentionally.
+
+For font loading and subsetting, see [Arabic web fonts](/en/blog/arabic-web-fonts).
+
+---
+
+## Bidirectional text and embedded content
+
+Arabic sentences containing English product names, numbers, or URLs need isolation, or punctuation lands at visually wrong positions.
+
+**Use `<bdi>` for any embedded foreign-script or user-generated content:**
+
+```html
+<p>اشترِ <bdi>iPhone 15 Pro</bdi> الآن</p>
+```
+
+`<bdi>` isolates its content from the surrounding bidirectional context, which is what you want whenever you cannot predict the script of the content — user names, product titles, search results.
+
+**The CSS equivalent** for containers is `unicode-bidi: isolate`, which most browsers apply to `<bdi>` by default.
+
+**For anything where character order carries meaning**, force direction explicitly:
+
+```html
+<span dir="ltr">+966 50 123 4567</span>
+```
+
+[Arabic numerals and formats](/en/blog/arabic-numerals-formats) covers this in more depth, including the `Intl` APIs that handle currency correctly.
+
+---
+
+## Testing
+
+**Test early, not before launch.** Switching a mature codebase to RTL for the first time surfaces dozens of small breakages at once. Enable it in week one.
+
+**A quick check without changing your app:** set `dir="rtl"` on `<html>` in devtools and click through. Most layout bugs are visible immediately.
+
+**Automate the regression check.** Visual regression snapshots in both directions catch the component that a refactor quietly broke in one of them.
+
+**What to look for specifically:**
+- Shadows and gradients with a directional offset
+- Absolutely positioned elements using `left`/`right`
+- Background image positions
+- Transform origins
+- Scroll behaviour in horizontally scrolling containers
+- Any `::before`/`::after` content positioned physically
+
+---
+
+## Checklist
+
+- [ ] `dir` and `lang` both set on `<html>`
+- [ ] Logical properties throughout; no `margin-left` in new code
+- [ ] Lint rule preventing physical properties
+- [ ] No separate RTL stylesheet
+- [ ] `letter-spacing: 0` and `line-height` ≈ 1.8 for Arabic
+- [ ] Code blocks forced LTR
+- [ ] Directional icons flipped; play buttons and clocks untouched
+- [ ] Phone numbers and IBANs forced LTR
+- [ ] `<bdi>` around user-generated and embedded Latin content
+- [ ] Visual regression tests in both directions
+- [ ] Checked shadows, absolute positioning, and background positions
+
+---
+
+## Related reading
+
+- [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers of localisation.
+- [Arabic web fonts](/en/blog/arabic-web-fonts) — loading and subsetting.
+- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — numbers, currency, and bidirectional text.
+- [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic) — the mobile equivalent.
+- [WordPress vs Next.js](/en/blog/wordpress-vs-nextjs) — platform choice for bilingual sites.
+
+---
+
+## Frequently asked questions
+
+### Do I need a separate RTL stylesheet?
+
+No, and you should not have one. Logical properties like `margin-inline-start` resolve correctly in both directions from a single stylesheet. A separate RTL file drifts out of sync as new components are added, because only one version typically gets tested.
+
+### Are CSS logical properties widely supported?
+
+Yes. Logical properties are supported across all current browsers, so browser support is no longer a reason to avoid them. Adopt them in new code immediately and convert existing components as you touch them, rather than attempting a full rewrite.
+
+### Does flexbox mirror automatically in RTL?
+
+Yes. Flexbox and grid axes are defined logically, so `flex-start`, `justify-content`, and grid line names follow text direction automatically. Avoid `row-reverse` as an RTL solution — it flips in both directions, so it will be wrong in one of them.
+
+### Why does my Arabic text look broken?
+
+Almost certainly `letter-spacing`. Arabic is cursive, so letters connect and change shape by position. Any non-zero letter-spacing severs those connections and renders the text visually broken. Set `letter-spacing: 0` for Arabic text.
+
+### How do I stop code blocks breaking in an RTL page?
+
+Force them left-to-right with `direction: ltr; text-align: left;` on `pre` and `code`. Without this, code inside an Arabic article renders with punctuation and operators at the wrong ends of lines, making technical content unreadable.
+
+### What is `<bdi>` and when should I use it?
+
+`<bdi>` isolates its content from the surrounding bidirectional context. Use it around any content whose script you cannot predict — user names, product titles, search results, embedded English in Arabic sentences. Without it, the bidirectional algorithm resolves punctuation against the surrounding text and places it at visually wrong positions.
+
+### How do I test RTL without switching my whole app?
+
+Set `dir="rtl"` on the `<html>` element in browser devtools and click through the interface. Most layout bugs appear immediately. For ongoing protection, add visual regression snapshots in both directions so a refactor cannot quietly break one of them.
+
+---
+
+## Conclusion
+
+**Logical properties eliminate the entire problem.** One stylesheet, correct in both directions, with no overrides to maintain — which is why the separate RTL stylesheet is now a legacy pattern rather than a technique.
+
+**The exceptions are short and specific.** Code blocks, media controls, clocks, and anything where character order carries meaning need explicit direction. Everything else mirrors correctly on its own.
+
+**And test in week one.** RTL bugs are individually trivial and collectively overwhelming if you meet all of them the week before launch.
+
+**Building a bilingual site?** [Get in touch](/en/contact) — we build Arabic-first, which means RTL is the default rather than a retrofit. See our [web development services](/en/services/web-development).

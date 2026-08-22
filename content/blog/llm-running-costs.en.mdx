@@ -1,0 +1,172 @@
+---
+{"slug":"llm-running-costs","title":"What AI Actually Costs to Run in Production","seoTitle":"LLM Running Costs in Production","excerpt":"How token pricing works, why Arabic costs more, the levers that cut spend by 60–90%, and how to estimate before you build rather than discover after launch.","date":"2026-08-22","dateModified":"2026-08-22"}
+---
+
+# What AI Actually Costs to Run in Production
+
+The pilot cost forty dollars a month and everyone approved it. Then it launched, and the invoice arrived with four more digits than anyone expected.
+
+This is the most common financial surprise in AI projects, and it is entirely predictable. AI has a cost structure most software does not: **it charges every time it runs, forever.**
+
+**The short answer: cost scales with text volume in both directions. The three levers that matter are caching repeated context, choosing model size per task rather than globally, and not sending more text than the job needs. Together they routinely cut spend by 60–90%.**
+
+This guide covers how pricing works, why Arabic changes the arithmetic, and how to estimate before you commit.
+
+---
+
+## How pricing actually works
+
+**You pay per token, in both directions.** A token is a fragment of text — often part of a word. Both what you send and what the model returns are billed, and **output is typically several times more expensive than input.**
+
+**What counts as input is larger than people expect.** On every single call you are billed for:
+
+- The system prompt
+- The entire conversation history you resend
+- Any retrieved documents or context
+- The user's actual message
+
+**This is why conversations get expensive non-linearly.** Turn one sends a short message. Turn twenty resends the whole preceding conversation. The tenth message in a session can cost ten times the first — and nothing in your code looks different.
+
+**Prices change constantly and vary by model tier.** Any figure printed in an article ages badly, so this guide deliberately gives you the method rather than numbers. Get current rates from your provider and apply the estimation below.
+
+---
+
+## Why Arabic costs more
+
+**Arabic consumes noticeably more tokens than English for the same meaning.** Tokenisers are trained predominantly on English text, so English words often map to a single token while Arabic words fragment into several.
+
+**Three consequences that matter:**
+
+1. **Every estimate built on English samples understates an Arabic workload.** Do not take an English figure and adjust it — measure Arabic directly.
+2. **Context limits arrive sooner.** The same conversation in Arabic fills a context window faster.
+3. **Bilingual products have asymmetric costs.** Your Arabic users cost more to serve than your English users, at identical usage.
+
+**What to do:** measure with real Arabic text from your own domain, using your provider's token counting endpoint. Not translated English, not sample text — your actual content. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers the wider evaluation.
+
+---
+
+## The three levers that actually work
+
+Ordered by impact. Most teams apply none of them and then complain about cost.
+
+### 1. Cache the repeated prefix
+
+If every request sends the same system prompt, the same instructions, or the same reference documents, you are paying full price to send identical text repeatedly.
+
+**Prompt caching charges a reduced rate for content the provider has already seen.** For a system with a large fixed context, this is frequently the single largest saving available.
+
+**How to actually get cache hits:**
+
+- **Put stable content first**, volatile content last. Caching matches on prefix, so a timestamp near the top invalidates everything after it.
+- **Keep the tool list and system prompt byte-identical** between calls. Non-deterministic JSON ordering silently breaks caching.
+- **Verify it is working.** Providers report cache hit statistics — if they show zero across repeated calls, something in your prefix is changing.
+
+> **The silent invalidator:** injecting the current time or a request ID into the system prompt. It looks harmless and it disables caching entirely.
+
+### 2. Match model size to the task
+
+Teams pick one capable model and route everything through it. This is like using a senior engineer for data entry.
+
+**Split by task difficulty:** classification, routing, extraction, and short summaries rarely need a frontier model. Complex reasoning, nuanced writing, and difficult judgement do.
+
+**A practical routing pattern:** handle the task with a smaller model, and escalate to a larger one only when confidence is low or the task is identified as complex. On a workload dominated by simple requests — which most support workloads are — this alone can cut spend substantially.
+
+**Test before assuming.** Run your actual task against a smaller model and measure quality on your own examples. Teams routinely discover the cheaper option is indistinguishable for their use case.
+
+### 3. Send less text
+
+The cheapest token is the one you do not send.
+
+**Trim conversation history.** Most conversations do not need all twenty previous turns. Keep recent turns and a summary of earlier ones.
+
+**Right-size retrieved context.** In a RAG system, retrieved passages are billed as input. Retrieving ten chunks when three would do triples that portion of your bill — see [RAG](/en/blog/rag-knowledge-base) on chunk sizing.
+
+**Cap output length.** Set a sensible maximum. Output is the expensive direction, and an unbounded limit occasionally produces very long, very costly responses.
+
+**Tighten the prompt.** Long, rambling system prompts are billed on every call, forever. A prompt trimmed from 2,000 to 800 tokens saves on every request for the life of the product.
+
+---
+
+## Estimating before you build
+
+The method that prevents the launch surprise:
+
+**1. Take a real sample.** Twenty actual interactions from your business — real customer questions, real documents. Not invented examples, which are always shorter and cleaner than reality.
+
+**2. Measure token consumption per interaction**, including the system prompt, context, and expected output. Use the provider's token counting endpoint rather than estimating from character counts.
+
+**3. Multiply by realistic volume**, not launch volume. Model month one, month six, and month twelve.
+
+**4. Add 50%.** Retries after failures, longer-than-expected inputs, users behaving unexpectedly, and growth. This buffer is not pessimism — it is what the gap between pilot and production consistently looks like.
+
+**5. Compare against the thing it replaces.** If it saves 40 hours of staff time monthly, the relevant comparison is against that cost, not against zero.
+
+**The failure mode this prevents:** pilots run on small, clean inputs with few users. Production runs on messy inputs at scale. A pilot cost multiplied by user count understates reality, often by a lot.
+
+---
+
+## Controls to build in from the start
+
+**Set hard spend limits at the provider.** Every major provider supports budget caps and alerts. Configure them on day one — before a bug or an abusive user produces a surprise.
+
+**Rate-limit per user.** Without it, one automated client can consume a month's budget in an afternoon.
+
+**Log token usage per request.** Store it alongside the user and feature. When cost rises you need to know *which* feature, and this data is impossible to reconstruct after the fact.
+
+**Alert on anomalies.** A sudden spike usually means a bug — a retry loop, a prompt injection, or runaway context growth. Catching it in hours rather than at invoice time is the difference between an incident and a write-off.
+
+**Show cost per outcome, not total.** "Cost per resolved conversation" is a number the business can evaluate. "Monthly API spend" invites cuts without understanding what they cost.
+
+---
+
+## Related reading
+
+- [AI for business](/en/blog/ai-for-business-guide) — deciding whether the use case justifies the cost.
+- [AI chatbot costs](/en/blog/ai-chatbot-cost) — the full cost picture for the most common case.
+- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) — quality and cost tradeoffs.
+- [RAG](/en/blog/rag-knowledge-base) — where retrieved context drives cost.
+- [Arabic document processing](/en/blog/arabic-ocr-document-processing) — per-document economics.
+
+---
+
+## Frequently asked questions
+
+### How is AI usage priced?
+
+Per token — fragments of text — in both directions, with output typically several times more expensive than input. Input includes the system prompt, the full conversation history you resend, any retrieved context, and the user's message. This is why long conversations become expensive non-linearly.
+
+### Why does my AI cost more than the pilot suggested?
+
+Pilots run on short, clean inputs with few users; production runs on messy inputs at scale. Conversation history is also resent on every turn, so the tenth message in a session can cost many times the first. Estimate from real samples at realistic volume and add 50%.
+
+### Why does Arabic cost more than English?
+
+Tokenisers are trained predominantly on English, so English words often map to one token while Arabic words fragment into several. The same meaning therefore costs more in Arabic. Measure with real Arabic content from your own domain rather than adjusting an English figure.
+
+### What is the single biggest way to cut AI costs?
+
+Prompt caching, when you have a large fixed context sent on every request. It charges a reduced rate for content the provider has already seen. To get hits, put stable content first and volatile content last, and never inject a timestamp or request ID into the system prompt — that silently disables caching entirely.
+
+### Should I use a cheaper model?
+
+Per task, yes — not globally. Classification, routing, extraction, and short summaries rarely need a frontier model, while complex reasoning does. Route simple requests to a smaller model and escalate only when needed. Test on your own examples first; teams often find the cheaper option is indistinguishable for their case.
+
+### How do I avoid a surprise AI bill?
+
+Set hard spend caps and alerts at the provider on day one, rate-limit per user, log token usage per request alongside the feature, and alert on anomalies. A sudden spike usually indicates a bug such as a retry loop rather than genuine growth, and catching it in hours rather than at invoice time is the whole point.
+
+### How do I estimate AI costs before building?
+
+Take twenty real interactions, measure token consumption per interaction including system prompt and context using the provider's token counting endpoint, multiply by realistic volume at month one, six, and twelve, then add 50% for retries and growth. Compare the result against the cost of the work it replaces, not against zero.
+
+---
+
+## Conclusion
+
+**Cost per use is the structural difference** from other software, and the reason pilots mislead so reliably. Estimate with real samples at real volume, in the language your users actually write.
+
+**Three levers do most of the work** — cache the repeated prefix, match model size to task difficulty, and send less text. Applied together they routinely cut spend by most of it.
+
+**And build the controls before launch.** Spend caps, per-user limits, and usage logging cost a day to implement and prevent the invoice nobody planned for.
+
+**Planning an AI feature?** [Get in touch](/en/contact) — we estimate running cost as part of scoping rather than after launch. See our [AI solutions](/en/services/ai-solutions).

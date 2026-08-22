@@ -1,0 +1,213 @@
+---
+{"slug":"arabic-numerals-formats","title":"Arabic Numerals, Currency, and Formats: A Developer's Guide","seoTitle":"Arabic Numerals and Formats Guide","excerpt":"Eastern or Western Arabic digits, currency placement, phone numbers, and the bidirectional bugs that make prices display wrong — with the Intl APIs that solve them.","date":"2026-08-13","dateModified":"2026-08-13"}
+---
+
+# Arabic Numerals, Currency, and Formats: A Developer's Guide
+
+Numerals are the detail that quietly marks an interface as foreign. Everything else can be right — the translation, the layout, the fonts — and a price rendered `SAR 1,234.00` beside an order number in `١٢٣٤` still reads as an unfinished product.
+
+**The short answer: pick one numeral system deliberately and apply it consistently. Use `Intl.NumberFormat` rather than string manipulation. And never mirror phone numbers, IBANs, or card numbers, regardless of which system you choose.**
+
+This guide covers numerals, currency, and the bidirectional bugs they cause. For the wider scope, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+
+---
+
+## Two numeral systems, one decision
+
+Arabic uses two digit sets in active circulation:
+
+| | Digits | Common in |
+|---|---|---|
+| **Western Arabic** (`latn`) | 0 1 2 3 4 5 6 7 8 9 | Gulf, especially commercial and technical contexts |
+| **Eastern Arabic** (`arab`) | ٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩ | Egypt, Levant, formal and print contexts |
+
+**Both are correct Arabic.** The naming is confusing — "Western Arabic" digits are the ones English uses, because Europe adopted them from Arabic mathematics.
+
+**How to choose:**
+
+- **Gulf commercial products** — Western digits are the safer default. Users read them fluently, and they avoid ambiguity in prices and order references.
+- **Egypt and the Levant, or formal and editorial contexts** — Eastern digits feel more native.
+- **Serving the whole region** — Western digits are the lower-risk choice; they are universally readable, while Eastern digits feel unusual to some Gulf users in commercial settings.
+- **Government or institutional products** — follow the convention of the institution you are working with.
+
+> **The real error is not the choice — it is inconsistency.** Mixing both in one interface is what makes a product look unfinished. Decide once, put it in your locale configuration, and never hardcode a digit.
+
+---
+
+## Use `Intl`, not string replacement
+
+The instinct is to write a digit-swapping function. Do not — it will mishandle decimals, grouping separators, and negative numbers.
+
+Every modern runtime has this built in:
+
+```js
+// Western digits
+new Intl.NumberFormat("ar-SA-u-nu-latn").format(1234.5);   // "1,234.5"
+
+// Eastern digits
+new Intl.NumberFormat("ar-SA-u-nu-arab").format(1234.5);   // "١٬٢٣٤٫٥"
+```
+
+The `-u-nu-` extension selects the numbering system explicitly, which is what makes this predictable — relying on the locale's default varies by platform and runtime version.
+
+**Currency works the same way:**
+
+```js
+new Intl.NumberFormat("ar-SA-u-nu-latn", {
+  style: "currency",
+  currency: "SAR",
+}).format(1234.5);
+```
+
+**Note that Arabic uses different separator characters** with Eastern digits: `٬` for thousands and `٫` for decimals, not the comma and full stop. This is exactly the kind of detail a hand-rolled converter gets wrong, and `Intl` gets right.
+
+**In Flutter,** the `intl` package provides `NumberFormat` with the same locale-based behaviour.
+
+---
+
+## Currency: placement and the symbols people get wrong
+
+Currency formatting in Arabic is not just a translated symbol.
+
+| Currency | Arabic symbol | Code |
+|---|---|---|
+| Saudi Riyal | ر.س | SAR |
+| UAE Dirham | د.إ | AED |
+| Qatari Riyal | ر.ق | QAR |
+| Kuwaiti Dinar | د.ك | KWD |
+
+**Three practical points:**
+
+**Placement is a locale rule, not a preference.** `Intl` places the symbol after the amount for `ar-SA` and wraps the result in direction marks so it renders correctly in a bidirectional context — `Intl.NumberFormat("ar-SA-u-nu-latn", { style: "currency", currency: "SAR" }).format(1234.5)` yields `1,234.50 ر.س.` with those marks included. That is precisely the part hand-built strings get wrong: concatenating a symbol and a number yourself omits the isolation marks, which is how symbols end up on the visually wrong side.
+
+**Decimal places vary by currency.** The Kuwaiti, Bahraini, and Omani dinars use **three** decimal places, not two. A system hardcoded to two decimals will display and, worse, potentially calculate these incorrectly. `Intl` knows this; your hardcoded `toFixed(2)` does not.
+
+**Never store formatted currency.** Store a numeric amount and a currency code, and format at display time. Storing `"ر.س ١٢٣"` in a database is a decision you will regret the first time you need to sum a column.
+
+---
+
+## Phone numbers, IBANs, and things that must not flip
+
+These contain digits but are **not numbers** — their character order carries meaning, and direction handling must leave them alone.
+
+- Phone numbers (`+966 50 123 4567`)
+- IBANs (`SA03 8000 0000 6080 1016 7519`)
+- Credit card numbers
+- Version numbers (`2.14.3`)
+- Order and tracking references
+- Coordinates
+
+**The bug this produces:** a phone number rendering with the country code at the wrong end, or an IBAN whose blocks appear reversed. It is a display bug rather than a data bug, which makes it easy to miss in testing and alarming when a user reports it.
+
+**The fix** is to wrap these in an element with explicit direction:
+
+```html
+<span dir="ltr">+966 50 123 4567</span>
+```
+
+In React Native, set `writingDirection: "ltr"` on the text style. In Flutter, wrap in `Directionality(textDirection: TextDirection.ltr, ...)`.
+
+**Use Western digits for these regardless of your interface choice.** An IBAN in Eastern digits is technically representable and practically unusable — nobody will be able to compare it against their bank statement.
+
+---
+
+## The bidirectional bugs nobody anticipates
+
+Mixed Arabic and Latin text produces punctuation in visually wrong positions. This is not a rendering bug — it is the Unicode bidirectional algorithm working correctly on ambiguous input.
+
+**Where it shows up:**
+
+**Numbers ending a sentence.** An Arabic sentence ending in a Latin-digit number followed by a full stop can render the stop at the visual start of the line. The number is "neutral" directionality, and the algorithm resolves it against surrounding context.
+
+**Embedded English.** Product names, URLs, and email addresses inside Arabic sentences — the surrounding punctuation attaches unpredictably.
+
+**User-generated content.** Users mix scripts freely, and any input field displaying their text will encounter every combination.
+
+**The fix** is explicit isolation. In HTML:
+
+```html
+<bdi>iPhone 15 Pro</bdi>
+```
+
+`<bdi>` isolates its content from the surrounding bidirectional context, which is exactly what you want for any embedded foreign-script or user-generated text. For finer control, the Unicode marks `‏` (RLM) and `‎` (LRM) work anywhere, including in mobile apps.
+
+**Test deliberately:** put an Arabic sentence containing an English product name and a price into your UI and look at where the punctuation lands. This one test finds most bidirectional bugs.
+
+---
+
+## Dates and times
+
+Dates get their own guide, but two points belong here because they are formatting decisions:
+
+**Use `Intl.DateTimeFormat`** rather than manual formatting, so numeral system, month names, and ordering follow the locale.
+
+**Decide whether Hijri appears** and whether it is primary or secondary. For most Gulf consumer products it is a secondary display alongside Gregorian; for government-facing and HR products it is often primary. Store Gregorian either way — [Hijri dates in applications](/en/blog/hijri-dates-guide) covers why.
+
+---
+
+## Checklist
+
+- [ ] One numeral system chosen and set in locale configuration
+- [ ] No hardcoded digits anywhere in the codebase
+- [ ] All formatting through `Intl.NumberFormat` / `NumberFormat`
+- [ ] Currency stored as amount plus code, formatted at display
+- [ ] Three-decimal currencies (KWD, BHD, OMR) handled correctly
+- [ ] Phone numbers, IBANs, and card numbers forced LTR with Western digits
+- [ ] Embedded Latin text isolated with `<bdi>` or direction marks
+- [ ] Mixed Arabic/English strings tested for punctuation placement
+- [ ] Dates formatted through `Intl.DateTimeFormat`
+- [ ] Reviewed by a native Arabic speaker
+
+---
+
+## Related reading
+
+- [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers of localisation.
+- [Hijri dates in applications](/en/blog/hijri-dates-guide) — storage, conversion, and calendars.
+- [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) — the Flutter implementation.
+- [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic) — the React Native implementation.
+- [Payment gateways in the Gulf](/en/blog/gulf-payment-gateways) — where currency formatting meets real transactions.
+
+---
+
+## Frequently asked questions
+
+### Should I use ١٢٣ or 123 in an Arabic interface?
+
+Both are correct Arabic. Western digits (123) are the safer default for Gulf commercial products and for anything serving the whole region, since they are universally readable. Eastern digits (١٢٣) feel more native in Egypt, the Levant, and formal or editorial contexts. The real error is mixing both in one interface.
+
+### How do I format Arabic numbers in JavaScript?
+
+Use `Intl.NumberFormat` with an explicit numbering system: `new Intl.NumberFormat("ar-SA-u-nu-latn")` for Western digits or `-u-nu-arab` for Eastern. Avoid writing a digit-replacement function — it will mishandle decimal separators, thousands grouping, and negative numbers, and Arabic uses different separator characters with Eastern digits.
+
+### Why does my price display with the currency symbol on the wrong side?
+
+Almost always string concatenation in a bidirectional context. `Intl.NumberFormat` with `style: "currency"` emits the symbol in the correct position and includes the direction marks that keep it there. Joining a symbol and a number yourself omits those marks, which is what puts the symbol on the wrong side.
+
+### Why is the full stop appearing at the start of my Arabic sentence?
+
+The sentence probably ends with a Latin-script number or word. Digits have neutral directionality, so the bidirectional algorithm resolves the trailing punctuation against surrounding context and places it at the visual start. Wrap the embedded content in `<bdi>` or add a right-to-left mark after it.
+
+### How should I display phone numbers in an Arabic app?
+
+Force left-to-right direction with `dir="ltr"` in HTML, `writingDirection: "ltr"` in React Native, or a `Directionality` widget in Flutter — and use Western digits regardless of your interface choice. The same applies to IBANs, card numbers, and version numbers, where character order carries meaning.
+
+### Do all Gulf currencies use two decimal places?
+
+No, and this catches people out. The Kuwaiti, Bahraini, and Omani dinars use three decimal places. A system hardcoded to `toFixed(2)` displays these incorrectly and may introduce rounding errors. `Intl.NumberFormat` with the correct currency code handles it automatically.
+
+### Should I store numbers as Arabic digits in my database?
+
+No. Store numeric values as numbers and format at display time. Storing formatted strings — whether digits, currency, or dates — makes sorting, summing, and comparison unreliable, and locks your data to one presentation choice.
+
+---
+
+## Conclusion
+
+**Choose one numeral system and put it in configuration.** Consistency matters more than which one you pick, and a hardcoded digit anywhere is a future inconsistency.
+
+**Let `Intl` do the formatting.** It knows about separator characters, three-decimal currencies, and locale conventions that a hand-written converter will get wrong.
+
+**And isolate anything whose character order matters.** Phone numbers, IBANs, and embedded Latin text need explicit direction, or the bidirectional algorithm will resolve them in ways your users will report as bugs.
+
+**Building an Arabic product?** [Get in touch](/en/contact) for a scoping conversation — these details are the difference between an app that works in Arabic and one that feels Arabic. See our [mobile app](/en/services/mobile-apps) and [web development services](/en/services/web-development).
