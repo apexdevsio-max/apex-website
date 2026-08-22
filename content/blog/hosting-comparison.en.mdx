@@ -1,5 +1,5 @@
 ---
-{"slug":"hosting-comparison","title":"Hosting Your Site: Vercel, AWS, or Local Hosting?","excerpt":"A comparison of hosting options for Gulf projects — cost, performance, and the data residency constraints that may dictate your choice.","date":"2026-06-21","dateModified":"2026-06-21"}
+{"slug":"hosting-comparison","title":"Hosting Your Site: Vercel, AWS, or Local Hosting?","excerpt":"Hosting options for Gulf projects — Vercel, AWS, and regional providers, what hosting never includes, data residency rules, and how to migrate without losing rankings.","date":"2026-06-21","dateModified":"2026-08-21"}
 ---
 
 # Hosting Your Site: Vercel, AWS, or Local Hosting?
@@ -59,6 +59,64 @@ This point is overlooked in global comparisons and is **the most important one i
 - **Local hosting** remains the clearest option when requirements are strict.
 
 > **A practical rule:** if your project is in a regulated sector, make "where is the data stored?" your first question to a provider rather than your last. Changing hosting after building is expensive; breaching residency requirements is more expensive still.
+
+---
+
+## Regional providers — the option most comparisons skip
+
+Global comparisons jump from Vercel to AWS and stop there, which leaves out the providers that actually resolve residency questions for Gulf projects.
+
+**Saudi Arabia.** [Google Cloud](https://cloud.google.com/) operates a Dammam region (`me-central2`), and [STC Cloud](https://www.stc.com.sa/) and [Alibaba Cloud](https://www.alibabacloud.com/) both run infrastructure inside the Kingdom. AWS has announced a Saudi region with a large committed investment; confirm its current availability status directly with the provider before planning around it, as announced and generally-available are not the same thing.
+
+**UAE.** [AWS](https://aws.amazon.com/) has run a Bahrain region since 2019 and a UAE region (`me-central-1`) since 2022; [Azure](https://azure.microsoft.com/) operates UAE North (Dubai) and UAE Central (Abu Dhabi). G42 serves government and regulated workloads. Options here are the most mature in the Gulf.
+
+**Qatar.** Google Cloud opened a Doha region (`me-central1`) and Azure runs Qatar Central. Both are relatively recent, and they are the reason Qatari data-residency projects are far less constrained than they were three years ago.
+
+**What you trade.** Regional providers generally have smaller service catalogues, thinner documentation, and slower support than the global tier-one clouds. Ecosystem tooling often assumes AWS. Budget for that friction — it is real, but it is usually smaller than the cost of getting residency wrong.
+
+> **Worth knowing:** "has a region in the country" and "your data stays in the country" are not the same statement. Backups, logging, and support access can all cross borders by default. Ask specifically where backups and logs are stored, and get it in the contract.
+
+---
+
+## What hosting does not include
+
+Most hosting-cost surprises come from assuming these are bundled. They usually are not, and together they often exceed the hosting line itself.
+
+| Item | Typical annual cost | Notes |
+|---|---|---|
+| Domain name | $10 – $50 | `.sa` and `.qa` domains cost more and need documentation |
+| SSL certificate | $0 | Free via Let's Encrypt; paid only for EV certificates |
+| Email hosting | $60 – $200 per user | **Separate from web hosting** — the most common omission |
+| Backups | $0 – $300 | Sometimes included, often not. Ask explicitly |
+| CDN | $0 – $500 | Included with deployment platforms, extra on raw cloud |
+| Monitoring / error tracking | $0 – $600 | Free tiers usually suffice early |
+| Bandwidth overage | Highly variable | The line item that produces shock bills |
+
+**Email deserves its own warning.** Hosting your website and hosting `info@yourcompany.com` are separate purchases. Teams routinely discover this after launch — and a company still using a Gmail address as its public contact reads as unestablished to B2B buyers, which is a commercial cost, not just a technical one.
+
+---
+
+## Migrating hosting without breaking search rankings
+
+Changing hosting is where sites quietly lose their search visibility. The move itself is rarely the problem; the handling around it is.
+
+**Before the move:**
+1. Lower your DNS TTL to 300 seconds at least 24 hours ahead, so the cutover propagates in minutes rather than a day.
+2. Record current rankings and traffic — you cannot detect a regression without a baseline.
+3. Copy every redirect rule. Lost redirects are the single largest cause of post-migration ranking loss.
+4. Verify the new environment serves the same URLs, including trailing-slash behaviour.
+
+**During:**
+5. Keep the old server running during propagation. Turning it off immediately guarantees downtime for users still resolving to the old address.
+6. Confirm SSL is valid on the new host *before* switching DNS. A certificate warning at cutover is a hard bounce for every visitor.
+
+**After:**
+7. Check `robots.txt` immediately — a staging environment's `Disallow: /` copied to production will deindex the entire site within days. This is the most damaging and most common migration mistake.
+8. Verify canonical tags still point at the production domain.
+9. Resubmit the sitemap in Search Console and watch crawl errors for two weeks.
+10. Compare Core Web Vitals against your baseline.
+
+> **The one that ends projects:** a staging `robots.txt` reaching production. It is a two-line file, it is trivial to overlook, and recovering the lost index position takes months. Check it first, not last.
 
 ---
 
@@ -130,6 +188,18 @@ Set budget alerts from day one, review active services monthly and delete unused
 ### Can I change hosting later?
 
 Yes, but difficulty varies. A static site moves within hours. A platform with a database and integrations needs planning and potential downtime. **If data residency requirements are plausible in your future, plan for them from the start** — changing later is far more expensive.
+
+### Which cloud providers have data centres in Saudi Arabia?
+
+Google Cloud operates a Dammam region, and STC Cloud and Alibaba Cloud run infrastructure inside the Kingdom. AWS has announced a Saudi region — verify its current status with the provider directly. Note that a provider having a region in-country does not automatically mean your backups and logs stay in-country; ask where those are stored specifically.
+
+### Does hosting include email?
+
+No. Web hosting and email hosting are separate purchases, and this is the most common budgeting omission. Business email runs roughly $60 to $200 per user annually. Worth doing properly: a free Gmail address as a company's public contact is read by B2B buyers as a sign the business is not established.
+
+### How do I move hosting without losing my search rankings?
+
+Lower DNS TTL 24 hours ahead, copy every redirect rule, keep the old server running through propagation, and verify SSL on the new host before switching DNS. Immediately after the move, check `robots.txt` — a staging file containing `Disallow: /` reaching production will remove the entire site from search results within days, and recovery takes months. Then resubmit the sitemap and monitor crawl errors for two weeks.
 
 ### Who is responsible for backups?
 

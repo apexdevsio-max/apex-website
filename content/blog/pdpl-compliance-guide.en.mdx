@@ -1,5 +1,5 @@
 ---
-{"slug":"pdpl-compliance-guide","title":"A Developer's Guide to Saudi PDPL Compliance","excerpt":"Implementing Saudi PDPL in your product — consent, user rights, 72-hour breach notification, and transfer restrictions.","date":"2026-06-09","dateModified":"2026-06-09"}
+{"slug":"pdpl-compliance-guide","title":"A Developer's Guide to Saudi PDPL Compliance","excerpt":"Implementing Saudi PDPL in your product — consent, user rights, 72-hour breach notification, and transfer restrictions.","date":"2026-06-09","dateModified":"2026-08-21"}
 ---
 
 # A Developer's Guide to Saudi PDPL Compliance
@@ -7,6 +7,8 @@
 The Personal Data Protection Law (PDPL) is no longer a preparatory phase — **the compliance grace period ended in September 2024, and enforcement has been active since**, supervised by the [Saudi Data and AI Authority (SDAIA)](https://sdaia.gov.sa/).
 
 This guide is aimed at developers and digital product owners: what actually needs to change in your product.
+
+> **Working across more than one Gulf market?** This guide covers Saudi Arabia in depth. For how the Saudi, UAE, and Qatari regimes compare — and which one governs you — start with the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
 
 > **Important note:** this is technical guidance, not legal advice. The law and its implementing regulations evolve, and requirements vary by sector and data type. **Consult a qualified legal advisor before relying on any interpretation here.**
 
@@ -147,6 +149,44 @@ This is an extremely common practice — a copy of the production database on a 
 - [ ] Access controls — who on your team can see what.
 - [ ] Monitoring that detects breaches, and a written 72-hour notification procedure.
 - [ ] A retention policy — don't keep data without a purpose.
+
+---
+
+## Who is accountable — you or your developer?
+
+This question surfaces after an incident, which is the worst time to discover the answer.
+
+Data protection law distinguishes the **controller** — the entity deciding why and how personal data is processed — from the **processor**, which handles data on the controller's instructions. In a typical project, **you are the controller and your development agency is a processor**.
+
+**The practical consequence:** regulatory accountability sits with you. "Our developer configured it that way" is not a defence. You can contract obligations onto a vendor, but you cannot contract away your own accountability to the regulator.
+
+**What this means before signing:**
+
+- Put a **data processing agreement** in place — what the vendor may do with data, security obligations, and what happens at contract end.
+- Require **notification to you within 24 hours** of any suspected breach. You have a 72-hour window overall; a vendor sitting on the news for two days consumes it.
+- Establish **deletion obligations** — real production data on a developer's laptop after handover is a live exposure.
+- Map **sub-processors.** Your vendor's chosen analytics, hosting, and error-tracking services are processing your users' data too, and they inherit the same requirements.
+
+> **The most common real-world failure** is not an attack. It is a copy of the production database sitting in a developer's local environment or a test server, long after anyone remembers it exists. Section 5 above covers why production data does not belong in development environments.
+
+---
+
+## What non-compliance costs
+
+Compliance work competes for budget against features, so it is worth being specific about the downside.
+
+**Regulatory penalties.** SDAIA is the supervisory authority, and the law provides for warnings, fines, and — for the most serious violations, particularly unlawful disclosure of sensitive data — criminal liability. Penalty ceilings and enforcement practice change over time; verify current figures with a qualified local advisor rather than relying on any figure quoted in an article, including this one.
+
+**The costs that arrive first.** In practice, most organisations feel these before any fine:
+
+- **Rework.** Retrofitting consent flows, deletion capability, and audit logging into a shipped product costs several times what building them in would have.
+- **Lost enterprise deals.** Government and large corporate buyers increasingly require compliance evidence during procurement. Failing that check removes you from the process silently.
+- **App store removal.** Both stores enforce their own privacy requirements, and a listing can be pulled over a non-compliant privacy policy or undeclared data collection.
+- **Reputational damage.** Breach notification is a legal duty, meaning your users learn about the incident by design.
+
+**The proportionate approach:** the requirements scale with sensitivity. A brochure site collecting a contact form is not in the same position as a health app. Match the effort to the data — but do the mapping first, because plenty of teams discover they hold more personal data than they assumed.
+
+> **This guide is written for developers and product owners planning compliance work. It is not legal advice.** For regulated sectors — health, finance, government — engage a qualified Saudi data protection advisor before launch, not after.
 
 ---
 

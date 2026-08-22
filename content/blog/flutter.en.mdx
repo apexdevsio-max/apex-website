@@ -1,5 +1,5 @@
 ---
-{"slug":"flutter","title":"Flutter: The Complete Guide to Cross-Platform Apps","excerpt":"A comprehensive guide to Flutter — Google's UI framework for building Android, iOS, web, and desktop apps from a single codebase.","date":"2026-03-01","dateModified":"2026-03-01"}
+{"slug":"flutter","title":"Flutter: The Complete Guide to Cross-Platform Apps","excerpt":"A complete guide to Flutter — what it costs, when to choose it, when not to, and how to hire for it. Build ranges, a decision framework, and honest limitations.","date":"2026-03-01","dateModified":"2026-08-21"}
 ---
 
 # What is Flutter? A Complete Guide to Cross-Platform App Development
@@ -148,6 +148,64 @@ Additionally, [Pub.dev](https://pub.dev/) offers thousands of open-source packag
 
 ---
 
+## What Flutter Actually Costs to Build In
+
+Framework choice is rarely a line item on its own — it shows up as build time, team size, and what maintenance looks like a year later. These are the ranges we quote for Flutter work in the Gulf market, and what moves a project between them.
+
+| Project type | Typical build time | Indicative range (USD) |
+|---|---|---|
+| MVP / simple app, shipped to both platforms | 6–10 weeks | $5,000 – $15,000 |
+| Standard commercial app (auth, payments, backend, admin) | 3–5 months | $15,000 – $45,000 |
+| Advanced app or platform (real-time, multi-role, heavy integrations) | 5–9 months | $45,000 – $100,000 |
+
+These are the same tiers used in [Mobile App Development Cost](/en/blog/mobile-app-development-cost), which covers the full pricing methodology. Flutter does not sit in a separate pricing bracket — the framework affects *how* the work is done far more than what it costs.
+
+Three things move a quote more than the framework does:
+
+1. **Backend scope.** A Flutter front end talking to an existing, documented API is a fraction of the cost of one where the backend is built alongside it.
+2. **Integration count.** Each payment gateway, government identity provider, or ERP connection carries its own build-and-certify cycle. See [Payment Gateways in the Gulf](/en/blog/gulf-payment-gateways) for what those cycles look like in practice.
+3. **Design ownership.** Flutter draws its own pixels, which is a gift when you have a real design system and a liability when you do not — "make it look native" is unbounded work.
+
+The single-codebase saving is real but routinely overstated. Expect roughly **30–40% less than two native apps**, not 50%. Platform-specific work does not vanish: push notifications, deep links, in-app purchases, permissions, and store review all still need handling twice, even though the UI layer is shared.
+
+For the full cost picture independent of framework, see [Mobile App Development Cost](/en/blog/mobile-app-development-cost) and the regional breakdown in [App Development Cost in the Gulf](/en/blog/mobile-app-development-cost-gulf).
+
+---
+
+## When Not to Choose Flutter
+
+Most guides on this framework are written to sell it. It is a strong default for cross-platform work, but there are cases where recommending it would be malpractice — and knowing them is what makes the recommendation worth anything.
+
+**Choose something else when:**
+
+- **You already have a React team.** The productivity of a team writing in a language it knows beats the theoretical merits of Dart. [React Native](/en/blog/react-native) is the correct answer here, and the reasoning is laid out in [Flutter vs React Native](/en/blog/flutter-vs-react-native).
+- **The app is fundamentally one platform.** If iOS is 95% of your users and always will be, native Swift gives you a better result with less indirection.
+- **You depend on brand-new OS features.** Flutter reaches new platform APIs through plugins, which lag the OS release. If your product depends on a feature announced at WWDC last month, you will be waiting or writing the platform channel yourself.
+- **The app is mostly content.** A news or catalogue app with little interactivity may not justify a native app at all — see [Mobile App or Responsive Website (PWA)?](/en/blog/app-vs-pwa) before committing to either framework.
+- **You need the smallest possible download.** Flutter apps carry the rendering engine. In markets where a 15 MB floor is a real barrier, that matters.
+- **Heavy platform-specific hardware work.** Deep camera pipelines, Bluetooth peripherals, or background processing tuned per-OS end up written natively anyway, at which point the shared-codebase argument thins considerably.
+
+**A note on "Flutter is slow" claims:** they are outdated. The Impeller engine resolved the shader-jank problems that generated most of those complaints. Performance rarely decides this question today — team skills and integration requirements do.
+
+---
+
+## Hiring and Team Considerations
+
+The framework you choose is a hiring decision you will live with for years, and it is the part clients most often overlook.
+
+**Availability in the region.** Flutter developers are well-represented across Egypt, Jordan, Syria, and the Gulf, and the pool has grown steadily. It remains smaller than the JavaScript pool — if your plan is to staff a large team quickly from one city, React Native is the easier hire.
+
+**What "a Flutter developer" should mean.** Widget composition is the easy part. When evaluating candidates or an agency, the questions that separate real experience from tutorial familiarity are:
+
+- How do they handle state management, and *why* that choice? A developer with no opinion here has not built anything large.
+- Have they shipped to both stores, including the review-rejection cycle?
+- Can they write a platform channel when a plugin does not exist?
+- Have they built RTL Arabic interfaces? This is where regional experience is not interchangeable with general Flutter skill — the details are in [Arabic and RTL Support in Flutter](/en/blog/flutter-rtl-arabic-guide).
+
+**The continuity risk.** A single Flutter developer who leaves mid-project is more disruptive than losing one of several React developers, simply because the replacement pool is smaller. This is a genuine argument for working with a team rather than an individual, and it is weighed properly in [Freelancer or Development Agency?](/en/blog/freelancer-vs-agency).
+
+---
+
 ## Is Flutter Suitable for Large Projects?
 
 Yes. Many companies rely on Flutter for commercial applications because of its strong performance, easier maintenance, and unified user experience across platforms.
@@ -192,6 +250,32 @@ However, these drawbacks are generally not major issues for most modern commerci
 
 ---
 
+## A Decision Framework
+
+If you are choosing a framework for a real project rather than reading out of interest, work through these in order. The first question that gives a clear answer usually settles it.
+
+**1. Does your team already know something?**
+An existing React team → React Native. An existing native team → keep going native. Only when there is no incumbent skill does the question become genuinely open.
+
+**2. Is this really a cross-platform product?**
+If one platform carries the overwhelming majority of your users and revenue, cross-platform is solving a problem you do not have.
+
+**3. How much of the app is not UI?**
+Count the hardware access, background processing, and OS-specific integrations. If they dominate, the shared-codebase saving shrinks toward nothing.
+
+**4. How important is a precise, consistent visual identity?**
+Strict brand consistency across both platforms is where Flutter is strongest — it draws every pixel and does not negotiate with the OS.
+
+**5. Is Arabic RTL central to the product?**
+Flutter's directionality support is genuinely deeper out of the box. For Arabic-first products this is a real differentiator rather than a marketing point.
+
+**6. What happens in year two?**
+Who maintains it, and can you hire them? A framework that is right for the build and wrong for the maintenance is the wrong framework. [In-House Maintenance or a Contract?](/en/blog/maintenance-inhouse-vs-contract) covers what that ongoing commitment actually involves.
+
+> **The honest summary:** for a new cross-platform product with no existing team constraint, especially an Arabic-first one, Flutter is the strongest default available in 2026. That is a default, not a rule — the questions above are what turn it into a decision.
+
+---
+
 ## The Future of Flutter
 
 Industry trends indicate that cross-platform development will continue to grow rapidly over the coming years as companies seek faster product delivery and lower development costs.
@@ -229,6 +313,30 @@ Yes. It is considered one of the best choices for beginners because of its simpl
 ### Can Flutter Be Used for Large-Scale Projects?
 
 Absolutely. Many companies use it for enterprise and production-grade applications.
+
+### How much does it cost to build a Flutter app?
+
+A simple app or MVP typically runs $5,000 to $15,000 and takes 6 to 10 weeks. A standard commercial app with authentication, payments, and a backend runs $15,000 to $45,000 over 3 to 5 months. Advanced platforms with real-time features and heavy integrations run $45,000 to $100,000. The framework itself is free; the cost is engineering time, and backend scope moves the number far more than the framework choice does.
+
+### Is Flutter cheaper than building two native apps?
+
+Yes, but by roughly 30 to 40 percent rather than the 50 percent often claimed. The UI layer is genuinely shared, but push notifications, deep links, in-app purchases, permissions, and store review still require platform-specific work on both sides.
+
+### How long does it take to build a Flutter app?
+
+Six to ten weeks for an MVP, three to five months for a standard commercial app, and five to nine months for complex projects. Integration count and whether the backend already exists affect the timeline more than the number of screens.
+
+### Is Flutter good for Arabic and RTL apps?
+
+Yes, and this is one of its clearest advantages. Directionality is built deeply into the framework rather than added on, so mirrored layouts, Arabic typography, and bidirectional text behave correctly with far less manual correction than alternatives require.
+
+### Is Flutter better than React Native?
+
+Neither is better in the abstract. React Native is the right choice for teams that already write React or need code sharing with a web product. Flutter is stronger for new teams, strict visual consistency, and Arabic RTL interfaces. Existing team skills should usually decide it.
+
+### Will Google discontinue Flutter?
+
+Google uses Flutter in its own major products and the framework has a large independent open-source community, so an abrupt discontinuation is unlikely. That said, it is a fair question to ask of any vendor-backed technology, and the practical protection is a well-structured codebase where business logic is not entangled with the UI framework.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-{"slug":"app-development-contract","title":"App Development Contracts: Clauses That Protect You","excerpt":"Code ownership, payment schedules, acceptance criteria, and the contract wording to reject before you sign.","date":"2026-08-03","dateModified":"2026-08-03"}
+{"slug":"app-development-contract","title":"App Development Contracts: Clauses That Protect You","excerpt":"Code ownership, payment schedules, acceptance criteria, and the contract wording to reject before you sign.","date":"2026-08-03","dateModified":"2026-08-21"}
 ---
 
 # App Development Contracts: The Clauses That Protect You (2026 Guide)
@@ -122,6 +122,47 @@ What happens if delivery is late? A balanced contract includes:
 8. ✅ A delay clause balanced for both parties.
 9. ✅ Confidentiality and data protection clause.
 10. ✅ Termination and dispute resolution with clear jurisdiction.
+
+---
+
+## What happens when things go wrong
+
+Most contract guides describe the ideal project. The clauses that matter most are the ones governing failure — and they are the ones least often read before signing.
+
+**If the vendor misses the deadline.** A delivery date with no consequence attached is a preference, not a term. Define what happens: a penalty, a fee reduction, or a right to terminate after a defined grace period. Equally, be fair about delays *you* cause — a well-drafted clause pauses the clock when the client is late approving, which is the most common source of slippage.
+
+**If quality is unacceptable.** "The work must be professional" is unenforceable because it is unmeasurable. Define acceptance criteria instead: the app runs on named OS versions, passes an agreed test list, and loads within a stated time. Acceptance testing should have a defined window — typically 14 days — after which delivery is deemed accepted.
+
+**If you want to stop.** A termination clause protects both parties. It should state notice period, payment for work completed to date, and — critically — that you receive all work product regardless of the reason for termination. A contract permitting the vendor to withhold completed work on exit is one to refuse outright.
+
+**If the vendor disappears.** This is the scenario nobody plans for and it happens. Your protection is structural rather than legal: require code to be pushed to *your* repository from day one, not delivered at the end. If the code lives only on the vendor's machines, a contract is a claim to something you cannot access.
+
+**If there is a dispute.** Specify governing law and jurisdiction. For cross-border work — a Gulf client with a vendor elsewhere — this determines whether enforcement is realistic or theoretical. Arbitration is often faster than courts for technical disputes, but agree the venue in advance.
+
+---
+
+## Warranty versus maintenance — not the same thing
+
+These are routinely conflated, and the confusion produces genuine disputes after launch.
+
+**Warranty** covers defects in work already paid for: something specified but not functioning correctly. It should be free, typically for 3 to 6 months, and it is not a favour — it is the vendor delivering what was contracted.
+
+**Maintenance** covers new work: OS compatibility updates, new features, content changes, and ongoing monitoring. It is a separate paid engagement.
+
+The dispute always arises at the boundary. Settle it in the contract with explicit examples:
+
+| Scenario | Warranty | Maintenance |
+|---|---|---|
+| A specified feature does not work | ✅ | |
+| Crash on a device that was in scope | ✅ | |
+| App breaks after a new iOS release | | ✅ |
+| You want an additional screen | | ✅ |
+| Third-party service changes its API | | ✅ (usually) |
+| Security flaw in delivered code | ✅ | |
+
+That last row is worth insisting on: a security vulnerability in code you paid for is a defect, not a change request.
+
+For how to structure the ongoing side, see [In-House Maintenance or a Contract?](/en/blog/maintenance-inhouse-vs-contract).
 
 ---
 
