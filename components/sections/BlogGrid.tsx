@@ -1,53 +1,26 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useMemo } from "react";
 
 import { Reveal } from "@/components/ui/Reveal";
-import type { BlogPost } from "@/lib/content/content-loader";
+import { CategoryNav } from "@/components/content/CategoryNav";
+import { Pagination } from "@/components/content/Pagination";
+import type { BlogCard } from "@/lib/content/blog-view";
 import type { Locale } from "@/lib/i18n/locale";
-import { MOCK_POSTS, POST_META } from "@/lib/mock/blog-data";
+import { getCategoryByKey, type CategoryKey } from "@/lib/content/taxonomy";
 
-function extractFirstImage(content: string): string | undefined {
-  const match = /^!\[.*\]\((.*)\)$/m.exec(content);
-  return match?.[1] ?? undefined;
-}
-
-const CATS_AR = [
-  { key: "all", label: "الكل" },
-  { key: "lang-framework", label: "لغات برمجة و أطر عمل" },
-  { key: "mobile", label: "برمجة الموبايل" },
-  { key: "web", label: "برمجة الويب" },
-  { key: "comparisons", label: "تقييمات و مقارنات" },
-  { key: "selected", label: "مواضيع منتقاة" },
-  { key: "practical", label: "تجارب عملية" },
-];
-
-const CATS_EN = [
-  { key: "all", label: "All" },
-  { key: "lang-framework", label: "Languages & Frameworks" },
-  { key: "mobile", label: "Mobile Programming" },
-  { key: "web", label: "Web Programming" },
-  { key: "comparisons", label: "Reviews & Comparisons" },
-  { key: "selected", label: "Selected Topics" },
-  { key: "practical", label: "Practical Experiences" },
-];
-
-type GridPost = {
-  slug: string;
-  categories: string[];
-  emoji: string;
-  image?: string;
-  readTime: number;
-  accentColor: string;
-  ar: { title: string; excerpt: string; date: string };
-  en: { title: string; excerpt: string; date: string };
-};
-
-function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
+/**
+ * The article grid shared by the blog index and every category page.
+ *
+ * This was a client component that received every article and filtered them in
+ * the browser. It is now a server component rendering one already-sliced page of
+ * cards: no article data crosses to the client, and the category bar and pager
+ * are plain links, so both are crawlable.
+ */
+function PostCard({ post, lang }: { post: BlogCard; lang: Locale }) {
   const isAr = lang === "ar";
-  const content = post[lang];
+  const categoryLabel = post.categories[0]
+    ? getCategoryByKey(post.categories[0])?.label[lang]
+    : undefined;
 
   return (
     <Link
@@ -61,57 +34,55 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
         } as React.CSSProperties
       }
     >
-      <div
-          className="relative overflow-hidden"
-          style={{ aspectRatio: "5/3" }}
-        >
-          {post.image ? (
-            <Image
-              src={post.image}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      <div className="relative overflow-hidden" style={{ aspectRatio: "5/3" }}>
+        {post.image ? (
+          <Image
+            src={post.image}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}
             />
-          ) : (
-            <>
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(135deg,#0a0a0a,#1a1a2e)" }}
-              />
-              <div
-                className="absolute inset-0 opacity-15"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-                  backgroundSize: "20px 20px",
-                }}
-                aria-hidden="true"
-              />
-              <div
-                className="absolute rounded-full pointer-events-none"
-                style={{
-                  width: "140px",
-                  height: "140px",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%,-50%)",
-                  background: `radial-gradient(circle,${post.accentColor}28 0%,transparent 70%)`,
-                }}
-                aria-hidden="true"
-              />
-              <span
-                className="card-emoji"
-                style={{
-                  fontSize: "52px",
-                  filter: "drop-shadow(0 0 16px rgba(255,255,255,0.25))",
-                  transition: "transform 0.3s",
-                }}
-              >
-                {post.emoji}
-              </span>
-            </>
-          )}
+            <div
+              className="absolute inset-0 opacity-15"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
+                backgroundSize: "20px 20px",
+              }}
+              aria-hidden="true"
+            />
+            <div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: "140px",
+                height: "140px",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%,-50%)",
+                background: `radial-gradient(circle,${post.accentColor}28 0%,transparent 70%)`,
+              }}
+              aria-hidden="true"
+            />
+            <span
+              className="card-emoji"
+              style={{
+                fontSize: "52px",
+                filter: "drop-shadow(0 0 16px rgba(255,255,255,0.25))",
+                transition: "transform 0.3s",
+              }}
+            >
+              {post.emoji}
+            </span>
+          </>
+        )}
+        {categoryLabel && (
           <div
             className="absolute top-3 px-2.5 py-0.5 rounded-full text-xs font-bold"
             style={{
@@ -121,32 +92,33 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
               color: post.accentColor,
             }}
           >
-            {isAr
-              ? CATS_AR.find((cat) => cat.key === post.categories[0])?.label
-              : CATS_EN.find((cat) => cat.key === post.categories[0])?.label}
+            {categoryLabel}
           </div>
-        </div>
+        )}
+      </div>
 
       <div className="flex flex-col flex-1 p-4 md:p-6" dir={isAr ? "rtl" : "ltr"}>
         <div
           className={`flex items-center gap-2 mb-3 text-xs ${isAr ? "flex-row-reverse" : ""}`}
           style={{ color: "var(--color-secondary-text)" }}
         >
-          <span>{content.date}</span>
+          <span>{post.date}</span>
           <span>·</span>
-          <span>{post.readTime} {isAr ? "دقائق" : "min"}</span>
+          <span>
+            {post.readTime} {isAr ? "دقائق" : "min"}
+          </span>
         </div>
         <h3
           className={`font-bold mb-2 leading-snug flex-1 ${isAr ? "font-ar" : "font-en"}`}
           style={{ fontSize: "15px", color: "var(--color-primary-text)" }}
         >
-          {content.title}
+          {post.title}
         </h3>
         <p
           className={`text-sm leading-relaxed mb-4 line-clamp-2 ${isAr ? "font-ar" : "font-en"}`}
           style={{ color: "var(--color-secondary-text)" }}
         >
-          {content.excerpt}
+          {post.excerpt}
         </p>
         <div
           className={`flex items-center gap-2 font-bold text-sm mt-auto apex-arrow ${isAr ? "flex-row-reverse" : ""}`}
@@ -161,81 +133,27 @@ function PostCard({ post, lang }: { post: GridPost; lang: Locale }) {
 
 export function BlogGrid({
   lang,
-  mdxPosts,
+  posts,
+  page,
+  totalPages,
+  basePath,
+  activeCategory,
+  heading,
+  intro,
+  eyebrow,
 }: {
   lang: Locale;
-  mdxPosts: BlogPost[];
+  /** One page of cards, already sliced and sorted by the caller. */
+  posts: BlogCard[];
+  page: number;
+  totalPages: number;
+  basePath: string;
+  activeCategory?: CategoryKey;
+  heading: string;
+  intro: string;
+  eyebrow: string;
 }) {
   const isAr = lang === "ar";
-  const cats = isAr ? CATS_AR : CATS_EN;
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  const mockPostList = useMemo(
-    () =>
-      Object.entries(MOCK_POSTS).map(([slug, post]) => {
-        const arImage = extractFirstImage(post.ar.content || "");
-        const enImage = extractFirstImage(post.en.content || "");
-        return {
-          slug,
-          categories: post.categories,
-          emoji: post.emoji,
-          image: enImage || arImage || undefined,
-          readTime: post.readTime,
-          accentColor: post.accentColor,
-          ar: {
-            title: post.ar.title,
-            excerpt: post.ar.excerpt,
-            date: post.ar.date,
-          },
-          en: {
-            title: post.en.title,
-            excerpt: post.en.excerpt,
-            date: post.en.date,
-          },
-        };
-      }),
-    []
-  );
-
-  const posts: GridPost[] = useMemo(() => {
-    if (mdxPosts.length === 0) return mockPostList;
-
-    const mockBySlug = new Map(mockPostList.map((p) => [p.slug, p]));
-    return mdxPosts.map((post) => {
-      const mdxImage = extractFirstImage(post.content) || undefined;
-      const mock = mockBySlug.get(post.slug);
-      if (mock) {
-        return {
-          ...mock,
-          image: mdxImage || mock.image,
-          [lang]: {
-            title: post.title,
-            excerpt: post.excerpt,
-            date: post.datePublished ?? mock[lang].date,
-          },
-        };
-      }
-      // Articles with no MOCK_POSTS entry take their presentation from POST_META.
-      // Falling straight through to "selected"/📝 put every such article in one
-      // filter bucket behind one icon.
-      const meta = POST_META[post.slug];
-      return {
-        slug: post.slug,
-        image: mdxImage,
-        categories: meta?.categories ?? ["selected"],
-        emoji: meta?.emoji ?? "📝",
-        readTime: meta?.readTime ?? Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200)),
-        accentColor: meta?.accentColor ?? "#00BCD4",
-        ar: { title: post.title, excerpt: post.excerpt, date: post.datePublished ?? "" },
-        en: { title: post.title, excerpt: post.excerpt, date: post.datePublished ?? "" },
-      };
-    });
-  }, [mdxPosts, lang, mockPostList]);
-
-  const filtered =
-    activeFilter === "all"
-      ? posts
-      : posts.filter((post) => post.categories.includes(activeFilter));
 
   return (
     <section
@@ -244,62 +162,56 @@ export function BlogGrid({
     >
       <div className="max-w-6xl mx-auto">
         <Reveal className="text-center mb-14">
-          <span className="apex-section-label gold">{isAr ? "المدونة" : "Blog"}</span>
+          <span className="apex-section-label gold">{eyebrow}</span>
           <div className="apex-divider reverse" />
-          <h1
-            className={`mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
-            style={{ fontSize: "clamp(28px,4vw,52px)", color: "var(--color-primary-text)" }}
-          >
-            {isAr ? "مقالات تقنية متخصصة" : "Technical Articles & Insights"}
-          </h1>
+          {/*
+            Page two onward keeps the same visible heading but must not repeat the
+            H1 of page one as a competing target; the paginated pages exist to be
+            crawled through, not to rank on their own.
+          */}
+          {page === 1 ? (
+            <h1
+              className={`mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
+              style={{ fontSize: "clamp(28px,4vw,52px)", color: "var(--color-primary-text)" }}
+            >
+              {heading}
+            </h1>
+          ) : (
+            <p
+              className={`mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
+              style={{ fontSize: "clamp(28px,4vw,52px)", color: "var(--color-primary-text)" }}
+            >
+              {heading}
+              <span className="sr-only">
+                {isAr ? ` — صفحة ${page}` : ` — page ${page}`}
+              </span>
+            </p>
+          )}
           <p
             className={`mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-            style={{ maxWidth: "500px", fontSize: "clamp(14px,1.5vw,16px)", color: "var(--color-secondary-text)" }}
+            style={{
+              maxWidth: "560px",
+              fontSize: "clamp(14px,1.5vw,16px)",
+              color: "var(--color-secondary-text)",
+            }}
           >
-            {isAr
-              ? "نشاركك خبراتنا في تطوير الويب، الموبايل، والذكاء الاصطناعي"
-              : "We share our expertise in web, mobile, and AI development"}
+            {intro}
           </p>
         </Reveal>
 
         <Reveal delay={80}>
-          <div className="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1">
-            {cats.map((cat) => (
-              <button
-                key={cat.key}
-                onClick={() => setActiveFilter(cat.key)}
-                className={`px-5 min-h-[44px] py-3.5 rounded-full text-sm font-bold transition-all duration-200 border ${isAr ? "font-ar" : "font-en"}`}
-                style={
-                  activeFilter === cat.key
-                    ? {
-                        background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-                        borderColor: "transparent",
-                        color: "#fff",
-                        boxShadow: "0 4px 18px color-mix(in srgb,var(--color-primary) 38%,transparent)",
-                        transform: "translateY(-1px)",
-                      }
-                    : {
-                        background: "var(--color-card)",
-                        borderColor: "var(--color-border)",
-                        color: "var(--color-secondary-text)",
-                      }
-                }
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
+          <CategoryNav lang={lang} active={activeCategory} />
         </Reveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((post, index) => (
+          {posts.map((post, index) => (
             <Reveal key={post.slug} delay={index * 60}>
               <PostCard post={post} lang={lang} />
             </Reveal>
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {posts.length === 0 && (
           <div className="text-center py-20" style={{ color: "var(--color-secondary-text)" }}>
             <div className="text-5xl mb-4">📰</div>
             <p className={isAr ? "font-ar" : "font-en"}>
@@ -307,6 +219,8 @@ export function BlogGrid({
             </p>
           </div>
         )}
+
+        <Pagination lang={lang} page={page} totalPages={totalPages} basePath={basePath} />
 
         <Reveal delay={120}>
           <div
@@ -324,7 +238,8 @@ export function BlogGrid({
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%,-50%)",
-                background: "radial-gradient(circle,color-mix(in srgb,var(--color-primary) 8%,transparent) 0%,transparent 70%)",
+                background:
+                  "radial-gradient(circle,color-mix(in srgb,var(--color-primary) 8%,transparent) 0%,transparent 70%)",
               }}
               aria-hidden="true"
             />

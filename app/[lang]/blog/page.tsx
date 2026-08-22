@@ -1,64 +1,40 @@
-import { notFound }      from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import dynamic            from "next/dynamic";
 
-import { getBlogPosts }  from "@/lib/content/content-loader";
-import { isLocale, toLocale }      from "@/lib/i18n/locale";
-import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
+import { getBlogPosts } from "@/lib/content/content-loader";
+import { isLocale, toLocale } from "@/lib/i18n/locale";
+import { siteUrl } from "@/lib/seo/metadata";
 import {
   JsonLd,
   buildOrganizationSchema,
   buildBlogSchema,
   buildBreadcrumbSchema,
 } from "@/lib/seo/schema";
-
-const BlogGrid = dynamic(
-  () => import("@/components/sections/BlogGrid").then((m) => m.BlogGrid),
-  {
-    ssr: true,
-    loading: () => (
-      <div className="min-h-screen pt-28 pb-24 px-6" style={{ background: "var(--color-background)" }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="h-4 w-24 mx-auto mb-4 rounded-full animate-pulse" style={{ background: "var(--color-border)" }} />
-            <div className="h-10 w-48 mx-auto rounded animate-pulse" style={{ background: "var(--color-border)" }} />
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="rounded-2xl h-80 animate-pulse" style={{ background: "var(--color-border)" }} />
-            ))}
-          </div>
-        </div>
-      </div>
-    ),
-  },
-);
+import { BlogGrid } from "@/components/sections/BlogGrid";
+import { buildBlogCards } from "@/lib/content/blog-view";
+import { paginate } from "@/lib/content/taxonomy";
+import { buildListingMetadata, listingCopy } from "./listing";
 
 type Props = { params: Promise<{ lang: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const isAr = lang === "ar";
-  return buildPageMeta(toLocale(lang), {
-    title: isAr ? "المدونة — أدلة تطوير البرمجيات" : "Blog — Software Development Guides",
-    description: isAr
-      ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج — أسعار واقعية، مقارنات تقنية، ومتطلبات الامتثال المحلية."
-      : "Practical guides to app and web development costs in the Gulf — realistic pricing, technical comparisons, and local compliance requirements.",
-    path: `/${lang}/blog`,
-    keywords: isAr
-      ? ["مدونة تقنية", "تكلفة تطوير التطبيقات", "أدلة برمجية", "تطوير الويب", "الخليج"]
-      : ["technology blog", "app development cost", "developer guides", "web development", "Gulf market"],
-  });
+  const locale = toLocale(lang);
+
+  return buildListingMetadata({ lang: locale, page: 1, path: `/${locale}/blog` });
 }
 
 export default async function BlogPage({ params }: Props) {
   const { lang: langParam } = await params;
   if (!isLocale(langParam)) notFound();
 
-  const lang       = langParam as "en" | "ar";
-  const mdxPosts   = await getBlogPosts(lang);
+  const lang = langParam;
   const isAr = lang === "ar";
+  const posts = await getBlogPosts(lang);
+  const cards = buildBlogCards(posts, lang);
+  const { items, page, totalPages } = paginate(cards, 1);
 
+  const copy = listingCopy(lang);
   const breadcrumbItems = [
     { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
     { name: isAr ? "المدونة" : "Blog", url: `${siteUrl}/${lang}/blog` },
@@ -69,7 +45,16 @@ export default async function BlogPage({ params }: Props) {
       <JsonLd schema={buildOrganizationSchema(lang)} />
       <JsonLd schema={buildBlogSchema(lang)} />
       <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
-      <BlogGrid lang={lang} mdxPosts={mdxPosts} />
+      <BlogGrid
+        lang={lang}
+        posts={items}
+        page={page}
+        totalPages={totalPages}
+        basePath={`/${lang}/blog`}
+        eyebrow={copy.eyebrow}
+        heading={copy.heading}
+        intro={copy.intro}
+      />
     </>
   );
 }

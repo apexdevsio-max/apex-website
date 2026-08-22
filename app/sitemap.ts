@@ -8,6 +8,7 @@ import {
 } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locale";
 import { siteUrl } from "@/lib/seo/metadata";
+import { CATEGORIES, getPostCategoryKeys } from "@/lib/content/taxonomy";
 
 type StaticRoute = {
   route: string;
@@ -234,6 +235,37 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
   //   ) as Record<Locale, string>;
   //   entries.push(buildLocalizedEntry(pathByLocale, "monthly", 0.6, lastModified));
   // }
+
+  // Blog category landing pages. These are indexable topic hubs, so they belong
+  // in the sitemap; the /page/<n> routes under them are noindex and deliberately
+  // left out. `lastModified` uses the newest article in each category, since a
+  // category page changes exactly when one of its articles does.
+  const newestPostByCategory = new Map<string, Date>();
+  for (const locale of SUPPORTED_LOCALES) {
+    for (const post of postMap.get(locale) ?? []) {
+      const modified = post.dateModified
+        ? new Date(post.dateModified)
+        : post.datePublished
+          ? new Date(post.datePublished)
+          : post.updatedAt;
+      if (!modified) continue;
+      for (const key of getPostCategoryKeys(post.slug)) {
+        const existing = newestPostByCategory.get(key);
+        if (!existing || modified > existing) newestPostByCategory.set(key, modified);
+      }
+    }
+  }
+
+  for (const category of CATEGORIES) {
+    entries.push(
+      buildLocalizedEntry(
+        buildPathByLocale(`blog/category/${category.slug}`),
+        "weekly",
+        0.6,
+        newestPostByCategory.get(category.key)
+      )
+    );
+  }
 
   const newestContent = newestContentDate([
     ...servicesByLocale.map(({ items }) => items),
