@@ -31,6 +31,32 @@ test("blog frontmatter contains a valid publication date and safe markdown links
     const data = JSON.parse(frontmatter[1]);
     assert.ok(data.date || data.datePublished, `${file} has no publication date`);
     assert.ok(!Number.isNaN(Date.parse(data.date ?? data.datePublished)), `${file} has an invalid publication date`);
+
+    // A future publication date ships an article dated after the day it is read.
+    // The visible byline looks wrong to readers, the sitemap advertises a
+    // lastModified that has not happened, and Google discounts content whose
+    // dates it cannot reconcile. This happened once by staggering dates forward
+    // to pace a publishing schedule — the schedule belongs in a plan, not in
+    // frontmatter that is already live. One day of slack absorbs timezone skew
+    // between the build machine and the reader.
+    const published = new Date(data.date ?? data.datePublished);
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    assert.ok(
+      published <= tomorrow,
+      `${file} is dated in the future (${data.date ?? data.datePublished})`
+    );
+
+    if (data.dateModified) {
+      assert.ok(
+        new Date(data.dateModified) <= tomorrow,
+        `${file} has a future dateModified (${data.dateModified})`
+      );
+      assert.ok(
+        new Date(data.dateModified) >= published,
+        `${file} has dateModified before its publication date`
+      );
+    }
+
     assert.doesNotMatch(source, /\]\(\s*(?:javascript|data):/i, `${file} contains an unsafe link protocol`);
   }
 });
