@@ -11,12 +11,16 @@ import {
   buildBlogPostingSchema,
   buildBreadcrumbSchema,
   buildFaqSchema,
+  buildPersonSchema,
   extractFaqs,
 } from "@/lib/seo/schema";
 import { CATEGORY_LABELS, FALLBACK_POST, MOCK_POSTS, POST_META, PUBLISHED_POST_SLUGS } from "@/lib/mock/blog-data";
 import { MarkdownContent } from "@/components/content/MarkdownContent";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { collectHeadings } from "@/lib/content/headings";
+import { getPrimaryCategory } from "@/lib/content/taxonomy";
+import { bylineFor } from "@/lib/content/byline";
+import { author, hasNamedAuthor } from "@/data/author";
 
 // Only slugs backed by a real MDX article are prerendered. Previously every
 // MOCK_POST_SLUGS entry was added too, which published routes whose body rendered
@@ -87,6 +91,94 @@ function getRelatedSlugs(
 // Every published article carries its own keyword set. Previously only `flutter`
 // had one, so the other posts shipped with no keywords meta at all.
 const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
+  "ai-privacy-risks": {
+    ar: ["حقن التوجيهات", "أمن الذكاء الاصطناعي", "خصوصية بيانات AI", "تسريب البيانات", "التدريب على المدخلات", "ضوابط الذكاء الاصطناعي"],
+    en: ["prompt injection", "AI security", "AI data privacy", "data leakage", "training on inputs", "AI controls"],
+  },
+  "internal-ai-assistant": {
+    ar: ["مساعد ذكي داخلي", "بحث المعرفة الداخلية", "صلاحيات الوصول", "أتمتة الموارد البشرية", "توثيق الشركة", "تهيئة الموظفين"],
+    en: ["internal AI assistant", "internal knowledge search", "access permissions", "HR automation", "company documentation", "employee onboarding"],
+  },
+  "ecommerce-ai-features": {
+    ar: ["الذكاء الاصطناعي للمتاجر", "بحث المنتجات", "توصيات المنتجات", "أوصاف المنتجات", "متجر إلكتروني ذكي", "تحسين التحويل"],
+    en: ["ecommerce AI", "product search", "product recommendations", "AI product descriptions", "store conversion", "visual search"],
+  },
+  "llm-running-costs": {
+    ar: ["تكلفة تشغيل الذكاء الاصطناعي", "تسعير الرموز", "تكلفة API", "خفض تكاليف AI", "التخزين المؤقت للتوجيهات", "ميزانية الذكاء الاصطناعي"],
+    en: ["LLM running costs", "token pricing", "AI API cost", "reduce AI costs", "prompt caching", "AI budget"],
+  },
+  "rag-knowledge-base": {
+    ar: ["RAG", "الاسترجاع المعزز بالتوليد", "قاعدة معرفة ذكية", "قاعدة بيانات متجهية", "تقسيم المستندات", "استرجاع عربي"],
+    en: ["RAG", "retrieval augmented generation", "AI knowledge base", "vector database", "document chunking", "embeddings Arabic"],
+  },
+  "arabic-ocr-document-processing": {
+    ar: ["OCR عربي", "معالجة المستندات", "استخراج بيانات الفواتير", "التعرف الضوئي على الحروف", "أتمتة الإدخال", "نموذج بصري"],
+    en: ["Arabic OCR", "document processing", "invoice data extraction", "optical character recognition", "vision model documents", "document automation"],
+  },
+  "ai-for-business-guide": {
+    ar: ["الذكاء الاصطناعي للأعمال", "حلول ذكاء اصطناعي للشركات", "تكلفة الذكاء الاصطناعي", "أتمتة بالذكاء الاصطناعي", "حالات استخدام AI", "تقييم مشروع ذكاء اصطناعي"],
+    en: ["AI for business", "enterprise AI", "AI cost", "AI automation", "AI use cases", "AI project evaluation"],
+  },
+  "writing-rfp-software": {
+    ar: ["كراسة الشروط", "RFP برمجي", "طلب عروض أسعار", "تحديد نطاق المشروع", "وثيقة المتطلبات", "ميزانية المشروع"],
+    en: ["software RFP", "request for proposal", "project brief", "scoping a project", "requirements document", "software procurement"],
+  },
+  "outsourcing-vs-inhouse": {
+    ar: ["التعهيد الخارجي", "فريق داخلي", "تكلفة توظيف مطور", "outsourcing", "بناء فريق تقني", "نموذج هجين"],
+    en: ["outsourcing vs in-house", "in-house development team", "developer cost", "software outsourcing", "hybrid team model", "hiring developers"],
+  },
+  "choosing-development-company": {
+    ar: ["اختيار شركة تطوير", "شركة برمجيات", "تقييم عروض التطوير", "شريك تطوير", "مقارنة عروض الأسعار", "التعاقد"],
+    en: ["choosing a development company", "software development partner", "evaluating quotes", "vendor selection", "development agency", "hire developers"],
+  },
+  "localization-mistakes": {
+    ar: ["أخطاء التعريب", "مشاكل RTL", "تباعد الحروف العربية", "الجمع العربي", "تعريب التطبيقات", "جودة الترجمة"],
+    en: ["Arabic localisation mistakes", "RTL bugs", "letter-spacing Arabic", "Arabic plurals", "localization errors", "i18n mistakes"],
+  },
+  "i18n-arabic-guide": {
+    ar: ["i18n عربي", "التدويل", "ملفات الترجمة", "صيغ الجمع العربية", "CLDR", "إدارة الترجمات"],
+    en: ["i18n Arabic", "internationalization", "translation files", "Arabic plurals", "CLDR plural rules", "next-intl"],
+  },
+  "arabic-search-guide": {
+    ar: ["البحث العربي", "توحيد النص العربي", "التشكيل", "Elasticsearch عربي", "التجذير", "صور الألف"],
+    en: ["Arabic search", "Arabic normalization", "diacritics", "Elasticsearch Arabic", "arabic_stem", "alef variants"],
+  },
+  "rtl-css-guide": {
+    ar: ["RTL في CSS", "الخصائص المنطقية", "تخطيط ثنائي الاتجاه", "margin-inline-start", "تصميم عربي", "bdi"],
+    en: ["RTL CSS", "logical properties", "bidirectional layout", "margin-inline-start", "dir rtl", "bdi element"],
+  },
+  "digital-identity-integration": {
+    ar: ["نفاذ", "أبشر", "UAE Pass", "الهوية الرقمية", "تكامل نفاذ", "KYC عن بعد"],
+    en: ["Nafath integration", "UAE Pass", "Absher", "digital identity Gulf", "national single sign-on", "remote KYC"],
+  },
+  "childrens-data-protection": {
+    ar: ["حماية بيانات الأطفال", "موافقة ولي الأمر", "التحقق من العمر", "تطبيقات الأطفال", "البوابة الوالدية", "التطبيقات التعليمية"],
+    en: ["children's data protection", "parental consent", "age assurance", "kids apps", "parental gate", "COPPA Gulf"],
+  },
+  "app-store-requirements": {
+    ar: ["رفض App Store", "متطلبات متاجر التطبيقات", "مراجعة التطبيق", "حذف الحساب", "Google Play", "نشر التطبيقات"],
+    en: ["app store rejection", "App Store review", "Google Play requirements", "account deletion requirement", "app submission", "privacy labels"],
+  },
+  "privacy-policy-guide": {
+    ar: ["سياسة الخصوصية", "كتابة سياسة خصوصية", "خريطة البيانات", "بطاقات خصوصية Apple", "أمان البيانات Google", "الامتثال"],
+    en: ["privacy policy", "privacy policy template", "data map", "Apple privacy labels", "Google Data Safety", "app compliance"],
+  },
+  "arabic-numerals-formats": {
+    ar: ["الأرقام العربية", "الأرقام الهندية", "تنسيق العملة", "Intl NumberFormat", "النص ثنائي الاتجاه", "أرقام الهواتف"],
+    en: ["Arabic numerals", "Eastern Arabic digits", "currency formatting", "Intl NumberFormat", "bidirectional text", "RTL numbers"],
+  },
+  "react-native-rtl-arabic": {
+    ar: ["React Native عربي", "دعم RTL", "I18nManager", "تعريب React Native", "الخطوط العربية", "اتجاه النص"],
+    en: ["React Native RTL", "Arabic React Native", "I18nManager", "RTL layout", "Arabic fonts mobile", "bidirectional text"],
+  },
+  "data-residency-gulf": {
+    ar: ["إقامة البيانات", "سيادة البيانات", "توطين البيانات", "استضافة داخل السعودية", "مناطق سحابية خليجية", "نقل البيانات"],
+    en: ["data residency Gulf", "data sovereignty", "data localisation", "Saudi hosting", "UAE cloud regions", "cross-border transfers"],
+  },
+  "uae-data-protection-guide": {
+    ar: ["حماية البيانات الإمارات", "قانون البيانات الإماراتي", "DIFC", "ADGM", "خصوصية البيانات دبي", "الامتثال الإمارات"],
+    en: ["UAE data protection", "UAE PDPL", "Federal Decree-Law 45", "DIFC data protection", "ADGM", "UAE privacy compliance"],
+  },
   flutter: {
     ar: ["Flutter", "دارت", "تطوير تطبيقات", "تطبيقات متعددة المنصات", "Google Flutter", "تطوير الموبايل"],
     en: ["Flutter", "Dart", "cross-platform", "mobile development", "Google Flutter", "app development"],
@@ -178,6 +270,14 @@ const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
   "freelancer-vs-agency": {
     ar: ["فريلانسر أم شركة", "مطور مستقل", "شركة تطوير", "تكلفة التطوير", "اختيار المزوّد"],
     en: ["freelancer vs agency", "independent developer", "development company", "development cost"],
+  },
+  "arabic-localization-guide": {
+    ar: ["تعريب التطبيقات", "تعريب المواقع", "دعم RTL", "الخطوط العربية", "التواريخ الهجرية", "توطين عربي"],
+    en: ["Arabic localisation", "RTL support", "Arabic app design", "Arabic fonts", "i18n Arabic", "bidirectional text"],
+  },
+  "gulf-compliance-guide": {
+    ar: ["الامتثال التنظيمي الخليج", "حماية البيانات السعودية", "حماية البيانات الإمارات", "إقامة البيانات", "PDPL", "تراخيص التطبيقات"],
+    en: ["Gulf compliance", "Saudi PDPL", "UAE PDPL", "data residency", "app regulations Gulf", "DIFC ADGM data protection"],
   },
   "gulf-payment-gateways": {
     ar: ["بوابات الدفع", "مدى", "STC Pay", "تابي", "تمارا", "الدفع الآجل"],
@@ -320,6 +420,19 @@ export default async function BlogPostPage({
   const accentColor = meta?.accentColor ?? mock?.accentColor ?? fallback.accentColor;
   const categoryKey = meta?.categories?.[0] ?? mock?.categories?.[0] ?? fallback.categories[0];
   const category = CATEGORY_LABELS[categoryKey]?.[lang] ?? categoryKey;
+  // The category this article belongs to, when it maps to a real landing page.
+  // Undefined for the placeholder fallback category, which has no page behind it.
+  const primaryCategory = getPrimaryCategory(slug);
+  // Named attribution for the compliance and deep-technical guides; team
+  // attribution elsewhere. See lib/content/byline.ts for why the split exists.
+  const byline = bylineFor(slug);
+  const personSchema = buildPersonSchema(lang);
+  const bylineName =
+    byline === "person" && hasNamedAuthor()
+      ? (isAr && author.nameAr ? author.nameAr : author.name)
+      : isAr
+        ? "فريق APEX"
+        : "APEX Team";
   const rawContent = mdxPost?.content ?? mockContent?.content ?? fallback.content;
   // Related links point only at articles that actually exist — linking to the
   // placeholder slugs sent crawlers (and readers) to dead-end pages.
@@ -363,10 +476,24 @@ export default async function BlogPostPage({
       dir={isAr ? "rtl" : "ltr"}
     >
       <JsonLd schema={buildOrganizationSchema(lang)} />
+      {/* The Person node is emitted only on articles that claim personal
+          authorship, so `author.@id` always resolves to a node on the same page. */}
+      {byline === "person" && personSchema && <JsonLd schema={personSchema} />}
       <JsonLd
         schema={buildBreadcrumbSchema([
           { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
           { name: isAr ? "المدونة" : "Blog", url: `${siteUrl}/${lang}/blog` },
+          // The category sits between the blog and the article so the trail
+          // matches the real hierarchy — and so each article passes a signal up
+          // to its topic hub rather than only to the blog root.
+          ...(primaryCategory
+            ? [
+                {
+                  name: primaryCategory.label[lang],
+                  url: `${siteUrl}/${lang}/blog/category/${primaryCategory.slug}`,
+                },
+              ]
+            : []),
           { name: title, url: `${siteUrl}/${lang}/blog/${slug}` },
         ])}
       />
@@ -379,6 +506,7 @@ export default async function BlogPostPage({
           dateModified: mdxPost?.dateModified,
           image: extractFirstImage(rawContent),
           lang,
+          byline,
         })}
       />
       {/* Articles that end with a FAQ section get FAQPage markup, which is what
@@ -409,16 +537,33 @@ export default async function BlogPostPage({
           className="flex items-center gap-3 mb-4 text-xs"
           style={{ color: "var(--color-secondary-text)" }}
         >
-          <span
-            className="px-3 min-h-[28px] flex items-center rounded-full text-xs font-bold"
-            style={{
-              background: `color-mix(in srgb,${accentColor} 18%,transparent)`,
-              border: `1px solid ${accentColor}55`,
-              color: accentColor,
-            }}
-          >
-            {category}
-          </span>
+          {/* The badge links to its category hub when one exists. It was inert
+              text, which wasted the most contextually relevant internal link on
+              the page — the one a reader follows to find more of the same topic. */}
+          {primaryCategory ? (
+            <Link
+              href={`/${lang}/blog/category/${primaryCategory.slug}`}
+              className="px-3 min-h-[28px] flex items-center rounded-full text-xs font-bold transition-opacity hover:opacity-80"
+              style={{
+                background: `color-mix(in srgb,${accentColor} 18%,transparent)`,
+                border: `1px solid ${accentColor}55`,
+                color: accentColor,
+              }}
+            >
+              {primaryCategory.label[lang]}
+            </Link>
+          ) : (
+            <span
+              className="px-3 min-h-[28px] flex items-center rounded-full text-xs font-bold"
+              style={{
+                background: `color-mix(in srgb,${accentColor} 18%,transparent)`,
+                border: `1px solid ${accentColor}55`,
+                color: accentColor,
+              }}
+            >
+              {category}
+            </span>
+          )}
           {/* Named attribution. These guides cover regulated subjects — SAMA
               licensing, PDPL, DHA health requirements — where an unattributed page
               is held to a stricter standard. The byline links to /about, which is
@@ -429,7 +574,7 @@ export default async function BlogPostPage({
             className="apex-byline font-semibold"
             style={{ color: "var(--color-secondary-text)" }}
           >
-            {isAr ? "فريق APEX" : "APEX Team"}
+            {bylineName}
           </Link>
           <span>·</span>
           {date && <span>{date}</span>}

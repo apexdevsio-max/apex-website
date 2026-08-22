@@ -1,6 +1,7 @@
 import type { Locale } from "@/lib/i18n/locale";
 import { siteUrl } from "./metadata";
 import { socialLinks } from "@/data/social-links";
+import { author, authorSameAs, hasNamedAuthor } from "@/data/author";
 
 export function JsonLd({ schema }: { schema: Record<string, unknown> }) {
   return (
@@ -43,7 +44,10 @@ export function buildOrganizationSchema(lang: Locale) {
     slogan: isAr ? "تقنية تتحدث عنك" : "Technology That Speaks for You",
     foundingLocation: "Syria",
     areaServed: ["SA", "AE", "QA", "SY"],
-    sameAs: organizationSameAs(),
+    // Spread rather than assign: an empty `sameAs: []` is a weaker signal than
+    // omitting the property, and assigning unconditionally shipped the empty
+    // array on every page while the social profiles were unset.
+    ...(organizationSameAs().length ? { sameAs: organizationSameAs() } : {}),
     knowsAbout: [
       "Software Development",
       "Mobile App Development",
@@ -71,6 +75,48 @@ export function buildOrganizationSchema(lang: Locale) {
       "@type": "PostalAddress",
       addressCountry: "SY",
     },
+  };
+}
+
+/**
+ * The named author as a Person node, or undefined while unconfigured.
+ *
+ * Kept deliberately separate from the Organization: a personal portfolio in the
+ * Organization's `sameAs` asserts that APEX and that individual are one entity.
+ * Here the same URL is correct, because this node *is* the person.
+ *
+ * `worksFor` points at the Organization's stable `@id`, which is what links the
+ * two nodes into one graph without merging their identities.
+ */
+export function buildPersonSchema(lang: Locale) {
+  if (!hasNamedAuthor()) return undefined;
+
+  const isAr = lang === "ar";
+  const name = isAr && author.nameAr ? author.nameAr : author.name;
+  const jobTitle = isAr && author.jobTitleAr ? author.jobTitleAr : author.jobTitle;
+  const profiles = authorSameAs();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${siteUrl}/#author`,
+    name,
+    ...(jobTitle ? { jobTitle } : {}),
+    ...(author.url ? { url: author.url } : {}),
+    ...(profiles.length ? { sameAs: profiles } : {}),
+    worksFor: {
+      "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
+      name: "APEX",
+    },
+    knowsAbout: [
+      "Software Development",
+      "Mobile App Development",
+      "Web Development",
+      "Arabic Localisation",
+      "Gulf Regulatory Compliance",
+    ],
+    knowsLanguage: ["ar", "en"],
   };
 }
 
@@ -174,6 +220,12 @@ export function buildBlogPostingSchema(params: {
   dateModified?: string;
   image?: string;
   lang: Locale;
+  /**
+   * Which entity authored this article. "person" uses the named author when one
+   * is configured; anything else attributes to the Organization. Callers decide
+   * per article — see `bylineFor` in lib/content/byline.ts.
+   */
+  byline?: "person" | "team";
 }) {
   const { title, excerpt, url, datePublished, dateModified, image, lang } = params;
   const isAr = lang === "ar";
@@ -185,18 +237,30 @@ export function buildBlogPostingSchema(params: {
     url,
     ...(datePublished ? { datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
-    // Both author and publisher point at the same @id as the Organization schema
-    // on the page, so the two graphs resolve to one entity instead of three
-    // loosely-named copies of "APEX". `sameAs` repeats the social profiles for
-    // the same reason it exists on Organization: it is what ties the entity to
-    // off-site profiles. It stays empty until data/social-links.ts is filled in.
-    author: {
-      "@type": "Organization",
-      "@id": `${siteUrl}/#organization`,
-      name: "APEX",
-      url: siteUrl,
-      ...(organizationSameAs().length ? { sameAs: organizationSameAs() } : {}),
-    },
+    // Author is the named Person when one is configured, and the Organization
+    // otherwise. Both reference a stable `@id` that resolves to the matching node
+    // emitted on the same page, so the graph describes one author rather than
+    // several loosely-named copies.
+    //
+    // A named person matters most on the regulated subjects these guides cover —
+    // SAMA licensing, PDPL, DHA requirements — where search engines apply a
+    // stricter standard and "APEX Team" substantiates nothing. `publisher` stays
+    // the Organization either way: the company publishes, the person writes.
+    author: params.byline === "person" && hasNamedAuthor()
+      ? {
+          "@type": "Person",
+          "@id": `${siteUrl}/#author`,
+          name: author.name,
+          ...(author.url ? { url: author.url } : {}),
+          ...(authorSameAs().length ? { sameAs: authorSameAs() } : {}),
+        }
+      : {
+          "@type": "Organization",
+          "@id": `${siteUrl}/#organization`,
+          name: "APEX",
+          url: siteUrl,
+          ...(organizationSameAs().length ? { sameAs: organizationSameAs() } : {}),
+        },
     publisher: {
       "@type": "Organization",
       "@id": `${siteUrl}/#organization`,
@@ -299,7 +363,8 @@ export function buildLocalBusinessSchema(lang: Locale) {
       addressCountry: "SY",
     },
     areaServed: ["SY", "MENA"],
-    sameAs: organizationSameAs(),
+    // See buildOrganizationSchema — omit rather than emit an empty array.
+    ...(organizationSameAs().length ? { sameAs: organizationSameAs() } : {}),
     contactPoint: {
       "@type": "ContactPoint",
       telephone: socialLinks.whatsapp,

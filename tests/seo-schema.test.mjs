@@ -153,3 +153,100 @@ test("llms.txt never advertises a section that is noindexed", async () => {
     }
   }
 });
+
+/**
+ * `sameAs` is what ties this site to the company's off-site profiles, and it is
+ * the strongest entity signal a small site can send. An empty `sameAs: []` is a
+ * weaker signal than omitting the property — it asserts "this entity has no
+ * profiles" rather than staying silent — so the schema builders must spread it
+ * conditionally rather than assign it.
+ *
+ * This shipped as `"sameAs":[]` on every page: the helper filtered blanks
+ * correctly and two of the three callers then assigned the empty result anyway.
+ */
+test("organization schema omits sameAs rather than emitting an empty array", async () => {
+  const source = await readFile(path.join(root, "lib", "seo", "schema.tsx"), "utf8");
+
+  const unconditional = [...source.matchAll(/^\s*sameAs: organizationSameAs\(\),?$/gm)];
+  assert.deepEqual(
+    unconditional.map((m) => m[0].trim()),
+    [],
+    "a schema builder assigns organizationSameAs() unconditionally, which emits sameAs: [] while the social profiles are unset"
+  );
+
+  // The built artifact is the check that would actually have caught this.
+  const built = path.join(root, ".next", "server", "app", "en.html");
+  let html;
+  try {
+    html = await readFile(built, "utf8");
+  } catch {
+    return; // No build in this working tree; the source check above still applies.
+  }
+  assert.doesNotMatch(
+    html,
+    /"sameAs":\[\]/,
+    "built pages emit an empty sameAs array"
+  );
+});
+
+/**
+ * The Person and Organization nodes describe different real-world entities and
+ * must not share profile URLs.
+ *
+ * A personal portfolio or personal LinkedIn inside the Organization's `sameAs`
+ * asserts that the company and the individual are the same entity, which
+ * degrades entity resolution rather than strengthening it. The correct home for
+ * a personal URL is the Person node's own `sameAs`, linked to the company via
+ * `worksFor`.
+ */
+test("author profiles never leak into the organization's sameAs", async () => {
+  const schema = await readFile(path.join(root, "lib", "seo", "schema.tsx"), "utf8");
+
+  // organizationSameAs() must be built only from socialLinks — the company's
+  // accounts. Any reference to the author data inside it is the bug.
+  const orgFn = /function organizationSameAs\(\)[\s\S]*?\n}/.exec(schema);
+  assert.ok(orgFn, "organizationSameAs() not found");
+  assert.doesNotMatch(
+    orgFn[0],
+    /author/i,
+    "organizationSameAs() references author data, which merges the person and company entities"
+  );
+
+  // And the reverse: authorSameAs() must not pull from the company's profiles.
+  const authorFile = await readFile(path.join(root, "data", "author.ts"), "utf8");
+  const authorFn = /export function authorSameAs\(\)[\s\S]*?\n}/.exec(authorFile);
+  assert.ok(authorFn, "authorSameAs() not found");
+  assert.doesNotMatch(
+    authorFn[0],
+    /socialLinks/,
+    "authorSameAs() references company profiles"
+  );
+});
+
+test("the Person node is only emitted when an author is configured", async () => {
+  const schema = await readFile(path.join(root, "lib", "seo", "schema.tsx"), "utf8");
+
+  // Without the guard, an unconfigured deployment emits a Person with an empty
+  // name — an entity claim with nothing behind it, which is worse than silence.
+  const personFn = /export function buildPersonSchema[\s\S]*?\n}/.exec(schema);
+  assert.ok(personFn, "buildPersonSchema not found");
+  assert.match(
+    personFn[0],
+    /if \(!hasNamedAuthor\(\)\) return undefined;/,
+    "buildPersonSchema does not guard on hasNamedAuthor()"
+  );
+
+  // The built artifact is the check that would actually catch a regression.
+  const built = path.join(root, ".next", "server", "app", "en", "blog", "gulf-compliance-guide.html");
+  let html;
+  try {
+    html = await readFile(built, "utf8");
+  } catch {
+    return; // No build in this working tree.
+  }
+  assert.doesNotMatch(
+    html,
+    /"@type":"Person","@id":"[^"]*","name":""/,
+    "a Person node was emitted with an empty name"
+  );
+});
