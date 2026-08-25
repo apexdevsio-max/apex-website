@@ -42,13 +42,31 @@ test("generated sitemap has no duplicate URLs and lists every locale", async () 
   const duplicates = locs.filter((loc, i) => locs.indexOf(loc) !== i);
   assert.deepEqual([...new Set(duplicates)], [], "sitemap contains duplicate <loc> entries");
 
-  // Arabic URLs are declared as hreflang alternates rather than their own <loc>.
-  // That is the pattern Google documents for multilingual sitemaps: one entry per
-  // page group, every language listed inside it. So assert on the alternates —
-  // asserting on <loc> would demand a second entry per page and reintroduce the
-  // duplication this test exists to prevent.
+  // Every locale gets its own <loc>, and each entry repeats the full hreflang set.
+  // The earlier design listed only the default locale and left Arabic to the
+  // alternates alone; Search Console then classified zero pages as "alternate page
+  // with proper canonical tag", because no Arabic URL was ever offered for crawl.
+  //
+  // This is NOT the duplication the assertion above guards against. That bug
+  // emitted the same /en URL twice; this emits /en and /ar, which are different
+  // pages, each self-canonical. The no-duplicates check still proves the
+  // difference, so both properties are asserted together.
   const entries = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]);
   assert.equal(entries.length, locs.length, "every <url> must carry exactly one <loc>");
+
+  const byLocale = { en: 0, ar: 0 };
+  for (const loc of locs) {
+    const m = /^https:\/\/apex\.sy\/(en|ar)(\/|$)/.exec(loc);
+    assert.ok(m, `${loc} is not under a supported locale prefix`);
+    byLocale[m[1]] += 1;
+  }
+  // A drift here means one locale stopped being generated — the exact failure that
+  // hid the whole Arabic site from the sitemap while every test still passed.
+  assert.equal(
+    byLocale.en,
+    byLocale.ar,
+    `sitemap is lopsided: ${byLocale.en} English URLs vs ${byLocale.ar} Arabic`
+  );
 
   for (const entry of entries) {
     const loc = /<loc>([^<]+)<\/loc>/.exec(entry)[1];
@@ -61,7 +79,11 @@ test("generated sitemap has no duplicate URLs and lists every locale", async () 
     }
   }
 
-  // The Arabic side of the site must actually be reachable from the sitemap.
+  // The Arabic side of the site must be crawlable directly, not merely annotated.
+  assert.ok(
+    locs.some((loc) => loc.includes("/ar/blog/")),
+    "sitemap lists no Arabic blog URL as its own <loc>"
+  );
   const arAlternates = [...xml.matchAll(/hreflang="ar" href="([^"]+)"/g)].map((m) => m[1]);
   assert.ok(
     arAlternates.some((href) => href.includes("/ar/blog/")),

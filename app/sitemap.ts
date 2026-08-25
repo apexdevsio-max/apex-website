@@ -55,28 +55,50 @@ function buildPathByLocale(route: string): Record<Locale, string> {
   ) as Record<Locale, string>;
 }
 
-function buildLocalizedEntry(
+/**
+ * One sitemap entry per locale, each self-canonical and carrying the full set of
+ * hreflang alternates.
+ *
+ * This used to emit a single entry for the default locale and rely on the
+ * `alternates.languages` annotation to lead crawlers to the other one. That is a
+ * pattern Google documents, but it left every Arabic URL absent from `<loc>`: the
+ * sitemap advertised 89 English pages and zero Arabic ones, so the Arabic half of
+ * the site was discoverable only by crawling internal links. Search Console
+ * reported it exactly that way, classifying no page at all as "alternate page
+ * with proper canonical tag".
+ *
+ * Listing both is explicitly allowed and is not duplicate content: each page
+ * already serves a self-referential canonical, and the reciprocal hreflang set is
+ * what tells Google these are translations of one another. The annotations are
+ * repeated on every entry because hreflang is only honoured when it is
+ * reciprocal.
+ */
+function buildLocalizedEntries(
   pathByLocale: Record<Locale, string>,
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>,
   priority: number,
   lastModified?: Date
-): MetadataRoute.Sitemap[number] {
+): MetadataRoute.Sitemap {
   const languages = Object.fromEntries(
     SUPPORTED_LOCALES.map((locale) => [locale, `${siteUrl}${pathByLocale[locale]}`])
   ) as Record<Locale, string> & { "x-default"?: string };
 
-  return {
-    url: `${siteUrl}${pathByLocale[DEFAULT_LOCALE]}`,
+  const alternates = {
+    languages: {
+      ...languages,
+      // x-default is the fallback for a visitor matching neither locale, not a
+      // third version of the page.
+      "x-default": languages[DEFAULT_LOCALE],
+    },
+  };
+
+  return SUPPORTED_LOCALES.map((locale) => ({
+    url: `${siteUrl}${pathByLocale[locale]}`,
     ...(lastModified ? { lastModified: lastModified.toISOString() } : {}),
     changeFrequency,
     priority,
-    alternates: {
-      languages: {
-        ...languages,
-        "x-default": languages[DEFAULT_LOCALE],
-      },
-    },
-  };
+    alternates,
+  }));
 }
 
 async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; newestContent?: Date }> {
@@ -163,7 +185,9 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
       const pathByLocale = Object.fromEntries(
         SUPPORTED_LOCALES.map((locale) => [locale, toPath(locale, slug)])
       ) as Record<Locale, string>;
-      entries.push(buildLocalizedEntry(pathByLocale, changeFrequency, priority, lastModified));
+      entries.push(
+        ...buildLocalizedEntries(pathByLocale, changeFrequency, priority, lastModified)
+      );
     }
   };
 
@@ -233,7 +257,7 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
   //   const pathByLocale = Object.fromEntries(
   //     SUPPORTED_LOCALES.map((locale) => [locale, `/${locale}/academy/${course}/${lesson}`])
   //   ) as Record<Locale, string>;
-  //   entries.push(buildLocalizedEntry(pathByLocale, "monthly", 0.6, lastModified));
+  //   entries.push(...buildLocalizedEntries(pathByLocale, "monthly", 0.6, lastModified));
   // }
 
   // Blog category landing pages. These are indexable topic hubs, so they belong
@@ -258,7 +282,7 @@ async function loadDynamicEntries(): Promise<{ entries: MetadataRoute.Sitemap; n
 
   for (const category of CATEGORIES) {
     entries.push(
-      buildLocalizedEntry(
+      ...buildLocalizedEntries(
         buildPathByLocale(`blog/category/${category.slug}`),
         "weekly",
         0.6,
@@ -283,8 +307,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Listing pages change whenever any of the content they list changes, so they
   // inherit the newest content timestamp rather than a fixed date.
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(({ route, changeFrequency, priority }) =>
-    buildLocalizedEntry(buildPathByLocale(route), changeFrequency, priority, newestContent)
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.flatMap(
+    ({ route, changeFrequency, priority }) =>
+      buildLocalizedEntries(buildPathByLocale(route), changeFrequency, priority, newestContent)
   );
 
   return [...staticEntries, ...dynamicEntries];
