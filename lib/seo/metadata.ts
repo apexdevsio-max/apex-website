@@ -12,6 +12,13 @@ type PageMetaInput = {
   path: string;
   keywords?: string[];
   image?: string;
+  /**
+   * Social card to use when the page has no image of its own. Defaults to the
+   * sitewide card, which is right for a listing but wrong for an article: it made
+   * 58 of 63 articles share one identical preview. Pages that generate their own
+   * card pass it here.
+   */
+  imageFallback?: string;
 };
 
 function normalizePath(path: string): string {
@@ -93,7 +100,7 @@ export function buildBaseMetadata(lang: Locale): Metadata {
 
 export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
   const base = buildBaseMetadata(lang);
-  const image = input.image ?? `${siteUrl}/${lang}/opengraph-image`;
+  const image = input.image ?? input.imageFallback ?? `${siteUrl}/${lang}/opengraph-image`;
   const path = buildLocalizedPath(input.path, lang);
   const url = `${siteUrl}${path}`;
 

@@ -205,3 +205,49 @@ test("analytics never blocks the critical rendering path", async () => {
   // Analytics must stay behind explicit consent.
   assert.match(source, /consent === "granted" && \(/, "analytics must be gated on consent");
 });
+
+test("every article gets its own social preview card", async () => {
+  const route = path.join(root, "app", "[lang]", "blog", "[slug]", "opengraph-image.tsx");
+  const source = await readFile(route, "utf8");
+
+  // 58 of 63 articles had no inline image and so fell back to the sitewide card,
+  // which meant every share of them showed one identical picture naming no
+  // article. The generated card is what makes each preview specific.
+  assert.match(source, /export const size/, "OG route declares no size");
+  assert.match(source, /1200/, "OG card is not 1200px wide");
+
+  // Satori ships no system fonts and cannot parse WOFF2, so the TTFs have to be
+  // passed explicitly or Arabic renders as empty boxes.
+  assert.match(source, /\.ttf/, "OG route loads no TTF, so Arabic cannot render");
+  assert.doesNotMatch(source, /\.woff2/, "Satori cannot parse WOFF2 fonts");
+
+  // Satori implements no bidi algorithm and ignores `direction: rtl` entirely, so
+  // Arabic word order has to be produced by hand. Reintroducing a reliance on
+  // `direction` would silently reverse every Arabic title.
+  assert.doesNotMatch(source, /direction:\s*["'](rtl|ltr)["']/, "OG card relies on `direction`, which Satori ignores");
+  assert.match(source, /layoutRtlLines/, "OG card does not lay out Arabic titles right-to-left");
+});
+
+test("articles fall back to their own card, not the sitewide one", async () => {
+  const meta = await readFile(path.join(root, "lib", "seo", "metadata.ts"), "utf8");
+  assert.match(
+    meta,
+    /input\.image \?\? input\.imageFallback/,
+    "buildPageMeta ignores the per-page fallback card"
+  );
+
+  const built = path.join(root, ".next", "server", "app", "en", "blog", "rag-knowledge-base.html");
+  let html;
+  try {
+    html = await readFile(built, "utf8");
+  } catch {
+    return; // No build in this working tree.
+  }
+
+  const og = /<meta property="og:image" content="([^"]+)"/.exec(html)?.[1];
+  assert.ok(og, "article declares no og:image");
+  assert.ok(
+    og.includes("/blog/rag-knowledge-base/opengraph-image"),
+    `article falls back to a shared card instead of its own: ${og}`
+  );
+});

@@ -1,5 +1,17 @@
 # Missing Blog Images
 
+> **Status.** The social-preview half of this is solved in code: every article now
+> generates its own OpenGraph card from its title, so no article shares a preview
+> any more and nothing here needs to be drawn for sharing to work. See
+> `app/[lang]/blog/[slug]/opengraph-image.tsx`.
+>
+> What remains is the *in-article* imagery below — the figures a reader sees while
+> reading. Those still have to be produced by hand, and they are worth doing for
+> the longer guides first rather than uniformly across the archive.
+>
+> This list is also out of date: it was written against 34 articles and the blog
+> now has 63. Regenerate it before commissioning work from it.
+
 34 articles have no images. This lists 170 images to produce — a hero plus four in-article figures each.
 
 Paths are relative to `public/`, so `/images/blog/<slug>/hero-banner.jpeg` lives at

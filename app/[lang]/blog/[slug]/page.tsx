@@ -379,6 +379,9 @@ export async function generateMetadata({
     path: `/${lang}/blog/${slug}`,
     keywords: POST_KEYWORDS[slug]?.[locale],
     image: ogImage,
+    // An article with no inline image falls back to its generated card rather
+    // than the sitewide one, so each preview names the article it links to.
+    imageFallback: `${siteUrl}/${lang}/blog/${slug}/opengraph-image`,
   });
 }
 
