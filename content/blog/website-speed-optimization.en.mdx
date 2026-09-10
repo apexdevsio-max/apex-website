@@ -1,0 +1,177 @@
+---
+{"slug":"website-speed-optimization","title":"Website Speed: A Practical Guide to Core Web Vitals","seoTitle":"Website Speed and Core Web Vitals in 2026","excerpt":"What LCP, INP, and CLS actually measure, the fixes that move them in order of impact, and how much speed work costs.","date":"2026-09-10","dateModified":"2026-09-10"}
+---
+
+# Website Speed: A Practical Guide to Core Web Vitals
+
+Most advice about website speed is a list of techniques with no indication of which ones matter for your site. You end up with a compressed logo and a site that still takes six seconds to become useful.
+
+This guide is ordered differently: by what typically produces the largest improvement, so you can stop when the numbers are good enough rather than working through a checklist to the end.
+
+---
+
+## The three metrics that count
+
+Google measures three things, and they correspond to three distinct user experiences.
+
+| Metric | What it measures | Target |
+|---|---|---|
+| **LCP** — Largest Contentful Paint | How long until the main content appears | Under 2.5s |
+| **INP** — Interaction to Next Paint | How quickly the page responds when tapped | Under 200ms |
+| **CLS** — Cumulative Layout Shift | How much the page jumps while loading | Under 0.1 |
+
+The current definitions and thresholds are published at [Google's Core Web Vitals](https://web.dev/articles/vitals), which is worth checking directly since the metrics have changed over time — INP replaced an earlier responsiveness metric in 2024.
+
+**A caveat worth stating plainly:** speed is a ranking factor, but a modest one. A fast page with weak content will not outrank a slow page that answers the question better. Speed matters most for conversion — visitors leaving before the page loads — and as a tiebreaker between pages of similar quality. Fix it because it costs you customers, not because you expect it to transform your rankings.
+
+---
+
+## Measure before you change anything
+
+Two kinds of data, and confusing them wastes effort.
+
+**Lab data** — PageSpeed Insights, Lighthouse — runs a simulated load on a simulated device. Useful for diagnosis, because it tells you exactly what is slow. Not a measure of what your visitors experience.
+
+**Field data** — the Core Web Vitals report in Search Console — is collected from real visits on real devices. This is what Google uses, and it is what you should judge yourself by.
+
+The gap between them is often large. A site scoring 95 in Lighthouse can fail its field metrics because real users are on older phones and slower networks than the simulation assumes. **Start with field data**, then use lab tools to find the cause.
+
+If your site is new or low-traffic, field data may be unavailable. In that case lab data is what you have — just treat it as indicative rather than authoritative.
+
+---
+
+## The fixes, in order of typical impact
+
+### 1. Images
+
+On most sites this is the largest single win, and it is usually the cheapest.
+
+The common failures are the same everywhere: a 3MB photograph displayed at 400 pixels wide, images in JPEG when WebP would be half the size, and everything loading at once whether or not the visitor scrolls that far.
+
+What to do:
+
+- Serve images at the size they are displayed, not the size they were uploaded
+- Use WebP or AVIF, with a fallback for anything that needs it
+- Lazy-load anything below the fold — but **never** the main image, since that is usually your LCP element
+- Set explicit width and height so the browser reserves space (this fixes CLS as well)
+
+Cost: $500 to $2,500 depending on how many images and whether your platform automates it.
+
+### 2. Fonts
+
+Fonts are the most common cause of two problems at once: text invisible while loading, and layout shifting when the real font arrives.
+
+- Use `font-display: swap` so text renders immediately in a fallback
+- Preload the font used in your heading and first paragraph
+- Subset the file to the characters you actually use — this matters disproportionately for Arabic, where full font files are large
+- Limit yourself to two families and the weights you genuinely need
+
+Arabic sites have a specific issue here worth reading separately: [Arabic Web Fonts](/en/blog/arabic-web-fonts) covers subsetting and fallback stacks in detail.
+
+Cost: $300 to $1,200.
+
+### 3. Third-party scripts
+
+This is where sites accumulate weight nobody chose deliberately. An analytics tag, a chat widget, a heatmap tool, two advertising pixels, and a cookie banner — each added by someone, none reviewed since.
+
+Third-party scripts are the leading cause of poor INP, because they execute on the main thread and block the page from responding to taps.
+
+- Audit what is actually loading; you will find things nobody remembers adding
+- Remove anything not currently used by anyone
+- Load what remains with `async` or `defer`
+- Delay non-essential scripts until after the page is interactive
+
+Cost: $500 to $2,000, and frequently the single biggest INP improvement available.
+
+### 4. Hosting and delivery
+
+Where your server is matters. A visitor in Riyadh loading from a server in Frankfurt pays a physical latency penalty on every request.
+
+- A CDN puts static assets close to your users
+- Server response time under 200ms is a reasonable target
+- Caching means repeat visits do not re-download everything
+
+Our [hosting comparison](/en/blog/hosting-comparison) covers regional providers and what to look for.
+
+Cost: often just configuration, or $30 to $200 monthly for better hosting.
+
+### 5. JavaScript
+
+The heaviest fix, and the one to reach for after the others.
+
+If your site ships a large JavaScript bundle, splitting it so each page loads only what it needs is real work. Worth doing when your framework makes it straightforward, and worth questioning whether you needed the framework at all if the site is largely static content.
+
+Cost: $2,000 to $10,000, and the reason it is last is that the first four items often make it unnecessary.
+
+---
+
+## What this costs overall
+
+| Scope | Cost | Typical outcome |
+|---|---|---|
+| Quick wins (images, fonts, scripts) | $1,000 – $3,500 | Most sites reach passing scores |
+| Thorough optimisation | $3,500 – $9,000 | Comfortable margins, harder cases resolved |
+| Architectural rebuild | $10,000+ | When the platform itself is the constraint |
+
+Most sites do not need the third row. If you are being quoted for a rebuild to fix speed, ask what the first two rows would achieve first — and see [Redesigning a Website](/en/blog/website-redesign-guide) for when a rebuild is genuinely warranted.
+
+---
+
+## Speed in the Gulf specifically
+
+Two factors that generic advice misses:
+
+**Network conditions vary more than the averages suggest.** Urban 5G coexists with much slower connections, and a site tested only on good hardware over good networks will fail a real portion of visitors. Test with throttling enabled.
+
+**Arabic fonts are heavy.** A full Arabic font file is substantially larger than a Latin one because of the character set and the shaping variants. Subsetting is not an optimisation here — it is a requirement. See [Arabic Web Fonts](/en/blog/arabic-web-fonts).
+
+---
+
+## Read also
+
+- [Hosting Comparison](/en/blog/hosting-comparison) — regional hosting and delivery
+- [Arabic Web Fonts](/en/blog/arabic-web-fonts) — subsetting and fallbacks
+- [WordPress or Next.js?](/en/blog/wordpress-vs-nextjs) — when the platform is the bottleneck
+- [Redesigning a Website](/en/blog/website-redesign-guide) — when speed work is not enough
+- [App Performance Optimisation](/en/blog/app-performance-optimization) — the mobile app equivalent
+- [SEO or GEO?](/en/blog/seo-vs-geo) — how search visibility is changing
+
+---
+
+## Frequently asked questions
+
+### What are Core Web Vitals?
+
+Three metrics Google uses to assess page experience: LCP (how long until the main content appears, target under 2.5 seconds), INP (how quickly the page responds to interaction, target under 200 milliseconds), and CLS (how much the layout shifts while loading, target under 0.1).
+
+### Does site speed affect search rankings?
+
+Yes, but modestly. It is one signal among many, and better content on a slower page will usually still outrank thin content on a fast one. Speed matters most for conversion — visitors who leave before the page loads — and as a differentiator between otherwise similar pages.
+
+### How much does speed optimisation cost?
+
+Quick wins on images, fonts, and third-party scripts cost $1,000 to $3,500 and are enough for most sites to pass. Thorough optimisation runs $3,500 to $9,000. A rebuild is only warranted when the platform itself is the constraint.
+
+### Why does PageSpeed Insights disagree with what I see?
+
+Because it reports two different things: lab data from a simulated load, and field data from real visitors. Lab data is for diagnosis; field data is what Google actually uses. Judge yourself by the field data in Search Console.
+
+### What is the single biggest speed win?
+
+On most sites, images — serving them at display size in a modern format, with lazy loading below the fold. It is usually both the largest improvement and the cheapest to implement.
+
+### Do Arabic sites have particular speed problems?
+
+Yes. Arabic font files are considerably larger than Latin ones, so subsetting to the characters you use is essential rather than optional. See [Arabic Web Fonts](/en/blog/arabic-web-fonts) for how to do it without breaking rendering.
+
+### How long does it take to see results?
+
+Field data in Search Console reflects a rolling window of real visits, so improvements take several weeks to appear fully. Lab scores change immediately, which is why they are useful for verifying a fix even though they are not the measure that counts.
+
+---
+
+## Conclusion
+
+Website speed work has a clear order of return: images, fonts, third-party scripts, hosting, and only then JavaScript. Most sites reach passing Core Web Vitals with the first three, for a fraction of what a rebuild costs.
+
+Start by looking at your field data in Search Console rather than a lab score, fix in that order, and stop when the numbers pass. Speed is worth having because visitors leave slow sites — but it is not worth an unlimited budget, and the last few points are always the most expensive.

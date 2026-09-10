@@ -104,6 +104,10 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [How Much Does a Hotel and Travel Booking App Cost? (2026 Guide)](https://apex.sy/en/blog/travel-booking-app-cost) — Why availability logic and channel manager integration — not the screens — set the price of a booking app.
 - [How Much Does a Real Estate App Cost? (2026 Guide)](https://apex.sy/en/blog/real-estate-app-cost) — Why owning your listings decides the budget, plus map search, media pipelines, and Gulf licensing rules.
 - [How Much Does a Restaurant App Cost? (2026 Guide)](https://apex.sy/en/blog/restaurant-app-cost) — The commission math that justifies a restaurant app, POS integration, and why installs are the hard half.
+- [Salla or Zid? A Practical Comparison for Saudi Stores (2026)](https://apex.sy/en/blog/salla-vs-zid) — What the two Saudi platforms genuinely share, where they differ, and the data-export question that matters more than the choice.
+- [Redesigning a Website: Cost, Timing, and How Not to Lose Your Traffic](https://apex.sy/en/blog/website-redesign-guide) — When a redesign is justified, what it costs, and the redirect mapping that decides whether rankings survive.
+- [Website Speed: A Practical Guide to Core Web Vitals](https://apex.sy/en/blog/website-speed-optimization) — LCP, INP and CLS explained, with fixes ordered by impact and what each costs.
+- [ZATCA E-Invoicing for Online Stores: What Fatoora Actually Requires](https://apex.sy/en/blog/zatca-einvoicing-guide) — Phase Two obligations for a Saudi store, implementation cost by platform, and the vendor questions that expose a weak build.
 
 This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 
@@ -215,5 +219,9 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [كم يكلف تطبيق حجز فنادق وسفر؟ (دليل 2026)](https://apex.sy/ar/blog/travel-booking-app-cost) — لماذا يحدّد محرّك الإتاحة والتكامل مع مدير القنوات — لا الشاشات — سعر تطبيق الحجز.
 - [كم يكلف تطبيق عقاري؟ (دليل 2026)](https://apex.sy/ar/blog/real-estate-app-cost) — لماذا تحسم ملكية الإعلانات الميزانية، مع البحث بالخريطة والوسائط ومتطلبات الترخيص الخليجية.
 - [كم يكلف تطبيق مطعم؟ (دليل 2026)](https://apex.sy/ar/blog/restaurant-app-cost) — حساب العمولة الذي يبرّر تطبيق المطعم، والتكامل مع نقاط البيع، ولماذا التثبيت هو النصف الصعب.
+- [سلة أم زد؟ مقارنة عملية للمتاجر السعودية (2026)](https://apex.sy/ar/blog/salla-vs-zid) — ما تشترك فيه المنصّتان فعلاً، وأين تختلفان، وسؤال تصدير البيانات الأهم من الاختيار نفسه.
+- [إعادة تصميم موقع: التكلفة والتوقيت وكيف لا تفقد زياراتك](https://apex.sy/ar/blog/website-redesign-guide) — متى تُبرَّر إعادة التصميم، وكم تكلف، وخريطة التحويلات التي تحدّد بقاء ترتيبك.
+- [سرعة الموقع: دليل عملي لمؤشرات Core Web Vitals](https://apex.sy/ar/blog/website-speed-optimization) — شرح LCP وINP وCLS، مع الإصلاحات مرتّبة حسب الأثر وتكلفة كلٍّ منها.
+- [الفوترة الإلكترونية (فاتورة) للمتاجر الإلكترونية: ما تتطلبه فعلاً](https://apex.sy/ar/blog/zatca-einvoicing-guide) — التزامات المرحلة الثانية للمتجر السعودي، وتكلفة التطبيق حسب المنصّة، وأسئلة تكشف المورّد غير المتمرّس.
 
 هذا الموقع ثنائي اللغة (عربي/إنجليزي). استخدم /ar/ للعربية و /en/ للإنجليزية.

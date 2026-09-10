@@ -91,6 +91,22 @@ function getRelatedSlugs(
 // Every published article carries its own keyword set. Previously only `flutter`
 // had one, so the other posts shipped with no keywords meta at all.
 const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
+  "zatca-einvoicing-guide": {
+    ar: ["الفوترة الإلكترونية", "فاتورة", "ZATCA", "المرحلة الثانية", "متجر إلكتروني سعودي"],
+    en: ["ZATCA e-invoicing", "Fatoora", "Phase Two integration", "Saudi VAT invoice", "e-invoicing store"],
+  },
+  "website-speed-optimization": {
+    ar: ["تحسين سرعة الموقع", "Core Web Vitals", "LCP", "سرعة تحميل الصفحة"],
+    en: ["website speed optimization", "Core Web Vitals", "LCP", "INP", "CLS", "page speed"],
+  },
+  "website-redesign-guide": {
+    ar: ["إعادة تصميم موقع", "تجديد موقع إلكتروني", "تحويلات 301", "نقل موقع"],
+    en: ["website redesign", "site migration", "301 redirects", "redesign cost"],
+  },
+  "salla-vs-zid": {
+    ar: ["سلة أم زد", "مقارنة سلة وزد", "منصات المتاجر السعودية", "متجر إلكتروني سعودي"],
+    en: ["Salla vs Zid", "Saudi ecommerce platform", "Salla Zid comparison", "hosted store platform"],
+  },
   "restaurant-app-cost": {
     ar: ["تكلفة تطبيق مطعم", "تطبيق طلب طعام", "نقاط البيع", "فودكس", "عمولة تطبيقات التوصيل"],
     en: ["restaurant app cost", "food ordering app", "POS integration", "Foodics", "aggregator commission"],

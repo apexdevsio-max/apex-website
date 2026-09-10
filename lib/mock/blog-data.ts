@@ -85,6 +85,7 @@ export const POST_META: Record<string, PostMeta> = {
   "real-estate-app-cost": { emoji: "🏘️", accentColor: "#FF7043", categories: ["mobile","practical"], readTime: 10 },
   "restaurant-app-cost": { emoji: "🍽️", accentColor: "#FFB300", categories: ["mobile","practical"], readTime: 9 },
   "rtl-css-guide": { emoji: "🎨", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 7 },
+  "salla-vs-zid": { emoji: "⚖️", accentColor: "#26A69A", categories: ["web","comparisons"], readTime: 8 },
   "seo-vs-geo": { emoji: "🔍", accentColor: "#7C3AED", categories: ["comparisons","selected"], readTime: 8 },
   "shopify-vs-custom-store": { emoji: "🏪", accentColor: "#00BCD4", categories: ["web","comparisons"], readTime: 6 },
   "software-company-qatar": { emoji: "🇶🇦", accentColor: "#FF7043", categories: ["practical"], readTime: 6 },
@@ -93,8 +94,11 @@ export const POST_META: Record<string, PostMeta> = {
   "uae-data-protection-guide": { emoji: "🇦🇪", accentColor: "#FFBF00", categories: ["selected","practical"], readTime: 8 },
   "web-design-company-dubai": { emoji: "🏗️", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 7 },
   "website-design-cost": { emoji: "💻", accentColor: "#00BCD4", categories: ["web","practical"], readTime: 7 },
+  "website-redesign-guide": { emoji: "🔄", accentColor: "#5C6BC0", categories: ["web","practical"], readTime: 9 },
+  "website-speed-optimization": { emoji: "⚡", accentColor: "#FDD835", categories: ["web","practical"], readTime: 9 },
   "wordpress-vs-nextjs": { emoji: "⚡", accentColor: "#00BCD4", categories: ["web","comparisons"], readTime: 6 },
   "writing-rfp-software": { emoji: "📋", accentColor: "#7C3AED", categories: ["practical","selected"], readTime: 7 },
+  "zatca-einvoicing-guide": { emoji: "🧾", accentColor: "#66BB6A", categories: ["selected","web"], readTime: 8 },
 };
 
 export const MOCK_POSTS: Record<string, MockPost> = {
@@ -449,6 +453,7 @@ export const PUBLISHED_POST_SLUGS = [
   "real-estate-app-cost",
   "restaurant-app-cost",
   "rtl-css-guide",
+  "salla-vs-zid",
   "seo-vs-geo",
   "shopify-vs-custom-store",
   "software-company-qatar",
@@ -457,8 +462,11 @@ export const PUBLISHED_POST_SLUGS = [
   "uae-data-protection-guide",
   "web-design-company-dubai",
   "website-design-cost",
+  "website-redesign-guide",
+  "website-speed-optimization",
   "wordpress-vs-nextjs",
   "writing-rfp-software",
+  "zatca-einvoicing-guide",
 ] as const;
 
 export const CATEGORY_LABELS: Record<string, { ar: string; en: string }> = {
