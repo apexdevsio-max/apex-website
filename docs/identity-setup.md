@@ -82,17 +82,26 @@ npx vercel --prod
 >
 > مكانهما الصحيح **مخطط Person منفصل**، مرتبط بالشركة عبر `worksFor`.
 
-أضف هذه في Vercel:
+أضف هذه في Vercel — **القيم النهائية جاهزة للنسخ:**
 
-| المتغير | مثال |
-|---|---|
-| `NEXT_PUBLIC_AUTHOR_NAME` | اسمك بالإنجليزية |
-| `NEXT_PUBLIC_AUTHOR_NAME_AR` | اسمك بالعربية |
-| `NEXT_PUBLIC_AUTHOR_TITLE` | `Founder & Lead Engineer` |
-| `NEXT_PUBLIC_AUTHOR_TITLE_AR` | `المؤسس والمهندس الأول` |
-| `NEXT_PUBLIC_AUTHOR_URL` | **رابط معرض أعمالك الشخصي** |
-| `NEXT_PUBLIC_AUTHOR_LINKEDIN` | **LinkedIn الشخصي** |
-| `NEXT_PUBLIC_AUTHOR_GITHUB` | اختياري |
+```
+NEXT_PUBLIC_AUTHOR_NAME=Huomam Farzat
+NEXT_PUBLIC_AUTHOR_NAME_AR=همام فرزات
+NEXT_PUBLIC_AUTHOR_TITLE=Software Department Manager & Full-Stack Developer
+NEXT_PUBLIC_AUTHOR_TITLE_AR=مدير قسم البرمجيات ومطوّر full-stack
+NEXT_PUBLIC_AUTHOR_URL=https://houmam-farzat.vercel.app/en
+NEXT_PUBLIC_AUTHOR_LINKEDIN=https://www.linkedin.com/in/huomam-farzat
+```
+
+`NEXT_PUBLIC_AUTHOR_GITHUB` اختياري ومتروك فارغاً.
+
+**تهجئة الاسم:** `Huomam Farzat` — مأخوذة من `<title>` معرض أعمالك نفسه، لا من تخمين.
+اختلاف `houmam-` في النطاق عن `huomam-` في LinkedIn مقصود: كلاهما رابط صحيح كما هو،
+والاسم المعروض واحد. المسمّى الوظيفي منقول عن معرض أعمالك حرفياً.
+
+> **تنبيه:** هذه القيم مضبوطة محلياً في `.env.local` (المستثنى من git)، لذا تراها
+> عند التطوير. لكنها **لا تصل إلى الموقع المنشور** حتى تضيفها في Vercel وتعيد النشر —
+> فهي تُدمج وقت البناء لا وقت التشغيل.
 
 **ماذا يحدث تلقائياً بعد ضبطها:**
 
