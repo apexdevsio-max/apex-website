@@ -100,6 +100,10 @@ Target markets: Saudi Arabia, UAE, Qatar, Syria.
 - [AI in Online Stores](https://apex.sy/en/blog/ecommerce-ai-features) — which AI features lift revenue, why Arabic search is the highest-return fix, and what to build last.
 - [Internal AI Assistant](https://apex.sy/en/blog/internal-ai-assistant) — why permissions and documentation quality decide success, and why these projects get abandoned.
 - [AI Privacy and Security Risks](https://apex.sy/en/blog/ai-privacy-risks) — prompt injection, cross-user data leakage, retention and training terms, and the controls that reduce risk.
+- [How Much Does an E-Commerce Mobile App Cost? (2026 Guide)](https://apex.sy/en/blog/ecommerce-app-cost) — Build ranges for a shopping app, when an app beats a mobile site, and the repeat-customer math that decides it.
+- [How Much Does a Hotel and Travel Booking App Cost? (2026 Guide)](https://apex.sy/en/blog/travel-booking-app-cost) — Why availability logic and channel manager integration — not the screens — set the price of a booking app.
+- [How Much Does a Real Estate App Cost? (2026 Guide)](https://apex.sy/en/blog/real-estate-app-cost) — Why owning your listings decides the budget, plus map search, media pipelines, and Gulf licensing rules.
+- [How Much Does a Restaurant App Cost? (2026 Guide)](https://apex.sy/en/blog/restaurant-app-cost) — The commission math that justifies a restaurant app, POS integration, and why installs are the hard half.
 
 This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 
@@ -207,5 +211,9 @@ This site is bilingual (English/Arabic). Use /en/ for English, /ar/ for Arabic.
 - [الذكاء الاصطناعي في المتاجر](https://apex.sy/ar/blog/ecommerce-ai-features) — أي الميزات ترفع الإيراد، ولماذا البحث العربي أعلى عائد، وما تبنيه أخيراً.
 - [المساعد الذكي الداخلي](https://apex.sy/ar/blog/internal-ai-assistant) — لماذا تحسم الصلاحيات وجودة التوثيق النجاح، ولماذا تُهجَر هذه المشاريع.
 - [مخاطر الخصوصية والأمن في الذكاء الاصطناعي](https://apex.sy/ar/blog/ai-privacy-risks) — حقن التوجيهات، والتسريب بين المستخدمين، وشروط الحفظ والتدريب، والضوابط التي تقلل المخاطرة.
+- [كم يكلف تطبيق متجر إلكتروني؟ (دليل 2026)](https://apex.sy/ar/blog/ecommerce-app-cost) — نطاقات تكلفة تطبيق المتجر، ومتى يتفوّق على الموقع، وحساب العملاء المتكرّرين الذي يحسم القرار.
+- [كم يكلف تطبيق حجز فنادق وسفر؟ (دليل 2026)](https://apex.sy/ar/blog/travel-booking-app-cost) — لماذا يحدّد محرّك الإتاحة والتكامل مع مدير القنوات — لا الشاشات — سعر تطبيق الحجز.
+- [كم يكلف تطبيق عقاري؟ (دليل 2026)](https://apex.sy/ar/blog/real-estate-app-cost) — لماذا تحسم ملكية الإعلانات الميزانية، مع البحث بالخريطة والوسائط ومتطلبات الترخيص الخليجية.
+- [كم يكلف تطبيق مطعم؟ (دليل 2026)](https://apex.sy/ar/blog/restaurant-app-cost) — حساب العمولة الذي يبرّر تطبيق المطعم، والتكامل مع نقاط البيع، ولماذا التثبيت هو النصف الصعب.
 
 هذا الموقع ثنائي اللغة (عربي/إنجليزي). استخدم /ar/ للعربية و /en/ للإنجليزية.

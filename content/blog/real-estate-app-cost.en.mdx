@@ -1,0 +1,173 @@
+---
+{"slug":"real-estate-app-cost","title":"How Much Does a Real Estate App Cost? (2026 Guide)","seoTitle":"Real Estate App Cost in 2026","excerpt":"A property app costs $25,000 to $80,000. Listing management, map search, virtual tours, and the Saudi and UAE regulatory requirements that shape the build.","date":"2026-09-10","dateModified":"2026-09-10"}
+---
+
+# How Much Does a Real Estate App Cost?
+
+A real estate app costs between **$25,000 and $80,000**, and the number depends less on the features you list than on one question: who supplies the listings, and who is responsible when one of them is wrong.
+
+A brokerage publishing its own inventory is building a catalogue with good search. A portal accepting listings from thousands of agents is building a moderation and trust system that happens to have an app attached. The screens look similar. The projects are not.
+
+---
+
+## The three models
+
+| Model | Who supplies listings | Cost |
+|---|---|---|
+| Brokerage app | You do — your own inventory | $25,000 – $45,000 |
+| Developer / project sales | You do — units in your own projects | $30,000 – $55,000 |
+| Portal / marketplace | Agents and owners you do not employ | $60,000 – $150,000+ |
+
+The cost jumps at the third row because you stop controlling the data. Duplicate listings, stale prices, properties already sold, and outright fake posts all become your problem, and solving them requires moderation tooling, verification, and staff — not just code.
+
+If you are a brokerage, stay in the first row. The temptation to "open it up to other agents later" is how a $40,000 project becomes a $120,000 one.
+
+---
+
+## Cost table — 2026
+
+| Component | Cost | Notes |
+|---|---|---|
+| Listing browse and detail | $4,000 – $8,000 | Gallery, specs, location, agent contact |
+| Search and filters | $4,000 – $10,000 | Price, area, rooms, type, amenities |
+| Map search | $5,000 – $12,000 | Clustering, draw-on-map, nearby services |
+| Saved searches and alerts | $3,000 – $6,000 | The main reason users return |
+| Listing management (admin) | $6,000 – $15,000 | Add, edit, media, publish, expire |
+| Agent accounts and leads | $4,000 – $10,000 | Assignment, response tracking |
+| Virtual tours | $3,000 – $9,000 | Integration; content is separate |
+| Mortgage calculator | $1,500 – $3,500 | Simple, and users expect it |
+| Notifications | $2,000 – $5,000 | New match, price drop, viewing reminder |
+
+For how these components combine in app projects generally, see our [mobile app development cost guide](/en/blog/mobile-app-development-cost).
+
+---
+
+## What actually drives the cost
+
+### Map search is not a map
+
+Dropping pins on a map is a day's work. Real estate map search is not that.
+
+At a few hundred listings you can render every pin. At twenty thousand you cannot — the app freezes. You need server-side clustering that groups listings by zoom level, returns counts rather than records when zoomed out, and stays responsive while the user pans. Add draw-your-own-area search, and you are running geospatial queries that need the database to be designed for them from the start.
+
+This is why map search ranges from $5,000 to $12,000 rather than being a line item. Ask any vendor how they handle twenty thousand pins at city zoom; the answer separates those who have built it from those who have not.
+
+### Media is the hidden budget
+
+A listing has twenty photographs. A thousand listings have twenty thousand images, each needing multiple sizes for thumbnails, cards, and full view.
+
+Uploading, resizing, storing, and serving those quickly is real infrastructure. Agents will upload 8MB photos from their phones, and if you do not process them, your app will be slow for everyone. Budget for image pipeline work and expect storage and bandwidth to be a recurring cost that grows with your catalogue, not a fixed one.
+
+### Keeping listings honest
+
+The complaint that kills property apps is not missing features. It is calling about a listing that sold three weeks ago.
+
+Preventing that means listing expiry, required refresh intervals, agent accountability, and a way for users to report a stale post. None of it is glamorous and all of it is necessary. Budget $4,000 to $10,000 for the freshness machinery, and understand that the rest is operational discipline rather than software.
+
+### Virtual tours
+
+Integrating a 360° tour viewer costs $3,000 to $9,000. Producing the tours is separate and ongoing — roughly $100 to $400 per property depending on size and who shoots it.
+
+Worth it for high-value properties and off-plan units where the buyer cannot visit. Not worth it for a rental listing that will turn over in a month.
+
+---
+
+## Regulatory requirements in the Gulf
+
+This is where real estate apps differ from other marketplaces, and where a generic vendor will miss things.
+
+**Saudi Arabia.** Real estate brokerage is regulated by the Real Estate General Authority, and brokers require licensing. Listings are expected to carry a title deed reference, and the Ejar platform governs rental contract registration. If your app handles rentals, plan for how a contract reaches Ejar rather than treating it as an afterthought.
+
+**UAE.** Each emirate regulates separately. In Dubai, RERA governs brokerage and listings require a permit number displayed on the advertisement, with Trakheesi issuing advertising permits. An app publishing listings without permit numbers is publishing non-compliant advertisements on behalf of its agents.
+
+**Both.** Advertising a property you are not authorised to market is the most common violation, and it is the app operator who is visible when it happens.
+
+Confirm the current requirements with a local advisor before you build the listing form — the fields you require are determined by these rules, and adding a mandatory field after launch means going back to every existing listing. For data handling obligations, see our [PDPL compliance guide](/en/blog/pdpl-compliance-guide) and the [UAE data protection guide](/en/blog/uae-data-protection-guide).
+
+---
+
+## The lead problem
+
+A property app's purpose is generating enquiries, and most apps handle the moment of enquiry badly.
+
+A user who taps "contact agent" at 11pm expects something to happen. If the lead sits in an inbox until Sunday morning, the enquiry is dead — they have contacted three other listings by then. Speed of response is the single largest factor in whether the app produces business.
+
+So the lead flow deserves more attention than it usually gets: instant notification to the assigned agent, escalation if unanswered within a set time, and visibility for management into who responds and who does not. Budget $4,000 to $10,000, and treat it as the part of the app that determines return on the whole investment.
+
+---
+
+## Ongoing costs
+
+| Item | Annual |
+|---|---|
+| Maintenance | 15 – 20% of build |
+| Map and geocoding APIs | $1,200 – $9,000 |
+| Image storage and bandwidth | $600 – $6,000 |
+| Virtual tour hosting | $300 – $2,400 |
+| Content moderation | Staff time |
+| New features | $5,000 – $15,000 |
+
+Map APIs deserve a warning. Google Maps bills per load, and a property app loads maps constantly. A successful app can generate a map bill larger than its hosting. Set quotas and alerts from day one, and evaluate alternatives before your traffic makes the choice expensive.
+
+---
+
+## Is it worth building?
+
+For a **brokerage**, compare it against your portal listing fees and lead costs. If you pay for premium placement on a portal and buy leads on top, an app that captures repeat visitors directly reduces both over time. The catch is the same as with travel: the portal supplies discovery your app cannot. The app serves people who already know your brand.
+
+The realistic case for a brokerage app is not replacing the portal. It is owning the relationship with buyers who have already dealt with you, and giving your agents a faster tool than WhatsApp screenshots.
+
+For a **developer selling your own projects**, the case is stronger. Off-plan buyers make a large decision from limited information, and an app with floor plans, payment schedules, and construction updates does real work. Here the app is a sales instrument for a specific inventory, and it can be retired when the project sells out.
+
+For a **portal**, the app is a fraction of the business. Supply of listings and traffic acquisition are the business.
+
+---
+
+## Read also
+
+- [How Much Does an App Cost?](/en/blog/mobile-app-development-cost) — the pillar guide
+- [How Much Does an E-Commerce App Cost?](/en/blog/ecommerce-app-cost) — catalogue apps compared
+- [PDPL Compliance Guide](/en/blog/pdpl-compliance-guide) — handling customer data in Saudi Arabia
+- [UAE Data Protection Guide](/en/blog/uae-data-protection-guide) — the UAE equivalent
+- [App Performance Optimisation](/en/blog/app-performance-optimization) — image-heavy apps and speed
+- [MVP or Full Product?](/en/blog/mvp-vs-full-product) — scoping a first release
+
+---
+
+## Frequently asked questions
+
+### How much does a real estate app cost?
+
+A brokerage app with your own listings costs $25,000 to $45,000. A developer's project sales app costs $30,000 to $55,000. A portal accepting listings from outside agents starts around $60,000 and rises with the moderation and verification it requires.
+
+### Why is map search expensive?
+
+Because rendering twenty thousand pins is not the same problem as rendering two hundred. It requires server-side clustering, zoom-aware queries, and a database designed for geospatial search. Draw-on-map filtering adds more. It is engineering, not a map widget.
+
+### Do I need virtual tours?
+
+For off-plan units and high-value properties, they measurably help — the buyer cannot visit an unbuilt apartment. For ordinary rentals they are usually not worth the per-property production cost. Integration is $3,000 to $9,000; the tours themselves are an ongoing expense.
+
+### What licences do I need in Saudi Arabia or the UAE?
+
+Brokerage is regulated in both. Saudi Arabia licenses brokers through the Real Estate General Authority and registers rental contracts through Ejar; Dubai requires RERA registration with a permit number on every advertisement. Confirm current requirements with a local advisor before designing your listing form, since they determine which fields are mandatory.
+
+### How do I stop listings going stale?
+
+Build expiry and refresh requirements into the platform rather than relying on agents to remember: listings expire after a set period, agents must confirm availability to renew, and users can report a sold property. Budget $4,000 to $10,000 for that machinery.
+
+### Should I let other agents list on my app?
+
+Only if you intend to run a portal, with the moderation, verification, and support that implies. It roughly doubles the cost and changes the business you are in. A brokerage app showing your own inventory is a different and much more contained project.
+
+### How long does it take to build?
+
+Four to six months for a brokerage app, longer for a portal. Map search, the media pipeline, and the listing admin tools take most of the time; the browsing screens are the fastest part.
+
+---
+
+## Conclusion
+
+A real estate app costs $25,000 to $80,000, and the deciding question is whether you own the listings. Owning them keeps the project contained and the data trustworthy. Accepting them from others turns the app into a marketplace with moderation costs that never end.
+
+Before you commission anything, settle two things: which regulatory fields your listings must carry in the markets you operate in, and what happens to a lead submitted at 11pm on a Thursday. The first determines whether you can legally publish. The second determines whether the app earns anything.

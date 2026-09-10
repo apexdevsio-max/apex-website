@@ -91,6 +91,22 @@ function getRelatedSlugs(
 // Every published article carries its own keyword set. Previously only `flutter`
 // had one, so the other posts shipped with no keywords meta at all.
 const POST_KEYWORDS: Record<string, { ar: string[]; en: string[] }> = {
+  "restaurant-app-cost": {
+    ar: ["تكلفة تطبيق مطعم", "تطبيق طلب طعام", "نقاط البيع", "فودكس", "عمولة تطبيقات التوصيل"],
+    en: ["restaurant app cost", "food ordering app", "POS integration", "Foodics", "aggregator commission"],
+  },
+  "real-estate-app-cost": {
+    ar: ["تكلفة تطبيق عقاري", "تطبيق عقارات", "البحث بالخريطة", "الهيئة العامة للعقار", "RERA"],
+    en: ["real estate app cost", "property app development", "map search", "RERA", "property portal"],
+  },
+  "travel-booking-app-cost": {
+    ar: ["تكلفة تطبيق حجز فنادق", "تطبيق حجز", "تطبيق سفر", "مدير القنوات", "GDS"],
+    en: ["travel booking app cost", "hotel booking app", "channel manager integration", "GDS", "OTA app"],
+  },
+  "ecommerce-app-cost": {
+    ar: ["تكلفة تطبيق متجر إلكتروني", "تطبيق متجر", "تطبيق تسوق", "سلة", "زد"],
+    en: ["ecommerce app cost", "shopping app development", "store app", "mobile commerce", "Salla", "Zid"],
+  },
   "ai-privacy-risks": {
     ar: ["حقن التوجيهات", "أمن الذكاء الاصطناعي", "خصوصية بيانات AI", "تسريب البيانات", "التدريب على المدخلات", "ضوابط الذكاء الاصطناعي"],
     en: ["prompt injection", "AI security", "AI data privacy", "data leakage", "training on inputs", "AI controls"],
