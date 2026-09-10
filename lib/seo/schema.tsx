@@ -212,6 +212,22 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
   };
 }
 
+/**
+ * Resolves an image reference to an absolute URL for structured data.
+ *
+ * Article images come from the MDX body as site-relative paths (`/images/...`),
+ * which is right for an `<img>` tag and wrong here: Google requires absolute URLs
+ * in structured data and silently drops a relative one, so the five articles that
+ * actually ship a hero image were the five whose BlogPosting had no usable image
+ * at all — the opposite of the intent. Everything else already passes an absolute
+ * URL and is returned untouched.
+ */
+function absoluteUrl(value?: string): string | undefined {
+  if (!value) return undefined;
+  if (/^https?:\/\//.test(value)) return value;
+  return `${siteUrl}${value.startsWith("/") ? "" : "/"}${value}`;
+}
+
 export function buildBlogPostingSchema(params: {
   title: string;
   excerpt: string;
@@ -275,7 +291,7 @@ export function buildBlogPostingSchema(params: {
         height: 630,
       },
     },
-    image: image || `${siteUrl}/images/Apex_logo.png`,
+    image: absoluteUrl(image) ?? `${siteUrl}/images/Apex_logo.png`,
     inLanguage: isAr ? "ar" : "en",
     mainEntityOfPage: {
       "@type": "WebPage",

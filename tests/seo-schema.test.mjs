@@ -250,3 +250,61 @@ test("the Person node is only emitted when an author is configured", async () =>
     "a Person node was emitted with an empty name"
   );
 });
+
+test("structured data never carries a relative image URL", async () => {
+  const source = await readFile(path.join(root, "lib", "seo", "schema.tsx"), "utf8");
+
+  // Article images arrive from the MDX body as site-relative paths, which is
+  // correct for an <img> and wrong in JSON-LD: Google resolves nothing there and
+  // drops the property, so the five articles that actually ship a hero image were
+  // the only ones whose BlogPosting had no usable image.
+  assert.match(source, /function absoluteUrl/, "schema.tsx no longer normalises image URLs");
+  assert.match(
+    source,
+    /image: absoluteUrl\(image\)/,
+    "BlogPosting passes the raw image through instead of absolutising it"
+  );
+
+  // Built article pages live under .next/server/app/<locale>/blog/<slug>.html.
+  const appDir = path.join(root, ".next", "server", "app");
+  const files = [];
+  for (const locale of ["en", "ar"]) {
+    const dir = path.join(appDir, locale, "blog");
+    let names;
+    try {
+      names = await readdir(dir);
+    } catch {
+      continue; // No build in this working tree.
+    }
+    for (const name of names) {
+      if (name.endsWith(".html")) files.push(path.join(dir, name));
+    }
+  }
+  if (files.length === 0) return;
+
+  let checked = 0;
+  for (const file of files) {
+    const html = await readFile(file, "utf8");
+    for (const [, raw] of html.matchAll(
+      /<script type="application\/ld\+json">(.*?)<\/script>/gs
+    )) {
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        continue;
+      }
+      for (const node of Array.isArray(parsed) ? parsed : [parsed]) {
+        if (node["@type"] !== "BlogPosting") continue;
+        const image = Array.isArray(node.image) ? node.image[0] : node.image;
+        assert.ok(image, `${path.basename(file)} has a BlogPosting with no image`);
+        assert.ok(
+          String(image).startsWith("http"),
+          `${path.basename(file)} declares a relative schema image: ${image}`
+        );
+        checked += 1;
+      }
+    }
+  }
+  assert.ok(checked > 0, "no BlogPosting nodes were found to check");
+});
