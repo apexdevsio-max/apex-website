@@ -224,7 +224,7 @@ export function BlogGrid({
 
         <Reveal delay={120}>
           <div
-            className="mt-20 rounded-3xl p-6 md:p-10 text-center border relative overflow-hidden"
+            className="mt-12 md:mt-20 rounded-3xl p-6 md:p-10 text-center border relative overflow-hidden"
             style={{
               background: "color-mix(in srgb,var(--color-primary) 6%,var(--color-card))",
               borderColor: "color-mix(in srgb,var(--color-primary) 20%,transparent)",

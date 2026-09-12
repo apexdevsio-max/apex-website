@@ -142,13 +142,19 @@ html, body {
   transform: translateX(-4px);
 }
 
+/* The vw terms here were tuned against desktop widths and never engaged on a
+   phone: 3.9vw only clears the 28px floor at 718px, and 1.6vw clears 14px at
+   875px. Every phone therefore rendered these at exactly the floor, with no
+   response to screen size. The vw terms below cross their floors inside the
+   phone range instead, while the max values keep desktop rendering unchanged. */
 .apex-section-title {
-  font-size: clamp(28px, 3.9vw, 52px);
+  font-size: clamp(26px, 6.4vw, 52px);
   color: var(--color-primary-text);
+  text-wrap: balance;
 }
 
 .apex-section-subtitle {
-  font-size: clamp(14px, 1.6vw, 17px);
+  font-size: clamp(15px, 3.8vw, 17px);
   color: var(--color-secondary-text);
 }
 
@@ -157,13 +163,13 @@ html, body {
   box-shadow: 0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent);
 }
 .apex-prose-h2 {
-  font-size: clamp(18px, 2.2vw, 26px);
+  font-size: clamp(20px, 5vw, 26px);
   margin-top: 22px;
   margin-bottom: 10px;
   color: var(--color-primary-text);
 }
 .apex-prose-h3 {
-  font-size: clamp(16px, 1.9vw, 22px);
+  font-size: clamp(18px, 4.4vw, 22px);
   margin-top: 18px;
   margin-bottom: 8px;
   color: var(--color-primary-text);
@@ -502,3 +508,102 @@ h1.apex-fade-up { animation-delay: 0s; }
   .apex-card-hover:hover { transform: none; }
 }
 
+
+/* ---------------------------------------------------------------------------
+   Hero — mobile layout
+   ---------------------------------------------------------------------------
+   The hero was authored desktop-first: a locked 100svh with the copy in a
+   45%-wide column and every decorative layer (WebGL video, particle canvas)
+   behind a `md:` prefix. On a phone that produced a full viewport of mostly
+   empty gradient. Height is now content-driven below md, and 100svh returns at
+   md where the decorative layers actually exist to fill it. */
+.apex-hero {
+  min-height: auto;
+}
+
+@media (min-width: 768px) {
+  .apex-hero {
+    min-height: 100svh;
+  }
+}
+
+/* Mobile stand-in for the desktop particle canvas. Two drifting radial
+   gradients on a pseudo-element: no canvas, no JS, no per-frame main-thread
+   work, and it composites on the GPU. It exists only below md, where the real
+   canvas is never mounted. */
+.apex-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      42vw 42vw at 78% 18%,
+      color-mix(in srgb, var(--color-primary) 16%, transparent) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      36vw 36vw at 18% 72%,
+      color-mix(in srgb, var(--color-gold) 12%, transparent) 0%,
+      transparent 70%
+    );
+  animation: apex-hero-drift 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .apex-hero::after {
+    content: none;
+  }
+}
+
+@keyframes apex-hero-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(0, -2.5%, 0) scale(1.06); }
+}
+
+.apex-hero-float {
+  animation: apex-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apex-hero::after,
+  .apex-hero-float {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Filter rails (portfolio / academy / blog categories)
+   ---------------------------------------------------------------------------
+   These are `flex-nowrap overflow-x-auto` below md, which is the right call —
+   wrapping eight chips onto four lines wastes a phone screen. But a bare
+   overflow container gives no sign that there is more to the right, and a
+   scrollbar gutter appears on hover on desktop-class pointers. This adds momentum
+   scrolling, snapping, a hidden scrollbar, and edge padding that lets the last
+   chip clear the viewport edge. */
+.apex-rail {
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  scroll-padding-inline: 1.5rem;
+}
+
+.apex-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.apex-rail > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Bleed to the viewport edge below md so the rail scrolls past the page gutter
+   rather than stopping short of it, which reads as a clipped row. */
+@media (max-width: 767px) {
+  .apex-rail {
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+  }
+}

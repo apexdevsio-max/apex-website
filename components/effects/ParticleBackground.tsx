@@ -2,11 +2,14 @@
 
 import { useEffect, useRef } from "react";
 
+import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
+
 type ElementSize = { width: number; height: number; cssWidth: number; cssHeight: number };
 
 const FRAME_INTERVAL_MS = 1000 / 30;
 
 export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
+  const isDesktop = useIsDesktop();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef<ElementSize>({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
   const visibleRef = useRef(isVisible);
@@ -16,6 +19,7 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
   }, [isVisible]);
 
   useEffect(() => {
+    if (!isDesktop) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -147,12 +151,14 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
       rm.removeEventListener("change", handleMotionChange);
       ro.disconnect();
     };
-  }, []);
+  }, [isDesktop]);
+
+  if (!isDesktop) return null;
 
   return (
     <canvas
       ref={canvasRef}
-      className="hidden md:block absolute inset-0 z-30 h-full w-full pointer-events-none opacity-70"
+      className="absolute inset-0 z-30 h-full w-full pointer-events-none opacity-70"
       style={{
         backgroundImage: "none",
         backgroundColor: "transparent",

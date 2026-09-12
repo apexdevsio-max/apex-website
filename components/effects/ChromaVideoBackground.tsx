@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
+
 type ElementSize = { width: number; height: number; cssWidth: number; cssHeight: number };
 
 export function ChromaVideoBackground({
@@ -11,6 +13,7 @@ export function ChromaVideoBackground({
   isVisible: boolean;
   onReady?: () => void;
 }) {
+  const isDesktop = useIsDesktop();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef<ElementSize>({ width: 0, height: 0, cssWidth: 0, cssHeight: 0 });
@@ -18,15 +21,17 @@ export function ChromaVideoBackground({
 
   useEffect(() => {
     visibleRef.current = isVisible;
+    if (!isDesktop) return;
     const video = videoRef.current;
     if (!video) return;
     if (isVisible) void video.play().catch(() => undefined);
     else video.pause();
-  }, [isVisible]);
+  }, [isVisible, isDesktop]);
 
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (!isDesktop) return;
     const video = videoRef.current;
     const el = canvasRef.current;
     if (!video || !el) return;
@@ -298,7 +303,13 @@ export function ChromaVideoBackground({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       ro.disconnect();
     };
-  }, [onReady]);
+  }, [onReady, isDesktop]);
+
+  // The <video> element is not merely hidden on mobile, it is never created.
+  // A rendered <video> is a real network-capable element: a resize or an
+  // orientation change could hand it a matching media query and start pulling a
+  // 3.4 MB file onto a phone that has no canvas to show it on.
+  if (!isDesktop) return null;
 
   return (
     <>
@@ -310,10 +321,15 @@ export function ChromaVideoBackground({
         className="pointer-events-none absolute top-0 h-px w-px opacity-0"
         aria-hidden="true"
       >
+        {/* VP9 first: browsers pick the first source they can decode, and the
+            WebM is materially smaller at the same quality. Safari skips it and
+            falls through to the H.264 file. Generate both with
+            scripts/optimise-hero-video.sh. */}
+        <source src="/videos/robot_welcome.webm" type="video/webm" />
         <source src="/videos/robot_welcome.mp4" type="video/mp4" />
       </video>
       <div
-        className="hidden md:block absolute z-40 pointer-events-none"
+        className="absolute z-40 pointer-events-none"
         style={{
           top: 0,
           right: 0,

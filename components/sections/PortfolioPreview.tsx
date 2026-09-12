@@ -64,7 +64,7 @@ export async function PortfolioPreview({
       className="relative py-16 md:py-36 px-6 apex-section-alt"
     >
       <div className="max-w-6xl mx-auto">
-        <Reveal className="text-center mb-16">
+        <Reveal className="text-center mb-10 md:mb-16">
           <span className="apex-section-label">{portfolio.badge}</span>
           <div className="apex-divider" />
           <h2

@@ -289,7 +289,7 @@ export function ServicesGrid({
       style={{ background: "var(--color-background)" }}
     >
       <div className="mx-auto max-w-6xl">
-        <Reveal className="mb-16 text-center">
+        <Reveal className="mb-10 md:mb-16 text-center">
           <span className="apex-section-label gold">{dictionary.services.badge}</span>
           <div className="apex-divider reverse" />
           <h1
@@ -310,7 +310,7 @@ export function ServicesGrid({
           </p>
         </Reveal>
 
-        <div className="mb-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-12 md:mb-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => (
             <Reveal key={service.slug} delay={index * 70}>
               <ServiceCard
@@ -324,7 +324,7 @@ export function ServicesGrid({
 
         <Reveal delay={80}>
           <div
-            className="mb-16 rounded-3xl border p-6 md:p-10"
+            className="mb-10 md:mb-16 rounded-3xl border p-6 md:p-10"
             style={{
               background:
                 "color-mix(in srgb,var(--color-primary) 4%,var(--color-card))",

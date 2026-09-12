@@ -446,7 +446,7 @@ export function PortfolioGrid({
         </Reveal>
 
         <Reveal delay={80}>
-          <div className="mb-12 flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 py-1">
+          <div className="mb-12 apex-rail flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 py-1">
             {categories.map((category) => (
               <button
                 key={category.key}
@@ -509,7 +509,7 @@ export function PortfolioGrid({
 
         <Reveal delay={100}>
           <div
-            className="mt-20 grid grid-cols-2 gap-6 rounded-2xl border p-5 md:p-8 md:grid-cols-4"
+            className="mt-12 md:mt-20 grid grid-cols-2 gap-6 rounded-2xl border p-5 md:p-8 md:grid-cols-4"
             style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
           >
             {[

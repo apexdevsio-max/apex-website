@@ -280,7 +280,7 @@ export function AcademyGrid({
 
         <Reveal delay={60}>
           <div
-            className="grid grid-cols-3 gap-4 mb-12 rounded-2xl p-6 border"
+            className="grid grid-cols-3 gap-2 sm:gap-4 mb-12 rounded-2xl p-4 sm:p-6 border"
             style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
           >
             {[
@@ -292,7 +292,7 @@ export function AcademyGrid({
                 <div
                   className="font-bold"
                   style={{
-                    fontSize: "clamp(22px,3vw,34px)",
+                    fontSize: "clamp(22px,6vw,34px)",
                     color: "var(--color-primary)",
                     fontFamily: "var(--font-en)",
                   }}
@@ -311,7 +311,7 @@ export function AcademyGrid({
         </Reveal>
 
         <Reveal delay={80}>
-          <div className="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1">
+          <div className="apex-rail flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1">
             {cats.map((cat) => (
               <button
                 key={cat.key}

@@ -27,7 +27,7 @@ export function Testimonials({
       />
 
       <div className="max-w-6xl mx-auto relative z-1">
-        <Reveal className="text-center mb-16">
+        <Reveal className="text-center mb-10 md:mb-16">
           <span className="apex-section-label gold">{testimonials.badge}</span>
           <div className="apex-divider reverse" />
           <h2

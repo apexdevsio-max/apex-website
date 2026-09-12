@@ -42,7 +42,7 @@ export function CategoryNav({
 
   return (
     <nav
-      className="flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1"
+      className="apex-rail flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-2 mb-10 py-1"
       aria-label={isAr ? "أقسام المدونة" : "Blog categories"}
     >
       <Link
