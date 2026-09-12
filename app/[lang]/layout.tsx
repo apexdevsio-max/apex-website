@@ -72,7 +72,13 @@ export default async function LangLayout({
           <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
       </head>
-      <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} antialiased`}>
+      {/* The Arabic family is three weights and 214 KiB, and `font-ar` is only
+          ever applied behind an isAr check, so an English page was downloading a
+          family it can never render. The serif stays on both locales: Arabic
+          pages use var(--font-en) unconditionally for numerals (StatCounter,
+          AcademyGrid, PortfolioGrid). next/font emits the @font-face rules with
+          the variable class, so dropping the class drops the requests. */}
+      <body className={`${isAr ? ibmPlexSansArabic.variable : ""} ${ibmPlexSerif.variable} antialiased`}>
       {/* Reserves the space taken by the fixed header so content starts below it. */}
       <div
         data-header-placeholder

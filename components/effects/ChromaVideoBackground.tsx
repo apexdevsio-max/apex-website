@@ -72,8 +72,10 @@ export function ChromaVideoBackground({
     let positionBuffer: WebGLBuffer | null = null;
     let positionLoc = 0;
     let videoReady = false;
-    let videoMeta = { w: 0, h: 0, dur: 0 };
+    // `dur` is gone with the manual loop seek that was its only reader.
+    let videoMeta = { w: 0, h: 0 };
     let isSeeking = false;
+    let trimmed = false;
     let chromaThrottleTimer: ReturnType<typeof setTimeout> | null = null;
 
     const VS = `#version 300 es
@@ -215,9 +217,9 @@ export function ChromaVideoBackground({
         return;
       }
 
-      if (videoMeta.dur > 0 && heroVideo.currentTime >= videoMeta.dur - 0.08) {
-        heroVideo.currentTime = loopTrimStart;
-      }
+      // Looping is handled by the element's `loop` attribute. Driving it from
+      // here meant a seek on every wrap, and a seek on a progressively-fetched
+      // file can cost another range request.
 
       const s = sizeRef.current;
       if (s.cssWidth > 0 && s.cssHeight > 0) {
@@ -243,10 +245,20 @@ export function ChromaVideoBackground({
     }
 
     const onLoadedMetadata = () => {
-      videoMeta = { w: heroVideo.videoWidth, h: heroVideo.videoHeight, dur: heroVideo.duration };
+      videoMeta = { w: heroVideo.videoWidth, h: heroVideo.videoHeight };
     };
 
-    const onCanPlay = () => { videoReady = true; };
+    const onCanPlay = () => {
+      videoReady = true;
+      // Trim the first frames once, after buffering, so the seek is served from
+      // memory rather than reopening the stream.
+      if (!trimmed) {
+        trimmed = true;
+        if (heroVideo.currentTime < loopTrimStart) {
+          try { heroVideo.currentTime = loopTrimStart; } catch { /* ignore */ }
+        }
+      }
+    };
 
     const onSeeking = () => { isSeeking = true; };
 
@@ -259,7 +271,7 @@ export function ChromaVideoBackground({
 
     if (heroVideo.readyState >= 2) {
       videoReady = true;
-      videoMeta = { w: heroVideo.videoWidth, h: heroVideo.videoHeight, dur: heroVideo.duration };
+      videoMeta = { w: heroVideo.videoWidth, h: heroVideo.videoHeight };
     }
 
     const start = async () => {
@@ -267,7 +279,11 @@ export function ChromaVideoBackground({
       stopped = false;
       if (!gl && !initGL()) return;
       try {
-        heroVideo.currentTime = loopTrimStart;
+        // No seek before play(). Nothing is buffered at this point, so assigning
+        // currentTime here aborted the fetch play() had just started and opened
+        // a second one from a different offset — the file was pulled down twice
+        // (3.4 MB + 2.3 MB in the field). The trim is applied on the first
+        // canplay instead, once a seek can be served from buffer.
         await heroVideo.play();
         renderFrame();
       } catch { /* ignore */ }
@@ -316,8 +332,9 @@ export function ChromaVideoBackground({
       <video
         ref={videoRef}
         muted
+        loop
         playsInline
-        preload="none"
+        preload="metadata"
         className="pointer-events-none absolute top-0 h-px w-px opacity-0"
         aria-hidden="true"
       >
