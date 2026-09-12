@@ -180,19 +180,36 @@ test("robots.txt omits the deprecated host directive", async () => {
   assert.match(source, /sitemap:/, "robots.txt must advertise the sitemap");
 });
 
-test("no no-op polyfill replacement plugin is reintroduced", async () => {
+test("polyfill-module is replaced out of the client bundle", async () => {
   const config = await readFile(path.join(root, "next.config.ts"), "utf8");
 
-  // Next injects polyfill-nomodule (~112 KB) with CopyFilePlugin, which copies it
-  // by path rather than resolving it as a module. NormalModuleReplacementPlugin
-  // therefore cannot intercept it — a replacement aimed at it strips nothing while
-  // appearing to optimise the bundle. Verified against a real build: the emitted
-  // chunk hash was byte-identical with and without the plugin.
-  assert.doesNotMatch(
+  // This guard used to assert the opposite: that no NormalModuleReplacementPlugin
+  // aimed at /polyfill should exist, on the grounds that such a plugin is a no-op.
+  // That reasoning holds for polyfill-nomodule (the ~112 KB polyfills-<hash>.js),
+  // which CopyFilePlugin copies by path so module resolution never sees it. It does
+  // not hold for polyfill-module, a separate 1.4 KB file that client/app-index.js
+  // requires through client/app-globals.js. That one resolves normally, inlines
+  // into the shared App Router chunk and main, and a replacement does remove it —
+  // measured at 1,388 + 1,352 bytes raw across the two chunks.
+  //
+  // Every feature it patches is in this project's browserslist except URL.canParse
+  // (Safari 17), which no built chunk ever calls.
+  assert.match(
     config,
-    /NormalModuleReplacementPlugin\(\s*\/polyfill/,
-    "polyfill replacement via NormalModuleReplacementPlugin is a no-op; see the note in next.config.ts"
+    /NormalModuleReplacementPlugin\(/,
+    "the polyfill-module replacement was removed; that puts ~2.7 KB of dead polyfills back into every page"
   );
+  assert.match(
+    config,
+    /polyfills\[\\\/\]polyfill-module/,
+    "the replacement must target polyfill-module specifically, not polyfill-nomodule, which it cannot intercept"
+  );
+
+  const replacement = await readFile(
+    path.join(root, "lib", "build", "empty-polyfill.js"),
+    "utf8"
+  );
+  assert.match(replacement, /export\s*\{\s*\}/, "the replacement module must be empty");
 });
 
 test("analytics never blocks the critical rendering path", async () => {
