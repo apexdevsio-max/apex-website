@@ -23,24 +23,30 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const updateSize = () => {
-      const rect = canvas.getBoundingClientRect();
+    // The observer already carries the measured box, so applying it never reads
+    // geometry back. The previous version called getBoundingClientRect() and then
+    // wrote canvas.style.width/height, and the write re-triggered the observer —
+    // a read-after-write cycle that forced a synchronous layout on every resize.
+    const applySize = (cssWidth: number, cssHeight: number) => {
+      if (cssWidth <= 0 || cssHeight <= 0) return;
       const dpr = window.devicePixelRatio || 1;
       sizeRef.current = {
-        width: Math.floor(rect.width * dpr),
-        height: Math.floor(rect.height * dpr),
-        cssWidth: rect.width,
-        cssHeight: rect.height,
+        width: Math.floor(cssWidth * dpr),
+        height: Math.floor(cssHeight * dpr),
+        cssWidth,
+        cssHeight,
       };
       canvas.width = sizeRef.current.width;
       canvas.height = sizeRef.current.height;
-      canvas.style.width = `${sizeRef.current.cssWidth}px`;
-      canvas.style.height = `${sizeRef.current.cssHeight}px`;
+      // The element is sized by CSS (inset-0 h-full w-full); only the backing
+      // store needs setting, so no style write and no feedback into the observer.
     };
 
-    const ro = new ResizeObserver(updateSize);
+    const ro = new ResizeObserver(([entry]) => {
+      const box = entry.contentRect;
+      applySize(box.width, box.height);
+    });
     ro.observe(canvas);
-    updateSize();
 
     const ctx = canvas.getContext("2d");
     if (!ctx) { ro.disconnect(); return; }
@@ -60,6 +66,15 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const w = s.cssWidth;
       const h = s.cssHeight;
+      // Sizing now arrives with the first ResizeObserver callback rather than
+      // from a synchronous measure at setup, so a frame can land before it. Seed
+      // the nodes only once real dimensions exist: at w=0 they would all be
+      // created at the origin and kept, because `nodes.length` then blocks
+      // re-seeding for the life of the component.
+      if (w <= 0 || h <= 0) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
       if (!nodes.length) {
         // Link-drawing below is O(n²); 40 nodes is ~780 pair checks per frame
         // versus ~1770 at 60, for a visually near-identical mesh.

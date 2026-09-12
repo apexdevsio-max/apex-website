@@ -212,6 +212,62 @@ test("polyfill-module is replaced out of the client bundle", async () => {
   assert.match(replacement, /export\s*\{\s*\}/, "the replacement module must be empty");
 });
 
+// These guards match on source text, and the code they protect explains in
+// comments exactly which APIs were removed and why. Without this the comments
+// would trip the very assertions they document.
+function stripComments(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|[^:])\/\/.*$/gm, "$1");
+}
+
+test("no scroll handler reads layout geometry", async () => {
+  // Reading window.scrollY (or any geometry) inside a scroll handler that also
+  // sets state forces a synchronous layout on every scroll event: the read comes
+  // after the previous tick's state change has already invalidated layout. The
+  // header animates background, backdropFilter and borderBottom, so the flush is
+  // real work. IntersectionObserver reports the same crossing without reading.
+  for (const file of [
+    ["components", "layout", "Header.tsx"],
+    ["components", "sections", "HeroSection.tsx"],
+  ]) {
+    const source = stripComments(await readFile(path.join(root, ...file), "utf8"));
+    assert.doesNotMatch(
+      source,
+      /addEventListener\(\s*["']scroll["']/,
+      `${file.join("/")} attaches a scroll listener; use IntersectionObserver instead`
+    );
+    assert.doesNotMatch(
+      source,
+      /window\.scroll(Y|X)|\.offset(Top|Width|Height)|getBoundingClientRect/,
+      `${file.join("/")} reads layout geometry, which forces reflow`
+    );
+  }
+});
+
+test("canvas effects size from the observer, not a read-back", async () => {
+  // getBoundingClientRect() followed by a style write re-enters the
+  // ResizeObserver that called it, so each resize forces a synchronous layout.
+  // ResizeObserverEntry.contentRect carries the same numbers already measured.
+  for (const file of ["ParticleBackground.tsx", "ChromaVideoBackground.tsx"]) {
+    const raw = await readFile(
+      path.join(root, "components", "effects", file),
+      "utf8"
+    );
+    const source = stripComments(raw);
+    assert.doesNotMatch(
+      source,
+      /getBoundingClientRect/,
+      `${file} measures with getBoundingClientRect; read entry.contentRect instead`
+    );
+    assert.match(
+      source,
+      /contentRect/,
+      `${file} should size from the ResizeObserver entry`
+    );
+  }
+});
+
 test("analytics never blocks the critical rendering path", async () => {
   const source = await readFile(
     path.join(root, "components", "analytics", "AnalyticsConsent.tsx"),

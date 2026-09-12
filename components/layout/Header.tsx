@@ -57,12 +57,27 @@ export function Header({ lang, dictionary }: Props) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const scrollSentinelRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Reading window.scrollY in a scroll handler that also sets state is the
+  // textbook forced-reflow loop: the read happens after the previous tick's
+  // setScrolled has already invalidated layout (this header animates background,
+  // backdropFilter and borderBottom), so the browser must flush a fresh layout
+  // synchronously before it can answer — once per scroll event, at scroll
+  // frequency.
+  //
+  // An IntersectionObserver watching a zero-height sentinel at the same offset
+  // reports the same crossing off the main thread and reads no geometry at all.
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 56);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const sentinel = scrollSentinelRef.current;
+    if (!sentinel || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setScrolled(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -170,6 +185,21 @@ export function Header({ lang, dictionary }: Props) {
   const isAr = lang === "ar";
 
   return (
+    <>
+      {/* Zero-height marker at the 56px scroll mark. It is `absolute`, so it sits
+          in the normal scrolling flow and leaves the page while the fixed header
+          above it does not — which is exactly the crossing the observer wants. */}
+      <div
+        ref={scrollSentinelRef}
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: "56px",
+          height: "1px",
+          width: "1px",
+          pointerEvents: "none",
+        }}
+      />
     <header
       className="fixed top-0 left-0 w-full z-50 transition-all duration-400"
       style={{
@@ -346,5 +376,6 @@ export function Header({ lang, dictionary }: Props) {
         </div>
       )}
     </header>
+    </>
   );
 }

@@ -38,24 +38,29 @@ export function ChromaVideoBackground({
     const heroCanvas: HTMLCanvasElement = el;
     const heroVideo: HTMLVideoElement = video;
 
-    const updateSize = () => {
-      const rect = heroCanvas.getBoundingClientRect();
+    // Sized from the observer's own contentRect, with no read-back. The previous
+    // version measured with getBoundingClientRect() and then wrote
+    // style.width/height in pixels — overriding the element's own 100%/100% CSS
+    // and re-entering the observer, so each resize forced a synchronous layout.
+    // Only the backing store is set here; CSS keeps owning the display size.
+    const applySize = (cssWidth: number, cssHeight: number) => {
+      if (cssWidth <= 0 || cssHeight <= 0) return;
       const dpr = window.devicePixelRatio || 1;
       sizeRef.current = {
-        width: Math.floor(rect.width * dpr),
-        height: Math.floor(rect.height * dpr),
-        cssWidth: rect.width,
-        cssHeight: rect.height,
+        width: Math.floor(cssWidth * dpr),
+        height: Math.floor(cssHeight * dpr),
+        cssWidth,
+        cssHeight,
       };
       heroCanvas.width = sizeRef.current.width;
       heroCanvas.height = sizeRef.current.height;
-      heroCanvas.style.width = `${sizeRef.current.cssWidth}px`;
-      heroCanvas.style.height = `${sizeRef.current.cssHeight}px`;
     };
 
-    const ro = new ResizeObserver(updateSize);
+    const ro = new ResizeObserver(([entry]) => {
+      const box = entry.contentRect;
+      applySize(box.width, box.height);
+    });
     ro.observe(heroCanvas);
-    updateSize();
 
     const md = window.matchMedia("(min-width: 768px)");
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -222,9 +227,15 @@ export function ChromaVideoBackground({
       // file can cost another range request.
 
       const s = sizeRef.current;
-      if (s.cssWidth > 0 && s.cssHeight > 0) {
-        updateQuad(s.cssWidth, s.cssHeight, videoMeta.w, videoMeta.h);
+      // Dimensions now arrive with the first ResizeObserver callback instead of a
+      // synchronous measure, so a frame can precede them. Skip it rather than
+      // issuing a 0x0 viewport, which would draw an empty frame and flip `ready`
+      // — fading in a blank canvas.
+      if (s.cssWidth <= 0 || s.cssHeight <= 0) {
+        rafId = requestAnimationFrame(renderFrame);
+        return;
       }
+      updateQuad(s.cssWidth, s.cssHeight, videoMeta.w, videoMeta.h);
       gl.viewport(0, 0, s.width, s.height);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
