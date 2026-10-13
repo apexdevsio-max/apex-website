@@ -22,10 +22,11 @@ export function listingCopy(lang: Locale) {
 /**
  * Metadata for one page of the blog index.
  *
- * Pages beyond the first carry a "Page N" title and are marked `noindex, follow`:
- * they hold no unique content of their own, so indexing them competes with page
- * one for the same query while adding nothing. `follow` still lets crawlers walk
- * through them to reach the articles, which is the whole purpose of the pager.
+ * Pages beyond the first carry a "Page N" title and a self-canonical, and stay
+ * indexable. They used to be `noindex, follow`, but Google treats a page that is
+ * noindexed for long as nofollow too, so the older articles that appear only on
+ * pages 2+ lost their main crawl path and waited on the sitemap alone. Google's
+ * own pagination guidance is exactly this: index every page, canonical to itself.
  */
 export function buildListingMetadata({
   lang,
@@ -64,12 +65,7 @@ export function buildListingMetadata({
     },
   };
 
-  if (page === 1) return withFeed;
-
-  return {
-    ...withFeed,
-    robots: { index: false, follow: true },
-  };
+  return withFeed;
 }
 
 /** Total pages for a collection of `totalItems` articles. */

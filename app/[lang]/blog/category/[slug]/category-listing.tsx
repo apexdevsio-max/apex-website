@@ -29,16 +29,12 @@ export function buildCategoryMetadata({
       ? `/${lang}/blog/category/${category.slug}/page/${page}`
       : `/${lang}/blog/category/${category.slug}`;
 
-  const base = buildPageMeta(lang, {
+  // Paginated pages stay indexable for the reason given in app/[lang]/blog/listing.ts.
+  return buildPageMeta(lang, {
     title: `${category.label[lang]}${suffix}`,
     description: category.description[lang],
     path,
   });
-
-  if (page === 1) return base;
-
-  // See app/[lang]/blog/listing.ts — paginated listings are crawled, not indexed.
-  return { ...base, robots: { index: false, follow: true } };
 }
 
 export async function CategoryListing({

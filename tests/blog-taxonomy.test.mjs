@@ -78,7 +78,7 @@ test("page one of a listing is never also served at /page/1", async () => {
   }
 });
 
-test("paginated listings are noindex but still followed", async () => {
+test("paginated listings stay indexable", async () => {
   const listing = await readFile(path.join(root, "app", "[lang]", "blog", "listing.ts"), "utf8");
   const category = await readFile(
     path.join(root, "app", "[lang]", "blog", "category", "[slug]", "category-listing.tsx"),
@@ -86,13 +86,10 @@ test("paginated listings are noindex but still followed", async () => {
   );
 
   for (const [name, source] of [["listing.ts", listing], ["category-listing.tsx", category]]) {
-    // `follow` is the half that matters: it is what lets crawlers walk the pager
-    // to reach articles that appear on no other page.
-    assert.match(
-      source,
-      /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/,
-      `${name} does not mark paginated listings noindex, follow`
-    );
+    // A long-lived noindex is eventually treated as nofollow, which cuts off the
+    // articles that appear only on pages 2+.
+    const code = source.replace(/\/\*\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    assert.doesNotMatch(code, /index:\s*false/, `${name} noindexes paginated listings again`);
   }
 });
 
@@ -168,10 +165,10 @@ test("the sitemap lists category pages but not paginated ones", async () => {
 
   assert.ok(categories.length > 0, "sitemap lists no blog category pages");
 
-  // Paginated URLs are noindex; advertising them in the sitemap asks crawlers to
-  // index pages that then refuse to be indexed.
+  // Paginated URLs are reached through the pager links; listing them would only
+  // add URLs whose contents shift every time an article is published.
   const paginated = locs.filter((url) => /\/page\/\d+$/.test(url));
-  assert.deepEqual(paginated, [], `sitemap lists noindexed paginated URLs: ${paginated.join(", ")}`);
+  assert.deepEqual(paginated, [], `sitemap lists paginated URLs: ${paginated.join(", ")}`);
 });
 
 test("each locale exposes an RSS feed of its articles", async () => {
