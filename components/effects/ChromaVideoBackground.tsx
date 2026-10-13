@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { onIdle, onMediaChange } from "@/lib/browser";
 import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
 
 type ElementSize = { width: number; height: number; cssWidth: number; cssHeight: number };
@@ -309,24 +310,24 @@ export function ChromaVideoBackground({
         void start();
       }
     };
-    md.addEventListener("change", handleMediaChange);
-    rm.addEventListener("change", handleMediaChange);
+    const stopMd = onMediaChange(md, handleMediaChange);
+    const stopRm = onMediaChange(rm, handleMediaChange);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    const chromaIdleId = requestIdleCallback(() => { void start(); }, { timeout: 2000 });
+    const cancelChromaIdle = onIdle(() => { void start(); }, 2000);
 
     return () => {
       stopped = true;
       cancelAnimationFrame(rafId);
       heroVideo.pause();
       if (chromaThrottleTimer) clearTimeout(chromaThrottleTimer);
-      cancelIdleCallback(chromaIdleId);
+      cancelChromaIdle();
       heroVideo.removeEventListener("loadedmetadata", onLoadedMetadata);
       heroVideo.removeEventListener("canplay", onCanPlay);
       heroVideo.removeEventListener("seeking", onSeeking);
       heroVideo.removeEventListener("seeked", onSeeked);
-      md.removeEventListener("change", handleMediaChange);
-      rm.removeEventListener("change", handleMediaChange);
+      stopMd();
+      stopRm();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       ro.disconnect();
     };

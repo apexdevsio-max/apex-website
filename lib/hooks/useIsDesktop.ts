@@ -2,6 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 
+import { onMediaChange } from "@/lib/browser";
+
 /**
  * Matches the `md` breakpoint that gates the hero's decorative layers.
  *
@@ -13,9 +15,7 @@ export const DESKTOP_QUERY = "(min-width: 768px)";
 
 function subscribe(callback: () => void) {
   if (typeof window === "undefined") return () => {};
-  const media = window.matchMedia(DESKTOP_QUERY);
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
+  return onMediaChange(window.matchMedia(DESKTOP_QUERY), callback);
 }
 
 function getSnapshot() {

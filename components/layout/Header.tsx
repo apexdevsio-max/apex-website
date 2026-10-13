@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { navigationItems } from "@/data/navigation";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locale";
+import { onMediaChange, readStorage, writeStorage } from "@/lib/browser";
 
 type Props = {
   lang: Locale;
@@ -22,17 +23,17 @@ function subscribeTheme(callback: () => void) {
 
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   const syncSystemTheme = () => {
-    if (!localStorage.getItem("theme")) document.documentElement.classList.toggle("dark", media.matches);
+    if (!readStorage("theme")) document.documentElement.classList.toggle("dark", media.matches);
     callback();
   };
   window.addEventListener(THEME_EVENT, callback);
   window.addEventListener("storage", syncSystemTheme);
-  media.addEventListener("change", syncSystemTheme);
+  const stopMedia = onMediaChange(media, syncSystemTheme);
 
   return () => {
     window.removeEventListener(THEME_EVENT, callback);
     window.removeEventListener("storage", syncSystemTheme);
-    media.removeEventListener("change", syncSystemTheme);
+    stopMedia();
   };
 }
 
@@ -46,7 +47,7 @@ function getDarkMode() {
 // Resolves the effective theme the same way the pre-paint script in the layout
 // does, so both agree on what "no stored preference" means.
 function resolveStoredDark() {
-  const stored = localStorage.getItem("theme");
+  const stored = readStorage("theme");
   return stored
     ? stored === "dark"
     : window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -128,7 +129,7 @@ export function Header({ lang, dictionary }: Props) {
   const toggleTheme = () => {
     const nextDark = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", nextDark);
-    localStorage.setItem("theme", nextDark ? "dark" : "light");
+    writeStorage("theme", nextDark ? "dark" : "light");
     window.dispatchEvent(new Event(THEME_EVENT));
   };
 

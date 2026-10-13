@@ -180,36 +180,18 @@ test("robots.txt omits the deprecated host directive", async () => {
   assert.match(source, /sitemap:/, "robots.txt must advertise the sitemap");
 });
 
-test("polyfill-module is replaced out of the client bundle", async () => {
+test("Next's polyfill-module stays in the client bundle", async () => {
   const config = await readFile(path.join(root, "next.config.ts"), "utf8");
 
-  // This guard used to assert the opposite: that no NormalModuleReplacementPlugin
-  // aimed at /polyfill should exist, on the grounds that such a plugin is a no-op.
-  // That reasoning holds for polyfill-nomodule (the ~112 KB polyfills-<hash>.js),
-  // which CopyFilePlugin copies by path so module resolution never sees it. It does
-  // not hold for polyfill-module, a separate 1.4 KB file that client/app-index.js
-  // requires through client/app-globals.js. That one resolves normally, inlines
-  // into the shared App Router chunk and main, and a replacement does remove it —
-  // measured at 1,388 + 1,352 bytes raw across the two chunks.
-  //
-  // Every feature it patches is in this project's browserslist except URL.canParse
-  // (Safari 17), which no built chunk ever calls.
-  assert.match(
+  // Replacing polyfill-module with an empty module saved ~740 bytes gzipped but
+  // left phones below the browserslist (iOS 15.x, old Android WebViews) without
+  // Array.prototype.at, Object.hasOwn and friends, so the app threw on load and
+  // showed the error boundary. See the note in next.config.ts.
+  assert.doesNotMatch(
     config,
-    /NormalModuleReplacementPlugin\(/,
-    "the polyfill-module replacement was removed; that puts ~2.7 KB of dead polyfills back into every page"
+    /NormalModuleReplacementPlugin\(\s*\/[^/]*polyfill/,
+    "do not strip Next's polyfill-module; older phones crash into the error boundary without it"
   );
-  assert.match(
-    config,
-    /polyfills\[\\\/\]polyfill-module/,
-    "the replacement must target polyfill-module specifically, not polyfill-nomodule, which it cannot intercept"
-  );
-
-  const replacement = await readFile(
-    path.join(root, "lib", "build", "empty-polyfill.js"),
-    "utf8"
-  );
-  assert.match(replacement, /export\s*\{\s*\}/, "the replacement module must be empty");
 });
 
 // These guards match on source text, and the code they protect explains in

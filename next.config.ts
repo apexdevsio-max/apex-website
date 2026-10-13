@@ -87,47 +87,14 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
-  // A NormalModuleReplacementPlugin aimed at /polyfill-module/ was removed from
-  // here once, on the finding that it "never removed a single byte". That finding
-  // was right about the file it was blamed for and wrong about the one it hit.
-  //
-  // Two different polyfill bundles ship with Next:
-  //
-  //   polyfill-nomodule — the ~112 KB `polyfills-<hash>.js`. Injected by
-  //     CopyFilePlugin, which copies it by path and registers it in
-  //     buildManifest.polyfillFiles (next/dist/build/webpack-config.js:1735). A
-  //     copied asset never passes through module resolution, so no replacement
-  //     regex can touch it. It is also served only to engines that fail the
-  //     module/nomodule test, i.e. essentially IE11, so it costs this project
-  //     nothing. That much of the original note stands.
-  //
-  //   polyfill-module — a 1.4 KB module `require`d by the client entry
-  //     (client/app-index.js -> client/app-globals.js -> polyfills/polyfill-module).
-  //     That IS a normal require, it DOES pass through module resolution, and it
-  //     lands inline in the shared App Router chunk on every page.
-  //
-  // The plugin was hitting the second one. Removing it put the 1.4 KB back.
-  //
-  // Every feature it patches is supported across this project's browserslist
-  // (chrome/edge/firefox >= 100, safari/ios >= 16.4): trimStart/trimEnd,
-  // Symbol.description, Array.flat/flatMap, Promise.finally, Object.fromEntries,
-  // Array.prototype.at, Object.hasOwn. The one exception is URL.canParse, which
-  // needs Safari 17 and would genuinely be missing on 16.4 — but nothing calls
-  // it: across every built chunk it is assigned once and invoked zero times.
-  //
-  // Re-check this when bumping Next, since the contents of polyfill-module and
-  // the set of callers are both Next's to change.
-  // `webpack` is the instance Next passes in, so this uses Next's own bundled
-  // copy rather than adding webpack as a direct dependency.
-  webpack: (config, { webpack }) => {
-    config.plugins.push(
-      new webpack.NormalModuleReplacementPlugin(
-        /[\/]polyfills[\/]polyfill-module/,
-        path.resolve(projectRoot, "lib/build/empty-polyfill.js")
-      )
-    );
-    return config;
-  },
+  // Next's polyfill-module (client/app-globals.js) is deliberately left in the
+  // client bundle. It was once swapped for an empty module to save ~740 bytes
+  // gzipped, on the grounds that every feature it patches (Array.prototype.at,
+  // Object.hasOwn, Object.fromEntries, flat/flatMap, trimStart/trimEnd, ...) is
+  // inside the browserslist. Real visitors are not: iPhones that never left
+  // iOS 15.x and old Android WebViews still load the site, and without the
+  // polyfills the first Next/React call to one of those methods throws and the
+  // page lands on the error boundary. The bytes are not worth that.
   async headers() {
     return [
       {

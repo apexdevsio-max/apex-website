@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+import { onIdle, onMediaChange } from "@/lib/browser";
 import { useIsDesktop } from "@/lib/hooks/useIsDesktop";
 
 type ElementSize = { width: number; height: number; cssWidth: number; cssHeight: number };
@@ -155,15 +156,15 @@ export function ParticleBackground({ isVisible }: { isVisible: boolean }) {
       else start();
     };
 
-    rm.addEventListener("change", handleMotionChange);
+    const stopRm = onMediaChange(rm, handleMotionChange);
 
-    const idleId = requestIdleCallback(() => start(), { timeout: 1500 });
+    const cancelIdle = onIdle(() => start(), 1500);
 
     return () => {
       stop();
       if (throttleTimer) clearTimeout(throttleTimer);
-      cancelIdleCallback(idleId);
-      rm.removeEventListener("change", handleMotionChange);
+      cancelIdle();
+      stopRm();
       ro.disconnect();
     };
   }, [isDesktop]);

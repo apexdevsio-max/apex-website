@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
+import { readStorage, writeStorage } from "@/lib/browser";
 import type { Locale } from "@/lib/i18n/locale";
 
 type Consent = "granted" | "denied" | null;
@@ -21,7 +22,7 @@ export function AnalyticsConsent({ lang }: { lang: Locale }) {
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = readStorage(STORAGE_KEY);
       setConsent(stored === "granted" || stored === "denied" ? stored : null);
       setReady(true);
     });
@@ -34,7 +35,7 @@ export function AnalyticsConsent({ lang }: { lang: Locale }) {
   }, [consent, pathname, ready]);
 
   const choose = (value: Exclude<Consent, null>) => {
-    localStorage.setItem(STORAGE_KEY, value);
+    writeStorage(STORAGE_KEY, value);
     setConsent(value);
   };
 
