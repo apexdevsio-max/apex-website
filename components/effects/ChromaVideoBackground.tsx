@@ -346,7 +346,10 @@ export function ChromaVideoBackground({
         muted
         loop
         playsInline
-        preload="metadata"
+        // The encodes are ~210 KB (WebM) / ~235 KB (MP4, faststart), so
+        // buffering the whole loop up front costs less than the stall of
+        // starting the fetch only when play() runs after idle.
+        preload="auto"
         className="pointer-events-none absolute top-0 h-px w-px opacity-0"
         aria-hidden="true"
       >

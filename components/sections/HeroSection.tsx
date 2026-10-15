@@ -22,6 +22,12 @@ const ChromaVideoBackground = dynamic(
   { ssr: false },
 );
 
+/*
+ * Mobile-first: every unprefixed class below describes the phone layout — a
+ * single centred column with the mascot on top — and `md:` layers the desktop
+ * layout over it: copy in a left-hand 45% column, the chroma-keyed video and
+ * particle canvas filling the right.
+ */
 export function HeroSection({
   lang,
   dictionary,
@@ -49,28 +55,14 @@ export function HeroSection({
   }, []);
 
   return (
-    <>
-      <style>{`
-        @media (hover: hover) {
-          .hero-cta-secondary:hover {
-            background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-          }
-        }
-        @media (hover: none) {
-          .hero-cta-secondary:active {
-            background: color-mix(in srgb, var(--color-primary) 15%, transparent);
-          }
-        }
-      `}</style>
-      <section
-        dir="ltr"
-        ref={sectionRef}
-      className="apex-hero relative flex items-center overflow-hidden"
-      style={{
-        backgroundImage: "none",
-        height: "auto",
-        contain: "layout paint size",
-      }}
+    // No `size` in `contain`: size containment lays the section out as if it
+    // were empty, and below md its height is content-driven (min-height: auto),
+    // so it collapsed to 0px and `overflow-hidden` clipped the whole hero away
+    // on every phone. Layout and paint containment are kept.
+    <section
+      dir="ltr"
+      ref={sectionRef}
+      className="apex-hero relative flex items-center overflow-hidden [contain:layout_paint]"
       aria-label="Hero"
     >
       <div
@@ -79,7 +71,6 @@ export function HeroSection({
         style={{
           background:
             "linear-gradient(135deg,var(--color-background) 0%,color-mix(in srgb,var(--color-primary) 8%,var(--color-background)) 100%)",
-          backgroundImage: "none",
         }}
       />
 
@@ -94,7 +85,6 @@ export function HeroSection({
           right: "2%",
           width: "min(560px,50vw)",
           height: "min(560px,50vw)",
-          aspectRatio: "1/1",
           borderRadius: "50%",
           background:
             "radial-gradient(circle,color-mix(in srgb,var(--color-primary) 14%,transparent) 0%,transparent 70%)",
@@ -110,7 +100,6 @@ export function HeroSection({
           left: "45%",
           width: "min(380px,40vw)",
           height: "min(380px,40vw)",
-          aspectRatio: "1/1",
           borderRadius: "50%",
           background:
             "radial-gradient(circle,color-mix(in srgb,var(--color-gold) 10%,transparent) 0%,transparent 70%)",
@@ -118,53 +107,46 @@ export function HeroSection({
         }}
       />
 
+      {/* Desktop-only watermark. In the centred mobile column it sat on top of
+          the mascot, and hiding it also saves phones an image request. */}
       <div
-        className="absolute z-20 pointer-events-none"
+        className="absolute z-20 pointer-events-none hidden md:block"
         style={{
           top: "10%",
           left: "6%",
           width: "min(360px,40vw)",
           height: "min(140px,16vw)",
-          aspectRatio: "360/140",
           opacity: 0.08,
-          filter: "blur(0.2px)",
           contain: "layout paint size",
         }}
         aria-hidden="true"
       >
-           <Image
-              src="/images/Apex_logo.png"
-              alt={lang === "ar" ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
-              width={360}
-              height={140}
-             sizes="(max-width: 768px) 40vw, 360px"
-             className="object-contain"
-             loading="lazy"
-             quality={50}
-           />
+        <Image
+          src="/images/Apex_logo.png"
+          alt={lang === "ar" ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
+          width={360}
+          height={140}
+          sizes="360px"
+          className="object-contain"
+          loading="lazy"
+          quality={50}
+        />
       </div>
 
-       {isDesktop ? (
-         <>
-           <ParticleBackground isVisible={isVisible} />
-           <ChromaVideoBackground isVisible={isVisible} />
-         </>
-       ) : null}
+      {isDesktop ? (
+        <>
+          <ParticleBackground isVisible={isVisible} />
+          <ChromaVideoBackground isVisible={isVisible} />
+        </>
+      ) : null}
 
-       {/* On desktop the chroma-keyed video carries the visual; this still image
-           is the mobile counterpart, so it is a foreground element in the flow
-           rather than a 25%-opacity ghost behind the text. It sits after the
-           copy in the source order (see the grid below) so the headline stays
-           the first thing read and the first thing painted. */}
-
-      <div className="relative z-50 mx-auto w-full max-w-7xl px-6 pb-16 pt-28 md:pb-16 md:pt-24 md:px-10">
+      <div className="relative z-50 mx-auto flex w-full max-w-7xl flex-col px-5 pb-14 pt-24 sm:px-8 md:px-10 md:pb-16">
         <div
           dir={rtl.dirAttr}
-          className={`${rtl.textAlign} md:max-w-[45%]`}
-          style={{ marginRight: "auto" }}
+          className="flex flex-col items-center text-center md:mr-auto md:w-full md:max-w-[45%] md:items-start md:text-start"
         >
           <div
-            className="apex-fade-up apex-delay-1 mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5"
+            className="apex-fade-up apex-delay-1 mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 md:mb-6"
             style={{
               background:
                 "color-mix(in srgb,var(--color-primary) 12%,transparent)",
@@ -188,16 +170,12 @@ export function HeroSection({
             </span>
           </div>
 
-          {/* 5.5vw never cleared the 28px floor on a phone: every width from
-              320px to 509px rendered at exactly 28px, so the headline had no
-              response to screen size at all. 9vw starts scaling at 356px.
-              `minHeight` is gone because it was sized for the two-line desktop
-              break and cropped or padded the three-line mobile wrap; the two
-              spans below are block-level instead, which reserves the real height
-              without guessing at it. */}
+          {/* The two spans are block-level so the headline always breaks into
+              the same two lines and reserves its real height without a guessed
+              minHeight. 10vw clears the 36px floor from 360px up. */}
           <h1
-            className={`apex-fade-up apex-delay-2 font-bold leading-[1.08] md:leading-[1.04] ${rtl.fontClass}`}
-            style={{ fontSize: "clamp(34px,9vw,78px)", textWrap: "balance" }}
+            className={`apex-fade-up apex-delay-2 font-bold leading-[1.1] text-[clamp(36px,10vw,78px)] md:leading-[1.04] md:text-[clamp(34px,9vw,78px)] ${rtl.fontClass}`}
+            style={{ textWrap: "balance" }}
           >
             <span className="block" style={{ color: "var(--color-primary-text)" }}>
               {heroSection.headline}
@@ -206,33 +184,19 @@ export function HeroSection({
           </h1>
 
           <p
-            className={`apex-fade-up apex-delay-3 mt-6 leading-relaxed ${rtl.fontClass}`}
-            style={{
-              // 1.6vw pinned every phone to the 14px floor. 4vw lets it scale,
-              // and the minHeight is dropped for the same reason as the h1's.
-              fontSize: "clamp(15px,4vw,17px)",
-              color: "var(--color-secondary-text)",
-              maxWidth: "420px",
-            }}
+            className={`apex-fade-up apex-delay-3 mt-4 max-w-[420px] leading-relaxed text-[clamp(15px,4vw,17px)] md:mt-6 ${rtl.fontClass}`}
+            style={{ color: "var(--color-secondary-text)", textWrap: "balance" }}
           >
             {heroSection.subheadline}
           </p>
 
-          {/* `flex-wrap` alone let two px-8 buttons overflow 343px of usable width
-              and drop onto a second line at two different widths, which read as a
-              bug. Below sm they stack full-width instead; from sm they sit inline
-              as before. */}
-          <div
-            className={`apex-fade-up apex-delay-4 mt-9 flex flex-col sm:flex-wrap gap-3 sm:gap-4 ${
-              // rtl.flexRev is `flex-row-reverse`, which would fight `flex-col`
-              // and re-order the stacked buttons vertically on Arabic phones.
-              // The reversal is only wanted once they sit on one row.
-              lang === "ar" ? "sm:flex-row-reverse" : "sm:flex-row"
-            }`}
-          >
+          {/* Stacked full-width on phones: two px-8 buttons side by side don't
+              fit 320–400px screens. From sm they sit on one row, which follows
+              the column's `dir`, so in Arabic the primary CTA leads on the right. */}
+          <div className="apex-fade-up apex-delay-4 mt-7 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 md:mt-9 md:justify-start">
             <Link
               href={`/${lang}/portfolio`}
-              className="apex-btn inline-flex w-full sm:w-auto min-h-[48px] items-center justify-center sm:justify-start gap-2 rounded-full px-8 py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
+              className="apex-btn inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full px-8 py-3.5 text-[15px] font-bold text-white transition-transform active:scale-[0.98] sm:min-h-[48px] sm:w-auto sm:text-sm md:hover:-translate-y-0.5"
               style={{
                 background:
                   "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
@@ -246,40 +210,62 @@ export function HeroSection({
 
             <Link
               href={`/${lang}/contact`}
-              className="hero-cta-secondary inline-flex w-full sm:w-auto min-h-[48px] items-center justify-center sm:justify-start gap-2 rounded-full border-2 px-8 py-3.5 text-sm font-bold transition-all"
+              className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full border-2 px-8 py-3.5 text-[15px] font-bold transition-all hover:bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] active:bg-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] sm:min-h-[48px] sm:w-auto sm:text-sm"
               style={{
                 color: "var(--color-primary)",
                 borderColor: "var(--color-primary)",
-                background: "transparent",
               }}
             >
               {heroSection.ctaSecondary}
             </Link>
           </div>
 
-          <div className={`apex-fade-up apex-delay-5 mt-12 flex items-center gap-3 ${rtl.flexRev}`}>
-            <div
-              style={{
-                height: "1px",
-                width: "40px",
-                background: `linear-gradient(${rtl.gradientDir},var(--color-primary),transparent)`,
-              }}
+          {/* The tagline is Latin in both locales, so the row is always LTR: a
+              rule fading out on each side of it while the column is centred,
+              and only the leading rule once it is start-aligned at md. */}
+          <div dir="ltr" className="apex-fade-up apex-delay-5 mt-8 flex items-center gap-3 md:mt-12">
+            <span
+              className="h-px w-7 md:w-10"
+              style={{ background: "linear-gradient(to left,var(--color-primary),transparent)" }}
             />
             {/* No opacity on the tagline: at 75% the primary colour drops to
                 3.86:1 on the light background, under the 4.5:1 WCAG AA floor. */}
             <span
-              className={`text-xs font-semibold tracking-[0.2em] ${rtl.fontClass}`}
+              className="font-en text-xs font-semibold tracking-[0.2em]"
               style={{ color: "var(--color-primary)" }}
             >
               {heroSection.tagline}
             </span>
+            <span
+              className="h-px w-7 md:hidden"
+              style={{ background: "linear-gradient(to right,var(--color-primary),transparent)" }}
+            />
           </div>
         </div>
 
-        {/* Mobile-only hero visual. Full opacity and in the document flow, so it
-            reads as the subject rather than as texture behind the copy. It is
-            the LCP candidate on phones, hence priority + fetchPriority. */}
-        <div className="md:hidden mt-12 flex justify-center" aria-hidden="true">
+        {/* Mobile hero visual: the counterpart of the desktop video. It comes
+            after the copy in the source so the headline is read first, and
+            `order-first` lifts it to the top of the column visually. It is the
+            LCP candidate on phones, hence priority + fetchPriority and no
+            opacity fade-in. Sized against svh as well so short phones keep the
+            CTAs above the fold. */}
+        <div
+          className="relative order-first mb-6 self-center md:hidden"
+          aria-hidden="true"
+        >
+          <div
+            className="absolute -inset-[14%] rounded-full"
+            style={{
+              background:
+                "radial-gradient(circle,color-mix(in srgb,var(--color-primary) 22%,transparent) 0%,transparent 68%)",
+            }}
+          />
+          <div
+            className="absolute inset-[6%] rounded-full border"
+            style={{
+              borderColor: "color-mix(in srgb,var(--color-primary) 18%,transparent)",
+            }}
+          />
           <Image
             src="/images/robot_mascot.avif"
             alt=""
@@ -288,15 +274,14 @@ export function HeroSection({
             priority
             fetchPriority="high"
             quality={60}
-            sizes="(max-width: 767px) 68vw, 373px"
-            className="h-auto w-[68%] max-w-[300px] object-contain apex-hero-float"
+            sizes="240px"
+            className="relative h-auto w-[min(58vw,240px,30svh)] object-contain apex-hero-float [mask-image:linear-gradient(to_bottom,black_72%,transparent)]"
           />
         </div>
       </div>
 
-      {/* Hidden below md: the hero is no longer a locked 100svh on phones, so
-          there is no fixed viewport bottom to anchor to, and it collided with
-          the CTAs on short screens. */}
+      {/* Hidden below md: the hero is not a locked 100svh on phones, so there
+          is no fixed viewport bottom to anchor to. */}
       <div
         className="pointer-events-none absolute bottom-7 left-1/2 z-50 hidden -translate-x-1/2 flex-col items-center gap-2 opacity-40 md:flex"
         aria-hidden="true"
@@ -316,6 +301,5 @@ export function HeroSection({
         />
       </div>
     </section>
-    </>
   );
 }
