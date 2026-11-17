@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n/locale";
 import { formatDate } from "@/lib/i18n/format";
 import { LEGAL_LAST_UPDATED } from "@/lib/legal";
 
-export type LegalSection = { heading: string; paragraphs: readonly string[] };
+type LegalSection = { heading: string; paragraphs: readonly string[] };
 
 /** Shared layout for the privacy policy and the terms. */
 export function LegalPage({ lang, title, intro, sections }: { lang: Locale; title: string; intro: string; sections: readonly LegalSection[] }) {

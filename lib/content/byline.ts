@@ -1,7 +1,7 @@
 import type { CategoryKey } from "@/lib/content/taxonomy";
 import { hasNamedAuthor } from "@/data/author";
 
-export type Byline = "person" | "team";
+type Byline = "person" | "team";
 
 /**
  * Articles that make claims a reader is entitled to challenge (regulation,

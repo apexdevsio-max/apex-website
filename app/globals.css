@@ -106,9 +106,6 @@ html, body {
 [dir="rtl"] :is(h1, h2, h3, .apex-page-title, .apex-section-title, .apex-hero-title) { line-height: 1.45; }
 [dir="rtl"] :is(.apex-eyebrow, .apex-cat-label) { letter-spacing: 0; text-transform: none; font-size: 0.875rem; }
 
-/* Directional icons opt in to mirroring; everything else (ticks, mail, moon) is left alone. */
-[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
-
 /* ---------------------------------------------------------------------------
    Components
    Layered so a utility on the element (padding, size) still wins.
@@ -504,6 +501,8 @@ html, body {
   transform-style: preserve-3d;
   transition: transform 400ms var(--ease-out);
   animation: apex-float 6s ease-in-out infinite;
+  /* The video frame stops at the robot's waist; fade it instead of a hard cut. */
+  mask-image: linear-gradient(to bottom, black 72%, transparent 96%);
 }
 /* Contact shadow on the floor; it shrinks as the robot floats up. */
 .apex-hero-shadow {

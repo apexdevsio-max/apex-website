@@ -1,201 +1,199 @@
 ---
-{"slug":"uae-data-protection-guide","title":"UAE Data Protection Law: A Developer's Guide","seoTitle":"UAE Data Protection Law for Developers","excerpt":"Implementing UAE Federal Decree-Law 45/2021 in your product — lawful bases beyond consent, user rights, breach notification, and why DIFC and ADGM are different laws entirely.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"uae-data-protection-guide","title":"UAE Data Protection Law: A Developer's Guide","seoTitle":"UAE Data Protection Law for Developers","excerpt":"Implementing UAE Federal Decree-Law 45/2021 in your product — consent and its exceptions, user rights, breach notification, and why DIFC and ADGM are separate laws.","categories":["compliance"],"keywords":["UAE data protection","UAE PDPL","Federal Decree-Law 45","DIFC data protection","ADGM","UAE privacy compliance"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Which UAE data protection law applies depends on where your entity is incorporated: mainland companies follow Federal Decree-Law 45 of 2021, DIFC companies follow DIFC Data Protection Law No. 5 of 2020, and ADGM companies follow the ADGM Data Protection Regulations 2021.","The federal law has been in force since 2 January 2022, covers processing inside or outside the UAE, prohibits processing without consent except in defined cases such as public interest, and gives individuals rights including correction and restricting or stopping processing.","Breach deadlines differ by regime: ADGM requires notifying its Office of Data Protection within 72 hours where feasible, DIFC requires notice to the Commissioner as soon as practicable, and we could not verify a fixed hour count for the federal law as of November 2026.","Health data is the hard residency rule: Dubai Health Authority's telehealth standard prohibits storing or transferring health data outside the UAE unless DHA approves."],"sources":[{"title":"UAE Government portal: Data protection laws","url":"https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws"},{"title":"DIFC Commissioner of Data Protection: FAQs","url":"https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection/faqs-glossary"},{"title":"ADGM Office of Data Protection: Personal data breach notifications","url":"https://www.adgm.com/operating-in-adgm/office-of-data-protection/data-breach-notifications"},{"title":"Dubai Health Authority: Standards for Telehealth Services (issue 4, effective 26 November 2025)","url":"https://dha.gov.ae/uploads/012023/Standards%20for%20Telehealth%20Services2023158613.pdf"}]}
 ---
 
 # UAE Data Protection Law: A Developer's Guide
 
-The UAE's federal data protection law took effect in January 2022, and most teams building for the Emirates still treat it as "GDPR, roughly." That approximation is close enough to be dangerous — it gets consent mostly right and gets jurisdiction badly wrong.
+**Which UAE data protection law governs your product depends on where your entity is incorporated.** A mainland company follows Federal Decree-Law 45 of 2021, in force since 2 January 2022 and supervised by the UAE Data Office. A company in the Dubai International Financial Centre (DIFC) follows DIFC Data Protection Law No. 5 of 2020, and one in Abu Dhabi Global Market (ADGM) follows the ADGM Data Protection Regulations 2021. Getting this wrong means complying with the wrong statute.
 
-**The short answer: Federal Decree-Law 45/2021 applies to processing personal data of individuals in the UAE regardless of where your company sits. But if your entity is established in DIFC or ADGM, a different law governs you entirely — and that is the single most common and costly mistake in UAE compliance.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide covers what to build. For how the UAE compares with Saudi Arabia and Qatar, start with the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
-
-> **This is technical guidance for developers and product owners, not legal advice.** Reporting on the status and content of the executive regulations has been inconsistent across sources. **Verify the current position with a qualified UAE advisor** before relying on any specific interpretation, including this one.
+This guide is the UAE detail behind the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide), which compares the UAE with Saudi Arabia and Qatar. It covers what each UAE regime says, what to build, and the open questions to take to a UAE adviser.
 
 ---
 
-## First: which law actually governs you?
+## First: which regime governs you?
 
-This determines everything else, and it depends on where your **entity is established** — not which emirate you operate in or where your users are.
-
-| Your entity is in | Law that applies | Character |
+| Your entity is incorporated in | Regime | Regulator |
 |---|---|---|
-| Mainland UAE (Dubai, Abu Dhabi, Sharjah…) | Federal Decree-Law 45/2021 | Consent-centred, federal |
-| **DIFC** (Dubai International Financial Centre) | DIFC Data Protection Law | GDPR-style, own commissioner |
-| **ADGM** (Abu Dhabi Global Market) | ADGM Data Protection Regulations | GDPR-style, own regulator |
-| Healthcare (anywhere in UAE) | Federal law **plus** health data rules | In-country storage requirement |
+| Mainland UAE | Federal Decree-Law 45 of 2021 | UAE Data Office |
+| **DIFC** | DIFC Data Protection Law No. 5 of 2020 | DIFC Commissioner of Data Protection |
+| **ADGM** | ADGM Data Protection Regulations 2021 | ADGM Office of Data Protection |
+| Health services, anywhere in the UAE | Data protection law **plus** health-sector rules | Health authority (for example DHA in Dubai) |
 
-**Why teams get this wrong:** "We're a Dubai company" is ambiguous. A company in Dubai Internet City is mainland; a company in DIFC is not. The free zones are separate legal jurisdictions with their own data protection statutes, their own regulators, and their own registration and breach-reporting procedures.
+**Why teams get this wrong:** "we're a Dubai company" is ambiguous. DIFC is a separate jurisdiction with its own statute; the [DIFC Commissioner's FAQ](https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection/faqs-glossary) states that the DIFC law applies to a controller or processor incorporated in DIFC regardless of whether the processing takes place in DIFC, and can also reach non-DIFC entities that process personal data in DIFC on an ongoing basis. Your trade licence tells you which regime you are in.
 
-**The practical consequence:** building to the federal law when DIFC governs you means you have complied with the wrong statute. DIFC and ADGM are closer to European GDPR — they require a documented lawful basis (not necessarily consent), carry data protection officer obligations in some cases, and have their own notification routes.
-
-**Check this first**, before any architectural decision. Your trade licence tells you which jurisdiction you are in.
+> **Questions for your lawyer:** if you are in a free zone other than DIFC or ADGM, which regime applies to you? And if your group has a DIFC or ADGM entity and a mainland entity, which entity is the controller for which processing, and does any processing fall under more than one regime?
 
 ---
 
-## Consent — and the bases that are not consent
+## The federal law: what we could verify
 
-Consent is the default basis under the federal law, and it must be **explicit, specific, freely given, and unambiguous**, given through a clear affirmative action. It must also be revocable at any time.
+The [UAE government portal](https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws) summarises Federal Decree-Law 45 of 2021 as follows:
 
-**What does not qualify:**
-- Pre-ticked checkboxes — a clear affirmative action means the user acts, not that they fail to object
-- One blanket consent covering unrelated purposes
-- Consent buried in terms of service
-- Making the core service conditional on consent it does not require
+- It applies to processing of personal data, wholly or partly through electronic systems, **inside or outside the country**.
+- It **prohibits processing without the data owner's consent**, with exceptions such as processing necessary to protect a public interest or to carry out legal procedures and rights.
+- Individuals can **request correction** of inaccurate data and can **restrict or stop processing** of their data.
+- It sets requirements for **cross-border transfer and sharing** of personal data.
+- The **UAE Data Office** (Federal Decree-Law 44 of 2021) is the federal regulator, responsible for policies, monitoring standards, complaints and implementing guidelines.
 
-**What to build:**
+We could not open the official text of the decree-law on the UAE legislation portal while preparing this guide, so we have not relied on article-level detail from secondary summaries. Take these questions to a UAE adviser:
+
+> **Questions for your UAE adviser:**
+> 1. Have the Executive Regulations of Decree-Law 45/2021 been issued, and from what date must we comply with them?
+> 2. Do they set a deadline in hours or days for notifying the Data Office of a breach?
+> 3. What is the full list of cases where we may process without consent, and which fits each of our processing activities?
+> 4. What conditions apply to transferring data to our hosting region and to each vendor abroad?
+> 5. What administrative fines apply, and who imposes them?
+> 6. Is the UAE Data Office still the supervising body, or has supervision moved to another federal authority?
+
+---
+
+## Consent, and why "consent for everything" is a trap
+
+Because the federal law starts from consent with exceptions, most products need a consent layer. Build it properly:
 
 ```
 □ Separate opt-in per purpose (service / marketing / analytics)
 □ Never pre-ticked
-□ Plain-language explanation of each purpose
+□ Plain-language explanation of each purpose, in Arabic and in English if your users need it
 □ Withdrawal as easy as granting it
 □ Timestamped record: when, and against which policy version
 ```
 
-**Where the UAE differs usefully from a consent-only reading:** the law recognises processing without consent in defined situations, including protection of public interest or public health, data the subject has already made public, legal claims and judicial procedures, employment and social security obligations, and occupational or preventive medicine.
-
-This matters for product design. If you are processing employee data to meet an employment obligation, consent is not the right basis — and asking for consent you do not need creates a worse position, because a user who withdraws it leaves you unable to perform an obligation you are legally required to perform.
-
-**Document your basis per processing activity.** "Consent for everything" is simpler to build and harder to defend.
+**But do not ask for consent you do not need.** If a processing activity falls under one of the law's exceptions, asking for consent anyway creates a worse position: a user who withdraws it leaves you unable to do something you were entitled, or obliged, to do. Map each processing activity to its basis with your adviser, then build consent only where consent is the basis.
 
 ---
 
-## User rights — what the product must actually do
+## Rights: build restriction, not just deletion
 
-Individuals have the right to **access, correct, erase, restrict, and object to** processing, plus the right to withdraw consent at any time and to complain to the UAE Data Office.
+The portal confirms two rights that most implementations under-build: correction, and the right to **restrict or stop** processing.
 
-| Right | What you build |
+| Request | What you build |
 |---|---|
-| Access | Show them the data you hold |
-| Correction | Let them edit it |
-| Erasure | Delete account and data — genuinely |
-| Restriction | Suspend processing without deleting |
-| Objection | Stop a specific processing activity |
-| Withdrawal | One-click consent revocation |
+| See my data | A "my data" page and export |
+| Correct my data | Editable fields and a correction request path |
+| Delete my data | Real deletion that reaches backups, logs and exports |
+| Restrict processing | A status that every processing path checks before using the record |
+| Stop a specific processing | Per-purpose switches (for example, stop profiling but keep the account) |
+| Withdraw consent | One-click revocation per purpose |
 
-**Restriction is the one most often missing.** It is not deletion — it is "keep it but stop using it," which for most systems means a status flag your processing paths must actually respect. Building erasure without restriction is a partial implementation that looks complete.
+**Restriction is the one most often missing.** It is not deletion; it is "keep it but stop using it". In most systems that means a flag that your jobs, analytics exports and marketing sync must actually respect. Building deletion without restriction looks complete and is not.
 
-**And erasure must mean erasure.** A `deleted_at` flag is not deletion. Check backups, logs, analytics exports, and any warehouse copies. Data removed from your primary database but sitting in a log aggregator has not been deleted.
+The implementation pattern overlaps heavily with Saudi Arabia's, so the [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) is worth reading alongside this one.
 
-The implementation pattern here is nearly identical to Saudi Arabia's, so [the Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) is worth reading alongside this — build once, satisfy both.
-
----
-
-## Breach notification
-
-Controllers must notify the UAE Data Office when a breach compromises the privacy, confidentiality, or security of a data subject. In practice this is generally treated as **within 72 hours of discovery**, aligning with regional norms.
-
-**This is a monitoring requirement wearing a paperwork costume.** You cannot report within 72 hours a breach you find out about in two months. What it actually demands:
-
-- **Detection** — alerting that surfaces anomalous access or exfiltration
-- **Forensics** — logging detailed enough to establish what was accessed, when, and whose data
-- **A written procedure** — who is told internally, who decides, who contacts the Data Office
-- **Vendor terms** requiring your processors to notify **you within 24 hours**, since their delay consumes your window
-
-Write the procedure before you need it. A breach is not the moment to design a process.
+We build these rights pages and processing switches as part of our [web development service](/en/services/web-development), so they ship with the first release rather than after the first complaint.
 
 ---
 
-## Cross-border transfers
+## Breach notification by regime
 
-The federal law permits transfers to jurisdictions offering adequate protection, or under approved contractual safeguards — a conditional model rather than Saudi Arabia's more restrictive one.
+| Regime | Deadline | Source |
+|---|---|---|
+| ADGM | "Without undue delay and, where feasible, not later than 72 hours after becoming aware" (Article 32) | [ADGM Office of Data Protection](https://www.adgm.com/operating-in-adgm/office-of-data-protection/data-breach-notifications) |
+| DIFC | "As soon as practicable in the circumstances" (Article 41); affected individuals where the breach is likely to pose a high risk (Article 42) | [DIFC Commissioner FAQ](https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection/faqs-glossary) |
+| Federal | No hour count we could verify as of November 2026 (see the questions above) | — |
 
-**The exception that overrides everything: health data.** UAE health data carries an in-country storage requirement. This is an architectural constraint, not a contractual one you can paper over with a clause. If your product touches health data, read [health apps in the UAE](/en/blog/health-apps-uae-compliance) before choosing hosting.
+**Do not plan around "72 hours" for the federal law as if it were settled,** and do not plan around having more time either. The engineering is the same whatever the number:
 
-**The check almost everyone skips:** confirming the primary database is in-region and stopping. Backups replicate across regions by default in most managed services. Logs contain personal data and typically ship to a third-party service abroad. Analytics, crash reporting, push notification providers, and AI APIs all move data across borders. **Each is a transfer.**
+- **Detection:** alerting on anomalous access or bulk export.
+- **Forensics:** logs detailed enough to establish what was accessed, when, and whose data.
+- **A written procedure:** who is told internally, who decides, who contacts the regulator.
+- **Vendor terms** requiring your processors to notify **you within 24 hours**, since their delay consumes your window.
 
-Ask any provider three things: where is primary data, where are backups, where are logs. [The hosting comparison guide](/en/blog/hosting-comparison) covers which UAE regions exist and what they actually guarantee.
+If you also serve Saudi users, Saudi Arabia's 72-hour rule applies to that data and sets the pace for the whole procedure.
+
+---
+
+## Transfers and residency
+
+**Health data is the hard rule.** Dubai Health Authority's [Standards for Telehealth Services](https://dha.gov.ae/uploads/012023/Standards%20for%20Telehealth%20Services2023158613.pdf) (issue 4, effective 26 November 2025) state that storing, developing or transferring health data outside the UAE is prohibited unless DHA approves (section 8.2.5(d)). That is an architectural constraint: hosting, backups, logs and any AI service that sees clinical content must stay in the UAE. The [UAE health apps guide](/en/blog/health-apps-uae-compliance) covers DHA, Abu Dhabi and federal health rules in detail.
+
+**For other data under the federal law,** the law sets transfer requirements but we have not verified their detail from the official text; that is question 4 above.
+
+**DIFC** no longer issues permits for transfers out of DIFC; transfers are assessed against the law's grounds, and DIFC publishes standard contractual clauses adapted from the EU clauses and the UK IDTA ([DIFC FAQ](https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection/faqs-glossary)).
+
+Wherever your data lands, the technical check is identical: where is the primary data, where are the backups, and where are the logs. The [data residency guide](/en/blog/data-residency-gulf) walks through each.
+
+---
+
+## DIFC and ADGM: the extra paperwork
+
+- **DIFC** requires entities to [notify the Commissioner of their processing operations](https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection/notifications) through the DIFC Client Portal, to notify any change within 14 days of starting the new processing, and to renew the notification with the licence.
+- **ADGM** expects a representative of the data controller to file breach notifications to the Office of Data Protection on the controller's behalf.
+
+Build your data map and processing register in a form you can hand straight to these filings.
 
 ---
 
 ## What this costs to build
 
-Assuming it is designed in from the start rather than retrofitted:
+Ranges from our published rate card, as of November 2026: regional agency engineering at $50–100 per hour (about AED 200–400). Our engineering estimates of effort for the UAE-specific pieces:
 
-| Work | Effort | Indicative cost |
-|---|---|---|
-| Consent management (granular, logged, revocable) | 3 – 6 days | $1,500 – $4,000 |
-| User rights (access/correct/erase/restrict/object) | 6 – 12 days | $3,000 – $7,000 |
-| Audit logging and breach detection | 4 – 8 days | $2,000 – $5,000 |
-| Lawful basis mapping and retention policy | 2 – 4 days | $1,000 – $2,500 |
-| Bilingual privacy policy | — | $500 – $2,000 |
-| Legal review | — | $2,000 – $8,000 |
+| Work | Typical effort |
+|---|---|
+| Consent layer (per purpose, logged, revocable) | 3–6 days |
+| Rights pages including restriction and stop-processing switches | 6–12 days |
+| Audit logging and breach detection | 4–8 days |
+| Processing register and retention rules | 2–4 days |
 
-Restriction and objection rights push the user-rights line above its Saudi equivalent — there are simply more states to model.
-
-**Retrofitting costs three to five times this**, because adding restriction to a system that never modelled processing states is structural work, not a feature.
+Restriction and per-purpose stop switches push the rights work above a simple delete-and-export page, because there are more states to model. Legal review is separate.
 
 ---
 
 ## A pre-launch checklist
 
-- [ ] Confirmed whether federal, DIFC, or ADGM law governs your entity
-- [ ] Documented a lawful basis for each processing activity — not consent by default
-- [ ] Granular, non-pre-ticked, revocable consent where consent is the basis
-- [ ] Timestamped consent records with policy version
-- [ ] All six rights available in-product, including restriction and objection
-- [ ] Erasure covers backups, logs, and analytics exports
-- [ ] Confirmed where primary data, backups, and logs are stored
-- [ ] Health data (if any) stored in-country
-- [ ] Every third-party processor reviewed for transfers
-- [ ] Data processing agreements requiring 24-hour breach notification to you
-- [ ] Written breach response procedure with named owners
-- [ ] Monitoring capable of detecting a breach inside the window
-- [ ] No production data in development environments
-- [ ] Privacy policy in Arabic and English reflecting actual practice
+- [ ] Confirmed whether federal, DIFC or ADGM law governs each entity
+- [ ] A basis mapped for each processing activity, with your adviser
+- [ ] Consent per purpose, unticked, revocable and logged where consent is the basis
+- [ ] Correction, deletion, restriction and per-purpose stop available in the product
+- [ ] Deletion and restriction respected by backups, logs and analytics exports
+- [ ] Health data (if any) hosted, backed up and logged inside the UAE
+- [ ] Every vendor reviewed as a possible transfer
+- [ ] Processing agreements requiring 24-hour breach notice to you
+- [ ] A written breach procedure that meets the strictest deadline you face
+- [ ] DIFC or ADGM filings done, if they apply
+- [ ] The six adviser questions above answered in writing
 
 ---
 
 ## Related reading
 
-- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide) — how the UAE compares with Saudi Arabia and Qatar.
-- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) — the overlapping implementation, in more depth.
-- [Health apps in the UAE](/en/blog/health-apps-uae-compliance) — DHA licensing and health data residency.
-- [Hosting comparison](/en/blog/hosting-comparison) — UAE regions and where data actually lives.
-- [App development in Abu Dhabi](/en/blog/app-development-abu-dhabi) — ADGM and the local market.
-- [Web design company in Dubai](/en/blog/web-design-company-dubai) — Dubai pricing and requirements.
+- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide): the UAE compared with Saudi Arabia and Qatar.
+- [Health apps in the UAE](/en/blog/health-apps-uae-compliance): DHA, Abu Dhabi and federal health rules.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf): where data actually lives.
+- [Digital identity integration](/en/blog/digital-identity-integration): UAE PASS sign-in and verified attributes.
 
 ---
 
 ## Frequently asked questions
 
-### Does UAE data protection law apply if my company is abroad?
+### Does a DIFC company also have to follow UAE Federal Decree-Law 45/2021?
 
-Yes. Federal Decree-Law 45/2021 applies to processing personal data of individuals inside the UAE regardless of where your company or servers are located. Being registered elsewhere does not exempt you if you have UAE users.
+A DIFC-incorporated company follows the DIFC Data Protection Law No. 5 of 2020, which applies to it regardless of where the processing happens. Whether any federal obligations also reach a particular processing activity is a question for your adviser, especially if your group has a mainland entity too.
 
-### Is DIFC covered by the UAE federal law?
+### What is the breach notification deadline in ADGM and DIFC?
 
-No. DIFC has its own data protection law with its own commissioner, and ADGM likewise has separate regulations. Both are closer in structure to European GDPR than to the federal law. Which one governs you depends on where your entity is established, not which emirate you operate in — check your trade licence before making architectural decisions.
+ADGM requires notice to its Office of Data Protection without undue delay and, where feasible, within 72 hours of becoming aware (Article 32). DIFC requires notice to the Commissioner as soon as practicable in the circumstances (Article 41), and to individuals where the breach is likely to pose a high risk.
 
-### Do I always need consent to process data in the UAE?
+### Is there a 72-hour breach deadline under the UAE federal law?
 
-No, and defaulting to consent for everything is a common design error. The law recognises processing without consent in defined situations including public interest, public health, data the subject made public, legal claims, and employment and social security obligations. Document a lawful basis per activity — asking for consent you do not need creates problems when a user withdraws it.
+We could not verify one from a primary source as of November 2026. Ask a UAE adviser whether the Executive Regulations have set a deadline. In the meantime, build detection and a written procedure that can meet 72 hours, which is the strictest window in the region.
 
-### How quickly must I report a data breach in the UAE?
+### Can a mainland UAE app process data without consent?
 
-Controllers must notify the UAE Data Office when a breach compromises a data subject's privacy, confidentiality, or security, generally treated as within 72 hours of discovery. The practical requirement is monitoring that detects breaches at all, plus vendor agreements requiring your processors to notify you within 24 hours.
+In defined cases, yes. The UAE government portal describes the federal law as prohibiting processing without consent, with exceptions such as protecting a public interest or carrying out legal procedures and rights. Map each activity to its basis with an adviser rather than asking for consent you do not need.
 
-### Can I store UAE user data outside the UAE?
+### What is the difference between deleting and restricting a user's data?
 
-For ordinary commercial data, transfers are permitted to jurisdictions with adequate protection or under approved contractual safeguards. Health data is the exception and carries an in-country storage requirement. Remember that backups and logs are transfers too, even when your primary database is in-region.
+Deleting removes the data. Restricting keeps it but stops you using it, which means a status every processing path must check. The federal law gives individuals the right to restrict or stop processing, so build both.
 
-### Is UAE law the same as GDPR?
+### Can UAE health app data be hosted outside the UAE?
 
-They share structure and vocabulary but differ meaningfully. The federal law is more consent-centred, has its own notification routes and supervisory body, and its executive regulations have had an uncertain public status. DIFC and ADGM laws are closer to GDPR. Building to GDPR gets you most of the way, but it does not settle which UAE jurisdiction applies to you.
-
-### What is the difference between erasure and restriction?
-
-Erasure deletes the data. Restriction keeps it but stops you processing it — a state most systems never model, which is why it is the right most often missing from implementations. Building erasure alone looks complete and is not.
+Not without approval. Dubai Health Authority's telehealth standard prohibits storing, developing or transferring health data outside the UAE unless DHA approves, which covers backups, logs and AI services as well as the main database.
 
 ---
 
-## Conclusion
+## Next step
 
-**Start with jurisdiction, not requirements.** Whether federal, DIFC, or ADGM law governs you changes the statute, the regulator, and the obligations — and it is determined by where your entity is established.
-
-**Do not default to consent for everything.** Mapping a lawful basis per processing activity is more work upfront and materially more defensible.
-
-**And build restriction alongside erasure.** It is the requirement most implementations quietly skip, and the one that reveals whether compliance was designed or assumed.
-
-**Building for the UAE market?** [Get in touch](/en/contact) for a free scoping conversation — including an honest answer about when you need a UAE advisor rather than a developer. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).
+Start with the trade licence, then the adviser questions, then the build. If you are planning a product for UAE users and want the consent, rights and logging pieces scoped before development starts, [share your entity type and what the product collects](/en/contact), and we will turn it into a build plan and a list of points for your UAE adviser.

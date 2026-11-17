@@ -1,14 +1,12 @@
 ---
-{"slug":"i18n-arabic-guide","title":"i18n for Arabic Products: Managing Translations at Scale","seoTitle":"i18n Guide for Arabic Products","excerpt":"Structuring translation files, handling plurals and interpolation, choosing a workflow, and keeping Arabic content in sync as a product grows.","date":"2026-08-21","dateModified":"2026-08-21"}
+{"slug":"i18n-arabic-guide","title":"i18n for Arabic Products: Managing Translations at Scale","seoTitle":"i18n Guide for Arabic Products","excerpt":"Structuring translation files, handling plurals and interpolation, choosing a workflow, and keeping Arabic content in sync as a product grows.","categories":["arabic"],"keywords":["i18n Arabic","internationalization","translation files","Arabic plurals","CLDR plural rules","next-intl"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Arabic has six CLDR plural categories — zero (0), one (1), two (2), few (3–10), many (11–99) and other (100–102 and similar) — so every count string needs up to six forms, where English needs two.","Libraries built on Intl.PluralRules or ICU MessageFormat, such as i18next (keys suffixed _zero to _other), FormatJS, next-intl and Flutter's gen-l10n, select the Arabic forms correctly; hand-rolled singular/plural logic does not.","Never concatenate translated fragments: use one string per sentence with named placeholders, because Arabic word order differs from English.","What breaks at scale is the workflow, so fail CI when a key is missing in one language, report untranslated messages (Flutter's gen-l10n can write them to an untranslated-messages-file), and scan for unused keys."],"sources":[{"title":"Unicode CLDR — Language plural rules (Arabic)","url":"https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html"},{"title":"MDN — Intl.PluralRules","url":"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules"},{"title":"i18next — Plurals","url":"https://www.i18next.com/translation-function/plurals"},{"title":"Flutter docs — Internationalizing Flutter apps (ARB files, gen-l10n options)","url":"https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization"},{"title":"Google Search Central — Managing multi-regional and multilingual sites","url":"https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites"}]}
 ---
 
 # i18n for Arabic Products: Managing Translations at Scale
 
-Internationalisation starts easy. One JSON file, a `t()` function, done. Then the product grows, three developers add strings in different styles, marketing rewrites the onboarding copy, and nobody knows which Arabic strings are stale or whether that key is still used anywhere.
+To run i18n well for an Arabic product: externalise every string from day one, namespace translation files by feature, use a library that implements the CLDR plural rules (Arabic has six plural forms, not two), write one string per sentence with named placeholders, and make CI fail when a key exists in one language but not the other. The framework takes a day to set up; the workflow is what keeps Arabic accurate a year later.
 
-**The short answer: the i18n framework is the easy part. What breaks at scale is the workflow — how strings get added, translated, reviewed, and retired. Decide that early, because retrofitting it means auditing every key you ever wrote.**
-
-This guide covers structure and workflow. For the wider scope of Arabic support, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+Internationalisation starts easy — one JSON file and a `t()` function. Then the product grows, three developers add strings in different styles, marketing rewrites the onboarding, and nobody knows which Arabic strings are stale. This guide covers structure and workflow. For the wider scope of Arabic support, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide); an i18n layer from the first commit is standard in our [web](/en/services/web-development) and [mobile](/en/services/mobile-apps) builds.
 
 ---
 
@@ -18,15 +16,15 @@ The cheapest localisation decision available: set up i18n in phase one, even whe
 
 **What it costs now:** a few days. Install a library, externalise strings as you write them, use [logical CSS properties](/en/blog/rtl-css-guide).
 
-**What it costs later:** weeks. Every hardcoded string has to be found across the codebase — and they hide in validation messages, email templates, error handlers, chart labels, and PDF generators. Teams consistently find twice as many as they estimated.
+**What it costs later:** weeks. Every hard-coded string has to be found — and they hide in validation messages, email templates, error handlers, chart labels and PDF generators.
 
-**The asymmetry is large enough** that building the layer is worth it even if Arabic never ships. If it does ship, you saved weeks; if it does not, you lost days.
+**The asymmetry is large enough** that building the layer is worth it even if Arabic never ships.
 
 ---
 
 ## Structuring translation files
 
-**Namespace by feature, not by type.** The instinct is `buttons.json`, `labels.json`, `errors.json`. This scales badly, because working on checkout means touching every file.
+**Namespace by feature, not by type.** The instinct is `buttons.json`, `labels.json`, `errors.json`. That scales badly, because working on checkout means touching every file.
 
 ```
 locales/
@@ -40,11 +38,11 @@ locales/
     checkout.json
 ```
 
-**Key naming should describe meaning, not content.** `auth.login.submitButton` survives a copy change; `auth.login.signInNow` becomes a lie the moment marketing rewrites it to "Get started."
+**Key names should describe meaning, not content.** `auth.login.submitButton` survives a copy change; `auth.login.signInNow` becomes a lie the moment marketing rewrites it to "Get started".
 
-**Never use the English string as the key.** It seems convenient and it means every copy edit is a key rename across the codebase and every translation file.
+**Never use the English string as the key.** It seems convenient, and it makes every copy edit a key rename across the codebase and every translation file.
 
-**Keep the same key set in both languages.** A key present in English and absent in Arabic should fail a check, not silently render a fallback in production.
+**Keep the same key set in both languages.** A key present in English and absent in Arabic should fail a check, not silently fall back in production.
 
 ---
 
@@ -52,30 +50,54 @@ locales/
 
 This is where naive i18n breaks, and it breaks silently.
 
-English has two plural categories. **Arabic has six**: zero, one, two, few, many, and other. A library that only handles singular and plural will produce grammatically wrong Arabic for most quantities.
+English has two plural categories. Arabic has six. The [CLDR plural rules](https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html) define them:
 
-```json
-{
-  "items": {
-    "zero": "لا توجد عناصر",
-    "one": "عنصر واحد",
-    "two": "عنصران",
-    "few": "{{count}} عناصر",
-    "many": "{{count}} عنصراً",
-    "other": "{{count}} عنصر"
-  }
+| Category | Numbers | Example |
+|---|---|---|
+| `zero` | 0 | لا توجد عناصر |
+| `one` | 1 | عنصر واحد |
+| `two` | 2 | عنصران |
+| `few` | 3–10, 103–110 … | 3 عناصر |
+| `many` | 11–99, 111–199 … | 11 عنصراً |
+| `other` | 100–102, 200–202 … | 100 عنصر |
+
+**In ICU MessageFormat** (FormatJS, next-intl, Flutter ARB files):
+
+```
+{count, plural,
+  zero {لا توجد عناصر}
+  one {عنصر واحد}
+  two {عنصران}
+  few {# عناصر}
+  many {# عنصراً}
+  other {# عنصر}
 }
 ```
 
-**Verify your library supports CLDR plural rules** before committing to it. `i18next`, `FormatJS`, and Flutter's `intl` all do. A hand-rolled solution almost certainly does not, and the output is wrong in a way English-speaking reviewers cannot see.
+**In i18next,** the [plurals guide](https://www.i18next.com/translation-function/plurals) uses suffixed keys based on `Intl.PluralRules`:
 
-**The dual form matters.** Arabic has a specific form for exactly two, and getting it wrong is immediately noticeable to native readers in a way that reads as carelessness.
+```json
+{
+  "items_zero": "لا توجد عناصر",
+  "items_one": "عنصر واحد",
+  "items_two": "عنصران",
+  "items_few": "{{count}} عناصر",
+  "items_many": "{{count}} عنصراً",
+  "items_other": "{{count}} عنصر"
+}
+```
+
+**Verify CLDR support before committing to a library.** `Intl.PluralRules` returns all six Arabic categories ([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules) shows `ar-EG` selecting `zero`, `one`, `two`, `few` and `many`), and libraries built on it inherit that. A hand-rolled `count === 1 ? a : b` produces wrong Arabic for most quantities, in a way English-speaking reviewers cannot see.
+
+**React Native caveat:** the i18next documentation notes that Hermes does not implement `Intl.PluralRules`, so add a polyfill or only the English-style forms will resolve.
+
+**The dual matters.** Arabic has a specific form for exactly two, and getting it wrong reads as carelessness to native readers.
 
 ---
 
 ## Interpolation and word order
 
-**Never concatenate translated fragments.** Word order differs between languages, so assembled sentences produce nonsense.
+**Never concatenate translated fragments.** Word order differs between languages, so assembled sentences come out wrong.
 
 ```js
 // Wrong — assumes English word order
@@ -85,45 +107,43 @@ t("youHave") + " " + count + " " + t("newMessages")
 t("newMessages", { count })
 ```
 
-**Give variables meaningful names.** `{{name}}` and `{{count}}` tell a translator what they are working with; `{{0}}` and `{{1}}` do not, and a translator who cannot see the context will guess.
+**Name your variables.** `{{name}}` and `{{count}}` tell a translator what they are working with; `{{0}}` and `{{1}}` do not.
 
-**Watch bidirectional interpolation.** A Latin-script value inside an Arabic sentence needs isolation, or punctuation lands wrong — see [Arabic numerals and formats](/en/blog/arabic-numerals-formats).
+**Watch bidirectional interpolation.** A Latin-script value — an order code, an email address, a product name — inside an Arabic sentence needs isolation, or punctuation lands on the wrong side. Wrap it in `<bdi>` in HTML or in the U+2066 … U+2069 isolate characters in plain text; [Arabic numerals and formats](/en/blog/arabic-numerals-formats) has the details.
 
-**Provide context for ambiguous keys.** "Post" is a verb and a noun; a translator seeing only the word cannot know which. Most libraries support a context or description field — use it, because the alternative is a translator asking or, worse, guessing.
+**Give context for ambiguous keys.** "Post" is a verb and a noun. Most formats support a description field — Flutter's ARB files use `@key` metadata with a `description` — and translators need it.
 
 ---
 
 ## Workflow: the part that actually breaks
 
-The technical setup is a day. The workflow is what determines whether Arabic is still accurate in a year.
-
-**The three common approaches:**
+The technical setup is a day. The workflow decides whether Arabic is still accurate in a year.
 
 | Approach | Suits | Weakness |
 |---|---|---|
-| Files in the repository | Small teams, developer-authored copy | Non-developers cannot contribute |
+| Files in the repository | Small teams, developer-authored copy | Non-developers cannot contribute easily |
 | Translation management platform | Growing products, external translators | Cost, sync complexity |
-| Spreadsheet with import script | Small budgets, occasional updates | Manual, error-prone at scale |
+| Spreadsheet with import script | Small budgets, occasional updates | Manual and error-prone at scale |
 
-**For most Gulf products, files in the repository work well initially** and a translation platform becomes worthwhile once non-developers need to edit copy regularly.
+**Files in the repository work well at first**; a translation platform becomes worthwhile once non-developers need to edit copy regularly.
 
 **Whatever you choose, three rules hold:**
 
-**Fail the build on missing keys.** A key present in English and missing in Arabic should break CI, not fall back silently in production where nobody notices.
+**Fail the build on missing keys.** A key present in English and missing in Arabic should break CI, not fall back silently in production.
 
-**Detect unused keys.** Files accumulate strings for features deleted two years ago. A periodic scan for keys absent from the codebase keeps this from growing indefinitely.
+**Detect unused keys.** Files accumulate strings for deleted features. A periodic scan for keys absent from the codebase keeps this in check.
 
-**Never machine-translate into production without review.** A first draft from machine translation is reasonable for volume content. Shipping it unreviewed produces text fluent readers immediately identify as machine-produced, which costs more credibility than the translation saved in time.
+**Never machine-translate into production without review.** Machine translation can be a first draft for volume content. Shipped unreviewed, it reads as machine-produced to fluent readers and costs more credibility than it saved in time.
 
 ---
 
 ## Framework notes
 
-**React / Next.js** — `next-intl` and `react-i18next` both handle Arabic plurals correctly. Next.js App Router uses a `[lang]` route segment, which gives you a real URL per language and therefore proper `hreflang` handling for search.
+**React / Next.js.** `react-i18next` and `next-intl` both handle Arabic plurals through CLDR rules. Put each language on its own URL (for example `/ar/...` and `/en/...` via a `[lang]` route segment): Google [recommends separate URLs per language with hreflang annotations](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites) rather than switching language by cookie.
 
-**Flutter** — the `intl` package with ARB files. Generated typed accessors mean a missing key is a compile error rather than a runtime fallback, which is the strongest possible version of the "fail on missing keys" rule.
+**Flutter.** `flutter gen-l10n` generates a typed getter per key from the template ARB file, so referencing a key that does not exist is a compile error. Translations missing from `app_ar.arb` are a different case: the [Flutter docs](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization) describe the `untranslated-messages-file` option, which writes them to a JSON file — fail CI when that file is not empty. For a shipped example of an Arabic-first Flutter app, see [Tafawwoq](/en/portfolio/tafawwoq-educational-app), our educational app with a full Arabic RTL interface.
 
-**Backend** — do not forget it. Emails, SMS, PDF invoices, and API error messages all need translation, and they are the most commonly overlooked surface. An Arabic app sending English transactional emails is a common and avoidable inconsistency.
+**Backend.** Emails, SMS, PDF invoices and API error messages all need translation, and they are the most commonly overlooked surface. An Arabic app that sends English transactional emails is an avoidable inconsistency.
 
 ---
 
@@ -133,14 +153,15 @@ The technical setup is a day. The workflow is what determines whether Arabic is 
 - [ ] Files namespaced by feature, not by string type
 - [ ] Keys describe meaning, not content
 - [ ] No English strings used as keys
-- [ ] Library verified to support CLDR plural rules with all six Arabic forms
+- [ ] Library uses CLDR plural rules; all six Arabic forms written
+- [ ] `Intl.PluralRules` polyfilled where the runtime lacks it
 - [ ] No string concatenation for sentences
-- [ ] Named interpolation variables with context notes
+- [ ] Named placeholders with context notes
 - [ ] Bidirectional isolation for interpolated Latin values
-- [ ] CI fails on missing keys
+- [ ] CI fails on missing keys and untranslated messages
 - [ ] Periodic unused-key scan
 - [ ] Backend surfaces translated: emails, SMS, PDFs, API errors
-- [ ] Native speaker review before release, always
+- [ ] Native-reader review before every release
 
 ---
 
@@ -149,49 +170,45 @@ The technical setup is a day. The workflow is what determines whether Arabic is 
 - [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers of localisation.
 - [RTL in CSS](/en/blog/rtl-css-guide) — the layout half of the problem.
 - [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — interpolating numbers and currency.
-- [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic) — mobile specifics.
-- [Common localisation mistakes](/en/blog/localization-mistakes) — what goes wrong in practice.
+- [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) — direction, icons and mixed text in Flutter.
+- [12 Arabic localisation mistakes](/en/blog/localization-mistakes) — what goes wrong in practice.
 
 ---
 
 ## Frequently asked questions
 
-### How many plural forms does Arabic have?
+### Which numbers use which Arabic plural form?
 
-Six: zero, one, two, few, many, and other. English has two, so any library or hand-rolled solution handling only singular and plural will produce grammatically wrong Arabic for most quantities. Verify CLDR plural rule support before choosing a library — `i18next`, `FormatJS`, and Flutter's `intl` all handle it.
+Per the CLDR rules: `zero` for 0, `one` for 1, `two` for 2, `few` when the last two digits are 3–10 (3–10, 103–110), `many` when they are 11–99 (11–99, 111–199), and `other` for the rest, such as 100–102. `Intl.PluralRules("ar")` returns these categories for you.
+
+### Do i18next and FormatJS handle Arabic plurals?
+
+Yes. i18next selects suffixed keys (`_zero`, `_one`, `_two`, `_few`, `_many`, `_other`) using `Intl.PluralRules`, and FormatJS and next-intl use ICU MessageFormat plural syntax. In React Native, i18next's docs note that Hermes lacks `Intl.PluralRules`, so add a polyfill.
 
 ### Should I set up i18n if I am only launching in English?
 
-Yes, if Arabic is anywhere in your roadmap. Building the layer costs a few days now; retrofitting costs weeks, because hardcoded strings hide in validation messages, email templates, error handlers, and PDF generators. The asymmetry is large enough that it is worth doing even if Arabic never ships.
+Yes, if Arabic is anywhere on your roadmap. Building the layer costs a few days now; retrofitting costs weeks, because hard-coded strings hide in validation messages, email templates, error handlers and PDF generators.
 
 ### Should I use the English text as my translation key?
 
-No. It seems convenient but it means every copy edit becomes a key rename across the codebase and every translation file. Use keys that describe meaning — `auth.login.submitButton` — so that rewriting the button text does not touch code.
+No. It turns every copy edit into a key rename across the codebase and every translation file. Use keys that describe meaning, such as `auth.login.submitButton`.
 
-### Can I use machine translation for my Arabic strings?
+### Does Flutter's gen-l10n catch missing Arabic translations?
 
-As a first draft for volume content, yes. Shipping it without native review produces text that fluent readers immediately identify as machine-produced, and it cannot make register decisions or adapt examples. The credibility cost usually exceeds the time saved.
+Partly. A key missing from the template ARB is a compile error, because the getter does not exist. A key present in `app_en.arb` but missing from `app_ar.arb` is reported as untranslated — on the command line, or in a JSON file if you set `untranslated-messages-file`. Make CI fail when that file lists anything.
 
 ### Why should I not concatenate translated strings?
 
-Word order differs between languages, so a sentence assembled from fragments in English order produces nonsense in Arabic. Use a single string per sentence with named interpolation variables instead, and give translators context notes for ambiguous keys.
+Because word order differs between languages, a sentence assembled from fragments in English order comes out wrong in Arabic. Use one string per sentence with named placeholders, and give translators context notes for ambiguous keys.
 
-### What is the most common i18n oversight?
+### What is the most commonly overlooked i18n surface?
 
-Backend surfaces. Emails, SMS messages, PDF invoices, and API error strings are routinely left in English while the interface is fully translated. An Arabic app that sends English transactional email is a common and entirely avoidable inconsistency.
-
-### How do I stop translation files rotting?
-
-Fail CI when a key exists in one language and not another, and run a periodic scan for keys no longer referenced in the codebase. Without both, files accumulate stale strings from deleted features and silently fall back to English in production where nobody notices.
+The backend: emails, SMS, PDF invoices and API error strings are routinely left in English while the interface is fully translated. Include them in scope from the start.
 
 ---
 
-## Conclusion
+## Getting it right from the first commit
 
-**Build the i18n layer in phase one.** It costs days now and weeks later, and the calculation holds even if Arabic never ships.
+Externalise strings, pick a CLDR-aware library, write all six Arabic plural forms, keep sentences whole, and let CI police missing and untranslated keys. That is what keeps Arabic accurate after the first release, which is where most products quietly degrade.
 
-**Check plural support before choosing a library.** Arabic's six forms are the specific thing naive implementations get wrong, and the error is invisible to reviewers who do not read Arabic.
-
-**And invest in the workflow, not just the setup.** Failing builds on missing keys and scanning for unused ones is what keeps Arabic accurate after the first release, which is where most products quietly degrade.
-
-**Planning a bilingual product?** [Get in touch](/en/contact) — we build Arabic-first, so the i18n layer exists from the first commit. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).
+If you are about to set up i18n for a product that will ship in Arabic and English, [ask us to review your setup before you build on it](/en/contact) — an hour at this stage saves a retrofit later.

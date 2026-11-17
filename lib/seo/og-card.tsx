@@ -47,7 +47,7 @@ function loadFonts(): Promise<[ArrayBuffer, ArrayBuffer]> {
  * Satori implements no bidi algorithm and ignores `direction: rtl`. Glyphs shape
  * and join correctly (that is the font's work), so only word order needs fixing.
  */
-export function layoutRtl(text: string): string {
+function layoutRtl(text: string): string {
   return text.trim().split(/\s+/).reverse().join(" ");
 }
 
@@ -58,7 +58,7 @@ export function layoutRtl(text: string): string {
  * the last line, so the card reads bottom-up. Break points are chosen by
  * character count because Satori exposes no text measurement.
  */
-export function layoutRtlLines(text: string, charsPerLine: number): string[] {
+function layoutRtlLines(text: string, charsPerLine: number): string[] {
   const words = text.trim().split(/\s+/);
   const lines: string[][] = [[]];
 
@@ -94,7 +94,7 @@ function arabicCharsPerLine(title: string): number {
   return 36;
 }
 
-export type OgCardInput = {
+type OgCardInput = {
   locale: Locale;
   /** Short label above the title, e.g. the article's category. */
   eyebrow: string;

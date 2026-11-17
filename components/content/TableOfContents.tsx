@@ -17,7 +17,8 @@ export function TableOfContents({ entries, lang }: { entries: TocEntry[]; lang: 
       {top.map((entry) => (
         <li key={entry.id}>
           <a href={`#${entry.id}`} className="apex-toc-link">
-            {entry.text}
+            {/* The list already numbers entries; drop a heading's own "1." prefix. */}
+            {entry.text.replace(/^[0-9٠-٩]+[.)\-]\s*/, "")}
           </a>
         </li>
       ))}

@@ -1,14 +1,12 @@
 ---
-{"slug":"react-native-rtl-arabic","title":"Arabic and RTL Support in React Native: A Practical Guide","seoTitle":"React Native Arabic RTL Guide","excerpt":"Making a React Native app work properly in Arabic — I18nManager and its restart problem, logical styles, fonts, and the libraries that break RTL.","date":"2026-08-12","dateModified":"2026-08-12"}
+{"slug":"react-native-rtl-arabic","title":"Arabic and RTL Support in React Native: A Practical Guide","seoTitle":"React Native Arabic RTL Guide","excerpt":"Making a React Native app work properly in Arabic — I18nManager and its restart problem, logical styles, fonts, and the libraries that break RTL.","categories":["arabic","mobile"],"keywords":["React Native RTL","Arabic React Native","I18nManager","RTL layout","Arabic fonts mobile","bidirectional text"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["React Native handles RTL through I18nManager, and the React Native docs state that allowRTL and forceRTL changes take effect on the next application start, not immediately.","The React Native docs describe forceRTL as meant for development and testing, and warn that forcing RTL in production requires a full app restart, which makes for a poor user experience.","Write styles with marginStart, marginEnd, paddingStart, paddingEnd, start, end and borderStartWidth, which the layout docs define as resolving to the right side when direction is rtl.","writingDirection is an iOS-only text style, so isolate phone numbers and codes for both platforms with the Unicode characters U+2066 and U+2069 inside the string."],"sources":[{"title":"React Native docs — I18nManager","url":"https://reactnative.dev/docs/i18nmanager"},{"title":"React Native docs — Layout props (direction, marginStart, start/end)","url":"https://reactnative.dev/docs/layout-props"},{"title":"React Native docs — Text style props (textAlign, writingDirection)","url":"https://reactnative.dev/docs/text-style-props"},{"title":"W3C Internationalization — How to use Unicode controls for bidi text","url":"https://www.w3.org/International/questions/qa-bidi-unicode-controls"}]}
 ---
 
 # Arabic and RTL Support in React Native: A Practical Guide
 
-React Native can produce an excellent Arabic app. It just does not do it by default, and the gap between "we set `I18nManager.forceRTL(true)`" and "this feels like an Arabic app" is where most projects lose weeks.
+React Native supports Arabic right-to-left layout through `I18nManager`, plus logical style properties such as `marginStart` and `paddingEnd` that resolve against the current direction. Two things catch teams out: direction changes made through `I18nManager` only take effect on the next app start, and third-party libraries are where RTL actually breaks. Decide how your app will switch direction before you style the first screen, and test RTL from week one.
 
-**The short answer: React Native's RTL support works, but it is bolted on rather than built in. The layout mirrors automatically, the restart requirement surprises everyone, and third-party libraries are where localisation actually breaks.**
-
-This guide covers the React Native specifics. For the full scope of what localisation involves beyond direction, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+The gap between "we called `I18nManager.forceRTL(true)`" and "this feels like an Arabic app" is where most projects lose time. This guide covers the React Native specifics, with each API checked against the React Native documentation. For the full scope of what localisation involves beyond direction, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide); for help building the app itself, see our [mobile app development services](/en/services/mobile-apps).
 
 ---
 
@@ -19,27 +17,28 @@ RTL in React Native runs through `I18nManager`:
 ```js
 import { I18nManager } from "react-native";
 
-I18nManager.allowRTL(true);
-I18nManager.forceRTL(true);
+I18nManager.isRTL;           // true when the app is currently laid out RTL
+I18nManager.allowRTL(true);  // allow RTL when the device language is RTL
+I18nManager.forceRTL(true);  // force RTL regardless of device language
 ```
 
-**The catch that surprises every team: these take effect only after an app restart.** The native layer reads the direction at startup, so calling `forceRTL` at runtime changes the stored flag but not the current session's layout.
+**The catch:** the [React Native docs](https://reactnative.dev/docs/i18nmanager) state that `allowRTL` and `forceRTL` changes "take effect on the next application start, not immediately", and that both settings persist across restarts. They also describe `forceRTL` as "primarily useful for testing RTL layouts during development", warning that forcing RTL in production "requires a full app restart to take effect, which makes for a poor user-experience".
 
-This produces a genuinely awkward user experience: a language switcher that appears to do nothing until the app is relaunched. Your options, honestly stated:
+That produces an awkward experience: an in-app language switcher that appears to do nothing until the app is relaunched. Your options:
 
-**Option 1 — restart the app.** Use a library such as `react-native-restart` and tell the user what is happening. Crude, but predictable and it always works.
+**Option 1 — follow the device language.** Allow RTL, read `I18nManager.isRTL`, and let users who want Arabic set their phone to Arabic. The simplest and most predictable approach, and what the docs steer production apps towards.
 
-**Option 2 — decide direction at first launch and do not offer switching.** Appropriate for products with a single target market. Considerably simpler.
+**Option 2 — in-app switch with a restart.** Call `allowRTL`/`forceRTL`, then reload the app (for example with a restart library such as `react-native-restart`) and tell the user what is about to happen. Crude, but it always works.
 
-**Option 3 — do not use `I18nManager` at all.** Manage direction yourself in React state and style components explicitly. More work upfront and full control, with no restart. Viable for apps with a modest number of screens.
+**Option 3 — manage direction in React.** The [layout props](https://reactnative.dev/docs/layout-props) include `direction` (`'inherit' | 'ltr' | 'rtl'`). Setting it on your root view from your own language state flips every `marginStart` and `flexDirection: "row"` beneath it with no restart. Native pieces outside your view tree — some navigation transitions, gestures, system dialogs — may still follow `I18nManager`, so test them.
 
-> **Choose this early.** It is not a decision you can defer, because it shapes how every component is styled. Retrofitting option 3 onto an app built around `I18nManager` means touching every screen.
+> **Choose this early.** It shapes how every component is written. Retrofitting option 3 onto an app built around `I18nManager` means touching every screen.
 
 ---
 
 ## Styles: what mirrors and what does not
 
-With RTL active, React Native mirrors most of the layout automatically. The properties to know:
+The properties to know, as the layout docs define them:
 
 | Physical (avoid) | Logical (use) |
 |---|---|
@@ -50,45 +49,48 @@ With RTL active, React Native mirrors most of the layout automatically. The prop
 | `left` / `right` | `start` / `end` |
 | `borderLeftWidth` | `borderStartWidth` |
 
-**Write logical properties everywhere and the layout mirrors correctly for free.** Write physical ones and you will be maintaining a parallel set of RTL overrides that drift out of sync within weeks.
+The docs spell it out: when direction is `rtl`, `marginStart` is equivalent to `marginRight`, and `start` is equivalent to `right` (and takes precedence over `left` and `right`). **Write logical properties everywhere and the layout mirrors for free.** Write physical ones and you will maintain a parallel set of RTL overrides that drift out of sync.
 
-**`flexDirection: "row"` mirrors automatically** under RTL. This is usually what you want — and occasionally not. When you need a row that stays in a fixed order regardless of direction, use `row-reverse` deliberately or set the direction on that container explicitly.
+**`flexDirection: "row"` follows the layout direction**, so rows mirror under RTL. When a row must keep a fixed order — media controls, a numeric keypad — set `direction: "ltr"` on that container rather than reaching for `row-reverse`, which reverses in both directions.
 
-**`textAlign` behaves better than people expect.** Prefer `textAlign: "left"` with RTL active over hardcoding `"right"` — under RTL, `left` resolves to the visual right. Hardcoding `"right"` breaks the moment the same component renders in English.
+**Don't hard-code `textAlign: "right"` for Arabic.** It breaks the moment the same component renders in English. The default `textAlign` is `"auto"`; leave it, check the result on both platforms, and if a component needs explicit alignment, derive it from your direction state (`I18nManager.isRTL` or your own flag).
 
 ---
 
 ## What must never mirror
 
-Automatic mirroring is a blunt instrument. These must stay as they are:
+Automatic mirroring is a blunt instrument. These keep their orientation:
 
-- **Media playback controls** — play always points right, in every language
+- **Media playback controls** — play points right, in every language
 - **Clocks and timers**
-- **Charts with a time axis** — time runs left-to-right regardless
+- **Charts with a time axis**
 - **Phone numbers, IBANs, card numbers, version numbers**
 - **Most logos and brand marks**
 - **Code blocks and terminal output**
 
-For icons, React Native does not mirror images automatically — you flip them yourself:
+For icons, flip only the directional ones yourself:
 
 ```js
-const flipForRTL = I18nManager.isRTL ? { transform: [{ scaleX: -1 }] } : {};
+const flipForRTL = I18nManager.isRTL ? { transform: [{ scaleX: -1 }] } : null;
+
+<Image source={backArrow} style={[styles.icon, flipForRTL]} />
 ```
 
-Apply this only to directional icons — back arrows, next/previous, send. Applying it to a play button or a clock produces exactly the bug this section exists to prevent.
+Apply this only to back arrows, next/previous chevrons and send icons. Applying it to a play button or a clock produces exactly the bug this section exists to prevent. Check your icon library first: some icon sets ship separate "forward" and "back" glyphs you can swap instead of flipping.
 
 ---
 
 ## Fonts and typography
 
-The system Arabic font differs between iOS and Android, and the difference is visible enough that designers notice immediately. Bundling a font gives you consistency:
+The system Arabic font differs between iOS and Android, visibly enough that designers notice. Bundling a font gives you consistency:
 
 ```js
-// After adding the font files and linking assets
+// After adding the font files to the project
 const styles = StyleSheet.create({
   arabic: {
     fontFamily: "Cairo",
-    lineHeight: 28,     // roughly 1.7× font size
+    fontSize: 16,
+    lineHeight: 28,     // lineHeight is in points: about 1.75 × fontSize
     letterSpacing: 0,   // never anything else for Arabic
   },
 });
@@ -96,13 +98,11 @@ const styles = StyleSheet.create({
 
 **Three rules that matter more than font choice:**
 
-**`letterSpacing` must be 0.** Any other value breaks the connections between Arabic letters. This is not a stylistic preference — it renders the text visually broken, and it is the single most common Arabic typography bug.
+**`letterSpacing` must be 0.** Arabic letters join, and spacing breaks the joins — MDN's CSS reference warns it "may lead to the text looking broken", and the same applies on mobile. It is the single most common Arabic typography bug.
 
-**`lineHeight` needs roughly 1.7–1.8× the font size.** Arabic ascenders and descenders extend further than Latin. The 1.4–1.5 that looks right in English feels cramped.
+**`lineHeight` needs more room than English.** In React Native it is an absolute value, not a multiplier, so compute it from the font size: around 1.7–1.8 × the font size is a reasonable start for Arabic body text. [Arabic web fonts](/en/blog/arabic-web-fonts) explains why Arabic needs the extra space and covers subsetting, which applies to bundled app fonts too.
 
-**Test on both platforms with real text.** Android and iOS render Arabic differently enough that a layout verified on one can break on the other, particularly around line-breaking and font fallback.
-
-[Arabic web fonts](/en/blog/arabic-web-fonts) covers subsetting and file size, which apply to bundled app fonts too.
+**Test on both platforms with real text.** Android and iOS render Arabic differently enough that a layout verified on one can break on the other, particularly around line breaking and font fallback.
 
 ---
 
@@ -110,25 +110,34 @@ const styles = StyleSheet.create({
 
 This is the real cost centre, and it is rarely in the estimate.
 
-**Libraries commonly needing attention:** navigation transitions and drawers, carousels and sliders, swipe-to-action lists, date pickers, charts, and anything with a built-in back button.
+**Libraries that commonly need attention:** navigation transitions and drawers, carousels and sliders, swipe-to-action lists, date pickers, charts, and anything with a built-in back button.
 
-**How they break:** gestures move in the wrong direction, drawers open from the wrong side, carousel indexes run backwards, or the library hardcodes `marginLeft` internally where you cannot reach it.
+**How they break:** gestures move the wrong way, drawers open from the wrong side, carousel indexes run backwards, or the library hard-codes `marginLeft` internally where you cannot reach it.
 
 **How to handle it:**
 1. **Test RTL early.** Enable it in week one with placeholder text, not in month four. A carousel that scrolls backwards is a small fix on day five and an architectural argument on day ninety.
 2. **Check RTL support before adopting a library.** Search its issues for "RTL" — the presence and age of open RTL issues tells you what you need to know.
-3. **Wrap third-party components** in your own, so a fix lives in one place rather than scattered across screens.
-4. **Budget for it.** Assume some percentage of your library set will need workarounds. Teams that budget zero here are the ones that slip.
+3. **Wrap third-party components** in your own, so a fix lives in one place.
+4. **Plan time for workarounds** rather than assuming every library behaves.
 
 ---
 
 ## Bidirectional text
 
-Arabic sentences containing English product names, numbers, or URLs need care. Without it, punctuation lands in visually wrong positions — a full stop appearing at the start of a line rather than the end.
+Arabic sentences containing English product names, numbers or codes need care, or punctuation lands in visually wrong places — a `#` on the wrong side of an order code, or phone-number digit groups in reverse order.
 
-The Unicode bidirectional algorithm handles most cases, but ambiguous ones need explicit marks: `‏` (RTL mark) and `‎` (LTR mark) around the embedded segment.
+**`writingDirection` is not a cross-platform fix.** The [text style docs](https://reactnative.dev/docs/text-style-props) list it as iOS-only (`'auto' | 'ltr' | 'rtl'`).
 
-**When this shows up:** prices with currency codes, version numbers in Arabic sentences, mixed-script user-generated content, and addresses. If your product displays user content, test with deliberately mixed Arabic and English input — it is where the bugs live.
+**What works on both platforms** is putting the direction into the string itself with Unicode isolates — left-to-right isolate U+2066 and pop directional isolate U+2069, which the [W3C recommends](https://www.w3.org/International/questions/qa-bidi-unicode-controls) for plain text where markup is unavailable:
+
+```js
+const ltr = (s) => `\u2066${s}\u2069`;
+
+<Text>{`رقم الطلب: ${ltr("#A-1042")}`}</Text>
+<Text>{`للتواصل: ${ltr("+966 50 123 4567")}`}</Text>
+```
+
+Test this on the oldest Android version you support. **Where it shows up:** prices with currency codes, version numbers in Arabic sentences, addresses and user-generated content. If your product displays user content, test with deliberately mixed Arabic and English input.
 
 ---
 
@@ -136,28 +145,26 @@ The Unicode bidirectional algorithm handles most cases, but ambiguous ones need 
 
 Both can produce good Arabic apps. The difference is how much manual work stands between you and that outcome.
 
-**Flutter** has directionality built into the framework. `Directionality` is a first-class widget, `EdgeInsetsDirectional` is the natural way to write padding, and most of the widget library handles RTL correctly without intervention.
+**Flutter** builds direction into the widget tree: `Directionality` is a first-class widget, `EdgeInsetsDirectional` is the normal way to write padding, and Material icons such as `Icons.arrow_back` mirror themselves through `matchTextDirection`. Our own shipped Arabic app, [Tafawwoq](/en/portfolio/tafawwoq-educational-app), is built in Flutter with a full Arabic RTL interface.
 
-**React Native** treats RTL as a platform capability surfaced through `I18nManager`. It works, but the restart requirement is awkward, and the third-party ecosystem has less consistent RTL support.
+**React Native** surfaces RTL through `I18nManager`. It works, but restarts on direction changes are awkward, icons need manual flipping, and the third-party ecosystem is less consistent about RTL.
 
-**What this means in practice:** for an Arabic-first product with no existing team constraint, Flutter needs meaningfully less RTL work. For a team that already writes React, that advantage does not outweigh throwing away their existing skills — React Native is still the right call, you should simply budget more days for localisation.
-
-[Flutter vs React Native](/en/blog/flutter-vs-react-native) covers the wider decision, and [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) is the equivalent guide on the other side.
+**In practice:** for an Arabic-first product with no existing team constraint, Flutter needs less RTL work. For a team that already writes React, that advantage rarely outweighs their existing skills — React Native is still a sound choice; plan more time for RTL testing. [Flutter vs React Native](/en/blog/flutter-vs-react-native) covers the wider decision, and [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) is the equivalent guide.
 
 ---
 
 ## Pre-launch checklist
 
-- [ ] Direction strategy chosen: `I18nManager` with restart, fixed at launch, or manual
+- [ ] Direction strategy chosen: follow the device, in-app switch with restart, or root `direction` style
 - [ ] Every style uses `start`/`end` rather than `left`/`right`
-- [ ] Directional icons flipped; play buttons, clocks, and charts left alone
-- [ ] Bundled Arabic font with `letterSpacing: 0` and `lineHeight` ≈ 1.7×
+- [ ] No hard-coded `textAlign: "right"` for Arabic
+- [ ] Directional icons flipped; play buttons, clocks and charts left alone
+- [ ] Bundled Arabic font with `letterSpacing: 0` and a `lineHeight` around 1.7–1.8 × the font size
 - [ ] Every third-party component verified under RTL
 - [ ] Navigation transitions and drawers open from the correct side
-- [ ] Numbers, phone numbers, and IBANs display unmirrored
-- [ ] Mixed Arabic/English text tested for punctuation placement
+- [ ] Phone numbers, codes and IBANs isolated with U+2066 … U+2069
 - [ ] Tested on both iOS and Android with real Arabic content
-- [ ] Reviewed by a native Arabic speaker on a real device
+- [ ] Reviewed by a native Arabic reader on a real device
 
 ---
 
@@ -167,48 +174,44 @@ Both can produce good Arabic apps. The difference is how much manual work stands
 - [Arabic and RTL support in Flutter](/en/blog/flutter-rtl-arabic-guide) — the same problem in Flutter.
 - [Flutter vs React Native](/en/blog/flutter-vs-react-native) — choosing between them.
 - [React Native guide](/en/blog/react-native) — architecture and limitations.
-- [Arabic web fonts](/en/blog/arabic-web-fonts) — font weight and subsetting.
+- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — digits, currency and bidirectional text.
 
 ---
 
 ## Frequently asked questions
 
-### Does React Native support Arabic RTL?
+### Why doesn't `I18nManager.forceRTL` change the layout straight away?
 
-Yes, through `I18nManager`, which mirrors layout automatically when RTL is enabled. The support is real but bolted on rather than built in: changes require an app restart, and third-party libraries vary considerably in how well they handle RTL.
+Because, per the React Native docs, `allowRTL` and `forceRTL` changes take effect on the next application start, and the setting persists across restarts. Reload the app after calling it, follow the device language instead, or set the `direction` style on your root view from your own language state.
 
-### Why does `I18nManager.forceRTL` not work immediately?
+### Should I use `forceRTL` in a production app?
 
-The native layer reads layout direction at app startup, so calling `forceRTL` at runtime updates the stored flag without changing the current session. You need an app restart. Either use a restart library and tell the user, fix direction at first launch, or manage direction manually in React state.
+The React Native docs advise against it: they describe `forceRTL` as primarily for testing RTL during development and warn that forcing RTL in production requires a full restart, which is a poor user experience. In production, follow the device language and read `I18nManager.isRTL`, or manage direction yourself.
 
 ### Should I use `marginLeft` or `marginStart` in React Native?
 
-Always `marginStart` and `marginEnd`. Logical properties resolve correctly in both directions automatically, so the layout mirrors for free. Physical properties force you to maintain a parallel set of RTL overrides that will drift out of sync.
+`marginStart` and `marginEnd`. The layout docs define `marginStart` as `marginLeft` in LTR and `marginRight` in RTL, so the layout mirrors with no extra code. Physical properties force you to maintain RTL overrides.
+
+### Why do phone numbers display back to front in my Arabic screens?
+
+Inside RTL text, the spaces between digit groups take the surrounding direction. `writingDirection` would help only on iOS, so isolate the number in the string with `\u2066` before and `\u2069` after, which works on both platforms.
 
 ### Why does my Arabic text look broken in React Native?
 
-Almost always `letterSpacing`. Any non-zero value breaks the connections between Arabic letters, since the script is cursive and letters join. Set `letterSpacing: 0` for all Arabic text. The second most common cause is insufficient `lineHeight` — Arabic needs roughly 1.7 to 1.8 times the font size.
-
-### Is Flutter better than React Native for Arabic apps?
-
-Flutter needs less manual RTL work because directionality is built into the framework rather than surfaced as a platform flag, and its widget library handles RTL more consistently. That said, if your team already writes React, that advantage rarely outweighs discarding existing skills — use React Native and budget more localisation days.
+Almost always `letterSpacing`. Any non-zero value separates letters that should join. Set `letterSpacing: 0` for Arabic. The next most common cause is a `lineHeight` copied from English; Arabic needs roughly 1.7–1.8 × the font size.
 
 ### How do I flip icons for RTL in React Native?
 
-Apply `transform: [{ scaleX: -1 }]` conditionally on `I18nManager.isRTL`. Apply it only to directional icons such as back arrows and send buttons. Never apply it to play buttons, clocks, or charts with a time axis — those keep their orientation in every language.
+Apply `transform: [{ scaleX: -1 }]` when `I18nManager.isRTL` is true, and only to directional icons such as back arrows and send buttons. Never to play buttons, clocks or time-axis charts.
 
-### How much extra time does Arabic RTL add to a React Native project?
+### Is Flutter better than React Native for Arabic apps?
 
-For an app planned with RTL from the start, roughly 5 to 15 days depending on screen count and how many third-party components need workarounds. Retrofitting it into an app built LTR-only costs substantially more, because every physical style property has to be found and rewritten.
+Flutter needs less manual RTL work because direction is part of the widget tree and Material's directional icons mirror automatically. If your team already writes React, that rarely outweighs their existing skills — use React Native and plan more RTL testing time.
 
 ---
 
-## Conclusion
+## Before you start
 
-**Decide your direction strategy in week one.** The restart behaviour of `I18nManager` shapes how every component is styled, and changing approach later means revisiting every screen.
+Pick the direction strategy first, write `start`/`end` from the first component, isolate mixed-direction strings in the text itself, and vet every third-party library under RTL before it reaches a screen.
 
-**Write logical style properties from the first component.** It costs nothing at the time and removes an entire class of layout bug.
-
-**And budget for the third-party libraries.** They are where RTL actually breaks, they are rarely in the estimate, and testing RTL in week one instead of month four is the difference between small fixes and architectural arguments.
-
-**Building an Arabic React Native app?** [Get in touch](/en/contact) — we build Arabic-first and can tell you honestly whether React Native or Flutter suits your case. See our [mobile app development services](/en/services/mobile-apps).
+If you are deciding between React Native and Flutter for an Arabic-first app, [tell us about your team and timeline](/en/contact) and we will give you a straight recommendation.

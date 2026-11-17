@@ -1,33 +1,37 @@
 ---
-{"slug":"hosting-comparison","title":"Hosting Your Site: Vercel, AWS, or Local Hosting?","excerpt":"Hosting options for Gulf projects — Vercel, AWS, and regional providers, what hosting never includes, data residency rules, and how to migrate without losing rankings.","date":"2026-06-21","dateModified":"2026-08-21"}
+{"slug":"hosting-comparison","title":"Hosting Your Site: Vercel, AWS, or Local Hosting?","excerpt":"Hosting options for Gulf projects — Vercel, AWS, and regional providers, what hosting never includes, data residency rules, and how to migrate without losing rankings.","categories":["web-ecommerce"],"keywords":["web hosting","Vercel","AWS","data residency","cloud hosting"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Host most company websites and Next.js stores on a deployment platform such as Vercel, whose Hobby plan is free and whose Pro plan costs $20 per developer seat a month plus usage beyond the included allowance.","Move to AWS, Azure or Google Cloud when you need managed databases, queues and variable load, and pick an in-country region when your data must stay in the Gulf.","As of November 2026, AWS runs Middle East regions in Bahrain (me-south-1) and the UAE (me-central-1) and has only announced Saudi regions; Azure runs UAE North (Dubai), Qatar Central (Doha) and Saudi Arabia East (Dammam, in preview); Google Cloud runs Doha (me-central1) and Dammam (me-central2).","Google Cloud's Dammam region is sold to Saudi-billed customers only through its reseller CNTXT, so factor the billing route into a Saudi residency plan, not just the region name."],"sources":[{"title":"AWS — AWS Regions (General Reference)","url":"https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"},{"title":"Microsoft Learn — List of Azure regions","url":"https://learn.microsoft.com/en-us/azure/reliability/regions-list"},{"title":"Google Cloud — Regions and zones","url":"https://docs.cloud.google.com/compute/docs/regions-zones"},{"title":"Google Cloud — Dammam region access","url":"https://docs.cloud.google.com/docs/dammam-region-access"},{"title":"Vercel — Hobby plan and comparison with Pro","url":"https://vercel.com/docs/plans/hobby"}]}
 ---
 
 # Hosting Your Site: Vercel, AWS, or Local Hosting?
 
-The hosting decision looks purely technical, but in the Gulf market it **may be a regulatory decision** — some sectors impose constraints on where data is stored that settle the choice before any technical consideration.
+**Host most company websites and Next.js stores on a deployment platform such as Vercel; move to AWS, Azure or Google Cloud when you need managed databases, background jobs and variable load; and choose an in-country cloud region when your sector requires data to stay in the Gulf.** Vercel's Hobby plan is free and its Pro plan costs $20 per developer seat a month plus usage beyond the included allowance. For Saudi residency in particular, note that as of November 2026 AWS has announced but not opened a Saudi region, Azure's Dammam region is in preview, and Google Cloud's Dammam region is sold through a local reseller.
 
-**The short answer: modern deployment platforms for most websites, major cloud for complex platforms, and local hosting when data residency requirements demand it.**
+This guide compares the providers. The legal question of *when* your data must stay in-country — and the backups, logs and third-party services that quietly break residency — is covered in our separate [data residency guide for the Gulf](/en/blog/data-residency-gulf).
 
 ---
 
 ## The four options
 
-| Option | Suits | Monthly cost |
+| Option | Suits | How you pay |
 |---|---|---|
-| **Shared hosting** | Small WordPress sites | $5 – $30 |
-| **Deployment platforms** (Vercel, Netlify) | Modern sites, Next.js | $0 – $150 |
-| **Major cloud** (AWS, Azure, GCP) | Complex platforms, variable load | $50 – $2,000+ |
-| **Local/regional hosting** | Data residency requirements | $30 – $500 |
+| **Shared hosting** | Small WordPress sites | A low fixed monthly fee |
+| **Deployment platforms** (Vercel, Netlify) | Modern sites, Next.js | Free tier, then per seat plus usage (Vercel Pro: $20 per developer seat a month) |
+| **Major cloud** (AWS, Azure, Google Cloud) | Complex platforms, variable load | Pay per use, per service |
+| **In-country or regional cloud** | Data residency requirements | Pay per use or by contract, sometimes through a local reseller |
+
+If you are planning a new site or platform and want the hosting chosen as part of the build, our [web development team](/en/services/web-development) includes it in the architecture rather than leaving it to launch week.
 
 ---
 
 ## Deployment platforms — the default for most sites
 
-**[Vercel](https://vercel.com/)**, **[Netlify](https://www.netlify.com/)**, and similar services are built to deploy modern websites with minimal operational effort: connect a code repository, every update deploys automatically, and a global content delivery network is included.
+**[Vercel](https://vercel.com/)**, **[Netlify](https://www.netlify.com/)** and similar services are built to deploy modern websites with minimal operational effort: connect a code repository, every update deploys automatically, and a global content delivery network is included.
 
-**Advantages:** no server management, automatic deployment, excellent CDN performance, automatic SSL certificates.
+**What the plans include:** Vercel's [Hobby plan](https://vercel.com/docs/plans/hobby) is free with monthly allowances (for example the first 100 GB of fast data transfer and the first 1,000,000 function invocations). Pro adds team collaboration, email support and spend management at $20 per developer seat a month, with viewer seats free and usage beyond the included credit billed on demand.
 
-**Drawbacks:** cost jumps as traffic grows, less infrastructure control, and they may not satisfy data residency requirements.
+**Advantages:** no server management, automatic deployment, a global CDN, automatic SSL certificates.
+
+**Drawbacks:** cost grows with traffic and function usage, less control over infrastructure, and you do not choose the country where every request is served — which may rule it out under strict residency rules.
 
 **Suits:** brochure sites, blogs, mid-size stores, any Next.js project.
 
@@ -35,121 +39,119 @@ The hosting decision looks purely technical, but in the Gulf market it **may be 
 
 ## Major cloud — for complex platforms
 
-**AWS**, **Azure**, and **Google Cloud** give you complete control and practically unlimited scaling.
+**AWS**, **Azure** and **Google Cloud** give you complete control and practically unlimited scaling.
 
-**Advantages:** full control, integrated services (databases, storage, queues), and **data regions in the Middle East** — which resolves data residency requirements for many cases.
+**Advantages:** full control, integrated managed services (databases, storage, queues), and **regions in the Gulf** that let you choose where data is stored.
 
-**Drawbacks:** genuine administrative complexity requiring expertise, bills that are hard to predict without controls, and higher operating cost.
+**Drawbacks:** genuine operational complexity that needs expertise, bills that are hard to predict without controls, and higher running cost for small sites.
 
-**Suits:** platforms with variable load, enterprise systems, projects needing specific data regions.
+**Suits:** platforms with variable load, enterprise systems, projects that need a specific data region.
 
-> **A cost warning:** cloud bills escalate quietly — a forgotten service running for months with no usage. Set budget alerts from day one.
-
----
-
-## Data residency — the factor that may settle it
-
-This point is overlooked in global comparisons and is **the most important one in certain Gulf sectors**.
-
-**In Saudi Arabia**, the Personal Data Protection Law places restrictions on transferring personal data outside the Kingdom and requires specific safeguards when transferring. Regulated sectors (healthcare, fintech, government entities) usually face stricter requirements.
-
-**What this means practically:**
-- If you process health or sensitive financial data, **verify data residency requirements before choosing hosting**, not after.
-- Major providers offer data regions in the region — this usually resolves the issue.
-- **Local hosting** remains the clearest option when requirements are strict.
-
-> **A practical rule:** if your project is in a regulated sector, make "where is the data stored?" your first question to a provider rather than your last. Changing hosting after building is expensive; breaching residency requirements is more expensive still.
+> **A cost warning:** cloud bills escalate quietly — a forgotten service running for months with no traffic. Set budget alerts on day one.
 
 ---
 
-## Regional providers — the option most comparisons skip
+## Gulf cloud regions, verified November 2026
 
-Global comparisons jump from Vercel to AWS and stop there, which leaves out the providers that actually resolve residency questions for Gulf projects.
+Global comparisons jump from Vercel to AWS and stop there. For Gulf projects, the question is which provider actually has a live region in your country — and on what terms.
 
-**Saudi Arabia.** [Google Cloud](https://cloud.google.com/) operates a Dammam region (`me-central2`), and [STC Cloud](https://www.stc.com.sa/) and [Alibaba Cloud](https://www.alibabacloud.com/) both run infrastructure inside the Kingdom. AWS has announced a Saudi region with a large committed investment; confirm its current availability status directly with the provider before planning around it, as announced and generally-available are not the same thing.
+| Country | AWS | Azure | Google Cloud |
+|---|---|---|---|
+| **Saudi Arabia** | Announced, not yet in AWS's region list | Saudi Arabia East (Dammam) — **preview** | `me-central2` (Dammam) — Saudi-billed customers buy through the reseller CNTXT |
+| **UAE** | `me-central-1` Middle East (UAE) | UAE North (Dubai); UAE Central (Abu Dhabi) is access-restricted, mainly for disaster recovery | No region listed |
+| **Qatar** | No region listed | Qatar Central (Doha) | `me-central1` (Doha) |
+| **Bahrain** | `me-south-1` Middle East (Bahrain) | No region listed | No region listed |
 
-**UAE.** [AWS](https://aws.amazon.com/) has run a Bahrain region since 2019 and a UAE region (`me-central-1`) since 2022; [Azure](https://azure.microsoft.com/) operates UAE North (Dubai) and UAE Central (Abu Dhabi). G42 serves government and regulated workloads. Options here are the most mature in the Gulf.
+Sources: [AWS Regions](https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html), [Azure regions list](https://learn.microsoft.com/en-us/azure/reliability/regions-list), [Google Cloud regions and zones](https://docs.cloud.google.com/compute/docs/regions-zones), [Google Cloud Dammam region access](https://docs.cloud.google.com/docs/dammam-region-access).
 
-**Qatar.** Google Cloud opened a Doha region (`me-central1`) and Azure runs Qatar Central. Both are relatively recent, and they are the reason Qatari data-residency projects are far less constrained than they were three years ago.
+**What this means in practice:**
+- **Saudi Arabia** is the market where "region available" needs the most checking. AWS's Saudi regions are announced, not live; Azure's Dammam region is in preview (Microsoft asks you to contact sales for service availability); Google Cloud's Dammam region is live but, for customers with a Saudi billing address, is bought and supported through CNTXT rather than directly from Google.
+- **The UAE** has the most mature choice: AWS and Azure both run general-purpose regions there.
+- **Qatar** has two hyperscalers in Doha (Azure and Google Cloud).
+- AWS requires you to opt in to its Bahrain and UAE regions before use, and Azure's UAE Central needs an access request.
 
-**What you trade.** Regional providers generally have smaller service catalogues, thinner documentation, and slower support than the global tier-one clouds. Ecosystem tooling often assumes AWS. Budget for that friction — it is real, but it is usually smaller than the cost of getting residency wrong.
+**What you trade with a regional option.** A newer or reseller-run region often has a smaller service catalogue at launch — Google says new regions start with core services and add others within six months — and support may come through a partner. Budget for that friction; it is usually smaller than the cost of getting residency wrong.
 
-> **Worth knowing:** "has a region in the country" and "your data stays in the country" are not the same statement. Backups, logging, and support access can all cross borders by default. Ask specifically where backups and logs are stored, and get it in the contract.
+> **Worth knowing:** "has a region in the country" and "your data stays in the country" are not the same statement. Backups, logs and support access can cross borders by default. Our [data residency guide](/en/blog/data-residency-gulf) walks through each of these.
+
+---
+
+## What to ask any provider
+
+Six questions that expose the real differences before you sign:
+
+**1. Where, geographically, is the data stored — including backups and logs?** The most important question if you are in a regulated sector.
+
+**2. What uptime is guaranteed, and what is the compensation if it is missed?**
+
+**3. Who runs backups, and has a restore been tested?** A backup nobody has tried restoring is not a backup.
+
+**4. What happens during a sudden traffic spike?** Automatic scaling or a stop? And what is the cost ceiling?
+
+**5. What does data transfer (bandwidth) cost?** The line that surprises most people on a cloud bill.
+
+**6. How do I leave?** Confirm you own your data and can export it.
+
+> **A practical rule:** test the provider's support before you sign, not after. Send a technical question and measure the response time and quality — that is what you will depend on during an outage.
 
 ---
 
 ## What hosting does not include
 
-Most hosting-cost surprises come from assuming these are bundled. They usually are not, and together they often exceed the hosting line itself.
+Most hosting-cost surprises come from assuming these are bundled. They usually are not.
 
-| Item | Typical annual cost | Notes |
+| Item | How it is usually charged | Notes |
 |---|---|---|
-| Domain name | $10 – $50 | `.sa` and `.qa` domains cost more and need documentation |
-| SSL certificate | $0 | Free via Let's Encrypt; paid only for EV certificates |
-| Email hosting | $60 – $200 per user | **Separate from web hosting** — the most common omission |
-| Backups | $0 – $300 | Sometimes included, often not. Ask explicitly |
-| CDN | $0 – $500 | Included with deployment platforms, extra on raw cloud |
-| Monitoring / error tracking | $0 – $600 | Free tiers usually suffice early |
-| Bandwidth overage | Highly variable | The line item that produces shock bills |
+| Domain name | Annual registration | Country domains such as `.sa` and `.qa` have their own registration rules |
+| SSL certificate | Often free | [Let's Encrypt](https://letsencrypt.org/about/) issues trusted certificates at no cost; deployment platforms add them automatically |
+| Email hosting | Per user, per month | **Separate from web hosting** — the most common omission |
+| Backups | Sometimes included, often not | Ask explicitly, and ask where they are stored |
+| CDN | Included with deployment platforms | Usually extra on raw cloud |
+| Monitoring and error tracking | Free tiers, then per usage | Check where error reports are processed if you have residency rules |
+| Bandwidth overage | Usage-based | The line that produces shock bills |
 
-**Email deserves its own warning.** Hosting your website and hosting `info@yourcompany.com` are separate purchases. Teams routinely discover this after launch — and a company still using a Gmail address as its public contact reads as unestablished to B2B buyers, which is a commercial cost, not just a technical one.
+**Email deserves its own warning.** Hosting your website and hosting `info@yourcompany.com` are separate purchases. Teams routinely discover this after launch — and a company still using a free webmail address as its public contact reads as unestablished to business buyers, which is a commercial cost, not only a technical one.
 
 ---
 
 ## Migrating hosting without breaking search rankings
 
-Changing hosting is where sites quietly lose their search visibility. The move itself is rarely the problem; the handling around it is.
+Changing hosting is where sites quietly lose search visibility. The move itself is rarely the problem; the handling around it is. Google's own guidance for [a hosting move that keeps the same URLs](https://developers.google.com/search/docs/crawling-indexing/site-move-no-url-changes) covers the essentials.
 
 **Before the move:**
-1. Lower your DNS TTL to 300 seconds at least 24 hours ahead, so the cutover propagates in minutes rather than a day.
-2. Record current rankings and traffic — you cannot detect a regression without a baseline.
-3. Copy every redirect rule. Lost redirects are the single largest cause of post-migration ranking loss.
+1. Lower your DNS TTL well ahead — Google suggests at least a week — so the cutover propagates quickly.
+2. Record current rankings and traffic; you cannot detect a regression without a baseline.
+3. Copy every redirect rule. Lost redirects are the most common cause of post-migration ranking loss.
 4. Verify the new environment serves the same URLs, including trailing-slash behaviour.
 
 **During:**
-5. Keep the old server running during propagation. Turning it off immediately guarantees downtime for users still resolving to the old address.
-6. Confirm SSL is valid on the new host *before* switching DNS. A certificate warning at cutover is a hard bounce for every visitor.
+5. Keep the old server running until its traffic reaches zero. Turning it off early guarantees downtime for users still resolving to the old address.
+6. Confirm SSL is valid on the new host *before* switching DNS.
 
 **After:**
-7. Check `robots.txt` immediately — a staging environment's `Disallow: /` copied to production will deindex the entire site within days. This is the most damaging and most common migration mistake.
-8. Verify canonical tags still point at the production domain.
-9. Resubmit the sitemap in Search Console and watch crawl errors for two weeks.
+7. Check `robots.txt` immediately. A staging rule that disallows all crawling, copied to production, stops search engines crawling the whole site.
+8. Verify canonical tags still point at the production domain, and that your Search Console verification file or tag survived the move.
+9. Watch server logs on both old and new hosts and index coverage in Search Console for at least two weeks.
 10. Compare Core Web Vitals against your baseline.
 
-> **The one that ends projects:** a staging `robots.txt` reaching production. It is a two-line file, it is trivial to overlook, and recovering the lost index position takes months. Check it first, not last.
+> **The one that ends projects:** a staging `robots.txt` reaching production. It is a two-line file, it is easy to overlook, and lost index coverage takes time to recover. Check it first, not last.
 
 ---
 
 ## Performance and geography
 
-The distance between server and visitor genuinely affects speed. A server in Europe serving a visitor in Riyadh is slower than a regional one.
+The distance between server and visitor affects speed: a server in Europe serving a visitor in Riyadh is slower than one in the region.
 
-**But the gap narrows considerably** with content delivery networks that cache copies close to the visitor. For a content site, a good CDN handles most of the problem.
+**The gap narrows considerably** with a content delivery network that caches copies close to the visitor. For a content site, a good CDN handles most of the problem.
 
-**When does geography still matter?** For interactive platforms that hit the database on every request — here a CDN doesn't help, and proximity to users makes a noticeable difference.
-
----
-
-## Realistic costs
-
-| Project type | Recommended option | Monthly cost |
-|---|---|---|
-| Brochure site | Deployment platform (often the free tier) | $0 – $20 |
-| Company site with blog | Paid deployment platform | $20 – $100 |
-| Mid-size online store | Deployment platform or cloud | $50 – $300 |
-| SaaS platform | Major cloud | $200 – $2,000+ |
-| System in a regulated sector | Regional or local cloud | $100 – $1,000 |
-
-*Indicative estimates based on Apex project experience in this market as of 2026. Actual cost depends on scope, integrations, and the level of customisation your project requires.*
-
-See our [website design cost guide](/en/blog/website-design-cost) to place hosting within the overall budget.
+**When does geography still matter?** For interactive platforms that hit the database on every request. A CDN does not help there, and a region close to your users makes a noticeable difference.
 
 ---
 
 ## The decision framework
 
 **1. Is your project in a regulated sector (health, finance, government)?**
-Yes → start with data residency requirements, then choose within what they permit.
+Yes → start with the residency rules in our [data residency guide](/en/blog/data-residency-gulf), then choose from the regions in the table above that satisfy them.
 
 **2. Do you need complex infrastructure (multiple databases, background processing, variable load)?**
 Yes → major cloud.
@@ -161,7 +163,8 @@ Yes → a modern deployment platform. This is the correct default for most proje
 
 ## Related reading
 
-- [PDPL compliance](/en/blog/pdpl-compliance-guide) — restrictions on transferring data outside the Kingdom.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf) — what each country requires and where residency breaks.
+- [PDPL compliance](/en/blog/pdpl-compliance-guide) — restrictions on transferring personal data outside the Kingdom.
 - [API security](/en/blog/api-security-guide) — securing what you host.
 - [In-house maintenance or a contract?](/en/blog/maintenance-inhouse-vs-contract) — who monitors the infrastructure?
 
@@ -169,50 +172,42 @@ Yes → a modern deployment platform. This is the correct default for most proje
 
 ## Frequently asked questions
 
-### Do I need hosting inside Saudi Arabia?
+### Do I need hosting inside Saudi Arabia for a company website?
 
-It depends on your sector and data type. For ordinary brochure and commercial sites, global hosting with a CDN is usually sufficient. For regulated sectors or sensitive data, verify data residency requirements with your advisor before choosing a provider.
+For an ordinary brochure or commerce site, usually not: global hosting with a CDN serves Saudi visitors well. If you handle health, financial or government data, check the residency rules first — our [data residency guide](/en/blog/data-residency-gulf) explains what each Gulf country requires.
 
-### What does hosting cost annually?
+### What will Vercel cost for a typical company site?
 
-Brochure site: $0–$240 per year. Company site: $240–$1,200. Mid-size store: $600–$3,600. Complex platform: $2,400+. The biggest variable is traffic volume and infrastructure complexity rather than the provider itself.
+Vercel's Hobby plan is free with monthly allowances, and Pro costs $20 per developer seat a month, with viewer seats free and usage beyond the included credit billed on demand. A company site with two developers on Pro starts at $40 a month before any overage.
 
-### Is cheap shared hosting enough?
+### Is cheap shared hosting enough for a small business site?
 
-For a small WordPress site with limited traffic: yes. But it degrades quickly with growth, and its security depends on the provider and on neighbouring sites on the same server. For any serious commercial project, the difference between it and a better option is a few tens of dollars monthly — a justified investment.
+For a small WordPress site with limited traffic, yes. But it degrades quickly with growth, and its security depends on the provider and on the other sites sharing the server. For any serious commercial project, the step up to a deployment platform or a small cloud instance is a justified cost.
 
-### How do I avoid surprise cloud bills?
+### How do I avoid a surprise cloud bill?
 
-Set budget alerts from day one, review active services monthly and delete unused ones, and avoid auto-scaling without a ceiling. Most shocking bills come from a forgotten service running unused rather than genuine growth.
+Set budget alerts on day one, review active services monthly and delete unused ones, and never enable auto-scaling without a ceiling. Most shock bills come from a forgotten service running idle rather than genuine growth.
 
-### Can I change hosting later?
+### Can I start on Vercel and move to AWS later?
 
-Yes, but difficulty varies. A static site moves within hours. A platform with a database and integrations needs planning and potential downtime. **If data residency requirements are plausible in your future, plan for them from the start** — changing later is far more expensive.
+Yes, though the effort varies. A static site moves within hours; a platform with a database and integrations needs planning and possibly a maintenance window. **If residency requirements are plausible in your future, choose a provider with a suitable region from the start** — moving later costs far more.
 
-### Which cloud providers have data centres in Saudi Arabia?
+### Which cloud providers have a live region in Saudi Arabia?
 
-Google Cloud operates a Dammam region, and STC Cloud and Alibaba Cloud run infrastructure inside the Kingdom. AWS has announced a Saudi region — verify its current status with the provider directly. Note that a provider having a region in-country does not automatically mean your backups and logs stay in-country; ask where those are stored specifically.
+As of November 2026, Google Cloud runs `me-central2` in Dammam (sold to Saudi-billed customers through CNTXT), Azure lists Saudi Arabia East in Dammam as a preview region, and AWS has announced Saudi regions that do not yet appear in its region list. Confirm current status with the provider before you design around it.
 
-### Does hosting include email?
+### Does web hosting include business email?
 
-No. Web hosting and email hosting are separate purchases, and this is the most common budgeting omission. Business email runs roughly $60 to $200 per user annually. Worth doing properly: a free Gmail address as a company's public contact is read by B2B buyers as a sign the business is not established.
+No. Web hosting and email hosting are separate purchases, and this is the most common budgeting omission. Business email is priced per user per month by providers such as Google Workspace and Microsoft 365. A free webmail address as a company's public contact signals to business buyers that the company is not established.
 
 ### How do I move hosting without losing my search rankings?
 
-Lower DNS TTL 24 hours ahead, copy every redirect rule, keep the old server running through propagation, and verify SSL on the new host before switching DNS. Immediately after the move, check `robots.txt` — a staging file containing `Disallow: /` reaching production will remove the entire site from search results within days, and recovery takes months. Then resubmit the sitemap and monitor crawl errors for two weeks.
-
-### Who is responsible for backups?
-
-Ask explicitly. Some platforms provide them automatically and others don't. Regular, tested backups — ones you have actually tried restoring — are the difference between an incident and a catastrophe.
+Lower DNS TTL at least a week ahead, copy every redirect rule, keep the old server running until its traffic reaches zero, and verify SSL on the new host before switching DNS. Immediately after the move, check that `robots.txt` does not block crawling, confirm Search Console verification still works, and watch index coverage for two weeks.
 
 ---
 
-## Conclusion
+## Choosing for your project
 
-**Modern deployment platforms** are the correct default for most websites — excellent performance with no server management.
+For most sites the answer is a deployment platform; for complex platforms, a major cloud with budget alerts; and for regulated data in Saudi Arabia, a region you have confirmed is live and contractually in-country — which today narrows the field more than most comparisons admit.
 
-**Major cloud** for complex platforms and variable load, provided you set budget alerts.
-
-**And data residency may settle the decision before any technical consideration** — if you're in a regulated sector, start there.
-
-**Want a recommendation for your project?** [Get in touch](/en/contact) for a free assessment covering hosting and operating cost. See our [web development services](/en/services/web-development).
+If you would like a second pair of eyes on that choice before you commit, [describe your project and its data](/en/contact) and we will recommend a provider and region, along with the running costs to expect.

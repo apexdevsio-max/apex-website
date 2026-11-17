@@ -1,70 +1,76 @@
 ---
-{"slug":"mobile-app-testing","title":"Mobile App Testing: What Is Actually Worth Testing","excerpt":"A practical guide to app testing — test types, what deserves automation and what doesn't, and a manual checklist for every release.","date":"2026-06-16","dateModified":"2026-06-16"}
+{"slug":"mobile-app-testing","title":"Mobile App Testing: What Is Actually Worth Testing","excerpt":"A practical guide to app testing — test types, what deserves automation and what doesn't, and a manual checklist for every release.","categories":["mobile"],"keywords":["mobile app testing","unit testing","QA","crash reporting","manual testing"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["The tests most worth writing in a mobile app are unit tests for business logic (prices, discounts, grades, dates), a small number of integration tests for the critical paths such as sign-up and payment, and a regression test for every bug that reached production.","Flutter's documentation recommends many unit and widget tests plus enough integration tests to cover all important use cases, because integration tests give the most confidence but are the slowest and costliest to maintain.","Before launch, Apple TestFlight allows up to 100 internal and 10,000 external testers, and Google Play's internal track allows up to 100; new personal Play developer accounts must run a closed test with at least 12 testers opted in for 14 days before production.","After launch, keep Android's user-perceived crash rate under Google Play's bad-behaviour threshold of 1.09% overall (8% on any single phone model), or Play may reduce the app's visibility."],"sources":[{"title":"Flutter docs — Testing Flutter apps (unit, widget and integration test trade-offs)","url":"https://docs.flutter.dev/testing/overview"},{"title":"Android Developers — Android vitals core vitals and bad behaviour thresholds","url":"https://developer.android.com/topic/performance/vitals"},{"title":"Apple Developer — TestFlight (internal and external tester limits)","url":"https://developer.apple.com/testflight/"},{"title":"Play Console Help — Set up an open, closed, or internal test","url":"https://support.google.com/googleplay/android-developer/answer/9845334"},{"title":"Play Console Help — App testing requirements for new personal developer accounts","url":"https://support.google.com/googleplay/android-developer/answer/14151465"}]}
 ---
 
 # Mobile App Testing: What Is Actually Worth Testing
 
-Testing is discussed in extremes: one team writes not a single test, another chases 100% coverage and spends more time on tests than on the product.
+**Test business logic first, with fast unit tests; cover the critical paths (sign-up, payment, booking) with a few integration tests; and add a regression test for every bug that reaches production. Don't automate purely visual UI.** That is close to what [Flutter's testing documentation](https://docs.flutter.dev/testing/overview) recommends: "many unit and widget tests, tracked by code coverage, plus enough integration tests to cover all the important use cases."
 
-**The practical truth sits between them: some tests repay their cost many times over, and others are maintenance burden with no return.** This guide distinguishes them.
-
----
-
-## The testing pyramid — and reality
-
-The known rule: many unit tests, fewer integration tests, fewer still end-to-end UI tests.
-
-| Type | What it tests | Speed | Maintenance cost |
-|---|---|---|---|
-| **Unit** | A single function or class | Instant | Low |
-| **Integration** | Several components cooperating | Moderate | Moderate |
-| **UI (E2E)** | A full path as the user sees it | Slow | **High** |
-
-**Why this order?** Because end-to-end UI tests are **brittle** — they break with any minor design change, and maintaining them consumes real time. Unit tests run in milliseconds and only break when logic genuinely changes.
+Testing tends to be discussed in extremes: one team writes no tests at all, another chases 100% coverage and spends more time on tests than on the product. Some tests repay their cost many times over and others are maintenance burden with no return. This guide separates the two, then covers manual checks, beta distribution and post-launch monitoring with the actual limits Apple and Google publish.
 
 ---
 
-## What is worth testing — by priority
+## The testing pyramid, with Flutter's numbers
 
-### 1. Business logic — the highest return
+The familiar rule is many unit tests, fewer integration tests, and fewer still end-to-end UI tests. Flutter's documentation splits the middle into widget tests and states the trade-offs directly:
+
+| Type | What it tests | Confidence | Maintenance cost | Speed |
+|---|---|---|---|---|
+| **Unit** | A single function, method or class | Low | Low | Quick |
+| **Widget** (component) | One widget: layout, interaction, children | Higher | Higher | Quick |
+| **Integration** (E2E) | The whole app or a large part, on a device or emulator | Highest | **Highest** | Slow |
+
+**Why this order?** End-to-end tests give the most confidence, but they are **brittle**: they break with minor design changes and take real time to maintain. Unit tests run in milliseconds and only break when the logic genuinely changes.
+
+One limit worth knowing: Flutter's `integration_test` package cannot interact with native platform UI such as permission dialogs or notifications. Those flows need a third-party tool or a manual check, which is one more reason the manual checklist below still matters.
+
+React Native follows the same pyramid with different tools; the principles in this article apply to both. If you are still choosing a framework, see [Flutter vs React Native](/en/blog/flutter-vs-react-native).
+
+---
+
+## What is worth testing, by priority
+
+### 1. Business logic: the highest return
 
 Calculations, validation, business rules, data transformation.
 
 **Why?** Because this is the logic whose **errors cost real money**: a wrong price calculation, a discount applied twice, an incorrect due date.
 
-And it is **the easiest to test** — pure functions with clear inputs and outputs, no UI and no network.
+It is also **the easiest to test**: pure functions with clear inputs and outputs, no UI and no network.
 
-> If your architecture separates logic from UI, this becomes very easy. See our [Clean Architecture guide](/en/blog/clean-architecture-flutter).
+> **A real example.** In [Tafawwoq](/en/portfolio/tafawwoq-educational-app), the Arabic education app we built in Flutter with Clean Architecture and BLoC, the quizzes run on a timer with automatic grading. Separating the domain layer from the UI is what made the quiz and scoring logic testable in isolation from the interface. In a product that calculates students' grades, that is the logic you most want covered. The structure behind it is explained in our [Clean Architecture guide](/en/blog/clean-architecture-flutter).
 
 ### 2. Critical paths
 
-The path whose breakage stops your business: registration, purchase, payment, booking.
+The paths whose breakage stops your business: registration, purchase, payment, booking.
 
-**Test the whole path** end to end — even manually at first.
+**Test the whole path** end to end, even manually at first, then automate the one or two that would cost the most if they broke.
 
 ### 3. What broke before
 
-**Every bug that appears in production deserves a test preventing its return.** These are the highest-return tests because they're built on a real failure rather than an assumption.
+**Every bug that reaches production deserves a test that stops it coming back.** These are the highest-return tests because they're built on a real failure, not a guess.
 
 ### 4. Edge cases
 
 The empty list, a dropped connection, extremely long text, a negative number, a future date.
 
-**These are the most forgotten in development and the most surfaced by users.**
+**Developers tend to forget these, and users tend to find them.**
+
+Building testing into the plan from the start is part of our [mobile app development service](/en/services/mobile-apps); it is far cheaper than retrofitting it after launch.
 
 ---
 
 ## What isn't worth automating
 
-- **Purely visual UI** — colours and spacing. Visual review is faster and more accurate.
-- **Generated code** — don't test what you didn't write.
-- **Thin wrappers** — a function passing through a parameter with no logic.
-- **What changes weekly** — testing a screen under redesign is burden with no return.
-- **Third-party libraries** — test your integration with them, not the libraries themselves.
+- **Purely visual UI** such as colours and spacing. A person reviewing the screen is faster and more accurate.
+- **Generated code.** Don't test what you didn't write.
+- **Thin wrappers**, such as a function that only passes a parameter through.
+- **Screens that change weekly.** Testing a screen under redesign is burden with no return.
+- **Third-party libraries.** Test your integration with them, not the libraries themselves.
 
 ---
 
-## Manual testing — indispensable
+## Manual testing: still indispensable
 
 Automation doesn't notice that a button is out of thumb reach, that Arabic text is truncated, or that an animation looks janky.
 
@@ -74,57 +80,78 @@ Automation doesn't notice that a button is out of thumb reach, that Arabic text 
 - [ ] Critical paths work end to end.
 - [ ] Sign-in, sign-out, and password reset.
 - [ ] Payment (with a test account).
+- [ ] Permission dialogs (camera, location, notifications), which automated Flutter integration tests can't drive.
 
 **Devices:**
-- [ ] A **mid-range** Android device — not the newest.
+- [ ] A **mid-range** Android device, not the newest.
 - [ ] An iOS device.
 - [ ] One small screen and one large.
 
 **Network:**
-- [ ] A slow connection — performance and waiting states.
-- [ ] A drop mid-operation — does it recover gracefully?
-- [ ] Reconnection — does it resume?
+- [ ] A slow connection: performance and waiting states.
+- [ ] A drop mid-operation: does it recover gracefully?
+- [ ] Reconnection: does it resume?
 
 **Language and direction:**
-- [ ] The app fully in Arabic — see our [RTL guide](/en/blog/flutter-rtl-arabic-guide).
+- [ ] The app fully in Arabic. See our [RTL guide](/en/blog/flutter-rtl-arabic-guide).
 - [ ] Switching languages doesn't break the layout.
 - [ ] Long text isn't truncated or overflowing.
 
 **Edge cases:**
-- [ ] Empty lists — do they show a useful message?
-- [ ] Very large datasets — do they degrade gracefully?
-- [ ] Denied permissions — does the app explain and continue?
+- [ ] Empty lists show a useful message.
+- [ ] Very large datasets degrade gracefully.
+- [ ] Denied permissions: the app explains and continues.
 
 ---
 
 ## Testing on real devices
 
-**An emulator isn't enough.** It doesn't reveal: actual performance on a slow processor, battery consumption, real camera and GPS behaviour, or how the app interacts with other apps.
+**An emulator isn't enough.** It doesn't show actual performance on a slow processor, battery drain, real camera and GPS behaviour, or how the app interacts with other apps. Flutter's own [performance documentation](https://docs.flutter.dev/perf/ui-performance) says emulators and simulators are "generally not indicative" of release behaviour.
 
-**The practical minimum:** a mid-range Android device + an iOS device. **The mid-range Android matters more than the newest** — it's what a large share of your audience uses, and performance problems surface there first.
-
----
-
-## Testing before launch
-
-**Beta releases.** Distribute to a limited group before general launch — via [TestFlight](https://developer.apple.com/testflight/) or [Google Play's testing tracks](https://support.google.com/googleplay/android-developer/answer/9845334). **Real users find what your team doesn't** because they use the app the way they want rather than the way you designed it.
-
-**Upgrade testing.** If you have existing users, test upgrading from the previous version rather than only a clean install. **Data migration is a recurring source of bugs** that surfaces only for existing users.
-
-**Load testing** if your app expects a peak — a season, a campaign, or a launch. See our [hosting guide](/en/blog/hosting-comparison).
+**The practical minimum:** one mid-range Android device and one iOS device. **The mid-range Android matters more than the newest one**, because performance problems surface there first.
 
 ---
 
-## After launch — monitoring is continuous testing
+## Testing before launch: beta tracks and their limits
 
-**Crash reporting.** Mandatory. Without it you learn the app crashes only when a user complains — and most delete rather than complain.
+**Beta releases.** Distribute to a limited group before general launch. The two stores publish different limits:
 
-**Monitor:**
-- **Crash rate** and the screens causing it.
+| Channel | Who can test | Limit | Review |
+|---|---|---|---|
+| [Apple TestFlight](https://developer.apple.com/testflight/), internal | Team members with an App Store Connect role | Up to 100 | No |
+| Apple TestFlight, external | Anyone you invite | Up to 10,000 | First build must be approved by App Review |
+| [Google Play](https://support.google.com/googleplay/android-developer/answer/9845334), internal track | Testers you list | Up to 100 per app | Quick distribution for QA |
+| Google Play, closed and open tracks | A wider group, or anyone on Play (open) | Larger | Stages before production |
+
+**One requirement that catches new publishers:** Google Play personal developer accounts created after 13 November 2023 must run a closed test with [at least 12 testers opted in continuously for 14 days](https://support.google.com/googleplay/android-developer/answer/14151465) before they can apply for production access. Plan those two weeks into the launch date. Our [app store requirements guide](/en/blog/app-store-requirements) covers the rest of the submission checklist.
+
+**Real users find what your team doesn't**, because they use the app the way they want, not the way you designed it.
+
+**Upgrade testing.** If you have existing users, test upgrading from the previous version, not only a clean install. **Data migration is a recurring source of bugs** that only existing users see.
+
+**Load testing**, if your app expects a peak such as a season, a campaign, or a launch. See our [hosting guide](/en/blog/hosting-comparison).
+
+---
+
+## After launch: monitoring is continuous testing
+
+**Crash reporting is mandatory.** Without it, you only hear about crashes from the users who bother to complain.
+
+On Android, Google Play also watches for you. Its [Android vitals](https://developer.android.com/topic/performance/vitals) treat these as bad behaviour, measured over the last 28 days:
+
+| Core vital | Overall threshold | Per phone model |
+|---|---|---|
+| User-perceived crash rate | 1.09% | 8% |
+| User-perceived ANR (app not responding) rate | 0.47% | 8% |
+
+Above these thresholds, Google says Play may reduce your app's visibility and may show users a warning on the store listing. So crash monitoring affects acquisition as well as quality.
+
+**Also watch:**
+- **Which screens cause crashes**, not just the overall rate.
 - **Unexpected errors** on the server.
-- **Screens users abandon** — they may be slow or confusing.
+- **Screens users abandon**, which may be slow or confusing.
 
-**This is data no pre-launch test provides**, because it comes from real usage on real devices, networks, and behaviour.
+**No pre-launch test gives you this data**, because it comes from real usage on real devices and networks.
 
 ---
 
@@ -132,61 +159,59 @@ Automation doesn't notice that a button is out of thumb reach, that Arabic text 
 
 There is no magic coverage percentage. **Better practical criteria:**
 
-- **Critical business logic is covered** — calculations and business rules.
-- **Every past production bug has a test** preventing its return.
-- **Critical paths are tested** — even manually with a fixed checklist.
-- **Tests run fast** — if they take ten minutes, the team will skip them.
+- **Critical business logic is covered**: calculations and business rules.
+- **Every past production bug has a test** that stops it returning.
+- **Critical paths are tested**, even manually with a fixed checklist.
+- **Tests run fast.** If they take ten minutes, the team will skip them.
 
-**A sign you're overdoing it:** if a minor change breaks twenty tests, your tests are coupled to implementation rather than behaviour — that's burden rather than protection.
+**A sign you're overdoing it:** if a minor change breaks twenty tests, your tests are coupled to implementation, not behaviour. That's burden, not protection.
 
 ---
 
 ## Related reading
 
-- [Clean Architecture](/en/blog/clean-architecture-flutter) — what makes testing possible.
-- [App performance optimisation](/en/blog/app-performance-optimization) — measuring on real devices.
-- [API security](/en/blog/api-security-guide) — edge-case testing surfaces vulnerabilities.
+- [Clean Architecture in Flutter](/en/blog/clean-architecture-flutter): the structure that makes business logic testable.
+- [App performance optimisation](/en/blog/app-performance-optimization): measuring on real devices.
+- [API security](/en/blog/api-security-guide): edge-case testing surfaces vulnerabilities.
+- [The complete Flutter guide](/en/blog/flutter): the framework itself.
 
 ---
 
 ## Frequently asked questions
 
-### How much does testing add to project cost?
+### Does writing tests make an app more expensive to build?
 
-Writing tests for critical business logic typically adds 10–20% to development time. Comprehensive coverage with full UI automation can double it. **The return appears in maintenance** — a project with no tests becomes frightening to modify after a year.
+Up front, yes: tests are code and take time to write. Unit tests for business logic are the cheapest kind; broad UI automation is the most expensive to write and maintain, which is why it should be limited to the critical paths. The saving shows up later, when you can change a year-old codebase without fear of breaking payments or grades.
 
-### Should I test an MVP?
+### Should an MVP have automated tests?
 
-Test critical business logic and the core path only. Comprehensive automation is overkill at a stage where everything may change. See our [MVP guide](/en/blog/mvp-vs-full-product).
+Test the critical business logic and the core path only. Broad automation is overkill at a stage where everything may change. See our [MVP guide](/en/blog/mvp-vs-full-product).
 
-### What is the difference between manual and automated testing?
+### What do manual testers catch that automated tests miss?
 
-Automated verifies that what worked still works — cheap when repeated. Manual discovers what you didn't anticipate — a poor experience, truncated text, a confusing flow. **You need both**; automated for regression protection, manual for quality.
+Automated tests confirm that what worked still works, and they are cheap to repeat. Manual testing finds what nobody anticipated: a poor experience, truncated Arabic text, a confusing flow, a permission dialog that blocks the user. **You need both**: automation for regression protection, manual review for quality.
 
-### Do I need a dedicated tester?
+### Do I need a dedicated QA tester?
 
-For large projects and regulated sectors: worth it. For smaller projects, a disciplined developer with a fixed checklist covers most of the need. **What matters most is having a written checklist** rather than relying on memory before each release.
+For large projects and regulated sectors, it's worth it. For smaller projects, a disciplined developer with a fixed written checklist covers most of the need. **The written checklist matters more than who runs it.**
 
-### How do I test on devices I don't own?
+### How do I get my app onto testers' phones before launch?
 
-Cloud device testing services let you run the app on a variety of real devices. Useful for covering a wide range, but they **don't replace a real device in your hand** for testing actual experience and performance.
+Use TestFlight on iOS (up to 100 internal and 10,000 external testers, with App Review for the first external build) and Google Play's testing tracks on Android (up to 100 testers on the internal track). If you publish from a new personal Play account, budget 14 days for the mandatory closed test with at least 12 testers.
 
-### When should I run the tests?
+### What crash rate is acceptable on Android?
 
-Automatically on every code push if possible. If you have no continuous integration, then before every release at minimum. **A test that isn't run regularly is a dead test** giving false reassurance.
+Google Play's bad-behaviour threshold for user-perceived crash rate is 1.09% averaged across devices and 8% on any single phone model, measured over 28 days. Treat those as ceilings, not targets: crossing them can reduce your app's visibility on Play.
 
 ---
 
-## Conclusion
+## Where to start
 
-**Test business logic first** — the highest return and the easiest to implement.
+- **Unit-test the business logic** first: the highest return and the easiest to write.
+- **Write a regression test for every production bug.**
+- **Leave visual UI to manual review.**
+- **Test on a real mid-range device**, because an emulator isn't enough.
+- **Plan the beta**, including Play's 14-day closed test for new accounts.
+- **Monitor crashes after launch**, against Play's published thresholds.
 
-**Every production bug deserves a test preventing its return** — the most valuable tests, because they're built on real failure.
-
-**Don't automate visual UI** — manual review is faster and more accurate there.
-
-**Test on real mid-range devices** — an emulator isn't enough.
-
-**And monitor after launch** — crash reporting gives you what no pre-launch test can.
-
-**Want a quality review of your project?** [Get in touch](/en/contact) — we start with what's actually worth testing. See our [mobile app development services](/en/services/mobile-apps).
+If you have an app in production and aren't sure what your tests actually protect, [ask us for a review](/en/contact). We'll start by mapping which business rules and paths are covered and which aren't.

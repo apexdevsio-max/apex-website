@@ -16,10 +16,14 @@
 # would smear green into the subject and widen the matte. Hence CRF 26 with a
 # slow preset rather than a smaller file at a worse edge.
 #
-# Requires ffmpeg on PATH. Run from the repo root.
+# Requires ffmpeg on PATH. Run from the repo root with the 1080p master as the
+# argument: the files in public/videos are already the encoded output, and
+# re-encoding them would only lose quality.
+#
+#   scripts/optimise-hero-video.sh path/to/robot_welcome_master.mp4
 set -euo pipefail
 
-SRC="public/videos/robot_welcome.mp4"
+SRC="${1:?usage: $0 <path to the 1080p master video>}"
 OUT_MP4="public/videos/robot_welcome.opt.mp4"
 OUT_WEBM="public/videos/robot_welcome.webm"
 

@@ -9,7 +9,7 @@ export const BUDGETS = ["unsure", "low", "medium", "high", "premium", "enterpris
  * Validation messages are codes, not prose. The form maps each code to its own
  * dictionary string, so an Arabic visitor never sees an English server message.
  */
-export const FIELD_ERROR_CODES = [
+const FIELD_ERROR_CODES = [
   "required",
   "too_short",
   "too_long",
@@ -28,8 +28,8 @@ export type ContactErrorCode =
   | "unavailable"
   | "send_failed";
 
-export const NAME_MIN = 2;
-export const DESCRIPTION_MIN = 10;
+const NAME_MIN = 2;
+const DESCRIPTION_MIN = 10;
 
 // `name` is interpolated into the email Subject header, so CR/LF must never survive
 // validation; otherwise a submission could inject additional mail headers.

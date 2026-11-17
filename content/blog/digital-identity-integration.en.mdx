@@ -1,16 +1,14 @@
 ---
-{"slug":"digital-identity-integration","title":"Integrating Gulf Digital Identity: Nafath, UAE Pass, and QDI","seoTitle":"Nafath and UAE Pass Integration Guide","excerpt":"What integrating national digital identity actually involves — eligibility, the approval process, technical patterns, and when it is worth the effort for your product.","date":"2026-08-18","dateModified":"2026-08-18"}
+{"slug":"digital-identity-integration","title":"Integrating Gulf Digital Identity: Nafath, UAE Pass, and QDI","seoTitle":"Nafath and UAE Pass Integration Guide","excerpt":"What integrating national digital identity actually involves — eligibility, the approval process, technical patterns, and when it is worth the effort for your product.","categories":["compliance"],"keywords":["Nafath integration","UAE Pass","Absher","digital identity Gulf","national single sign-on","remote KYC"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Integrating Nafath in Saudi Arabia or UAE PASS in the UAE gives your app a government-verified identity, not just a logged-in session.","UAE PASS returns the Emirates ID number and full Arabic and English name only for verified SOP2 and SOP3 accounts; basic SOP1 accounts return just name, email, mobile and a UUID.","The engineering for one provider is roughly 10 to 21 working days once you have access, but onboarding runs through the operator's own phases (UAE PASS lists initiation, development, assessment and go-live), so start it before development.","Under Saudi PDPL a national ID number is ordinary personal data rather than sensitive data, but it still needs minimised, encrypted storage and a documented purpose."],"sources":[{"title":"UAE PASS documentation: User account types (SOP1, SOP2, SOP3)","url":"https://docs.uaepass.ae/quick-start-guide-uae-pass-staging-environment/user-account-types"},{"title":"UAE PASS documentation: Attributes list","url":"https://docs.uaepass.ae/resources/attributes-list"},{"title":"UAE PASS documentation: Onboarding process for service providers","url":"https://docs.uaepass.ae/getting-onboarded-with-uae-pass/onboarding-process-for-uae-pass-service-providers"},{"title":"SDAIA: Personal Data Protection Law (text)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"}]}
 ---
 
 # Integrating Gulf Digital Identity: Nafath, UAE Pass, and QDI
 
-National digital identity has moved from a government convenience to an expectation. Users in Saudi Arabia authenticate to banks, telecoms, and government portals through one app, and a product that asks them to invent another password now feels dated.
+**Integrating Nafath (Saudi Arabia) or UAE PASS (UAE) gives your product a government-verified identity — a real name and national ID number — rather than just proof that someone controls an account.** On UAE PASS, the Emirates ID number and full Arabic name come back only for verified accounts. The engineering is a few weeks; the onboarding with the operator is the part to start first. For regulated or KYC-heavy products it is often worth it; for an ordinary consumer app it usually is not.
 
-**The short answer: national identity integration gives you verified identity — a real, government-backed name and national ID — rather than just an authenticated session. That is transformative for regulated products and often unnecessary for ordinary consumer apps.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide covers what integration involves and how to decide whether you need it.
-
-> **Approval processes, technical specifications, and eligibility criteria change.** Treat this as an orientation to the shape of the work; get current requirements from the operating authority before planning around specifics.
+This guide covers what integration involves and how to decide whether you need it. If you are scoping a [mobile app](/en/services/mobile-apps) that may need verified sign-in, read the "Do you actually need it?" section before anything else.
 
 ---
 
@@ -18,153 +16,156 @@ This guide covers what integration involves and how to decide whether you need i
 
 | | **Saudi Arabia** | **UAE** | **Qatar** |
 |---|---|---|---|
-| Identity app | Nafath | UAE Pass | Qatar Digital ID |
-| Role | National single sign-on | National digital identity | National digital identity |
-| Related platform | Absher (government services) | — | — |
-| Typical use | Government portals, banks, telecoms | Government services, signing | Government services |
+| Identity app | Nafath | UAE PASS | QDI (Qatar Digital ID) |
+| Role | National single sign-on | National digital identity | Digital identity wallet |
+| Public developer documentation | Not publicly available; request from the operator | [docs.uaepass.ae](https://docs.uaepass.ae/resources/attributes-list) | Not publicly available; ask the Ministry of Interior |
 
-**Nafath** is Saudi Arabia's national authentication app, used to log in to government portals and widely adopted by banks, telecoms, and major private services. **Absher** is the Ministry of Interior services platform; Nafath acts as the authentication front door to it and to many other services.
+**Nafath** is Saudi Arabia's national sign-in app, used for government portals and many private services. We could not find a public developer portal for it, so the integration route, eligibility and fees are questions to put to the operator directly — not to a reseller.
 
-**UAE Pass** serves a similar role in the Emirates, with document signing as a notable additional capability.
+**UAE PASS** is the UAE's national digital identity. Its [documentation](https://docs.uaepass.ae/resources/attributes-list) lists three capabilities: authentication and digital signature/eSeal (open to government entities and private organisations), and data and document sharing (private organisations).
 
-**Qatar Digital ID** provides equivalent national authentication for Qatari services.
+**QDI** is the Qatari Ministry of Interior's digital identity app. Whether a private app can use it for sign-in, and on what terms, is a question for the ministry.
 
-**The pattern across all three** is the same: the user authenticates in the national app, approves the request, and your service receives verified identity attributes rather than credentials you have to store and protect.
+**The pattern is the same everywhere:** the user approves the request in the national app, and your service receives verified identity attributes rather than credentials you have to store and protect.
 
 ---
 
 ## Verified identity versus authentication
 
-This distinction determines whether integration is worth it.
+This distinction decides whether integration is worth it.
 
 **Ordinary authentication** — email and password, or social login — proves someone controls an account. It says nothing about who they are.
 
-**National identity integration** returns **verified identity**: a real name and national ID number, confirmed against government records.
+**National identity integration** returns **verified identity**. UAE PASS shows how this works in practice: its [account types page](https://docs.uaepass.ae/quick-start-guide-uae-pass-staging-environment/user-account-types) describes SOP1 accounts as **unverified** (email and mobile checked by one-time code, no Emirates ID), while SOP2 and SOP3 are **verified** against the Emirates ID. The [attributes list](https://docs.uaepass.ae/resources/attributes-list) follows that line:
 
-**What that unlocks:**
+| Attribute | SOP1 (basic) | SOP2 / SOP3 (verified) |
+|---|---|---|
+| UUID, email, mobile, English first/last name | Yes | Yes |
+| Emirates ID number (`idn`) | No | Yes |
+| Full name in Arabic and English, nationality, gender | No | Yes |
+
+**The engineering consequence:** if your use case depends on the Emirates ID number, your code must handle a SOP1 user who signs in successfully but returns no `idn`. Decide up front whether you reject them, ask them to upgrade their account, or let them continue with limited access.
+
+**What verified identity unlocks:**
 - **Remote KYC** without document upload and manual review
-- **Regulatory compliance** where identity verification is mandated, particularly [fintech](/en/blog/fintech-sama-compliance) and [health](/en/blog/health-apps-uae-compliance)
+- **Licence conditions** that require identity verification — check what your own regulator or licence says, for example in [fintech](/en/blog/fintech-sama-compliance) or [health](/en/blog/health-apps-uae-compliance)
 - **Fraud reduction** — one national ID, one account
-- **Guardian verification** for [children's data consent](/en/blog/childrens-data-protection), where it solves an otherwise painful friction problem
-- **Trust** — for government-adjacent products, its absence is conspicuous
+- **Guardian verification** for [children's data consent](/en/blog/childrens-data-protection)
+- **Document signing**, where the provider supports it (UAE PASS signing requires a verified account)
 
-**What it does not give you:** a lighter compliance burden. Receiving verified identity means you are now processing national ID numbers, which is sensitive personal data with stricter handling obligations. Integration adds compliance scope rather than removing it.
+**What it does not give you:** a lighter compliance burden. You are now storing national ID numbers. Saudi Arabia's [Personal Data Protection Law](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) names "personal identity number" as an example of personal data (Article 1), but does **not** list it among the categories of sensitive data, which are racial or ethnic origin, belief, security and criminal data, biometric data, genetic data, health data and data indicating unknown parentage. So it is ordinary personal data in law — but a leaked national ID number is a fraud tool, and it deserves the same storage discipline as sensitive data.
 
 ---
 
 ## Do you actually need it?
 
-Integration is real work with real approval overhead. It is worth it when:
+It is worth it when:
 
-- You are in a **regulated sector** requiring identity verification
+- Your **licence or regulator requires** verified identity
 - You are building a **government or quasi-government** service
 - **Remote KYC** is a core flow, and the alternative is manual document review
-- **Fraud from duplicate accounts** is a material problem
-- Users **expect it** — for Saudi B2B and financial products, its absence now reads as a gap
+- **Duplicate accounts** are a material fraud problem
+- You need **legally meaningful signatures** and the provider offers signing
 
-It is usually **not** worth it for ordinary e-commerce, content products, general consumer apps with no verification requirement, or MVPs still validating demand. In those cases you are adding an approval dependency and sensitive-data obligations for a benefit users did not ask for.
+It is usually **not** worth it for ordinary e-commerce, content products, consumer apps with no verification requirement, or MVPs still validating demand. There you add an onboarding dependency and ID-number storage for a benefit users did not ask for.
 
-**A pragmatic middle path:** ship with conventional authentication, design your identity layer so a verified-identity provider can be added later, and integrate when a real requirement appears. The cost of designing for it is small; the cost of an approval process you did not need is not.
+**A pragmatic middle path:** ship with conventional authentication, design your identity layer so a verified provider can be added later (store an external identity link per user, not just a password hash), and integrate when a real requirement appears.
 
 ---
 
-## The approval process is the long pole
+## Onboarding is the long pole
 
-The technical integration is standard OAuth-style work. **Getting approved is what takes the time**, and teams consistently underestimate this.
+The technical integration is a standard OAuth 2.0 authorisation-code flow: UAE PASS documents it as [obtaining an authorisation code](https://docs.uaepass.ae/feature-guides/authentication/web-application/1.-obtaining-the-oauth2-access-code), then an access token, then the user's information — and recommends the `state` parameter against CSRF. **Getting onboarded is what takes calendar time.**
 
-**What is typically involved:**
+UAE PASS describes its [service provider onboarding](https://docs.uaepass.ae/getting-onboarded-with-uae-pass/onboarding-process-for-uae-pass-service-providers) in four phases: **initiation, development, assessment, go-live**. It also provides a staging environment with test accounts, so you can build before production access is granted.
 
-1. **Eligibility.** These are not open APIs. You generally need a registered local entity and a legitimate use case. Some services restrict access to specific sectors.
-2. **Application.** Submitted to the operating authority with your use case, technical details, and security posture.
-3. **Review.** Duration varies considerably. Plan in months, not weeks.
-4. **Technical onboarding.** Sandbox credentials, integration, and conformance testing.
-5. **Production approval.** A separate gate after testing.
+**Questions to put to the operator before you plan dates** (for Nafath and QDI we found no public answer, so ask in writing):
 
-**The scheduling consequence:** start the application early and build against the sandbox in parallel. Treating approval as a task that follows development is how launches slip by a quarter.
+1. Is a locally registered entity required, and is our sector eligible?
+2. What documents and security evidence does the application need?
+3. How long does each phase usually take, and who signs off the assessment?
+4. Are there access fees, per-transaction fees, or neither?
+5. Which attributes will we receive, and can we limit the request to only what we need?
 
-**Costs vary** — some services are free for qualifying entities, others carry fees. Confirm before budgeting, and confirm with the authority rather than a reseller.
+**The scheduling consequence:** start the application at the same time as design, and build against staging in parallel. Treating approval as a task that follows development is how launches slip.
 
 ---
 
 ## Technical patterns that matter
 
-Regardless of provider, several things are consistent:
+**Redirect-based flow.** Your app hands off to the identity provider, the user approves in the national app, and control returns with an authorisation code. Design session handling around a round trip out of your app and back.
 
-**Redirect-based flow.** Your app hands off to the identity provider, the user approves in the national app, and control returns with a token. Design your session handling around a round trip out of your app and back.
+**Request and store only what you need.** If you only need to know a user is a verified UAE resident, you may not need to persist the Emirates ID number at all — a verified flag plus the provider's UUID can be enough. If you do store the number, encrypt it at field level and restrict who can read it.
 
-**Do not store what you do not need.** You will receive attributes including a national ID number. Store the minimum, treat it as sensitive, and encrypt it. See [Saudi PDPL](/en/blog/pdpl-compliance-guide) on handling requirements.
+**Handle the unverified user.** A SOP1 UAE PASS login succeeds but lacks the ID attributes. Make that a deliberate path, not a null-pointer error.
 
-**Design for failure.** The user abandons the flow, the national app is not installed, the service is briefly unavailable, or the session times out. Each needs a graceful path — and "the national app is not installed" is common enough to deserve real handling rather than an error message.
+**Design for failure.** The user abandons the flow, the national app is not installed, the service is briefly unavailable, or the session times out. "The national app is not installed" deserves real handling rather than an error message.
 
-**Do not make it the only route** unless a regulation requires it. Users without the national app, or with a foreign identity, must still be able to use your product. Offer conventional authentication alongside.
+**Do not make it the only route** unless a rule requires it. Visitors, foreign residents without the national app, and users who simply prefer email still need a way in.
 
-**Test the Arabic flow.** The user leaves your app for the national app and returns. If your app is Arabic and RTL, verify the whole round trip in Arabic — see the [Arabic localisation guide](/en/blog/arabic-localization-guide).
+**Test the Arabic flow.** The user leaves your app and returns. If your app is Arabic and right-to-left, check the whole round trip in Arabic — see the [Arabic localisation guide](/en/blog/arabic-localization-guide).
 
 ---
 
-## Effort and cost
+## Effort
 
-Once approved, integration itself is modest:
+Once you have staging access, the integration itself is modest:
 
 | Work | Effort |
 |---|---|
-| Integration and token handling | 5 – 12 days |
-| Failure and edge case handling | 3 – 5 days |
-| Sensitive attribute storage and encryption | 2 – 4 days |
-| Conformance testing and approval cycle | Variable |
+| Authorisation flow and token handling | 5 – 12 days |
+| Unverified-account, failure and edge-case handling | 3 – 5 days |
+| Attribute minimisation, encrypted storage and access control | 2 – 4 days |
+| Operator assessment and go-live | Set by the operator |
 
-**Roughly $3,000 – $10,000 of engineering.** The dominant cost is calendar time in approval, not developer days — which is exactly why it belongs in the schedule early.
+Engineering time is billed at the agency rates in our published rate card: **$50–100 per hour as of November 2026** (about SAR 200–400 or AED 200–400). The dominant cost is usually calendar time in onboarding, not developer days — which is why it belongs at the start of the schedule.
 
 ---
 
 ## Related reading
 
 - [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide) — the wider regulatory picture.
-- [Fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) — where identity verification is mandated.
+- [Fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) — where licences can require identity verification.
 - [Children's data protection](/en/blog/childrens-data-protection) — guardian verification.
-- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) — handling national ID numbers.
+- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) — handling personal data, including ID numbers.
 - [Gulf payment gateways](/en/blog/gulf-payment-gateways) — the other integration with an approval process.
 
 ---
 
 ## Frequently asked questions
 
-### What is Nafath and how does it differ from Absher?
+### Which UAE PASS accounts return the Emirates ID number?
 
-Nafath is Saudi Arabia's national authentication app — the login layer used to access government portals and many banks and private services. Absher is the Ministry of Interior services platform providing government transactions. Nafath acts as the authentication front door; Absher is one of the destinations behind it.
+Only verified accounts. The UAE PASS attributes list returns the `idn` (Emirates ID number), full Arabic and English name, nationality and gender for SOP2 and SOP3 accounts. Basic SOP1 accounts, which are unverified, return only a UUID, email, mobile number and English first and last name.
 
-### Can any company integrate national digital identity?
+### Can a private company integrate UAE PASS?
 
-No. These are not open APIs. Eligibility generally requires a registered local entity and a legitimate use case, and some services restrict access by sector. Approval is an application process with the operating authority, not a developer signup.
+Yes for authentication and digital signature: the UAE PASS documentation lists both as available to government entities and private organisations, and data and document sharing as available to private organisations. Access still goes through the operator's onboarding phases — initiation, development, assessment and go-live.
 
-### How long does approval take?
+### Is there a public developer portal for Nafath?
 
-It varies considerably and should be planned in months rather than weeks. The technical integration is standard OAuth-style work of a few weeks; the approval cycle is the long pole. Start the application early and build against the sandbox in parallel rather than treating approval as a post-development task.
+We could not find one as of November 2026. Eligibility, the application route, fees and timelines for Nafath should be confirmed directly with the operator, in writing, before you commit to a launch date.
 
-### Does national identity integration reduce my compliance burden?
+### Is a national ID number "sensitive data" under Saudi PDPL?
 
-No — it increases it. You gain verified identity, but you are now processing national ID numbers, which is sensitive personal data carrying stricter handling and storage obligations. The benefit is verification quality and reduced fraud, not lighter compliance.
+Not by the law's definition. Article 1 of the PDPL gives the personal identity number as an example of personal data, and the sensitive-data list does not include it. Treat it with sensitive-grade controls anyway — field-level encryption, restricted access, and a clear purpose — because a leaked ID number enables fraud.
 
 ### Should national identity be the only login method?
 
-Only if a regulation requires it. Users without the national app installed, or with foreign identity documents, still need access to your product. Offer conventional authentication alongside unless your sector mandates otherwise.
+Only if a rule or your licence requires it. Visitors, residents without the national app, and users with foreign documents still need access. Offer conventional authentication alongside, and design what a user can do with each.
 
-### Is it worth integrating for a normal consumer app?
+### How much engineering does one integration take?
 
-Usually not. For ordinary e-commerce, content products, and MVPs still validating demand, you are adding an approval dependency and sensitive-data obligations for a benefit users have not asked for. Design your identity layer so a verified provider can be added later, and integrate when a real requirement appears.
-
-### What does integration cost?
-
-Roughly $3,000 to $10,000 of engineering once approved — five to twelve days for the integration plus handling for failure cases and sensitive attribute storage. Some services charge fees for access and others do not; confirm with the operating authority. The dominant cost is calendar time in approval rather than developer days.
+Roughly 10 to 21 working days for one provider once you have staging access: the authorisation flow, handling of unverified accounts and failures, and minimised encrypted storage. Onboarding and the operator's assessment run on the operator's schedule, on top of that.
 
 ---
 
-## Conclusion
+## Before you commit
 
 **Integrate for verified identity, not for convenience.** If you only need to know that someone controls an account, conventional authentication is simpler and carries fewer obligations.
 
-**Start the approval process before you need it.** The engineering is a few weeks; the approval is months, and teams that sequence these serially lose a quarter.
+**Start the operator conversation before you need it,** and write down the answers to the five questions above.
 
-**And keep a fallback path.** Unless regulation forbids it, a product reachable only through one national identity system excludes users who have every right to be there.
+**And keep a fallback path,** so a product built around one national identity system does not shut out users who have every right to be there.
 
-**Planning an integration?** [Get in touch](/en/contact) — we can tell you honestly whether your product needs verified identity or just good authentication. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).
+If you are weighing whether your product needs Nafath or UAE PASS at all, [tell us about the use case](/en/contact) and we will give you a straight answer, including when ordinary sign-in is the better choice.

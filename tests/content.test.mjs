@@ -45,25 +45,28 @@ test("every category has a pillar article that exists", () => {
 });
 
 test("article dates are real: never before the file's first commit, never modified before published", () => {
-  let gitAvailable = true;
-  for (const post of posts.en) {
-    for (const lang of LOCALES) {
-      const p = posts[lang].find((x) => x.slug === post.slug);
+  // One pass over history: the oldest commit that added each file. Uncommitted
+  // new files have no entry yet.
+  const firstAdded = new Map();
+  try {
+    const log = execFileSync("git", ["log", "--diff-filter=A", "--name-only", "--format=@%cs", "--", "content/blog"], {
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    let date = "";
+    for (const line of log.split("\n")) {
+      if (line.startsWith("@")) date = line.slice(1);
+      else if (line.trim()) firstAdded.set(line.trim(), date); // newest first, so the last write is the oldest
+    }
+  } catch {
+    // No git (e.g. a source tarball): only the ordering check below applies.
+  }
+
+  for (const lang of LOCALES) {
+    for (const p of posts[lang]) {
       assert.ok(p.datePublished, `${lang}/${p.slug} has no date`);
       assert.ok(!p.dateModified || p.dateModified >= p.datePublished, `${lang}/${p.slug} modified before published`);
-      if (!gitAvailable) continue;
-      let first;
-      try {
-        first = execFileSync("git", ["log", "--diff-filter=A", "--follow", "--format=%cs", "--", `content/blog/${p.slug}.${lang}.mdx`], { encoding: "utf8" })
-          .trim()
-          .split("\n")
-          .filter(Boolean)
-          .at(-1);
-      } catch {
-        gitAvailable = false;
-        continue;
-      }
-      // Uncommitted new files have no history yet.
+      const first = firstAdded.get(`content/blog/${p.slug}.${lang}.mdx`);
       if (first) assert.ok(p.datePublished >= first, `${lang}/${p.slug} is dated ${p.datePublished}, before its first commit on ${first}`);
     }
   }
@@ -75,6 +78,8 @@ test("every article has a summary and verified-looking primary sources", () => {
       assert.ok(post.summary && post.summary.length >= 3 && post.summary.length <= 4, `${lang}/${post.slug} needs 3–4 summary points`);
       assert.ok(post.sources && post.sources.length >= 2, `${lang}/${post.slug} needs at least 2 sources`);
       for (const source of post.sources) {
+        // llmstxt.org is the specification itself, published at the domain root.
+        if (source.url.startsWith("https://llmstxt.org")) continue;
         assert.doesNotMatch(source.url, /^https:\/\/[^/]+\/?$/, `${lang}/${post.slug} cites a bare homepage: ${source.url}`);
       }
     }

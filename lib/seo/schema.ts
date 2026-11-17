@@ -8,9 +8,9 @@ import { author, authorSameAs, hasNamedAuthor } from "@/data/author";
  * page's JSON-LD describes one connected graph instead of several loosely named
  * copies of "APEX".
  */
-export const ORG_ID = `${siteUrl}/#organization`;
-export const WEBSITE_ID = `${siteUrl}/#website`;
-export const AUTHOR_ID = `${siteUrl}/#author`;
+const ORG_ID = `${siteUrl}/#organization`;
+const WEBSITE_ID = `${siteUrl}/#website`;
+const AUTHOR_ID = `${siteUrl}/#author`;
 const orgRef = { "@id": ORG_ID };
 
 /** Markets served, stated the same way everywhere. */
@@ -25,7 +25,7 @@ function organizationSameAs(): string[] {
   return [socialLinks.linkedin, socialLinks.instagram, socialLinks.twitter].filter(Boolean);
 }
 
-export function absoluteUrl(value?: string): string | undefined {
+function absoluteUrl(value?: string): string | undefined {
   if (!value) return undefined;
   if (/^https?:\/\//.test(value)) return value;
   return `${siteUrl}${value.startsWith("/") ? "" : "/"}${value}`;

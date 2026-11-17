@@ -5,7 +5,6 @@
     "services": "Services",
     "about": "About",
     "blog": "Blog",
-    "contact": "Contact",
     "letsTalk": "Let's Talk"
   },
   "heroSection": {
@@ -51,8 +50,7 @@
     "badge": "Portfolio",
     "title": "Recent work",
     "subtitle": "An education app built in Flutter, plus video and AI-generated content for clinics, brands and family-counselling services.",
-    "viewAll": "View all work",
-    "viewProject": "View project"
+    "viewAll": "View all work"
   },
   "contact": {
     "badge": "Contact",

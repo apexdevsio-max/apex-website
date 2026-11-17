@@ -1,14 +1,12 @@
 ---
-{"slug":"arabic-search-guide","title":"Arabic Search: Why It Fails and How to Fix It","seoTitle":"Arabic Search Implementation Guide","excerpt":"Normalising diacritics, alef and hamza variants, and taa marbuta — why default search engines miss obvious Arabic matches, and how to build search that actually works.","date":"2026-08-20","dateModified":"2026-08-20"}
+{"slug":"arabic-search-guide","title":"Arabic Search: Why It Fails and How to Fix It","seoTitle":"Arabic Search Implementation Guide","excerpt":"Normalising diacritics, alef and hamza variants, and taa marbuta — why default search engines miss obvious Arabic matches, and how to build search that actually works.","categories":["arabic"],"keywords":["Arabic search","Arabic normalization","diacritics","Elasticsearch Arabic","arabic_stem","alef variants"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Arabic search misses obvious results when text is not normalised: alef variants (أ إ آ → ا), taa marbuta (ة → ه), alef maqsura (ى → ي), diacritics and tatweel must be unified in both the index and the query.","Lucene's Arabic normaliser, used by Elasticsearch's arabic_normalization filter, performs exactly these steps: hamza-seated alef to bare alef, teh marbuta to heh, alef maksura to yeh, and removal of harakat and tatweel.","Elasticsearch's built-in arabic analyzer chains lowercase, decimal_digit, arabic_stop, arabic_normalization and an Arabic stemmer; that stemmer strips attached prefixes and common suffixes, so الكتاب matches كتاب, but it does not reduce words to their root.","PostgreSQL ships a Snowball Arabic stemmer, but its default unaccent rules target European accents, so Arabic diacritics need a custom rules file or normalisation in application code."],"sources":[{"title":"Elasticsearch — Language analyzers (arabic analyzer filter chain)","url":"https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html"},{"title":"Apache Lucene — ArabicNormalizer","url":"https://lucene.apache.org/core/9_0_0/analysis/common/org/apache/lucene/analysis/ar/ArabicNormalizer.html"},{"title":"Apache Lucene — ArabicStemmer","url":"https://lucene.apache.org/core/9_0_0/analysis/common/org/apache/lucene/analysis/ar/ArabicStemmer.html"},{"title":"PostgreSQL documentation — unaccent","url":"https://www.postgresql.org/docs/current/unaccent.html"}]}
 ---
 
 # Arabic Search: Why It Fails and How to Fix It
 
-A user searches your Arabic catalogue for a product that is definitely there, and gets nothing. The team assumes a bug in the query layer. It usually is not — it is that Arabic has several ways to write the same word, and a search engine configured for English treats them as different words.
+Arabic search fails because the same word can be written several ways — `أحمد` or `احمد`, `مدرسة` or `مدرسه`, with or without diacritics — and an engine configured for English compares them as different strings. The fix is to normalise both the indexed text and every query: unify alef variants to `ا`, taa marbuta to `ه`, alef maqsura to `ي`, strip diacritics and tatweel, and then apply a light Arabic stemmer so `الكتاب` matches `كتاب`. Search engines such as Elasticsearch do this out of the box once you select their Arabic analyser.
 
-**The short answer: Arabic search fails without normalisation. Alef variants, taa marbuta, and diacritics all produce visually similar text that compares as unequal. Normalise both the indexed content and the query, and most "missing" results appear.**
-
-This guide covers what to normalise and how. For the wider scope, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+A typical report: a user searches your Arabic catalogue for a product that is definitely there and gets nothing. The team suspects the query layer. It is usually the text. This guide covers what to normalise and how; search like this is part of the Arabic builds in our [web development services](/en/services/web-development). For the wider scope, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
 
 ---
 
@@ -16,86 +14,114 @@ This guide covers what to normalise and how. For the wider scope, see the [compl
 
 Four characteristics of written Arabic break naive search.
 
-**1. Alef variants.** The letter alef has several forms — `ا`, `أ`, `إ`, `آ` — and writers use them inconsistently. Someone searching `احمد` will not match content stored as `أحمد` unless you normalise. This is the single most common cause of missing results.
+**1. Alef variants.** Alef has several forms — `ا`, `أ`, `إ`, `آ` — and writers use them inconsistently. A search for `احمد` will not match `أحمد` unless you normalise. This is one of the most common causes of missing results.
 
 **2. Taa marbuta and haa.** The word-final `ة` is frequently typed as `ه`. `مدرسة` and `مدرسه` are the same word to a reader and different strings to a database.
 
-**3. Diacritics (tashkeel).** Marks like fatha and damma are optional. Content entered with them will not match a query typed without them, and users almost never type them.
+**3. Diacritics (tashkeel).** Marks such as fatha and damma are optional. Content entered with them will not match a query typed without them, and users almost never type them.
 
-**4. Alef maqsura and yaa.** Word-final `ى` and `ي` are used interchangeably by many writers — `على` versus `علي`.
+**4. Alef maqsura and yaa.** Word-final `ى` and `ي` are used interchangeably by many writers — `على` and `علي`.
 
-**The consequence:** a single Arabic word can have four or more written forms that all look correct to a reader. Exact matching finds one of them.
+**Digits add a fifth case.** A query typed with Eastern Arabic digits (`١٥`) will not match `15` in your catalogue, and Persian or Urdu keyboards produce yet another digit set (`۱۵`).
+
+**The consequence:** one Arabic word can have four or more written forms that all look correct to a reader. Exact matching finds one of them.
 
 ---
 
 ## Normalisation: the core fix
 
-Normalisation means converting text to a canonical form before comparing. Apply it to both indexed content and incoming queries — normalising only one side achieves nothing.
+Normalisation means converting text to a canonical form before comparing. Apply it to both the indexed content and the incoming query — normalising only one side achieves nothing.
 
-**The standard set of transformations:**
+**A working set of transformations in JavaScript:**
 
 ```js
 function normalizeArabic(text) {
   return text
-    // Diacritics (tashkeel) — remove entirely
-    .replace(/[ً-ٰٟ]/g, "")
-    // Tatweel (kashida), a decorative stretch character
-    .replace(/ـ/g, "")
-    // Alef variants → bare alef
-    .replace(/[آأإ]/g, "ا")
+    .normalize("NFC")
+    // Diacritics (harakat, U+064B–U+065F) and the superscript alef (U+0670)
+    .replace(/[\u064B-\u065F\u0670]/g, "")
+    // Tatweel (kashida)
+    .replace(/\u0640/g, "")
+    // Alef with hamza or madda → bare alef
+    .replace(/[\u0622\u0623\u0625\u0671]/g, "\u0627")
     // Taa marbuta → haa
-    .replace(/ة/g, "ه")
+    .replace(/\u0629/g, "\u0647")
     // Alef maqsura → yaa
-    .replace(/ى/g, "ي")
-    // Hamza variants on waw and yaa
-    .replace(/ؤ/g, "و")
-    .replace(/ئ/g, "ي")
+    .replace(/\u0649/g, "\u064A")
+    // Hamza on waw and yaa (optional; Lucene's normaliser leaves these alone)
+    .replace(/\u0624/g, "\u0648")
+    .replace(/\u0626/g, "\u064A")
+    // Eastern Arabic and Persian digits → Western digits
+    .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0))
+    .toLowerCase()
     .trim();
 }
+
+normalizeArabic("أَحْمَد");     // "احمد"
+normalizeArabic("آيفون ١٥");   // "ايفون 15"
 ```
 
-**Store the normalised form alongside the original.** Display the original to users — normalised text looks subtly wrong — but search against the normalised column.
+**Write the ranges as code points, not pasted characters.** A diacritics range typed as two pasted marks is easy to get wrong: a range that runs up to U+0670 also swallows the Eastern Arabic digits U+0660–U+0669, silently deleting every number in the text.
 
-**Do not normalise everything.** Names, legal text, and religious content may need exact forms preserved. Normalisation is for the search index, not for your source of truth.
+**Store the normalised form alongside the original.** Display the original — normalised text looks subtly wrong — and search against the normalised column.
+
+**Don't normalise your source of truth.** Names, legal text and religious content may need their exact forms preserved. Normalisation is for the search index only.
 
 ---
 
 ## Let your search engine do it
 
-Hand-rolled normalisation works for simple cases, but every serious search engine has Arabic support built in — and it handles stemming, which regular expressions cannot.
+Hand-rolled normalisation works for simple cases, but mature search engines ship Arabic analysis, including stemming, which regular expressions cannot do well.
 
-**Elasticsearch / OpenSearch:**
+**Elasticsearch / OpenSearch.** The built-in `arabic` analyser is the simplest start. Its [documented equivalent](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html) shows the chain, which you can rebuild to customise:
 
 ```json
 {
-  "analysis": {
-    "analyzer": {
-      "arabic_search": {
-        "tokenizer": "standard",
-        "filter": ["lowercase", "arabic_normalization", "arabic_stem"]
+  "settings": {
+    "analysis": {
+      "filter": {
+        "arabic_stop": { "type": "stop", "stopwords": "_arabic_" },
+        "arabic_stemmer": { "type": "stemmer", "language": "arabic" }
+      },
+      "analyzer": {
+        "rebuilt_arabic": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "decimal_digit",
+            "arabic_stop",
+            "arabic_normalization",
+            "arabic_stemmer"
+          ]
+        }
       }
     }
   }
 }
 ```
 
-`arabic_normalization` handles the character variants above. `arabic_stem` reduces words to their root, so a search for `كتاب` also matches `الكتاب` and `كتب`.
+- `decimal_digit` converts other digit sets, including Eastern Arabic, to `0–9`.
+- `arabic_normalization` applies Lucene's [ArabicNormalizer](https://lucene.apache.org/core/9_0_0/analysis/common/org/apache/lucene/analysis/ar/ArabicNormalizer.html): hamza-seated alef to bare alef, teh marbuta to heh, alef maksura to yeh, and removal of harakat and tatweel.
+- The Arabic stemmer applies Lucene's [ArabicStemmer](https://lucene.apache.org/core/9_0_0/analysis/common/org/apache/lucene/analysis/ar/ArabicStemmer.html), which removes the attached definite article, conjunctions and prepositions and strips common suffixes. That is **light stemming, not root extraction**: `الكتاب` and `وبالكتاب` match `كتاب`, but the broken plural `كتب` does not.
 
-**PostgreSQL** has an Arabic text search configuration, and `unaccent` handles diacritics. Full-text search with the right configuration outperforms `LIKE '%term%'` by a wide margin, both in accuracy and speed.
+**PostgreSQL.** PostgreSQL's source includes a Snowball Arabic stemmer, so full-text search with an Arabic configuration is available and far better than `LIKE '%term%'` in both relevance and speed. Diacritics need care: the documentation describes the default [`unaccent`](https://www.postgresql.org/docs/current/unaccent.html) rules as aimed at European accents, so supply a custom rules file that deletes the harakat, or normalise in application code before indexing.
 
-**Managed search services** (Algolia, Typesense, Meilisearch) generally handle Arabic normalisation with configuration rather than code. If search matters to your product and you are not already running Elasticsearch, these are usually the better answer than building it yourself.
+**Managed search services** (Algolia, Typesense, Meilisearch and others) can save you running a cluster. Check each one's Arabic documentation for normalisation and stemming support, and run the test set below against it before committing.
 
 ---
 
 ## Stemming and the definite article
 
-Arabic is morphologically rich — prefixes and suffixes attach directly to words, and this defeats substring matching.
+Arabic is morphologically rich — prefixes and suffixes attach directly to words, which defeats substring matching.
 
-**The definite article `ال` is the most common case.** `الكتاب` (the book) and `كتاب` (book) should match. Stemming handles this; naive matching does not.
+**The definite article `ال` is the most common case.** `الكتاب` (the book) and `كتاب` (book) should match. A stemmer handles this; naive matching does not.
 
-**Prefixes and suffixes stack:** `وبالكتاب` contains the conjunction `و`, the preposition `ب`, the article `ال`, and the noun. A reader parses this instantly; a substring search does not.
+**Prefixes stack:** `وبالكتاب` contains the conjunction `و`, the preposition `ب`, the article `ال` and the noun. A reader parses this instantly; a substring search does not.
 
-**The practical guidance:** use a proper analyser with stemming rather than writing prefix-stripping rules. Hand-written rules over-strip — removing `ال` from a word that legitimately starts with those letters produces wrong matches, and the failure is silent.
+**Use an analyser rather than writing prefix-stripping rules.** Hand-written rules over-strip — removing `ال` from a word that genuinely begins with those letters produces wrong matches, and the failure is silent.
+
+**Know the limit of light stemming.** Plurals that change the word's internal pattern (`كتاب` → `كتب`, `مدينة` → `مدن`) are not matched by affix stripping. If those matter for your catalogue, add synonyms for your key terms rather than reaching for an aggressive root stemmer that merges unrelated words.
 
 ---
 
@@ -103,13 +129,11 @@ Arabic is morphologically rich — prefixes and suffixes attach directly to word
 
 Users mix scripts freely, especially for technical and brand terms. A single query might be `افضل laptop للبرمجة`.
 
-**Three things this requires:**
-
 **Index both scripts in the same field.** Splitting Arabic and English into separate fields means a mixed query matches neither well.
 
-**Transliteration awareness.** Users search for `آيفون` and `iPhone` interchangeably. If your catalogue stores only one, the other returns nothing. For brand and product names, store both forms as searchable aliases.
+**Add transliteration aliases.** Users search for `آيفون` and `iPhone` interchangeably. If your catalogue stores only one, the other returns nothing. Store both forms for brand and product names.
 
-**Do not lowercase Arabic and assume it is a no-op.** It is harmless for Arabic itself but necessary for the embedded Latin text, so keep it in the filter chain.
+**Keep lowercasing in the chain.** It does nothing to Arabic letters but is necessary for the embedded Latin text.
 
 ---
 
@@ -117,24 +141,25 @@ Users mix scripts freely, especially for technical and brand terms. A single que
 
 Getting matches is the first half; ordering them sensibly is the second.
 
-**Exact match should outrank stemmed match.** Someone searching an exact product name expects it first, not a morphologically related item.
+**Exact match should outrank stemmed match.** Someone typing an exact product name expects it first. Index an unstemmed sub-field and boost it.
 
-**Weight fields differently.** A title match matters more than a description match. Most search engines support field boosting.
+**Weight fields differently.** A title match matters more than a description match.
 
-**Handle the empty result properly.** Arabic typing errors are common — an unfamiliar keyboard layout produces different mistakes than English does. Fuzzy matching with a small edit distance, plus a "did you mean" suggestion, converts dead ends into results.
+**Handle the empty result.** Typing errors on Arabic keyboards differ from English ones. Fuzzy matching with a small edit distance, plus a "did you mean" suggestion, turns dead ends into results.
 
-**Log queries that return nothing.** This is the single most useful search diagnostic you can add. Zero-result queries tell you exactly what your normalisation is missing and what content users expect but you do not have.
+**Log queries that return nothing.** It is the most useful search diagnostic you can add: zero-result queries show exactly which normalisation case you are missing and which content users expect but you do not have.
 
 ---
 
 ## Testing
 
-Build a test set from real user language, not from your own typing:
+Build a test set from real user language, not your own typing:
 
 - The same word with and without diacritics
 - Each alef variant of a common term
-- `ة` versus `ه` word endings
-- With and without the definite article
+- `ة` and `ه` word endings
+- With and without the definite article and stacked prefixes
+- Eastern Arabic and Western digits in the same query
 - Mixed Arabic and English in one query
 - Common misspellings from your zero-result log
 
@@ -145,7 +170,7 @@ Build a test set from real user language, not from your own typing:
 ## Related reading
 
 - [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers of localisation.
-- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — numbers in queries and results.
+- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — digit sets in queries and results.
 - [RTL in CSS](/en/blog/rtl-css-guide) — displaying results correctly.
 - [SEO vs GEO](/en/blog/seo-vs-geo) — how Arabic search behaviour differs on the open web.
 - [E-commerce cost in Saudi Arabia](/en/blog/ecommerce-development-cost-saudi) — where product search matters most.
@@ -154,42 +179,38 @@ Build a test set from real user language, not from your own typing:
 
 ## Frequently asked questions
 
-### Why does my Arabic search miss obvious results?
+### Why does my Arabic search miss products that are in the catalogue?
 
-Almost always missing normalisation. Arabic has multiple written forms of the same word — alef variants like `أ` and `ا`, taa marbuta versus haa, and optional diacritics. Without normalising both your index and the incoming query, these compare as different strings even though readers see the same word.
+Almost always missing normalisation. The query and the stored text use different written forms of the same word — `أ` versus `ا`, `ة` versus `ه`, diacritics versus none, or Eastern versus Western digits. Normalise both the index and the query and most "missing" products appear.
 
-### What is Arabic text normalisation?
+### Which characters should an Arabic normaliser change?
 
-Converting text to a canonical form before comparison: removing diacritics and tatweel, unifying alef variants to bare alef, converting taa marbuta to haa, and alef maqsura to yaa. Apply it to indexed content and queries alike — normalising only one side achieves nothing.
+At minimum: alef with hamza or madda (`أ إ آ`) to bare `ا`, `ة` to `ه`, `ى` to `ي`, and remove diacritics (U+064B–U+065F, U+0670) and tatweel (U+0640). Lucene's Arabic normaliser does exactly this. Converting Eastern Arabic digits to Western digits is a sensible addition.
 
-### Should I write my own normalisation or use a search engine?
+### Does Elasticsearch's Arabic stemmer reduce words to their root?
 
-Use a search engine's built-in Arabic support. Elasticsearch's `arabic_normalization` and `arabic_stem` filters handle character variants and morphology, and stemming is something regular expressions cannot do properly. Hand-written prefix-stripping rules over-strip and fail silently.
+No. It is a light stemmer: it removes attached prefixes such as `و`, `ب` and `ال` and strips common suffixes, so `الكتاب` matches `كتاب`. Broken plurals such as `كتب` are not matched. Use synonyms for key terms where that matters.
 
-### How do I handle the definite article in search?
+### My normaliser deletes Eastern Arabic numbers. Why?
 
-Use a proper stemmer rather than stripping `ال` yourself. Stemming reduces words to their root so `الكتاب` and `كتاب` match, and it handles stacked prefixes like `وبالكتاب` that naive rules get wrong. Manual stripping removes those letters from words that legitimately begin with them.
+Its diacritics range probably runs from U+064B to U+0670, which also covers the Eastern Arabic digits U+0660–U+0669. Use `[\u064B-\u065F\u0670]` instead, and convert digits explicitly rather than deleting them.
 
 ### How do I support mixed Arabic and English queries?
 
-Index both scripts in the same field rather than separate ones, keep lowercasing in the filter chain for the Latin portion, and store transliteration aliases for brand and product names so `آيفون` and `iPhone` both match. Users mix scripts constantly, especially for technical terms.
+Index both scripts in the same field, keep lowercasing in the filter chain for the Latin part, and store transliteration aliases for brand and product names so `آيفون` and `iPhone` both match.
 
 ### Is PostgreSQL full-text search good enough for Arabic?
 
-For moderate catalogues, yes — PostgreSQL has an Arabic text search configuration and `unaccent` for diacritics, and it substantially outperforms `LIKE '%term%'` in both accuracy and speed. For large catalogues or search-critical products, a dedicated engine gives better relevance tuning.
+For moderate catalogues, often yes: it includes a Snowball Arabic stemmer and beats `LIKE '%term%'` on both relevance and speed. Plan for diacritics yourself, since the default `unaccent` rules are designed for European accents. Large or search-critical catalogues benefit from a dedicated engine's relevance tuning.
 
-### What is the most useful thing I can add to Arabic search?
+### What is the single most useful thing to add to Arabic search?
 
-Logging queries that return zero results. It tells you exactly which normalisation cases you are missing and what content users expect but you do not have. It is a few lines of code and consistently the highest-value search diagnostic.
+A log of queries that return zero results. It shows which normalisation cases you are missing and what content users expect, and it takes a few lines of code.
 
 ---
 
-## Conclusion
+## Next step
 
-**Normalisation is the fix for most Arabic search complaints.** Alef variants alone account for a large share of "the product is there but search cannot find it."
+Normalise both sides, use the engine's Arabic analyser rather than hand-written prefix rules, know where light stemming stops, and log your zero-result queries. That sequence fixes most Arabic search complaints.
 
-**Use the search engine's Arabic analyser rather than regular expressions.** Stemming matters as much as character normalisation, and hand-written rules fail silently in ways that are hard to notice.
-
-**And log your zero-result queries.** It is the cheapest diagnostic available and it tells you what your users actually type, which is rarely what the team assumed.
-
-**Building Arabic search?** [Get in touch](/en/contact) — we build Arabic-first, which means search that works on the first release rather than the third. See our [web development services](/en/services/web-development).
+If your search already misses results and you want to know which of these steps is missing, [share a handful of failing queries with us](/en/contact) and we will diagnose them.

@@ -1,92 +1,92 @@
 ---
-{"slug":"ai-privacy-risks","title":"AI Privacy and Security Risks in Production","seoTitle":"AI Privacy and Security Risks","excerpt":"Prompt injection, training on your inputs, data leakage between users, and the controls that actually reduce risk — the build-side view of AI security.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"ai-privacy-risks","title":"AI Privacy and Security Risks in Production","seoTitle":"AI Privacy and Security Risks","excerpt":"Prompt injection, training on your inputs, data leakage between users, and the controls that actually reduce risk — the build-side view of AI security.","categories":["compliance","ai"],"keywords":["prompt injection","AI security","AI data privacy","data leakage","training on inputs","AI controls"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["The three AI risks that most often reach production are prompt injection (OWASP LLM01:2025), retrieval that returns one user's documents to another, and inputs retained or trained on by the model provider.","OWASP says it is unclear whether any fool-proof prevention for prompt injection exists, so the control that matters most is limiting what the model can do, with human approval for high-risk actions.","Training on inputs depends on the product tier: OpenAI does not train on API data unless you opt in, Google's unpaid Gemini API tier may use content to improve products while the paid tier does not, and Anthropic's consumer opt-in change does not apply to its API.","Vector embeddings are not anonymous: a 2023 study recovered 92% of 32-token inputs exactly from their embeddings, so a vector database should be treated as holding the source text."],"sources":[{"title":"OWASP Gen AI Security Project: LLM01:2025 Prompt Injection","url":"https://genai.owasp.org/llmrisk/llm01-prompt-injection/"},{"title":"OpenAI API documentation: Data controls in the OpenAI platform","url":"https://developers.openai.com/api/docs/guides/your-data"},{"title":"Google: Gemini API Additional Terms of Service","url":"https://aistudio.google.com/docs/terms"},{"title":"Morris et al. (2023), Text Embeddings Reveal (Almost) As Much As Text","url":"https://arxiv.org/abs/2310.06816"},{"title":"SDAIA: Regulation on Personal Data Transfer Outside the Kingdom","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/RegulationonPersonalDataTransferOutsidetheKingdom"}]}
 ---
 
 # AI Privacy and Security Risks in Production
 
-AI systems fail differently from ordinary software. A conventional bug produces an error you can see. An AI failure produces a fluent, confident, plausible answer that happens to contain another customer's data — and nothing in your logs looks wrong.
+**The AI risks that actually reach production are three: prompt injection, retrieval that hands one user's data to another, and inputs being retained or trained on by the model provider.** All three are architectural. OWASP ranks prompt injection first in its [Top 10 for LLM applications (LLM01:2025)](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) and says it is unclear whether fool-proof prevention exists — so the real defence is limiting what the model can do.
 
-**The short answer: the risks that actually materialise are prompt injection, over-broad retrieval, and inputs being retained or trained on. All three are architectural, and all three are cheaper to prevent than to remediate.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide is the build-side view. For the regulatory obligations, see [Gulf regulatory compliance](/en/blog/gulf-compliance-guide).
+This is the build-side view. For the legal obligations, see the [Gulf compliance guide](/en/blog/gulf-compliance-guide). If you are planning an assistant or document search over customer data, our [AI solutions](/en/services/ai-solutions) work starts from the controls below.
 
 ---
 
 ## Prompt injection
 
-The security problem with no complete solution, and the one most teams have not considered.
-
-**What it is:** a language model cannot reliably distinguish your instructions from text it is processing. If untrusted content reaches the model, that content can issue instructions.
+**What it is:** OWASP defines it as user prompts altering a model's behaviour or output in unintended ways. The harder variant is **indirect injection**, where the instructions arrive inside content the model reads — a website, a file — and may not even be visible to a person.
 
 **Where untrusted content comes from** — more places than teams expect:
 
-- User messages, obviously
-- **Documents users upload**, including résumés, invoices, and support attachments
+- User messages
+- **Documents users upload** — CVs, invoices, support attachments
 - **Web pages the system fetches**
-- **Database fields users populated** — a product review, a profile bio
-- **Email content** in an automated processing flow
+- **Database fields users filled in** — a product review, a profile bio
+- **Email bodies** in an automated processing flow
 
-**What an injection attempts:** revealing your system prompt, ignoring your restrictions, extracting data from context, or — most damaging — triggering a tool the model can call.
+**What an injection attempts:** revealing your system prompt, ignoring your restrictions, extracting data from the context, or — most damaging — triggering a tool the model can call.
 
-**What actually reduces the risk:**
+**What actually reduces the risk** (these line up with OWASP's own mitigations):
 
-**Least privilege on tools.** This is the highest-value control by a wide margin. If the model can only read, injection cannot cause it to write. If it can delete records, injection eventually will. **Ask what the worst instruction the model could follow would do, then remove that capability.**
+**Least privilege on tools.** OWASP's advice is to give the model only the access it needs and keep privileged functions in application code. If the model can only read, injection cannot make it write. **Ask what the worst instruction the model could follow would do, then remove that capability.**
 
-**Confirm consequential actions.** Anything that sends, pays, deletes, or changes permissions should require human approval. This converts a silent compromise into a visible request.
+**Human approval for high-risk actions.** Anything that sends, pays, deletes or changes permissions waits for a person. A silent compromise becomes a visible request.
 
-**Treat model output as untrusted input.** If output flows into another system, validate it as you would any user input. Output rendered as HTML without escaping is a cross-site scripting vector.
+**Treat model output as untrusted input.** Validate it against the format you expect before it reaches another system. Output rendered as HTML without escaping is a cross-site scripting route.
 
-**Separate instructions from data structurally**, using whatever mechanism your provider offers, and never assemble prompts by concatenating user text into instruction text.
+**Separate untrusted content from instructions** using whatever structure your provider offers, and never build prompts by pasting user text into instruction text.
 
-> **The realistic posture:** you cannot fully prevent injection. You can ensure that a successful injection cannot do anything expensive. Architecture beats filtering here — a model that lacks a dangerous capability cannot be tricked into using it.
+**Test adversarially, on a schedule.** Try to break your own assistant with hostile documents before someone else does.
+
+> **The realistic posture:** assume an injection will eventually succeed, and make sure a successful one cannot do anything expensive. A model that lacks a dangerous capability cannot be tricked into using it.
 
 ---
 
 ## Data leakage between users
 
-The failure that ends internal projects, and it is almost always a retrieval bug rather than a model failure.
+The failure that ends internal AI projects is almost always a retrieval bug rather than a model failure.
 
-**How it happens:** a shared vector index without per-user filtering. User A asks a question, retrieval returns the closest matching passages, and one of them came from User B's document. The model summarises it faithfully.
+**How it happens:** a shared vector index without per-user filtering. User A asks a question, retrieval returns the closest passages, and one came from User B's document. The model summarises it faithfully.
 
 **The prevention is architectural:**
 
-- **Filter at retrieval, never at generation.** Exclude documents the user cannot access *before* the model sees them. Instructing the model to withhold information is a suggestion to a probabilistic system.
-- **Check permissions at query time**, not at indexing time, so revoked access takes effect immediately.
-- **Test adversarially.** Create two accounts with distinct documents and deliberately try to retrieve one from the other. Teams that skip this test find the bug in production.
+- **Filter at retrieval, never at generation.** Exclude documents the user cannot access *before* the model sees them. Telling the model to withhold information is a suggestion to a probabilistic system.
+- **Check permissions at query time**, not indexing time, so revoked access takes effect immediately.
+- **Test it.** Create two accounts with distinct documents and deliberately try to retrieve one from the other.
 
-**Conversation history is the same class of problem.** Session state keyed carelessly — a shared cache, a mis-scoped identifier — surfaces one user's history to another. Scope every cache key to the user.
+**Conversation history is the same class of problem.** A shared cache or a mis-scoped session key surfaces one user's history to another. Scope every cache key to the user.
 
 ---
 
-## Retention and training
+## Retention and training: check the tier, not the brand
 
-The question teams answer last and should answer first.
+Whether your inputs are kept or trained on is set by the product tier and its terms, not by the model's name. As of November 2026, the providers' own documentation says:
 
-**Three things to establish before choosing any provider:**
+| Provider and tier | Used for training? | Retention noted by the provider |
+|---|---|---|
+| [OpenAI API](https://developers.openai.com/api/docs/guides/your-data) | No, unless you explicitly opt in | Abuse-monitoring logs kept up to 30 days by default; Zero Data Retention for approved customers |
+| [Google Gemini API](https://aistudio.google.com/docs/terms) — unpaid | Content used to "provide, improve, and develop" products; human reviewers may read it | Google says not to submit sensitive, confidential or personal information |
+| Google Gemini API — paid | No | Prompts and responses logged for a limited period for abuse detection |
+| [Anthropic](https://www.anthropic.com/news/updates-to-our-consumer-terms) consumer (Free, Pro, Max) | Only if the user allows it (change announced 28 August 2025) | Five years if allowed; 30 days otherwise |
+| Anthropic API and commercial plans | The consumer change does not apply | Governed by commercial terms |
 
-1. **Are inputs retained?** For how long, and who can access them?
-2. **Are inputs used for training?** Many default consumer tiers permit this. Enterprise tiers usually do not — and the difference is contractual, not technical.
-3. **Where does inference run?** This determines whether you have a cross-border transfer.
+**The pattern to watch for:** a developer prototypes on a free or personal account, the prototype becomes the production integration, and nobody re-reads the terms. With the Gemini API that difference is the line between "do not send personal data" and "not used to improve products". Check which key and which tier your production system actually uses.
 
-**Why it matters concretely:** if your support assistant sends customer messages to a provider that trains on inputs, customer data is now in a training corpus. That is not recoverable, and it is a straightforward violation of most compliance positions.
+**Where inference runs matters too.** Sending a Saudi user's personal data to a model hosted abroad is a transfer outside the Kingdom. SDAIA's [transfer regulation](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/RegulationonPersonalDataTransferOutsidetheKingdom) allows transfers to countries on its adequacy list or under safeguards such as standard contractual clauses, and requires a documented risk assessment when sensitive data is transferred or data moves continuously or at large scale (Article 7). A support assistant sending every chat abroad is plausibly "continuous". Ask your lawyer which basis your setup relies on; see [data residency in the Gulf](/en/blog/data-residency-gulf) for the architecture side.
 
-**The pattern to watch for:** a developer prototypes on a personal consumer account with permissive terms, the prototype becomes the production integration, and nobody revisits the terms. Check what your production system is actually using.
-
-**Log what you send.** You cannot answer "what data went to which provider" retrospectively without it — and that is precisely the question asked during an incident or a procurement review.
+**Log what you send.** You cannot answer "what data went to which provider" after the fact without it — and that is the first question in an incident or a procurement review.
 
 ---
 
 ## What you are storing
 
-AI systems accumulate sensitive data in places teams do not think of as data stores.
+**Conversation logs** contain whatever users typed, and users type things you did not ask for — ID numbers, medical details, passwords. Apply the same retention rules as any personal data, and redact obvious patterns before storage.
 
-**Conversation logs** contain whatever users typed, and users type things you did not ask for — identification numbers, medical details, credentials. Apply the same retention policy you apply to any personal data, and consider redacting obvious patterns before storage.
+**Vector embeddings are not anonymous.** [Morris et al. (2023)](https://arxiv.org/abs/2310.06816) recovered 92% of 32-token text inputs exactly from their embeddings. Treat your vector database as containing the source text — including for residency and deletion.
 
-**Vector embeddings are not anonymous.** Text can be partially reconstructed from embeddings. Treat your vector database as containing the source data, because effectively it does — including for residency purposes.
+**Provider-side storage features** — stored conversations, files, assistants — keep data on the provider's side for longer than a single request. OpenAI's documentation, for example, lists Conversations, Assistants, Files and Fine-tuning among endpoints not eligible for Zero Data Retention. Know which features you use.
 
-**Prompt caches** hold recent context on the provider side. Usually short-lived, but worth understanding when handling sensitive material.
-
-**Debug traces** are the quiet one. Systems that log full prompts for troubleshooting frequently send them to a third-party logging service — often in another country. That is a transfer nobody documented. See [data residency](/en/blog/data-residency-gulf).
+**Debug traces** are the quiet one. Logging full prompts for troubleshooting often sends them to a third-party logging service in another country — another transfer nobody documented.
 
 ---
 
@@ -94,19 +94,13 @@ AI systems accumulate sensitive data in places teams do not think of as data sto
 
 Ordered by value relative to effort:
 
-**1. Minimise what you send.** The cheapest control available. Redact identifiers before they reach the model. A support assistant rarely needs the customer's full record to answer a question about return policy.
-
-**2. Constrain tool capability.** Read-only wherever possible. Confirmation on anything consequential.
-
-**3. Filter retrieval by user.** Hard constraint, checked at query time.
-
-**4. Log requests without logging content.** Record that a request happened, its size, and which feature made it — without storing the text itself where possible.
-
-**5. Rate-limit per user.** Bounds both cost and bulk extraction attempts.
-
-**6. Monitor for anomalies.** A sudden spike in requests or token usage usually indicates a bug or abuse. Catching it in hours rather than at invoice time is the difference between an incident and a write-off.
-
-**7. Keep a human in the loop** for consequential outputs. The most reliable control there is, and the one teams remove first under efficiency pressure.
+1. **Minimise what you send.** Redact identifiers before they reach the model. A support assistant rarely needs the full customer record to answer a returns question.
+2. **Constrain tool capability.** Read-only wherever possible; human approval for anything consequential.
+3. **Filter retrieval by user.** A hard constraint, checked at query time.
+4. **Use the right tier.** Production keys on a paid or enterprise tier whose terms you have read.
+5. **Log requests, not content.** Record that a request happened, its size and which feature made it — without storing the text where possible.
+6. **Rate-limit per user.** It bounds both cost and bulk-extraction attempts.
+7. **Monitor for anomalies.** A spike in requests or token use usually means a bug or abuse; catch it in hours, not at invoice time.
 
 ---
 
@@ -123,42 +117,34 @@ Ordered by value relative to effort:
 
 ## Frequently asked questions
 
-### What is prompt injection?
+### Can prompt injection be fully prevented?
 
-Text a model processes that contains instructions, which the model may follow because it cannot reliably distinguish your instructions from content. It arrives through user messages, uploaded documents, fetched web pages, and even database fields users populated. There is no complete defence, so the control that matters is limiting what the model is able to do.
+No one can promise that. OWASP's LLM01:2025 entry says it is unclear whether fool-proof prevention exists and that mitigations reduce impact. Design so a successful injection cannot do damage: least-privilege tools, human approval for high-risk actions, and validation of model output.
 
-### How do I protect against prompt injection?
+### Does the OpenAI API train on my customers' data?
 
-Architecturally rather than by filtering. Give the model the minimum tool capability the task requires — if it can only read, injection cannot make it write. Require human confirmation for anything that sends, pays, or deletes. Treat model output as untrusted input if it flows into another system.
+Not by default. OpenAI's API documentation says data sent to the API is not used to train or improve its models unless you explicitly opt in. Abuse-monitoring logs are kept for up to 30 days by default, and approved customers can get Zero Data Retention.
 
-### Can an AI system leak one customer's data to another?
+### Is the free Gemini API safe for personal data?
 
-Yes, and it is usually a retrieval bug rather than a model failure. A shared vector index without per-user filtering returns the closest matching passages regardless of ownership. Filter at retrieval before the model sees anything, check permissions at query time, and test adversarially with two accounts.
-
-### Is my data used to train the AI model?
-
-It depends entirely on your provider tier. Many default consumer tiers permit training on inputs; enterprise tiers usually do not. The difference is contractual, not technical. Check what your production system actually uses — the common pattern is a prototype built on a permissive personal account that quietly becomes the production integration.
+Google's own terms say no. For unpaid services, Google may use submitted content to improve its products, human reviewers may read it, and the terms say not to submit sensitive, confidential or personal information. On paid services, Google says it does not use prompts or responses to improve its products.
 
 ### Are vector embeddings anonymous?
 
-No. Text can be partially reconstructed from embeddings, so a vector database should be treated as containing the source data — including for data residency purposes. Teams that classify their document store carefully and then treat the vector index as derived metadata have misclassified it.
+No. A 2023 study by Morris and colleagues recovered 92% of 32-token inputs exactly from their embeddings. Treat a vector database as holding the original text for retention, deletion and data residency purposes.
 
-### What should I log in an AI system?
+### Is calling a foreign AI API a cross-border transfer under Saudi PDPL?
 
-Enough to answer "what data went where" without creating a second sensitive data store. Record that a request happened, its size, and which feature made it. Be careful with debug traces that capture full prompts — these frequently ship to third-party logging services in other countries, which is an undocumented cross-border transfer.
+If the request contains personal data and the model runs outside the Kingdom, treat it as one. SDAIA's transfer regulation permits transfers under adequacy or safeguards such as standard contractual clauses, and requires a risk assessment for sensitive data or continuous or large-scale transfers. Confirm the basis for your setup with counsel.
 
-### What is the single most effective AI security control?
+### How do I stop a RAG assistant leaking documents between users?
 
-Limiting tool capability. Most severe AI incidents require the model to take an action — sending, deleting, paying, changing permissions. A model that lacks the capability cannot be tricked into using it, which is why architecture beats filtering. Ask what the worst instruction the model could follow would do, then remove that capability.
+Filter by the user's permissions at retrieval time, before anything reaches the model, and check those permissions at query time rather than at indexing time. Then test it with two accounts holding different documents and try to retrieve one from the other.
 
 ---
 
-## Conclusion
+## Settle it before you integrate
 
-**Assume injection will succeed and design for it.** You cannot reliably prevent it; you can ensure a successful injection cannot do anything expensive.
+Assume injection will succeed and limit what it could do. Filter retrieval by user with a hard constraint. And read the retention and training terms of the exact tier you will run in production before the first real customer message goes through it.
 
-**Filter retrieval by user with a hard constraint.** Cross-user leakage is a retrieval bug, and instructing the model to be discreet is not a permission system.
-
-**And settle retention and training terms before integrating**, not after. Data in a training corpus is not recoverable, and the prototype-becomes-production path is how most teams get there without noticing.
-
-**Building an AI feature with sensitive data?** [Get in touch](/en/contact) — we scope the controls alongside the feature rather than after. See our [AI solutions](/en/services/ai-solutions).
+Building an assistant over customer or employee data? [Send us the use case](/en/contact) and we will map the data flows and controls before any code is written.

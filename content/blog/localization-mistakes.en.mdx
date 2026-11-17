@@ -1,12 +1,12 @@
 ---
-{"slug":"localization-mistakes","title":"12 Arabic Localisation Mistakes and How to Fix Them","seoTitle":"Common Arabic Localisation Mistakes","excerpt":"The mistakes that make an Arabic app feel translated rather than native — each with the symptom, the cause, and the fix.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"localization-mistakes","title":"12 Arabic Localisation Mistakes and How to Fix Them","seoTitle":"Common Arabic Localisation Mistakes","excerpt":"The mistakes that make an Arabic app feel translated rather than native — each with the symptom, the cause, and the fix.","categories":["arabic"],"keywords":["Arabic localisation mistakes","RTL bugs","letter-spacing Arabic","Arabic plurals","localization errors","i18n mistakes"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["The twelve mistakes that most often make an Arabic product feel translated are letter-spacing on Arabic text, a separate RTL stylesheet, wrong icon mirroring, mixed digit systems, fixed-height components, hard-coded strings, two plural forms instead of six, concatenated sentences, broken bidirectional punctuation, unreviewed machine translation, English-only backend messages and translated keyword lists.","Letter-spacing on Arabic breaks the joins between letters; MDN warns it may lead to the text looking broken, so set letter-spacing: 0 for Arabic.","Arabic has six CLDR plural categories (zero, one, two, few, many, other), so an i18n setup that only knows singular and plural produces wrong Arabic for most quantities.","Most of these mistakes are prevented by three early habits: an i18n layer in phase one, logical CSS properties or directional widgets from the first component, and RTL testing with real Arabic text from week one."],"sources":[{"title":"MDN — letter-spacing: internationalization concerns","url":"https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing"},{"title":"W3C Internationalization — Structural markup and right-to-left text in HTML","url":"https://www.w3.org/International/questions/qa-html-dir"},{"title":"Unicode CLDR — Language plural rules","url":"https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html"},{"title":"W3C Internationalization — Inline markup and bidirectional text in HTML","url":"https://www.w3.org/International/articles/inline-bidi-markup/"},{"title":"Flutter API — IconData.matchTextDirection","url":"https://api.flutter.dev/flutter/widgets/IconData/matchTextDirection.html"}]}
 ---
 
 # 12 Arabic Localisation Mistakes and How to Fix Them
 
-Every one of these has shipped in a real product. Most are individually small, and collectively they are the difference between an app Arabic users trust and one they describe as "translated."
+The mistakes that make an Arabic product feel translated rather than native are, in short: letter-spacing on Arabic text, a separate RTL stylesheet, mirroring the wrong things, mixed digit systems, fixed-height components, hard-coded strings, two plural forms instead of six, concatenated sentences, broken bidirectional punctuation, unreviewed machine translation, English backend messages, and translated keyword lists. Each one below comes with its symptom, its cause and its fix.
 
-They are ordered by how often they occur, not by severity. For the underlying method, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide).
+Most are individually small; together they are the difference between an app Arabic users trust and one they describe as "translated". For the underlying method, see the [complete Arabic localisation guide](/en/blog/arabic-localization-guide). If you are building rather than fixing, we avoid this list by design in our [mobile app](/en/services/mobile-apps) and [web development](/en/services/web-development) work.
 
 ---
 
@@ -16,29 +16,29 @@ They are ordered by how often they occur, not by severity. For the underlying me
 
 **Cause:** a `letter-spacing` value inherited from a design system built for Latin type.
 
-**Why it matters more than it sounds:** Arabic is cursive. Letters connect and change shape by position. Adding letter-spacing severs those connections, so the text is not merely oddly spaced — it is visually wrong in a way every native reader notices instantly.
+**Why it matters more than it sounds:** Arabic letters join and change shape by position. MDN's [`letter-spacing` reference](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing) notes that Arabic-script text expects connected letters to stay connected and that letter spacing "may lead to the text looking broken". Every native reader notices it instantly.
 
-**Fix:** `letter-spacing: 0` for all Arabic text. Audit your design tokens, because this usually comes from a global heading style rather than an intentional decision.
+**Fix:** `letter-spacing: 0` for all Arabic text (`letterSpacing: 0` in React Native). Audit your design tokens, because this usually comes from a global heading style rather than a deliberate decision.
 
 ---
 
 ## 2. A separate RTL stylesheet
 
-**Symptom:** RTL layout is correct for old components and broken for anything added in the last few months.
+**Symptom:** RTL layout is correct for older components and broken for anything added recently.
 
 **Cause:** `styles-rtl.css` overriding physical properties. Every new component needs two implementations, and only one gets tested.
 
-**Fix:** [logical CSS properties](/en/blog/rtl-css-guide). `margin-inline-start` instead of `margin-left`, one stylesheet, correct in both directions. Add a lint rule banning physical properties in new code and convert existing components as you touch them.
+**Fix:** [logical CSS properties](/en/blog/rtl-css-guide) — `margin-inline-start` instead of `margin-left` — so one stylesheet is correct in both directions. Add a lint rule rejecting physical properties in new code and convert existing components as you touch them.
 
 ---
 
-## 3. Mirroring things that must not mirror
+## 3. Mirroring the wrong things
 
-**Symptom:** the play button points left. The clock runs backwards. Phone numbers display with the country code at the wrong end.
+**Symptom:** the play button points left, the clock looks reversed, phone numbers show the country code at the wrong end — or, in Flutter, back arrows point left in Arabic.
 
-**Cause:** a blanket `transform: scaleX(-1)` applied to all icons under RTL.
+**Cause:** a blanket `transform: scaleX(-1)` applied to all icons under RTL; or, in Flutter, wrapping Material icons in `Transform.flip` even though icons such as `Icons.arrow_back` are defined with [`matchTextDirection: true`](https://api.flutter.dev/flutter/widgets/IconData/matchTextDirection.html) and already mirror themselves.
 
-**Fix:** flip only directional icons — back arrows, next/previous, send. Media controls, clocks, charts with a time axis, and anything where character order carries meaning stay as they are.
+**Fix:** flip only directional icons that do not already mirror — custom back arrows, next/previous chevrons, send icons. Media controls, clocks, time-axis charts and anything where character order carries meaning stay as they are. [Arabic and RTL in Flutter](/en/blog/flutter-rtl-arabic-guide) shows the correct pattern.
 
 ---
 
@@ -46,9 +46,9 @@ They are ordered by how often they occur, not by severity. For the underlying me
 
 **Symptom:** a price in `١٢٣` beside an order number in `123`.
 
-**Cause:** no single decision about numerals, so different developers made different choices.
+**Cause:** no single decision about digits, so different developers — or different locale defaults — made different choices. In current ICU data, for example, `ar-SA` defaults to Eastern Arabic digits while `ar-AE` defaults to Western ones.
 
-**Fix:** choose one system, put it in locale configuration, and never hardcode a digit. Use `Intl.NumberFormat` with an explicit numbering system — see [Arabic numerals and formats](/en/blog/arabic-numerals-formats).
+**Fix:** choose one system, set it explicitly (`ar-SA-u-nu-latn` or `-u-nu-arab` with `Intl.NumberFormat`), and never hard-code a digit — see [Arabic numerals and formats](/en/blog/arabic-numerals-formats).
 
 ---
 
@@ -56,49 +56,49 @@ They are ordered by how often they occur, not by severity. For the underlying me
 
 **Symptom:** Arabic text clipped in buttons and cards, or overflowing its container.
 
-**Cause:** components sized around English text. Arabic is often shorter in character count but taller in rendered height, and it needs more line-height.
+**Cause:** components sized around English text. Arabic strings differ in length and render taller, and Arabic needs more line height.
 
 **Fix:** `min-height` instead of `height`, and test every component with real Arabic content — not with Latin placeholder text, which hides the problem entirely.
 
 ---
 
-## 6. Hardcoded strings found during QA
+## 6. Hard-coded strings found during QA
 
 **Symptom:** English text appearing in an otherwise Arabic interface, discovered late and scattered everywhere.
 
 **Cause:** no i18n layer at the start, so strings went straight into components.
 
-**Fix:** build the [i18n layer](/en/blog/i18n-arabic-guide) in phase one. Check the places strings hide: validation messages, email templates, error handlers, chart labels, PDF generators, and push notification text.
+**Fix:** build the [i18n layer](/en/blog/i18n-arabic-guide) in phase one. Check where strings hide: validation messages, email templates, error handlers, chart labels, PDF generators and push notification text.
 
 ---
 
 ## 7. Two plural forms instead of six
 
-**Symptom:** Arabic quantities read as grammatically wrong to native speakers, particularly for two items.
+**Symptom:** Arabic quantities read as grammatically wrong to native speakers, especially for two items.
 
-**Cause:** an i18n setup that handles only singular and plural, because that is what English needs. Arabic has six CLDR plural categories: zero, one, two, few, many, other.
+**Cause:** an i18n setup that only handles singular and plural, because that is what English needs. The [CLDR plural rules](https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html) give Arabic six categories: zero, one, two, few (3–10), many (11–99) and other.
 
-**Fix:** verify your library supports CLDR plural rules and define all six forms. The dual form for exactly two is the one most noticeably missing.
+**Fix:** use a library built on `Intl.PluralRules` or ICU MessageFormat and write all six forms. The dual for exactly two is the one most noticeably missing.
 
 ---
 
 ## 8. Concatenated sentence fragments
 
-**Symptom:** Arabic sentences with words in nonsensical order.
+**Symptom:** Arabic sentences with words in the wrong order.
 
 **Cause:** building sentences from pieces — `t("youHave") + count + t("items")` — which assumes English word order.
 
-**Fix:** one string per sentence with named interpolation variables. Never assemble sentences from translated fragments.
+**Fix:** one string per sentence with named placeholders. Never assemble sentences from translated fragments.
 
 ---
 
 ## 9. Broken bidirectional punctuation
 
-**Symptom:** a full stop appearing at the start of a line, or a currency symbol on the wrong side of a price.
+**Symptom:** a full stop on the wrong side of a sentence, a `#` detached from its order code, or a currency symbol on the wrong side of a price.
 
-**Cause:** Latin text or numbers embedded in Arabic without isolation. The bidirectional algorithm resolves neutral characters against surrounding context.
+**Cause:** a missing or wrong base direction, or Latin text and numbers embedded in Arabic without isolation, so neutral characters resolve against the surrounding text.
 
-**Fix:** wrap embedded content in `<bdi>`, force `dir="ltr"` on phone numbers and IBANs, and use `Intl.NumberFormat` for currency rather than concatenating a symbol and a number.
+**Fix:** `dir="rtl"` on Arabic containers; `<bdi>` around embedded or user-generated text, as the W3C's [inline bidi guidance](https://www.w3.org/International/articles/inline-bidi-markup/) recommends; `dir="ltr"` on phone numbers and IBANs; the U+2066 … U+2069 isolate characters in mobile and plain-text strings; and `Intl.NumberFormat` for currency rather than concatenating a symbol and a number.
 
 ---
 
@@ -108,7 +108,7 @@ They are ordered by how often they occur, not by severity. For the underlying me
 
 **Cause:** treating translation as a mechanical step rather than a content step.
 
-**Fix:** machine translation is a reasonable first draft for volume content. Always have a fluent speaker review before release. It cannot make register decisions or adapt examples, and those are where perceived quality lives.
+**Fix:** machine translation can be a first draft for volume content. Always have a fluent reader review before release; it cannot make register decisions or adapt examples, and that is where perceived quality lives.
 
 ---
 
@@ -118,7 +118,7 @@ They are ordered by how often they occur, not by severity. For the underlying me
 
 **Cause:** localisation scoped to the interface only.
 
-**Fix:** include emails, SMS, PDF documents, and API error messages in the translation scope from the start. This is the single most commonly overlooked surface.
+**Fix:** include emails, SMS, PDF documents and API error messages in the translation scope from the start. They are among the most commonly overlooked surfaces.
 
 ---
 
@@ -126,34 +126,30 @@ They are ordered by how often they occur, not by severity. For the underlying me
 
 **Symptom:** Arabic content that ranks for nothing.
 
-**Cause:** translating the English keyword list literally. Arabic speakers search with different phrasings, and frequently mix Arabic and English in one query.
+**Cause:** translating the English keyword list literally. Arabic speakers phrase queries differently and often mix Arabic and English.
 
-**Fix:** do Arabic keyword research independently, as an original exercise rather than a translation. See [SEO vs GEO](/en/blog/seo-vs-geo). The same applies inside your product — see [Arabic search](/en/blog/arabic-search-guide) for why exact matching fails.
+**Fix:** do Arabic keyword research independently, as an original exercise rather than a translation — see [SEO vs GEO](/en/blog/seo-vs-geo). The same applies inside your product: [Arabic search](/en/blog/arabic-search-guide) explains why exact matching fails.
 
 ---
 
 ## The pattern behind all twelve
 
-Ten of these twelve are cheap to prevent and expensive to fix, and the reason is the same in every case: **they are decisions baked into the first weeks of a project.**
-
-Design tokens, style property conventions, the i18n layer, and translation scope are all set early and touched by everything afterwards. Changing them later means revisiting every component.
+Most of these are cheap to prevent and expensive to fix, for the same reason: **they are decisions baked into the first weeks of a project.** Design tokens, style conventions, the i18n layer and translation scope are set early and touched by everything afterwards.
 
 **The three habits that prevent most of this list:**
 
 1. **Build the i18n layer in phase one**, whatever your launch language.
-2. **Use logical properties from the first component.**
+2. **Use logical properties or directional widgets from the first component.** The W3C's [guidance on RTL markup](https://www.w3.org/International/questions/qa-html-dir) recommends writing styles with start and end rather than left and right for exactly this reason.
 3. **Test in RTL in week one**, with real Arabic text, not placeholder Latin.
-
-None of these costs meaningful time upfront. Together they eliminate most of what appears above.
 
 ---
 
 ## Related reading
 
-- [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers and what it costs.
+- [Complete Arabic localisation guide](/en/blog/arabic-localization-guide) — the six layers and how to budget them.
 - [RTL in CSS](/en/blog/rtl-css-guide) — logical properties in depth.
 - [i18n for Arabic products](/en/blog/i18n-arabic-guide) — plurals and workflow.
-- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — digits, currency, bidirectional text.
+- [Arabic numerals and formats](/en/blog/arabic-numerals-formats) — digits, currency and bidirectional text.
 - [Arabic search](/en/blog/arabic-search-guide) — why search misses obvious results.
 - [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic) — mobile specifics.
 
@@ -161,42 +157,38 @@ None of these costs meaningful time upfront. Together they eliminate most of wha
 
 ## Frequently asked questions
 
-### Why does my Arabic text look disconnected?
+### Why do the letters in my Arabic heading look disconnected?
 
-Letter-spacing. Arabic is cursive, so letters connect and change shape by position, and any non-zero letter-spacing severs those connections. Set `letter-spacing: 0` for Arabic text, and check your design tokens — it usually comes from a global heading style rather than a deliberate choice.
+Letter-spacing. Arabic letters join, and any non-zero letter-spacing separates them; MDN warns it may make Arabic text look broken. Set `letter-spacing: 0` for Arabic, and check your design tokens — it usually comes from a global heading style.
 
-### What is the most common Arabic localisation mistake?
+### Why do back arrows point the wrong way in my Flutter app?
 
-Applying letter-spacing to Arabic text, closely followed by maintaining a separate RTL stylesheet. Both come from applying Latin typography and CSS habits to a script that works differently, and both are avoidable with a single convention decision at the start.
+Probably because they are flipped twice. Material icons such as `Icons.arrow_back` are defined with `matchTextDirection: true`, so `Icon` already mirrors them in RTL; an extra `Transform.flip` reverses them again. Remove the wrapper and keep manual flipping for your own SVGs and images.
 
 ### Why is my Arabic text getting clipped in buttons?
 
-The component has a fixed height sized around English text. Arabic renders taller and needs more line-height, so it overflows or clips. Use `min-height` instead of `height`, and test with real Arabic content rather than Latin placeholder text, which hides the problem.
+The component has a fixed height sized around English text. Arabic renders taller and needs more line height, so it overflows or clips. Use `min-height` instead of `height` and test with real Arabic content.
 
-### Why do I only need two plural forms in English but six in Arabic?
+### Why does Arabic need six plural forms when English needs two?
 
-Arabic grammar distinguishes zero, one, two, few, many, and other as separate categories, including a specific dual form for exactly two. An i18n setup built for English handles only singular and plural, so it produces grammatically wrong Arabic for most quantities — and the error is invisible to reviewers who do not read Arabic.
+Arabic grammar distinguishes zero, one, two, few, many and other, including a dual for exactly two. The CLDR rules map numbers to each category, for example `few` for 3–10 and `many` for 11–99. An i18n setup built for English only knows singular and plural, so most Arabic quantities come out wrong.
 
-### Can I fix these problems after launch?
+### Which of these mistakes are expensive to fix after launch?
 
-Some, cheaply — letter-spacing and icon mirroring are quick. But the expensive ones are architectural: the i18n layer, physical style properties, and fixed-height components are decisions touched by every part of the codebase. Retrofitting typically costs three times what building it in would have.
+The architectural ones: a missing i18n layer, physical style properties, and fixed-height components, because every part of the codebase touches them. Letter-spacing and icon mirroring are quick fixes by comparison.
 
 ### Why does my Arabic content not rank in search?
 
-Usually because the keywords were translated from an English list rather than researched independently. Arabic speakers search with different phrasings and frequently mix Arabic and English in one query, so a literal translation of English keywords produces content matching queries nobody types.
+Usually because the keywords were translated from an English list rather than researched in Arabic. Arabic speakers phrase queries differently and often mix Arabic and English, so a literal translation targets queries nobody types.
 
-### What should I do first if my Arabic app already has these problems?
+### My Arabic app already has these problems. Where do I start?
 
-Fix the typography issues first — letter-spacing and line-height are quick and produce the most visible improvement. Then add a lint rule preventing new physical CSS properties, so the problem stops growing while you convert existing components as you touch them.
+With the typography: letter-spacing and line height are quick and give the most visible improvement. Then add a lint rule that blocks new physical CSS properties, so the problem stops growing while you convert existing components.
 
 ---
 
-## Conclusion
+## Where to begin
 
-**Most of this list is decided in the first two weeks of a project.** Design tokens, CSS conventions, the i18n layer, and translation scope are all early decisions that everything afterwards depends on.
+Fix what readers see first — letter-spacing, line height, icon direction, digits — then stop the architectural mistakes from spreading with an i18n layer and logical properties. Nearly every item above is obvious at a glance to someone reading Arabic on a real device, and nearly invisible to a team reviewing Latin placeholder text.
 
-**The typography mistakes are the most visible and the cheapest to fix.** If your Arabic app has problems today, start with letter-spacing and line-height.
-
-**And test in RTL with real Arabic content in week one.** Nearly every item above is obvious on first sight to someone reading Arabic on a real device — and nearly invisible to a team reviewing Latin placeholder text.
-
-**Want a review of your Arabic product?** [Get in touch](/en/contact) — we build Arabic-first, so this list is a checklist we run rather than a set of problems we discover. See our [mobile app](/en/services/mobile-apps) and [web development services](/en/services/web-development).
+If you want this list run against your own product, [ask us for a localisation review](/en/contact) and we will send back the issues we find, ordered by what to fix first.

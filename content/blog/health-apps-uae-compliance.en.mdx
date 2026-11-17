@@ -1,169 +1,197 @@
 ---
-{"slug":"health-apps-uae-compliance","title":"Health Apps in the UAE: Dubai Health Authority Requirements","seoTitle":"Health Apps in the UAE: DHA Rules","excerpt":"Building a health app in Dubai — DHA licensing, data residency, NABIDH integration, and technical requirements.","date":"2026-06-26","dateModified":"2026-06-26"}
+{"slug":"health-apps-uae-compliance","title":"Health Apps in the UAE: Dubai Health Authority Requirements","seoTitle":"Health Apps in the UAE: DHA Rules","excerpt":"Building a health app in Dubai — DHA licensing, data residency, NABIDH integration, and technical requirements.","categories":["compliance"],"keywords":["health apps UAE","Dubai Health Authority","DHA","telehealth","NABIDH"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["In Dubai, telehealth may only be offered through a DHA-licensed health facility, under the DHA Standards for Telehealth Services version 4, which took effect on 26 November 2025.","DHA requires telehealth platforms to be approved by DHA, to store all data with a DESC-certified cloud provider in the UAE, and to hold ISO 27001 and HIPAA compliance certification.","Health data related to health services provided in the UAE may not be stored or transferred outside the country except in the cases listed in Ministerial Decision No. 51 of 2021, which the DHA standard applies under Federal Law No. 2 of 2019.","Dubai providers' health record systems must integrate with NABIDH; Abu Dhabi's health information exchange is Malaffi, under the Department of Health – Abu Dhabi, so a multi-emirate app has to check each regulator separately."],"sources":[{"title":"DHA — Standards for Telehealth Services, Version 4 (effective 26 November 2025)","url":"https://dha.gov.ae/uploads/012023/Standards%20for%20Telehealth%20Services2023158613.pdf"},{"title":"UAE Government portal — ICT in the health sector (Federal Law No. 2 of 2019)","url":"https://u.ae/en/about-the-uae/digital-uae/whole-of-government-approach/digital-health/ict-in-the-health-sector"},{"title":"UAE Government portal — Digital health ecosystem (NABIDH, Malaffi, Riayati)","url":"https://u.ae/en/about-the-uae/digital-uae/whole-of-government-approach/digital-health/Digital-health-ecosystem"},{"title":"Malaffi — About the Abu Dhabi health information exchange","url":"https://malaffi.ae/about/"},{"title":"UAE Government portal — Data protection laws","url":"https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws"}]}
 ---
 
 # Health Apps in the UAE: Dubai Health Authority Requirements
 
-Building a health app in Dubai is not purely a technical project — **licensing and compliance precede code**, and ignoring them means a well-engineered platform you cannot legally operate.
+**To run a telehealth app in Dubai you need a Dubai Health Authority (DHA) licensed health facility, a DHA-approved platform that stores its data in the UAE with a DESC-certified cloud provider, and ISO 27001 and HIPAA compliance certification for that platform.** Those rules come from the [DHA Standards for Telehealth Services, version 4](https://dha.gov.ae/uploads/012023/Standards%20for%20Telehealth%20Services2023158613.pdf), issued on 26 September 2025 and in effect since 26 November 2025. Federal health-data law applies on top, and Abu Dhabi has its own regulator.
 
-This guide explains the requirements as published and what each means for the technical build.
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-> **Health licensing stacks on top of UAE data protection law.** For how the region's regimes compare and which applies to you, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
-
-> **Important note:** health regulatory frameworks in the UAE evolve quickly — an **updated telehealth standard took effect in November 2025**. **Consult a specialist legal advisor and the regulator directly** before relying on any interpretation here.
+This article covers Dubai in detail because DHA's standard is the one we could read in full. The federal and Abu Dhabi sections are shorter and say plainly where you need to check with the regulator. For how health licensing sits on top of data protection law, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide). If you are scoping the build itself, our [mobile app development service](/en/services/mobile-apps) starts from these constraints.
 
 ---
 
-## First: licensing precedes technology
+## 1. Licensing comes before code (Dubai)
 
-This point surprises many founders. The technical platform alone is not enough:
+The DHA standard is explicit that the platform alone is not enough:
 
-**1. Facility licence.** The organisation must obtain a facility licence from the [Dubai Health Authority](https://www.dha.gov.ae/) to provide regulated health services. Without it, patients cannot be treated however good the platform.
+**A licensed facility.** "The provision of telehealth services shall only be offered through a DHA licensed telehealth facility" (section 7.1). DHA's licence categories are a standalone telehealth centre, telehealth added to an existing facility, an added booth, and telehealth platforms (section 7.2.1).
 
-**2. Telehealth as an approved scope of service.** It is not automatically assumed within a facility licence — it must be explicitly approved as a scope of service.
+**A platform licence is not a clinical licence.** A telehealth platform's role is limited to a DHA-approved tool that connects licensed facilities to patients. Platforms may not deliver clinical services, may not operate as a healthcare provider, and may not recruit clinicians to deliver care through the platform (sections 7.8–7.8.3).
 
-**3. Individual professional licences.** Every doctor providing consultations on your platform needs an individual professional licence from the authority.
+**Platform approval.** Every telehealth platform must be assessed and approved by DHA before in-house or go-to-market use. It also needs legal representation in Dubai with a trade licence and an assigned Business Technical Director (sections 7.6.2–7.6.4).
 
-**4. A licensed medical director.** Appointed to oversee clinical operations.
+**Licensed clinicians and a medical director.** Physicians must be DHA-licensed, including those residing outside the UAE who consult patients in the UAE (section 6.2). The standard defines the medical director as a DHA-licensed physician or dentist with clinical oversight of the facility.
 
-**What this means for you as a product owner:** if you are a technology company building a platform, you most likely **need a licensed partner** or your own licence. Start that path early — the licensing cycle is often longer than the development cycle.
+**Accreditation.** Telehealth providers must obtain telehealth accreditation within 24 months of initial licensure or licence renewal (section 5.2.2). The standard names QAI, EIAC, JCI, URAC and NCQA as examples of accrediting bodies (section 5.3).
+
+**What this means for a technology company:** you either partner with a DHA-licensed facility that carries the clinical licence, or you obtain one yourself. Start that track during design, not after the build.
 
 ---
 
-## Second: data residency — an architectural constraint, not an option
+## 2. Data residency is an architectural constraint
 
-**Health data generated in Dubai must remain inside UAE borders** unless specific government approval is granted.
+The DHA standard puts it in one line: "The storage, development, or transfer health data and health-related information outside the UAE is prohibited unless approved by DHA" (section 8.2.5(d)).
 
-**And critically:** this covers **live databases, backups, logs, and failover servers** — not the primary database alone.
+For platforms it adds concrete hosting rules (section 7.6.7):
 
-**What this means technically:**
+- Data storage must comply with Federal Law No. 2 of 2019 on the use of ICT in health fields.
+- All data centres must be at least Tier 3 certified.
+- All data must be stored on a server at a cloud service provider certified by the Dubai Electronic Security Centre (DESC) in the UAE.
+- Health data related to services provided in the UAE may not be stored, developed or transferred outside the country, except in the cases in Article 2 of Ministerial Decision No. 51 of 2021.
 
-| Item | What to verify |
+**What to verify technically:**
+
+| Item | What to check |
 |---|---|
-| **Hosting** | A data region inside the UAE |
-| **Backups** | Not automatically replicated to external regions |
-| **Logs** | Your logging service may store outside the country |
-| **Analytics** | Many tools process externally |
-| **Notifications and email** | External providers move data |
-| **AI** | Passing data to an external model is a transfer |
+| Hosting | A DESC-certified provider and a UAE region, Tier 3 or above |
+| Backups | Not replicated to a region outside the UAE |
+| Logs | Your logging or error-tracking service does not ship records abroad |
+| Analytics | The tool processes data in the UAE, or receives no health data |
+| Notifications and email | External providers do not carry clinical content |
+| AI | Sending patient data to a model hosted abroad is a transfer |
 
-> **The most common mistake:** verifying the primary database location and feeling reassured. **Most default cloud configurations replicate backups geographically** for resilience — a transfer that breaches the requirement without you noticing. See our [hosting comparison guide](/en/blog/hosting-comparison).
-
----
-
-## Third: integration with the health information exchange
-
-The service must integrate with the emirate's health information exchange — **NABIDH in Dubai**.
-
-**What this means for the build:**
-- Planning your data architecture to align with health exchange standards.
-- Allocating time and budget for the integration and approval cycle — typically longer than estimated.
-- **Design for this from the start**; restructuring your data model after building is very expensive.
+> **The mistake to avoid:** checking where the primary database lives and stopping there. Backups, logs and failover copies are data too. The [data residency guide](/en/blog/data-residency-gulf) walks through the places residency usually breaks.
 
 ---
 
-## Fourth: the published technical requirements
+## 3. Integration with NABIDH
 
-**Encryption in transit and at rest.** Not optional.
+Dubai's health information exchange is NABIDH, which the [UAE Government portal](https://u.ae/en/about-the-uae/digital-uae/whole-of-government-approach/digital-health/Digital-health-ecosystem) describes as developed by DHA. The telehealth standard requires the IT infrastructure to integrate with the provider's electronic health record system, and the health records system "shall integrate with Nabidh" (section 7.9.1(e)).
 
-**Multi-factor authentication.** For clinicians and administrators at minimum.
-
-**A recognised security certification** such as ISO 27001. This is a requirement rather than a marketing badge — and obtaining it takes months, so start early.
-
-**Arabic and English support.** Interfaces must work in both languages — meaning correct RTL support rather than translated text. See our [Flutter RTL guide](/en/blog/flutter-rtl-arabic-guide).
+**For the build, that means:**
+- Model your clinical data so it can be exchanged with NABIDH from the first version.
+- Budget time for the integration and its approval as its own work item.
+- Restructuring a data model after launch costs far more than designing for the exchange up front.
 
 ---
 
-## Fifth: what makes your app "regulated"?
+## 4. Security and certification requirements
 
-Not every health app falls under the full framework. The difference lies in **clinical function**:
+**ISO 27001 and HIPAA are required for platforms.** The DHA standard states that "all platforms must have ISO 27001 compliance certification" and HIPAA compliance certification, and that some applicants may have to meet a higher bar such as HITRUST or SOC 2 with HIPAA alignment (section 7.6.7(c)–(e)). Certification takes months, so start it in parallel with development.
 
-| Type | Likely classification |
+**Encrypted platforms.** Physicians must use DHA-approved encrypted platforms (section 6.5.2), and patient consent must cover the security measures used, such as encryption, password protection and user authentication (section 10.2.3).
+
+**Approved communication channels.** Platforms must ensure all communication channels are approved by the TDRA (section 7.6.6).
+
+**Language.** The standard requires information for the patient in a language they can understand (section 9.6.3). In practice that means Arabic and English with correct right-to-left layout; see the [Flutter RTL guide](/en/blog/flutter-rtl-arabic-guide).
+
+**AI features.** Providers using AI, including ambient AI, are subject to specific requirements in line with DHA's AI policy (section 5.4).
+
+---
+
+## 5. Federal rules: Federal Law No. 2 of 2019 and MOHAP
+
+Federal Law No. 2 of 2019 on the use of ICT in health fields regulates ICT in the UAE healthcare sector "including its free zones", according to the [UAE Government portal](https://u.ae/en/about-the-uae/digital-uae/whole-of-government-approach/digital-health/ict-in-the-health-sector). It also lets the Ministry of Health and Prevention (MOHAP) collect, analyse and keep health information at national level. The in-country rule for health data that DHA applies comes from this law and Ministerial Decision No. 51 of 2021.
+
+The DHA standard also names several MOHAP roles that matter to a product team:
+
+- MOHAP approval for importing and using medical devices, for example in a telehealth booth (section 7.5.5(b)).
+- Equipment and technology for telehealth delivery approved by MOHAP (section 5.5.4).
+- Advertising for telehealth services must meet MOHAP's medical advertisement requirements (section 7.3).
+
+The [UAE Government portal](https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws) lists this health law separately from the federal Personal Data Protection Law (Federal Decree-Law No. 45 of 2021), and the DHA standard refers to both (section 11.1.1). **Questions for your lawyer:** how the two laws apply together to your data, and which of the Ministerial Decision 51 exceptions, if any, covers a transfer you plan.
+
+---
+
+## 6. Abu Dhabi: a different regulator and a different exchange
+
+Abu Dhabi's health regulator is the Department of Health – Abu Dhabi (DoH), and its health information exchange is [Malaffi](https://malaffi.ae/about/), which connects public and private providers in the emirate. The federal health-data law above applies in Abu Dhabi as well.
+
+We could not load DoH's own standards pages, so this article does not describe DoH's licensing or technical rules. **Put these to the regulator or your advisor before you build for Abu Dhabi:**
+
+- Which DoH facility or telemedicine licence covers your service model?
+- Does DoH's healthcare information and cyber security standard (ADHICS) apply to you, and to your hosting provider?
+- When and how must your system connect to Malaffi?
+- Does a DHA-approved platform need a separate approval to serve patients in Abu Dhabi?
+
+DHA's own standard says providers giving continuity of care to patients outside Dubai must meet the regulatory requirements of that jurisdiction (section 5.1.2). One build can serve both emirates, but expect two approval tracks.
+
+---
+
+## 7. What makes your app regulated?
+
+Do not assume a "light" health app is out of scope. DHA's standard lists **scheduling appointments** among telehealth services in its introduction, alongside assessment, medical advice, treatment, monitoring and prescribing. Whether your product counts as a telehealth service is a classification question to settle with DHA, not an engineering judgement.
+
+| Feature | Question to ask DHA |
 |---|---|
-| Appointment booking only | Usually outside the clinical framework |
-| Medication reminders | Depends on the level of guidance provided |
-| Electronic medical records | Subject to health data requirements |
-| Video consultation | **Telehealth — the full framework** |
-| Diagnosis or clinical decision support | **Most heavily regulated** |
+| Appointment booking only | Is this a telehealth service in our model, or a facility's admin tool? |
+| Medication reminders | Does the level of guidance make it clinical? |
+| Electronic medical records | Which storage, NABIDH and access rules apply? |
+| Video consultation | Teleconsultation: full facility, platform and clinician licensing |
+| Diagnosis or decision support | Telediagnostics or AI rules on top of the above |
 
-**The practical recommendation:** if your goal is booking and appointment management, **don't add clinical features in the first version**. You stay outside the heavier framework, launch faster, and carry far lower compliance cost. See our [clinic booking app cost guide](/en/blog/clinic-booking-app-cost).
+**The practical recommendation:** keep the first version narrow and get the classification in writing. Our [clinic booking app cost guide](/en/blog/clinic-booking-app-cost) prices the product side.
 
 ---
 
-## Impact on cost and timeline
+## Impact on timeline
 
 | Item | Impact |
 |---|---|
-| Licensing cycle | **Months** — often longer than development |
-| In-country hosting | Higher cost than global options |
-| Health exchange integration | A separate development line item |
-| Security certification | Months + audit cost |
-| Legal review | Practically mandatory |
-
-**The practical conclusion:** plan for a considerably longer timeline than an ordinary technical project. **Start the licensing path in parallel with design rather than after the build is complete.**
+| Facility or partner licensing | Runs in parallel with design; often longer than the build |
+| DHA platform approval | Required before go-to-market |
+| ISO 27001 and HIPAA certification | Months, plus audit cost |
+| Telehealth accreditation | Within 24 months of licensure or renewal |
+| NABIDH integration | A separate development and approval track |
+| In-country DESC-certified hosting | Narrows your choice of cloud provider |
 
 ---
 
-## Pre-start checklist
+## Pre-build checklist
 
-- [ ] Your app's regulatory classification determined precisely with a specialist advisor.
-- [ ] A clear licensing path — your own licence or partnership with a licensed facility?
-- [ ] Telehealth approved as a scope of service if it is in your plan.
-- [ ] Hosting inside the UAE — **including backups, logs, and failover**.
-- [ ] Every third-party service reviewed for data transfer.
-- [ ] An integration plan for the health information exchange.
-- [ ] Encryption in transit and at rest.
-- [ ] Multi-factor authentication.
-- [ ] The security certification path started.
-- [ ] Interfaces in Arabic and English with correct RTL support.
-- [ ] Documented access controls — who sees which patient data.
+- [ ] Regulatory classification of the app confirmed with DHA or a specialist advisor
+- [ ] Licensing path chosen: own facility licence or a licensed partner
+- [ ] DHA platform approval planned before launch
+- [ ] Hosting with a DESC-certified provider in the UAE, Tier 3 or above
+- [ ] Backups, logs, failover and every third-party service kept in the UAE
+- [ ] ISO 27001 and HIPAA certification work started
+- [ ] NABIDH integration designed into the data model
+- [ ] Encryption, authentication and documented access controls
+- [ ] Patient information in a language they understand, with correct RTL
+- [ ] Abu Dhabi (DoH and Malaffi) requirements checked separately if you serve that emirate
 
 ---
 
 ## Related reading
 
-- [Clinic booking app cost](/en/blog/clinic-booking-app-cost) — the numbers and features.
-- [Saudi PDPL compliance](/en/blog/pdpl-compliance-guide) — for comparison with the Saudi framework.
-- [Hosting and data residency](/en/blog/hosting-comparison) — the key architectural constraint here.
+- [Clinic booking app cost](/en/blog/clinic-booking-app-cost): the product budget.
+- [UAE data protection law](/en/blog/uae-data-protection-guide): the federal PDPL that sits alongside the health law.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf): where data must live.
+- [Hosting comparison](/en/blog/hosting-comparison): regional cloud options.
+- [Gulf app development guide](/en/blog/gulf-app-development-guide): working with teams in Dubai, Abu Dhabi and the wider region.
 
 ---
 
 ## Frequently asked questions
 
-### Do I need a licence if I'm only a technology company?
+### Can a technology company run a telehealth platform in Dubai without a clinical licence?
 
-A platform used to deliver a health service falls under the licensed facility framework. It is common for a technology company to operate **in partnership with a licensed health facility** that carries the clinical licence. Determine your model with a legal advisor before building.
+It can hold a telehealth platform licence, but that licence "does not grant the authority to operate as a healthcare provider", and platforms may not deliver clinical services or recruit clinicians (DHA standard, section 7.8). Care must come from a DHA-licensed facility, so the usual model is a platform partnered with a licensed facility.
 
-### Can I host on a global cloud?
+### Can a DHA telehealth platform run on AWS, Azure or Google Cloud?
 
-Yes, if you use a **data region inside the UAE** and verify that backups and logs are not replicated externally. Default configurations frequently distribute data geographically — review them explicitly rather than assuming compliance.
+Only if the setup meets the DHA rules: data stored on a server at a cloud provider certified by DESC in the UAE, in a Tier 3 or higher data centre, with no health data leaving the UAE outside the Ministerial Decision 51 of 2021 exceptions. Check the provider's DESC certification and turn off any cross-region backup or log shipping.
 
-### What is the difference between a booking app and a telehealth app?
+### Is ISO 27001 really mandatory for a Dubai telehealth platform?
 
-A booking app manages appointments only and usually sits outside the heavier clinical framework. Telehealth involves delivering remote medical consultation and enters the full framework: facility licence, approved scope of service, professional licences, and health information exchange integration.
+Yes. Section 7.6.7(d) of the DHA Standards for Telehealth Services says all platforms must have ISO 27001 compliance certification, and section 7.6.7(c) requires HIPAA compliance certification. DHA may ask some applicants for HITRUST or SOC 2 as well.
 
-### How long does licensing take?
+### Does an appointment-booking app fall under the DHA telehealth standard?
 
-It varies by case, but the realistic expectation is months rather than weeks — often longer than the development cycle itself. **Start the regulatory path in parallel with design**, not after the platform is complete.
+Possibly. The standard's introduction lists scheduling appointments among telehealth services. Ask DHA how it classifies your model before you build, and get the answer in writing.
 
-### Do the same requirements apply in Abu Dhabi?
+### Does DHA approval let me serve patients in Abu Dhabi?
 
-Not necessarily. Each emirate has its own regulator and health information exchange. If you target more than one emirate, verify each authority's requirements separately. See our [Abu Dhabi app development guide](/en/blog/app-development-abu-dhabi).
+Not by itself. DHA's standard says care for patients outside Dubai must meet that jurisdiction's requirements (section 5.1.2). Abu Dhabi is regulated by the Department of Health – Abu Dhabi and uses the Malaffi exchange, so check DoH's licensing and integration rules separately.
 
-### What about using AI in the app?
+### What changed when version 4 of the DHA telehealth standard took effect?
 
-AI components in a medical context carry additional requirements, and passing patient data to an external model is a data transfer subject to residency restrictions. Consult the regulator directly before building any diagnostic or clinical decision support feature.
+Version 4 took effect on 26 November 2025 and is due for revision on 26 September 2030. It covers licence categories for platforms and booths, hosting and certification rules for platforms, accreditation within 24 months, telehealth across borders, and specific rules for AI including ambient AI. If you built against an earlier version, compare your platform with sections 5 to 7.
 
 ---
 
-## Conclusion
+## Before you commit to an architecture
 
-**Licensing precedes code** — facility licence, approved telehealth scope, professional licences, and a medical director.
-
-**Data residency is an architectural constraint** covering backups, logs, and failover servers, not the database alone.
-
-**Health information exchange integration is designed in from the start** — restructuring later is expensive.
-
-**And if your goal is booking only, don't add clinical features in the first version.**
-
-**Building a health product in the UAE?** [Get in touch](/en/contact) — we discuss the regulatory side before the technical one. See [our services](/en/services).
+Licensing, DESC-certified hosting, ISO 27001 and HIPAA certification, and NABIDH integration each shape the design, and each takes longer than the code. Settle them while the architecture is still on paper. If you want an engineering read on a Dubai or Abu Dhabi health product, including which questions to take to DHA, DoH or your lawyer first, [talk to our team](/en/contact).

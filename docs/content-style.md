@@ -24,7 +24,7 @@ Write Arabic for Gulf business readers, not a translation of the English. Use:
 | الجوال | الموبايل |
 | مطور مستقل | فريلانسر |
 | الخادم / الواجهة الخلفية | الباك إند، الخادم الخلفي |
-| الإسناد الخارجي | التعهيد |
+| التعهيد الخارجي (the term the keyword map targets) | الإسناد الخارجي, except where a regulator's own text uses it |
 | فارق التوقيت | نطاق زمني قريب |
 | تقدير أولي مجاني | تقييم نطاق مجاني |
 | البيانات الحيوية | البيانات البيومترية |

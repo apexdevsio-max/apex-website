@@ -1,12 +1,12 @@
 ---
-{"slug":"writing-rfp-software","title":"Writing an RFP for a Software Project","seoTitle":"How to Write a Software RFP","excerpt":"How much detail a brief actually needs, what to specify and what to leave open, and why over-specifying costs you the best proposals — with a reusable structure.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"writing-rfp-software","title":"Writing an RFP for a Software Project","seoTitle":"How to Write a Software RFP","excerpt":"How much detail a brief actually needs, what to specify and what to leave open, and why over-specifying costs you the best proposals — with a reusable structure.","categories":["vendor"],"keywords":["software RFP","request for proposal","project brief","scoping a project","requirements document","software procurement"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["A good software RFP is about three pages long and has seven sections: context, the problem, users and roles, must-have versus nice-to-have, real constraints, success criteria, and the response process.","Specify the problem precisely and leave the solution open: name the users, what they need to do and your hard constraints, but not the framework, database or payment provider unless one is a genuine constraint.","State a budget range in the RFP, for example $15,000–$45,000 (SAR 56,500–169,000) for a mid-complexity app on our published rate card as of November 2026, and ask what is achievable within it.","Ask every bidder to list the assumptions their price depends on and to price the work in phases, and fix your evaluation criteria before you send the RFP."],"sources":[{"title":"GOV.UK — Digital Outcomes and Specialists buyers' guide (writing requirements)","url":"https://www.gov.uk/guidance/digital-outcomes-and-specialists-buyers-guide"},{"title":"SDAIA — Personal Data Protection Law (full text)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"}]}
 ---
 
 # Writing an RFP for a Software Project
 
-Most software briefs fail in one of two directions. Either they are a paragraph — "we need an app like Uber but for laundry" — which produces quotes that cannot be compared because every firm guessed differently. Or they are a sixty-page specification that prescribes the solution, which filters out every firm that would have proposed something better.
+**A software RFP needs about three pages and seven sections: context, the problem, users and roles, must-have versus nice-to-have, real constraints, success criteria, and the response process.** Specify the problem precisely and the solution loosely, state a budget range, and ask every bidder to list the assumptions behind their price. That combination makes quotes comparable without telling experienced teams how to do their job.
 
-**The short answer: specify the problem precisely and the solution loosely. A good brief makes quotes comparable without telling experienced teams how to do their job.**
+Most briefs fail in one of two directions. Either they are a paragraph — "we need an app like Uber but for laundry" — which produces quotes that cannot be compared because every firm guessed differently. Or they are a sixty-page specification that prescribes the solution, which filters out every firm that would have proposed something better.
 
 This guide covers what to include and, more usefully, what to leave out. For what happens after the proposals arrive, see [how to choose a development company](/en/blog/choosing-development-company).
 
@@ -18,7 +18,7 @@ A quote is a priced interpretation of your brief. Vague input produces divergent
 
 **What actually happens with a thin brief:**
 
-- Each firm assumes a different scope, so quotes vary by 300% for reasons unrelated to capability
+- Each firm assumes a different scope, so quotes differ widely for reasons unrelated to capability
 - The lowest quote usually assumed the least, which is why it later produces change requests
 - You cannot tell whether a high quote reflects rigour or padding
 
@@ -28,7 +28,7 @@ A quote is a priced interpretation of your brief. Vague input produces divergent
 
 ## Specify the problem, not the solution
 
-This is the distinction that separates useful briefs from counterproductive ones.
+This is the distinction that separates useful briefs from counterproductive ones. Public buyers are trained the same way: the UK government's [Digital Outcomes and Specialists buyers' guide](https://www.gov.uk/guidance/digital-outcomes-and-specialists-buyers-guide) tells departments to write requirements that "tell suppliers about your situation or problem" — the situation, not a design.
 
 | Over-specified (avoid) | Problem-stated (better) |
 |---|---|
@@ -45,7 +45,7 @@ This is the distinction that separates useful briefs from counterproductive ones
 
 ## What a brief needs
 
-Seven sections. Three pages is usually enough.
+Seven sections. Three pages is usually enough, whether you are briefing a [web platform](/en/services/web-development) or a [mobile app](/en/services/mobile-apps).
 
 **1. Context.** Who you are, what the business does, and why this project exists now. Two paragraphs. Firms that understand the business propose better solutions — and this is the section most briefs omit entirely.
 
@@ -55,11 +55,11 @@ Seven sections. Three pages is usually enough.
 
 **4. Must-have versus nice-to-have.** Be honest about the split. Everything marked essential means nothing is, and the quote reflects that. A clear MVP boundary is the single most cost-reducing thing in a brief — see [MVP or full product?](/en/blog/mvp-vs-full-product).
 
-**5. Real constraints.** Existing systems to integrate with, regulatory requirements, hosting or data residency rules, budget range, and deadline. State *why* for each.
+**5. Real constraints.** Existing systems to integrate with, regulatory requirements, hosting or data residency rules, budget range, and deadline. State *why* for each. If the system will process personal data of people in Saudi Arabia, say so: the [Personal Data Protection Law](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) applies to any processing of their data in the Kingdom, and Article 8 requires you to choose a processor that provides adequate safeguards — which bidders should address in their response. For hosting rules, see [data residency in the Gulf](/en/blog/data-residency-gulf).
 
 **6. Success criteria.** How you will know it worked. "Fifty percent of bookings come through the app within three months" is a criterion; "the app is successful" is not.
 
-**7. Process and timeline.** When proposals are due, how you will decide, and when you want to start.
+**7. Process and timeline.** When proposals are due, how you will decide, and when you want to start. Write down your evaluation criteria and their weighting *before* you send the brief. The same UK buyers' guide does not let public buyers change criteria or weightings after requirements are published — a good discipline for private buyers too, because it stops the most persuasive pitch from rewriting what you needed.
 
 ---
 
@@ -73,9 +73,11 @@ The most common objection to briefs: "if I state a budget, they will quote up to
 - You waste weeks discovering that everyone quoted double what you have
 - Serious firms decline to bid rather than guess, so you lose the ones worth having
 
-**What to say:** "Our budget is $25,000–$40,000. Tell us what is achievable in that range, and what you would recommend deferring."
+**What to say:** "Our budget is $15,000–$45,000 (SAR 56,500–169,000 / AED 55,000–165,500 / QAR 54,500–164,000). Tell us what is achievable in that range, and what you would recommend deferring."
 
-This turns the response into a useful conversation. A firm that says "that budget delivers the booking flow but not the analytics dashboard — here is what I would cut" is more valuable than one that quietly quotes a stripped version without telling you.
+That example is the mid-complexity app tier from our published rate card, as of November 2026. A simple app sits at $5,000–$15,000 and an advanced app or platform at $45,000–$100,000; see the [mobile app development cost guide](/en/blog/mobile-app-development-cost) to place your project.
+
+Stating a range turns the response into a useful conversation. A firm that says "that budget delivers the booking flow but not the analytics dashboard — here is what I would cut" is more valuable than one that quietly quotes a stripped version without telling you.
 
 **If you genuinely do not know**, say what the project is worth to you, or ask for tiered options. Both beat silence.
 
@@ -113,7 +115,7 @@ This does three things. It surfaces the scope gaps you did not know existed. It 
 3. The problem — what is broken, what it costs
 4. Users and roles — who does what
 5. Must-have / nice-to-have — clearly separated
-6. Constraints — systems, regulations, budget range, deadline
+6. Constraints — systems, regulations, data location, budget range, deadline
 7. Success criteria — how we will measure it
 8. What we want from you:
    - Phased scope and pricing
@@ -121,7 +123,7 @@ This does three things. It surfaces the scope gaps you did not know existed. It 
    - Who will work on it
    - Assumptions your price depends on
    - Two references
-9. Process — response deadline, decision date, start date
+9. Process — response deadline, evaluation criteria and weighting, decision date, start date
 ```
 
 ---
@@ -133,12 +135,13 @@ This does three things. It surfaces the scope gaps you did not know existed. It 
 - [Mobile app development cost](/en/blog/mobile-app-development-cost) — setting a realistic budget range.
 - [App development contracts](/en/blog/app-development-contract) — turning a proposal into an agreement.
 - [Freelancer or development agency?](/en/blog/freelancer-vs-agency) — who to send the brief to.
+- [Hiring a development team for the Gulf](/en/blog/gulf-app-development-guide) — country-specific requirements to put in the constraints section.
 
 ---
 
 ## Frequently asked questions
 
-### How detailed should a software RFP be?
+### How many pages should a software RFP be?
 
 Three pages is usually enough. Specify the problem precisely — users, roles, what they need to do, real constraints — and leave the solution open. Over-specifying implementation filters out firms that would have proposed something better, and under-specifying scope produces quotes that cannot be compared.
 
@@ -146,11 +149,11 @@ Three pages is usually enough. Specify the problem precisely — users, roles, w
 
 Yes, as a range. Withholding it means firms quote against their own assumed budget, so you receive proposals for projects you cannot afford or that are smaller than intended, and serious firms often decline to bid rather than guess. Say the range and ask what is achievable within it.
 
-### Why do quotes for the same project vary so much?
+### Why do quotes for the same brief vary so much?
 
-Usually because the brief left scope open and each firm assumed differently. A 300% spread is normal with a thin brief and has little to do with capability. Asking every firm to list the assumptions their price depends on makes the differences visible and the quotes comparable.
+Usually because the brief left scope open and each firm assumed differently. A wide spread is normal with a thin brief and has little to do with capability. Asking every firm to list the assumptions their price depends on makes the differences visible and the quotes comparable.
 
-### Should I specify the technology in my brief?
+### Should I name a framework or database in my brief?
 
 Only if it is a genuine constraint — an existing team, a system you must integrate with, a mandated hosting region — and then say why. Prescribing technology as a preference means you paid for expertise and then prevented its use, and firms will quote what you asked for even when they know something better fits.
 
@@ -162,18 +165,18 @@ Four or five. Fewer gives no pricing baseline; more becomes unmanageable and you
 
 You can, but good firms will decline, because it is unpaid consulting. If you want design work before committing, pay for a short discovery phase. That is often a sensible first engagement anyway, and it lets you evaluate how a firm actually works before signing for the full build.
 
-### What is the most useful thing to add to an RFP?
+### What single line most improves the proposals I receive?
 
 A line asking each firm to list the assumptions their price depends on and what would change it. It surfaces scope gaps you did not know existed, makes quotes genuinely comparable, and reveals which firms thought carefully about your project.
 
 ---
 
-## Conclusion
+## Before you send it
 
-**Precise on the problem, loose on the solution.** That combination gets you comparable quotes without excluding the firms that would have improved your plan.
+Run three checks on the draft:
 
-**State a budget range.** It is the single change that most improves the quality of responses, and withholding it costs more time than it protects.
+1. **Could a firm propose a different technology and still meet every requirement?** If not, you have specified a solution — unless the constraint is real and you said why.
+2. **Is there a budget range and a line asking for assumptions?** Those two lines do more for comparability than any extra page.
+3. **Are the evaluation criteria written down?** Decide how you will choose before the first proposal arrives.
 
-**And ask for assumptions.** One extra line turns a set of unexplained numbers into a set of comparable proposals — and shows you who actually read the brief.
-
-**Preparing a brief?** [Get in touch](/en/contact) — we are happy to review a draft before you send it out, including if you end up sending it to someone else. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).
+If you would like a second reader before it goes out, [send us your draft](/en/contact) and we will mark where bidders are likely to diverge — whether or not we end up among the firms you send it to.

@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = process.cwd();
 const EXTENSIONS = ["", ".ts", ".tsx", ".js", ".mjs", "/index.ts"];
 
-export async function resolve(specifier, context, nextResolve) {
+export function resolve(specifier, context, nextResolve) {
   if (specifier === "server-only") {
     return { url: "data:text/javascript,export {}", shortCircuit: true };
   }
@@ -29,7 +29,7 @@ export async function resolve(specifier, context, nextResolve) {
 }
 
 // JSON modules need an import attribute; the app imports dictionaries without one.
-export async function load(url, context, nextLoad) {
+export function load(url, context, nextLoad) {
   if (url.endsWith(".json")) {
     return nextLoad(url, { ...context, importAttributes: { type: "json" } });
   }

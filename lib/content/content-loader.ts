@@ -6,7 +6,7 @@ import { readdir, readFile, stat } from "fs/promises";
 
 import { CATEGORY_KEYS, isCategoryKey, type CategoryKey } from "@/lib/content/taxonomy";
 
-export type ServiceFaq = {
+type ServiceFaq = {
   question: string;
   answer: string;
 };
@@ -235,7 +235,7 @@ async function directoryExists(directory: string): Promise<boolean> {
  * and the old hand-maintained values were wrong on 13 articles (`flutter` said 6
  * minutes for ~2,600 words).
  */
-export function readingMinutes(markdown: string, locale: Locale): number {
+function readingMinutes(markdown: string, locale: Locale): number {
   const prose = markdown
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
