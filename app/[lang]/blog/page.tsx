@@ -5,14 +5,14 @@ import { getBlogPosts } from "@/lib/content/content-loader";
 import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { siteUrl } from "@/lib/seo/metadata";
 import {
-  JsonLd,
   buildOrganizationSchema,
   buildBlogSchema,
   buildBreadcrumbSchema,
 } from "@/lib/seo/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { BlogGrid } from "@/components/sections/BlogGrid";
 import { buildBlogCards } from "@/lib/content/blog-view";
-import { paginate } from "@/lib/content/taxonomy";
+import { getPrimaryCategory, paginate } from "@/lib/content/taxonomy";
 import { buildListingMetadata, listingCopy } from "./listing";
 
 type Props = { params: Promise<{ lang: string }> };
@@ -31,7 +31,13 @@ export default async function BlogPage({ params }: Props) {
   const lang = langParam;
   const isAr = lang === "ar";
   const posts = await getBlogPosts(lang);
-  const cards = buildBlogCards(posts, lang);
+  const cards = buildBlogCards(posts);
+  const searchIndex = posts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    category: getPrimaryCategory(post)?.label[lang] ?? "",
+  }));
   const { items, page, totalPages } = paginate(cards, 1);
 
   const copy = listingCopy(lang);
@@ -51,9 +57,9 @@ export default async function BlogPage({ params }: Props) {
         page={page}
         totalPages={totalPages}
         basePath={`/${lang}/blog`}
-        eyebrow={copy.eyebrow}
         heading={copy.heading}
         intro={copy.intro}
+        searchIndex={searchIndex}
       />
     </>
   );

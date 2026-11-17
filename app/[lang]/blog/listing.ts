@@ -11,11 +11,10 @@ import { POSTS_PER_PAGE } from "@/lib/content/taxonomy";
 export function listingCopy(lang: Locale) {
   const isAr = lang === "ar";
   return {
-    eyebrow: isAr ? "المدونة" : "Blog",
-    heading: isAr ? "مقالات تقنية متخصصة" : "Technical Articles & Insights",
+    heading: isAr ? "أدلة تطوير البرمجيات للسوق الخليجي" : "Software development guides for the Gulf",
     intro: isAr
-      ? "نشاركك خبراتنا في تطوير الويب، الموبايل، والذكاء الاصطناعي"
-      : "We share our expertise in web, mobile, and AI development",
+      ? "تكاليف مؤرخة، ومقارنات تقنية، ومتطلبات الامتثال في السعودية والإمارات وقطر، مكتوبة لمن يخطط لمشروع."
+      : "Dated costs, technical comparisons and compliance requirements in Saudi Arabia, the UAE and Qatar, written for people planning a project.",
   };
 }
 
@@ -39,18 +38,16 @@ export function buildListingMetadata({
 }): Metadata {
   const isAr = lang === "ar";
   const suffix = page > 1 ? (isAr ? ` — صفحة ${page}` : ` — Page ${page}`) : "";
+  const pageNote = page > 1 ? (isAr ? ` الصفحة ${page}.` : ` Page ${page}.`) : "";
 
   const base = buildPageMeta(lang, {
     title: isAr
       ? `المدونة — أدلة تطوير البرمجيات${suffix}`
       : `Blog — Software Development Guides${suffix}`,
     description: isAr
-      ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج — أسعار واقعية، مقارنات تقنية، ومتطلبات الامتثال المحلية."
-      : "Practical guides to app and web development costs in the Gulf — realistic pricing, technical comparisons, and local compliance requirements.",
+      ? `أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج: أسعار مؤرخة، مقارنات تقنية، ومتطلبات الامتثال المحلية.${pageNote}`
+      : `Practical guides to app and web development costs in the Gulf: dated pricing, technical comparisons and local compliance requirements.${pageNote}`,
     path,
-    keywords: isAr
-      ? ["مدونة تقنية", "تكلفة تطوير التطبيقات", "أدلة برمجية", "تطوير الويب", "الخليج"]
-      : ["technology blog", "app development cost", "developer guides", "web development", "Gulf market"],
   });
 
   // Feed autodiscovery: the `<link rel="alternate" type="application/rss+xml">`

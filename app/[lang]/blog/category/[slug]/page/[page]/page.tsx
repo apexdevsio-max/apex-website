@@ -18,7 +18,7 @@ export async function generateStaticParams() {
   const params: { lang: string; slug: string; page: string }[] = [];
 
   for (const lang of SUPPORTED_LOCALES) {
-    const cards = buildBlogCards(await getBlogPosts(lang), lang);
+    const cards = buildBlogCards(await getBlogPosts(lang));
     for (const category of CATEGORIES) {
       const total = pageCount(filterByCategory(cards, category.key).length);
       for (let page = 2; page <= total; page += 1) {

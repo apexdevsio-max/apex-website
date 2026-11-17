@@ -1,158 +1,127 @@
 "use client";
 
-import { useState, useRef, useEffect, type FormEvent } from "react";
-import { CheckCircle, Send, Mail, Loader2, AlertCircle } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { CheckCircle, Loader2, Mail, MessageCircle } from "lucide-react";
+
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 import { socialLinks } from "@/data/social-links";
-import { Reveal } from "@/components/ui/Reveal";
+import {
+  BUDGETS,
+  PROJECT_TYPES,
+  contactSchema,
+  fieldErrorCodes,
+  type ContactErrorCode,
+  type ContactField,
+  type FieldErrorCode,
+} from "@/lib/contact-contract";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 
-type Props = {
-  lang: Locale;
-  dictionary: Dictionary;
+type FormDict = Dictionary["contact"]["form"];
+type Values = Record<ContactField | "website", string>;
+type Errors = Partial<Record<ContactField, string>>;
+
+// Focus lands on the first invalid field in on-screen order.
+const FIELD_ORDER: ContactField[] = ["name", "email", "phone", "projectType", "budget", "description"];
+
+/** One message per field and error code, all from the dictionary. */
+function messageFor(field: ContactField, code: FieldErrorCode, e: FormDict["errors"]): string {
+  if (code === "too_long") return e.tooLong;
+  switch (field) {
+    case "name":
+      return code === "too_short" ? e.nameTooShort : e.nameRequired;
+    case "email":
+      return code === "required" ? e.emailRequired : e.emailInvalid;
+    case "phone":
+      return e.phoneInvalid;
+    case "projectType":
+    case "budget":
+      return e.projectTypeRequired;
+    case "description":
+      return code === "too_short" ? e.descriptionTooShort : e.descriptionRequired;
+  }
+}
+
+function toMessages(codes: Partial<Record<ContactField, FieldErrorCode>>, e: FormDict["errors"]): Errors {
+  const out: Errors = {};
+  for (const field of FIELD_ORDER) {
+    const code = codes[field];
+    if (code) out[field] = messageFor(field, code, e);
+  }
+  return out;
+}
+
+const REQUEST_ERRORS: Record<ContactErrorCode, keyof FormDict["errors"]> = {
+  invalid: "sendFailed",
+  rate_limited: "rateLimited",
+  too_large: "tooLong",
+  bad_request: "sendFailed",
+  unavailable: "unavailable",
+  send_failed: "sendFailed",
 };
 
-type FormData = {
-  name: string;
-  email: string;
-  phone: string;
-  projectType: string;
-  budget: string;
-  description: string;
-  website: string;
-};
-
-type Errors = Partial<Record<keyof FormData, string>>;
-
-const PROJECT_TYPE_KEYS = ["web", "mobile", "ai", "uiux", "ecommerce", "content", "other"] as const;
-const BUDGET_KEYS = ["low", "medium", "high", "premium", "enterprise"] as const;
-
-function validate(data: FormData, dict: Dictionary["contact"]["form"]): Errors {
-  const e: Errors = {};
-  if (!data.name.trim()) e.name = dict.errors.nameRequired;
-  if (!data.email.trim()) e.email = dict.errors.emailRequired;
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) e.email = dict.errors.emailInvalid;
-  if (!data.projectType) e.projectType = dict.errors.projectTypeRequired;
-  if (!data.budget) e.budget = dict.errors.budgetRequired;
-  if (!data.description.trim()) e.description = dict.errors.descriptionRequired;
-  return e;
-}
-
-function buildWhatsAppMessage(data: FormData, projectTypeLabel: string, budgetLabel: string, isAr: boolean): string {
-  const nl = "\n";
-  const lines = isAr
-    ? [
-        `مرحباً APEX! 👋${nl}`,
-        `أود الاستفسار عن مشروع.${nl}${nl}`,
-        `الاسم: ${data.name}${nl}`,
-        `البريد: ${data.email}${nl}`,
-        data.phone ? `الهاتف: ${data.phone}${nl}` : "",
-        `نوع المشروع: ${projectTypeLabel}${nl}`,
-        `الميزانية: ${budgetLabel}${nl}${nl}`,
-        `وصف المشروع:${nl}${data.description}`,
-      ]
-    : [
-        `Hello APEX! 👋${nl}`,
-        `I'd like to inquire about a project.${nl}${nl}`,
-        `Name: ${data.name}${nl}`,
-        `Email: ${data.email}${nl}`,
-        data.phone ? `Phone: ${data.phone}${nl}` : "",
-        `Project Type: ${projectTypeLabel}${nl}`,
-        `Budget: ${budgetLabel}${nl}${nl}`,
-        `Project Description:${nl}${data.description}`,
-      ];
-  return encodeURIComponent(lines.filter(Boolean).join(""));
-}
-
-function buildMailBody(data: FormData, projectTypeLabel: string, budgetLabel: string): string {
-  const lines = [
-    `Name: ${data.name}`,
-    `Email: ${data.email}`,
-    data.phone ? `Phone: ${data.phone}` : "",
-    `Project Type: ${projectTypeLabel}`,
-    `Budget: ${budgetLabel}`,
-    ``,
-    `Project Description:`,
-    data.description,
-  ];
-  return lines.filter(Boolean).join("\n");
-}
-
-export function ContactForm({ lang, dictionary }: Props) {
+export function ContactForm({ lang, form }: { lang: Locale; form: FormDict }) {
   const isAr = lang === "ar";
-  const formDict = dictionary.contact.form;
   const formRef = useRef<HTMLFormElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<Errors>({});
-  const [sending, setSending] = useState<"whatsapp" | "email" | null>(null);
   const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [apiSuccess, setApiSuccess] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    if (apiSuccess) successRef.current?.focus();
-  }, [apiSuccess]);
+    if (sent) successRef.current?.focus();
+  }, [sent]);
 
-  const projectTypeOptions = PROJECT_TYPE_KEYS.map((k) => ({
-    value: k,
-    label: formDict.projectTypeOptions[k],
+  const projectTypeOptions = PROJECT_TYPES.map((value) => ({ value, label: form.projectTypeOptions[value] }));
+  const budgetOptions = BUDGETS.filter((value) => value !== "unsure").map((value) => ({
+    value,
+    label: form.budgetOptions[value],
   }));
 
-  const budgetOptions = BUDGET_KEYS.map((k) => ({
-    value: k,
-    label: formDict.budgetOptions[k],
-  }));
-
-  function getFormData(): FormData {
-    if (!formRef.current) return { name: "", email: "", phone: "", projectType: "", budget: "", description: "", website: "" };
-    const fd = new FormData(formRef.current);
+  function readValues(): Values {
+    const fd = new FormData(formRef.current ?? undefined);
+    const get = (key: string) => String(fd.get(key) ?? "");
     return {
-      name: (fd.get("name") as string) ?? "",
-      email: (fd.get("email") as string) ?? "",
-      phone: (fd.get("phone") as string) ?? "",
-      projectType: (fd.get("projectType") as string) ?? "",
-      budget: (fd.get("budget") as string) ?? "",
-      description: (fd.get("description") as string) ?? "",
-      website: (fd.get("website") as string) ?? "",
+      name: get("name"),
+      email: get("email"),
+      phone: get("phone"),
+      projectType: get("projectType"),
+      budget: get("budget"),
+      description: get("description"),
+      website: get("website"),
     };
   }
 
-  function getLabels(data: FormData) {
-    const pt = projectTypeOptions.find((o) => o.value === data.projectType);
-    const bg = budgetOptions.find((o) => o.value === data.budget);
-    return {
-      projectTypeLabel: pt?.label ?? data.projectType,
-      budgetLabel: bg?.label ?? data.budget,
-    };
+  /** The same zod schema the server runs, so client and server never disagree. */
+  function validate(values: Values): Errors {
+    const payload = { ...values, budget: values.budget || undefined, phone: values.phone || undefined };
+    const result = contactSchema.safeParse(payload);
+    return result.success ? {} : toMessages(fieldErrorCodes(result.error), form.errors);
   }
-
-  // Field order matters: focus should land on the first invalid field as it appears
-  // on screen, not in whichever order the error object happens to enumerate.
-  const FIELD_ORDER: Array<keyof FormData> = [
-    "name",
-    "email",
-    "phone",
-    "projectType",
-    "budget",
-    "description",
-  ];
 
   function focusFirstInvalid(errs: Errors) {
     const first = FIELD_ORDER.find((field) => errs[field]);
-    if (!first) return;
-    formRef.current
-      ?.querySelector<HTMLElement>(`[name="${first}"]`)
-      ?.focus();
+    if (first) formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setApiError(null);
-    const data = getFormData();
-    const errs = validate(data, formDict);
+  /** Clears a field's error as soon as the visitor edits it. */
+  function clearError(field: string) {
+    if (!(field in errors)) return;
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[field as ContactField];
+      return next;
+    });
+  }
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    setRequestError(null);
+    const values = readValues();
+    const errs = validate(values);
     setErrors(errs);
     if (Object.keys(errs).length > 0) {
       focusFirstInvalid(errs);
@@ -164,277 +133,188 @@ export function ContactForm({ lang, dictionary }: Props) {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...values, budget: values.budget || undefined, phone: values.phone || undefined }),
       });
-      const result = await res.json();
+      // A proxy or platform error page is not JSON; treat it as a failed send
+      // rather than as an unreachable server.
+      const result = (await res.json().catch(() => ({}))) as {
+        code?: ContactErrorCode;
+        fieldErrors?: Partial<Record<ContactField, FieldErrorCode>>;
+      };
       if (res.ok) {
-        setApiSuccess(true);
+        setSent(true);
         formRef.current?.reset();
-      } else if (res.status === 429) {
-        setApiError(isAr ? "لقد تجاوزت الحد المسموح من المحاولات. الرجاء المحاولة لاحقاً." : "Too many requests. Please try again later.");
-      } else if (res.status === 400 && result.fieldErrors) {
-        const mapped: Errors = {};
-        for (const [key, msgs] of Object.entries(result.fieldErrors as Record<string, string[]>)) {
-          if (msgs && msgs.length > 0) mapped[key as keyof FormData] = msgs[0];
-        }
-        setErrors(mapped);
-        focusFirstInvalid(mapped);
+        return;
+      }
+      const fieldMessages = result.fieldErrors ? toMessages(result.fieldErrors, form.errors) : {};
+      if (Object.keys(fieldMessages).length > 0) {
+        setErrors(fieldMessages);
+        focusFirstInvalid(fieldMessages);
       } else {
-        setApiError(result.error ?? (isAr ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
+        setRequestError(form.errors[REQUEST_ERRORS[result.code ?? "send_failed"] ?? "sendFailed"]);
       }
     } catch {
-      setApiError(isAr ? "تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى." : "Could not reach the server. Please try again.");
+      setRequestError(form.errors.network);
     } finally {
       setLoading(false);
     }
   }
 
-  function handleWhatsApp() {
-    const data = getFormData();
-    const { projectTypeLabel, budgetLabel } = getLabels(data);
-    setSending("whatsapp");
-    const msg = buildWhatsAppMessage(data, projectTypeLabel, budgetLabel, isAr);
-    const number = socialLinks.whatsapp.replace(/[^0-9]/g, "");
-    window.open(`https://wa.me/${number}?text=${msg}`, "_blank");
-    setTimeout(() => setSending(null), 1000);
+  /** WhatsApp and email hand-offs carry only the fields the visitor filled in. */
+  function summary(values: Values): string {
+    const rows: Array<[string, string]> = [
+      [form.name, values.name],
+      [form.email, values.email],
+      [form.phone, values.phone],
+      [form.projectType, values.projectType ? form.projectTypeOptions[values.projectType as keyof FormDict["projectTypeOptions"]] : ""],
+      [form.budget, values.budget ? form.budgetOptions[values.budget as keyof FormDict["budgetOptions"]] : ""],
+      [form.description, values.description],
+    ];
+    return rows
+      .filter(([, value]) => value.trim())
+      .map(([label, value]) => `${label}: ${value.trim()}`)
+      .join("\n");
   }
 
-  function handleEmail() {
-    const data = getFormData();
-    const { projectTypeLabel, budgetLabel } = getLabels(data);
-    setSending("email");
-    const subject = isAr ? `استفسار مشروع من ${data.name}` : `Project Inquiry from ${data.name}`;
-    const body = buildMailBody(data, projectTypeLabel, budgetLabel);
-    window.location.href = `mailto:${socialLinks.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setTimeout(() => setSending(null), 1000);
+  const whatsappNumber = socialLinks.whatsapp.replace(/[^0-9]/g, "");
+
+  function openWhatsApp() {
+    const text = summary(readValues());
+    const url = `https://wa.me/${whatsappNumber}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
-  function handleReset() {
-    setErrors({});
-    setApiError(null);
-    setApiSuccess(false);
-    formRef.current?.reset();
+  function openEmail() {
+    const values = readValues();
+    const subject = isAr ? "استفسار عن مشروع" : "Project inquiry";
+    const body = summary(values);
+    window.location.href = `mailto:${socialLinks.email}?subject=${encodeURIComponent(subject)}${
+      body ? `&body=${encodeURIComponent(body)}` : ""
+    }`;
   }
 
-  if (apiSuccess) {
+  if (sent) {
     return (
-      <Reveal>
-        {/* Focused on mount so keyboard and screen-reader users are moved to the
-            confirmation rather than left on a submit button that no longer exists. */}
-        <div
-          ref={successRef}
-          tabIndex={-1}
-          role="status"
-          aria-live="polite"
-          className="rounded-2xl border p-8 text-center"
-          style={{
-            background: "var(--color-card)",
-            borderColor: "var(--color-border)",
-            outline: "none",
-          }}
-        >
-          <CheckCircle size={48} className="mx-auto mb-4" style={{ color: "#22c55e" }} />
-          <h3
-            className={`text-lg font-bold mb-2 ${isAr ? "font-ar" : "font-en"}`}
-            style={{ color: "var(--color-primary-text)" }}
-          >
-            {isAr ? "تم الإرسال بنجاح! 🎉" : "Sent successfully! 🎉"}
-          </h3>
-          <p
-            className={`text-sm mb-6 ${isAr ? "font-ar" : "font-en"}`}
-            style={{ color: "var(--color-secondary-text)" }}
-          >
-            {isAr
-              ? "شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن."
-              : "Thank you for reaching out. We'll get back to you as soon as possible."}
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="inline-flex items-center gap-2 px-6 min-h-[44px] py-3 rounded-full text-sm font-bold transition-all border-2"
-              style={{ color: "var(--color-primary)", borderColor: "var(--color-primary)" }}
-            >
-              {isAr ? "إرسال استفسار آخر" : "Send Another Message"}
-            </button>
-          </div>
-        </div>
-      </Reveal>
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        className="rounded-2xl border border-apex-border bg-apex-card p-8 text-center outline-none"
+      >
+        <CheckCircle size={48} className="mx-auto mb-4 text-apex-success" aria-hidden="true" />
+        <h2 className="text-xl font-bold mb-2 text-apex-text">{form.successTitle}</h2>
+        <p className="text-base mb-6 text-apex-muted">{form.successBody}</p>
+        <button type="button" onClick={() => { setSent(false); setErrors({}); }} className="apex-btn-outline">
+          {form.sendAnother}
+        </button>
+      </div>
     );
   }
 
   return (
-    <Reveal>
-      <form
-        ref={formRef}
-        onSubmit={handleSubmit}
-        noValidate
-        className="rounded-2xl border p-6 sm:p-8"
-        style={{
-          background: "var(--color-card)",
-          borderColor: "var(--color-border)",
-        }}
-        aria-label={isAr ? "نموذج الاتصال" : "Contact form"}
-      >
-        {/* Honeypot. `hidden` keeps it out of the layout entirely — the previous
-            off-screen absolute positioning had no positioned ancestor and could
-            widen the page. Bots that fill every field still trip it. */}
-        <div hidden>
-          <label htmlFor="website">Website</label>
-          <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+    <form
+      id="contact-form"
+      ref={formRef}
+      onSubmit={handleSubmit}
+      onInput={(event) => clearError((event.target as HTMLInputElement).name)}
+      noValidate
+      className="rounded-2xl border border-apex-border bg-apex-card p-6 sm:p-8"
+      aria-labelledby="contact-form-title"
+    >
+      {/* Honeypot, outside the layout and the accessibility tree. */}
+      <div hidden>
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
+      <h2 id="contact-form-title" className="text-xl font-bold mb-1 text-apex-text">
+        {form.title}
+      </h2>
+      <p className="text-base mb-6 text-apex-muted">{form.subtitle}</p>
+
+      {requestError && (
+        <div role="alert" className="mb-6 rounded-xl border border-apex-danger p-4 text-base text-apex-danger">
+          {requestError}
         </div>
-        <h3
-          className={`text-lg font-bold mb-1 ${isAr ? "font-ar" : "font-en"}`}
-          style={{ color: "var(--color-primary-text)" }}
-        >
-          {formDict.title}
-        </h3>
-        <p
-          className={`text-sm mb-6 ${isAr ? "font-ar" : "font-en"}`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          {formDict.subtitle}
-        </p>
+      )}
 
-        {apiError && (
-          <div
-            role="alert"
-            className="flex items-center gap-3 p-4 mb-6 rounded-xl border text-sm"
-            style={{
-              background: "color-mix(in srgb, #ef4444 8%, transparent)",
-              borderColor: "color-mix(in srgb, #ef4444 25%, transparent)",
-              color: "#ef4444",
-            }}
-          >
-            <AlertCircle size={18} className="shrink-0" />
-            <span className={isAr ? "font-ar" : "font-en"}>{apiError}</span>
-          </div>
-        )}
-
-        <div className="grid sm:grid-cols-2 gap-4 mb-4">
-          <Input
-            name="name"
-            label={formDict.name}
-            placeholder={formDict.namePlaceholder}
-            error={errors.name}
-            isAr={isAr}
-            autoComplete="name"
-            itemProp="name"
-          />
+      <div className="grid gap-5">
+        <div className="grid sm:grid-cols-2 gap-5">
+          <Input name="name" label={form.name} placeholder={form.namePlaceholder} error={errors.name} required autoComplete="name" />
           <Input
             name="email"
             type="email"
-            label={formDict.email}
-            placeholder={formDict.emailPlaceholder}
+            inputMode="email"
+            dir="ltr"
+            label={form.email}
+            placeholder={form.emailPlaceholder}
             error={errors.email}
-            isAr={isAr}
+            required
             autoComplete="email"
-            itemProp="email"
           />
         </div>
-
-        <div className="mb-4">
-          <Input
-            name="phone"
-            type="tel"
-            label={formDict.phone}
-            placeholder={formDict.phonePlaceholder}
-            isAr={isAr}
-            autoComplete="tel"
-            itemProp="telephone"
-          />
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4 mb-4">
+        <Input
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          dir="ltr"
+          label={form.phone}
+          optionalLabel={form.optional}
+          placeholder={form.phonePlaceholder}
+          error={errors.phone}
+          autoComplete="tel"
+        />
+        <div className="grid sm:grid-cols-2 gap-5">
           <Select
             name="projectType"
-            label={formDict.projectType}
-            placeholder={formDict.projectTypePlaceholder}
+            label={form.projectType}
+            placeholder={form.projectTypePlaceholder}
             options={projectTypeOptions}
             error={errors.projectType}
-            isAr={isAr}
-            itemProp="description"
+            required
           />
           <Select
             name="budget"
-            label={formDict.budget}
-            placeholder={formDict.budgetPlaceholder}
+            label={form.budget}
+            optionalLabel={form.optional}
+            placeholder={form.budgetPlaceholder}
             options={budgetOptions}
             error={errors.budget}
-            isAr={isAr}
-            itemProp="priceRange"
           />
         </div>
+        <Textarea
+          name="description"
+          label={form.description}
+          placeholder={form.descriptionPlaceholder}
+          error={errors.description}
+          required
+        />
+      </div>
 
-        <div className="mb-6">
-          <Textarea
-            name="description"
-            label={formDict.description}
-            placeholder={formDict.descriptionPlaceholder}
-            error={errors.description}
-            isAr={isAr}
-            itemProp="description"
-          />
+      <button type="submit" disabled={loading} className="apex-btn-primary mt-6 w-full min-h-[48px] disabled:opacity-60">
+        {loading ? (
+          <>
+            <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+            {form.sending}
+          </>
+        ) : (
+          form.submit
+        )}
+      </button>
+
+      <div className="mt-6 pt-6 border-t border-apex-border">
+        <p className="text-sm mb-3 text-center text-apex-muted">{form.orDirect}</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <button type="button" onClick={openWhatsApp} className="apex-btn-whatsapp">
+            <MessageCircle size={16} aria-hidden="true" />
+            {form.sendWhatsapp}
+          </button>
+          <button type="button" onClick={openEmail} className="apex-btn-outline">
+            <Mail size={16} aria-hidden="true" />
+            {form.sendEmail}
+          </button>
         </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full inline-flex items-center justify-center gap-2 px-8 min-h-[44px] py-3 rounded-full text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:-translate-y-0"
-          style={{
-            background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-            boxShadow: "0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent)",
-          }}
-        >
-          {loading ? (
-            <>
-              <Loader2 size={18} className="animate-spin" />
-              {isAr ? "جاري الإرسال..." : "Sending..."}
-            </>
-          ) : (
-            <>
-              {isAr ? "إرسال" : "Send"}
-            </>
-          )}
-        </button>
-
-        <div className="mt-6 pt-6 border-t" style={{ borderColor: "var(--color-border)" }}>
-          <p
-            className={`text-xs mb-3 text-center ${isAr ? "font-ar" : "font-en"}`}
-            style={{ color: "var(--color-secondary-text)" }}
-          >
-            {isAr ? "أو تواصل معنا مباشرة عبر:" : "Or reach us directly via:"}
-          </p>
-          <div className="flex justify-center gap-3">
-            <button
-              type="button"
-              onClick={handleWhatsApp}
-              disabled={sending === "whatsapp"}
-              className="inline-flex items-center gap-2 px-5 min-h-[44px] py-2 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              style={{
-                background: "linear-gradient(135deg, #25D366, #128C7E)",
-                boxShadow: "0 4px 12px rgba(37,211,102,0.25)",
-              }}
-            >
-              <Send size={14} />
-              {formDict.sendWhatsapp}
-            </button>
-            <button
-              type="button"
-              onClick={handleEmail}
-              disabled={sending === "email"}
-              className="inline-flex items-center gap-2 px-5 min-h-[44px] py-2 rounded-full text-xs font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              style={{
-                background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
-                boxShadow: "0 4px 12px color-mix(in srgb, var(--color-primary) 35%, transparent)",
-              }}
-            >
-              <Mail size={14} />
-              {formDict.sendEmail}
-            </button>
-          </div>
-        </div>
-      </form>
-    </Reveal>
+      </div>
+    </form>
   );
 }

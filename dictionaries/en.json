@@ -3,130 +3,63 @@
     "home": "Home",
     "portfolio": "Portfolio",
     "services": "Services",
-    "academy": "Academy",
+    "about": "About",
     "blog": "Blog",
     "contact": "Contact",
     "letsTalk": "Let's Talk"
   },
   "heroSection": {
-    "badge": "Leading Regional Software Company",
-    "headline": "We Build",
-    "highlight": "Digital Futures",
-    "subheadline": "Mobile Apps · Web · AI · UI/UX Design · E-Commerce",
-    "cta": "Explore Our Work",
-    "ctaSecondary": "Get In Touch",
-    "tagline": "Code · AI · Future"
+    "badge": "Software studio for Saudi, UAE & Qatar businesses",
+    "headline": "Apps, websites and AI",
+    "highlight": "built for the Gulf",
+    "subheadline": "We design and build mobile apps, websites and AI tools for companies in Saudi Arabia, the UAE and Qatar, with full Arabic support and a testable build every two weeks.",
+    "cta": "Discuss your project",
+    "ctaSecondary": "See our work",
+    "proof": [
+      "Arabic and English from day one",
+      "Reply within one business day",
+      "Written proposal, priced by phase"
+    ]
   },
   "about": {
-    "badge": "About Us",
-    "title": "APEX - Peak Technical Excellence",
-    "subtitle": "A software company building integrated digital solutions powered by modern AI.",
-    "description": "At APEX, we believe technology should be accessible and practical. We combine engineering depth with product thinking to deliver digital solutions that create measurable business value.",
-    "stats": [
-      { "value": "9", "label": "Documented Projects" },
-      { "value": "6", "label": "Specialized Services" },
-      { "value": "2", "label": "Full Working Languages" },
-      { "value": "100%", "label": "Arabic & RTL Support" }
-    ],
+    "badge": "About APEX",
+    "title": "Software that works properly in Arabic",
+    "subtitle": "A software company based in Syria, working remotely with clients in Saudi Arabia, the UAE and Qatar.",
+    "description": "We build mobile apps, websites and AI tools, and we treat Arabic as a first language rather than a translation layer: right-to-left layouts, Arabic typography, Hijri dates and mixed-direction text are part of the first build, not a later fix.",
+    "statsLabels": {
+      "projects": "Projects documented in our portfolio",
+      "services": "Services",
+      "articles": "Published guides",
+      "languages": "Working languages"
+    },
     "checks": [
-      "Design that tells your story",
-      "Code that lasts for years",
-      "AI that expands your potential"
+      "Arabic and RTL in the first build",
+      "Code your next team can maintain",
+      "AI where it is reliable enough to use"
     ],
-    "visionTitle": "Our Vision",
-    "visionText": "We want APEX to be the first name teams think of when they need integrated regional technology solutions.",
-    "cards": {
-      "innovation": {
-        "title": "Innovation",
-        "text": "We design and build modern digital experiences using current technology with purpose."
-      },
-      "quality": {
-        "title": "Quality",
-        "text": "Every product we deliver is shaped with care for performance, stability, and detail."
-      },
-      "partnership": {
-        "title": "Partnership",
-        "text": "We work closely with clients to turn ideas into scalable products that can grow."
-      }
-    }
+    "visionTitle": "How we work",
+    "visionText": "A written proposal broken into phases, a testable build every two weeks, and code and accounts handed over in your name."
   },
   "services": {
-    "badge": "Our Services",
-    "title": "Integrated Digital Solutions",
-    "subtitle": "From concept to launch, we work with you through every stage.",
-    "learnMore": "Learn More",
-    "items": [
-      {
-        "icon": "🌐",
-        "title": "Web Development",
-        "description": "Fast, modern websites and web apps with polished UX and strong performance."
-      },
-      {
-        "icon": "📱",
-        "title": "Mobile Apps",
-        "description": "Native and cross-platform iOS and Android apps built for reliability and growth."
-      },
-      {
-        "icon": "🤖",
-        "title": "Artificial Intelligence",
-        "description": "Practical AI integrations, automation, and data-driven product experiences."
-      },
-      {
-        "icon": "🎨",
-        "title": "UI/UX Design",
-        "description": "Thoughtful interfaces shaped by research, usability, and visual clarity."
-      },
-      {
-        "icon": "🛒",
-        "title": "E-Commerce",
-        "description": "Commerce platforms with payments, inventory workflows, and conversion-focused journeys."
-      },
-      {
-        "icon": "🎬",
-        "title": "Content Creation",
-        "description": "Video and visual content designed to support modern digital marketing."
-      }
-    ]
+    "badge": "Services",
+    "title": "What we build",
+    "subtitle": "Four services, each with its own page covering scope, process and pricing.",
+    "learnMore": "Scope, process and pricing",
+    "allServices": "All services"
   },
   "portfolio": {
     "badge": "Portfolio",
-    "title": "Projects That Prove Excellence",
-    "subtitle": "From education platforms to commerce and mobile products, every project tells a success story.",
-    "viewAll": "View All Work",
-    "viewProject": "View Project"
-  },
-  "testimonials": {
-    "badge": "Client Testimonials",
-    "title": "Real Success Partners",
-    "subtitle": "Our clients' words are our strongest proof.",
-    "items": [
-      {
-        "name": "Real Engineering Depth",
-        "role": "Tafawwoq — Education App",
-        "text": "A Flutter app built on Clean Architecture with the BLoC pattern, featuring a smart assessment engine, secure API integration, local storage, and full Arabic RTL support.",
-        "initial": "1"
-      },
-      {
-        "name": "Delivery Across Domains",
-        "role": "9 Documented Projects",
-        "text": "From education apps to AI-generated content, clinic branding, and commerce — every project is documented with a detailed page and real implementation screenshots.",
-        "initial": "2"
-      },
-      {
-        "name": "Arabic & RTL Mastery",
-        "role": "A Rare Regional Standard",
-        "text": "Genuine RTL support with locally hosted Arabic typefaces, not surface-level translation. This very site runs on Next.js 16 with a fully bilingual architecture — a working sample of our engineering.",
-        "initial": "3"
-      }
-    ]
+    "title": "Recent work",
+    "subtitle": "An education app built in Flutter, plus video and AI-generated content for clinics, brands and family-counselling services.",
+    "viewAll": "View all work",
+    "viewProject": "View project"
   },
   "contact": {
-    "badge": "Contact Us",
-    "title": "Have a Project? Let's Talk",
-    "description": "We are one message away and usually reply quickly.",
-    "available": "Available now - usually within 2 hours",
-    "email": "Send an Email",
-    "whatsapp": "Chat on WhatsApp",
+    "badge": "Contact",
+    "title": "Have a project? Let's talk",
+    "description": "Send a short description by WhatsApp, email or the contact form. We reply within one business day.",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
     "form": {
       "title": "Tell Us About Your Project",
       "subtitle": "Help us understand your needs so we can prepare the best approach.",
@@ -134,8 +67,8 @@
       "namePlaceholder": "Your full name",
       "email": "Email Address",
       "emailPlaceholder": "you@example.com",
-      "phone": "Phone Number (optional)",
-      "phonePlaceholder": "+963 99 999 9999",
+      "phone": "Phone number",
+      "phonePlaceholder": "+966 5X XXX XXXX",
       "projectType": "Project Type",
       "projectTypePlaceholder": "Select your project type",
       "projectTypeOptions": {
@@ -147,9 +80,10 @@
         "content": "Content Creation",
         "other": "Other"
       },
-      "budget": "Budget Range",
-      "budgetPlaceholder": "Select your budget range",
+      "budget": "Budget range",
+      "budgetPlaceholder": "Not sure yet",
       "budgetOptions": {
+        "unsure": "Not sure yet",
         "low": "Under $1,000",
         "medium": "$1,000 — $5,000",
         "high": "$5,000 — $10,000",
@@ -160,30 +94,63 @@
       "descriptionPlaceholder": "Tell us about your project, goals, and timeline...",
       "sendWhatsapp": "Send via WhatsApp",
       "sendEmail": "Send via Email",
-      "success": "Thank you! Your inquiry has been prepared.",
       "errors": {
-        "nameRequired": "Please enter your name",
-        "emailRequired": "Please enter your email",
-        "emailInvalid": "Please enter a valid email",
-        "projectTypeRequired": "Please select a project type",
-        "budgetRequired": "Please select a budget range",
-        "descriptionRequired": "Please describe your project"
-      }
-    }
+        "nameRequired": "Please enter your name.",
+        "nameTooShort": "Please enter at least 2 characters.",
+        "emailRequired": "Please enter your email address.",
+        "emailInvalid": "Please enter a valid email address, e.g. name@company.com.",
+        "phoneInvalid": "Please enter a valid phone number.",
+        "projectTypeRequired": "Please choose a project type.",
+        "descriptionRequired": "Please describe your project in a sentence or two.",
+        "descriptionTooShort": "Please add a little more detail (at least 10 characters).",
+        "tooLong": "This is longer than we can accept. Please shorten it.",
+        "rateLimited": "We have already received several messages from you in the last hour. Please try again later, or message us on WhatsApp.",
+        "unavailable": "The form is temporarily unavailable. Please message us on WhatsApp or by email instead.",
+        "sendFailed": "Your message could not be sent. Please try again, or message us on WhatsApp.",
+        "network": "We could not reach the server. Check your connection and try again."
+      },
+      "optional": "optional",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "successTitle": "Message sent",
+      "successBody": "Thank you. We reply within one business day, usually with a few questions about scope.",
+      "sendAnother": "Send another message",
+      "orDirect": "Or reach us directly:"
+    },
+    "formLink": "Use the contact form"
   },
   "footer": {
-    "tagline": "Code · AI · Future",
     "description": "Building digital futures with lasting code and focused innovation.",
     "rights": "All rights reserved.",
     "quickLinks": "Quick Links",
     "quickContact": "Quick Contact",
     "privacy": "Privacy",
     "terms": "Terms",
-    "links": [
-      { "label": "Home", "path": "" },
-      { "label": "Portfolio", "path": "portfolio" },
-      { "label": "Academy", "path": "academy" },
-      { "label": "Blog", "path": "blog" }
+    "servicesHeading": "Services",
+    "privacySettings": "Privacy settings",
+    "location": "Based in Syria · working remotely with clients in Saudi Arabia, the UAE and Qatar.",
+    "emailLabel": "Email"
+  },
+  "whyApex": {
+    "badge": "Why APEX",
+    "title": "Evidence, not promises",
+    "subtitle": "Each point below can be checked on our portfolio or on this site.",
+    "items": [
+      {
+        "title": "Real engineering depth",
+        "source": "Tafawwoq, education app",
+        "text": "A Flutter app on Clean Architecture with the BLoC pattern: a timed quiz engine with auto-grading, secure API integration, local storage and a full Arabic RTL interface."
+      },
+      {
+        "title": "Work across media",
+        "source": "Portfolio",
+        "text": "From an education app to AI-generated animation and clinic marketing video, each project has its own page with screenshots from the actual work."
+      },
+      {
+        "title": "Arabic done properly",
+        "source": "This website",
+        "text": "Right-to-left layout, locally hosted Arabic typefaces and a fully bilingual structure. This site is built that way and is itself a sample of the work."
+      }
     ]
   }
 }

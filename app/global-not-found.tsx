@@ -1,36 +1,35 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { NotFoundContent } from "@/components/layout/NotFoundContent";
+import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Page Not Found — APEX",
+  title: "Page not found — APEX",
   robots: { index: false, follow: false },
 };
 
-const detectLocale = `(function(){var ar=location.pathname.split('/')[1]==='ar';document.documentElement.lang=ar?'ar':'en';document.documentElement.dir=ar?'rtl':'ltr';document.documentElement.classList.add(ar?'not-found-ar':'not-found-en')})();`;
+// Picks the language from the path and applies the stored theme before paint,
+// so a dark-mode visitor does not get a white page.
+const boot = `(function(){var ar=location.pathname.split('/')[1]==='ar';var d=document.documentElement;d.lang=ar?'ar':'en';d.dir=ar?'rtl':'ltr';d.classList.add(ar?'nf-ar':'nf-en');try{var s=localStorage.getItem('theme');if(s?s==='dark':matchMedia('(prefers-color-scheme:dark)').matches)d.classList.add('dark')}catch(e){}})();`;
 
+/** Shown for any URL that matches no route. Both languages render; CSS shows the right one. */
 export default function GlobalNotFound() {
   return (
-    <html lang="en" dir="ltr">
-      <head><script dangerouslySetInnerHTML={{ __html: detectLocale }} /></head>
-      <body>
-        <main className="flex min-h-screen items-center justify-center px-6 text-center" style={{ background: "var(--color-background)", color: "var(--color-primary-text)" }}>
-          <section className="max-w-lg">
-            <p className="mb-3 text-7xl font-bold" style={{ color: "var(--color-primary)" }}>404</p>
-            <div className="not-found-en-content">
-              <h1 className="mb-3 text-3xl font-bold">Page not found</h1>
-              <p className="mb-8" style={{ color: "var(--color-secondary-text)" }}>The page may have been removed or its address may be incorrect.</p>
-              <Link href="/en" className="inline-flex rounded-full px-6 py-3 font-bold text-white" style={{ background: "var(--color-primary)" }}>Go home</Link>
-            </div>
-            <div className="not-found-ar-content" lang="ar" dir="rtl">
-              <h1 className="mb-3 text-3xl font-bold">الصفحة غير موجودة</h1>
-              <p className="mb-8" style={{ color: "var(--color-secondary-text)" }}>ربما حُذفت الصفحة أو أن عنوانها غير صحيح.</p>
-              <Link href="/ar" className="inline-flex rounded-full px-6 py-3 font-bold text-white" style={{ background: "var(--color-primary)" }}>العودة للرئيسية</Link>
-            </div>
-          </section>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: boot }} />
+      </head>
+      <body className={`${ibmPlexSansArabic.variable} ${ibmPlexSerif.variable} bg-apex-bg text-apex-text`}>
+        <main id="content">
+          <div className="nf-block-en font-en">
+            <NotFoundContent lang="en" />
+          </div>
+          <div className="nf-block-ar font-ar">
+            <NotFoundContent lang="ar" />
+          </div>
         </main>
-        <style>{`.not-found-ar-content{display:none}.not-found-ar .not-found-ar-content{display:block}.not-found-ar .not-found-en-content{display:none}`}</style>
+        <style>{`.nf-block-ar{display:none}.nf-ar .nf-block-ar{display:block}.nf-ar .nf-block-en{display:none}`}</style>
       </body>
     </html>
   );

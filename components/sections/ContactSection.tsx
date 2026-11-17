@@ -1,123 +1,41 @@
-"use client";
-
+import Link from "next/link";
 import { Mail, MessageCircle } from "lucide-react";
+
+import { socialLinks } from "@/data/social-links";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
-import { Reveal } from "@/components/ui/Reveal";
-import { socialLinks } from "@/data/social-links";
 
-type Props = {
-  lang: Locale;
-  dictionary: Dictionary;
-  whatsapp: string;
-};
-
-export function ContactSection({ lang, dictionary, whatsapp }: Props) {
-  const isAr = lang === "ar";
-  const { contact } = dictionary;
-  const whatsappNumber = whatsapp.replace(/[^0-9]/g, "");
-
-  const handleEmailClick = () => {
-    const subject = isAr ? "استفسار من APEX" : "Inquiry from APEX";
-    window.location.href = `mailto:${socialLinks.email}?subject=${encodeURIComponent(subject)}`;
-  };
-
+/**
+ * Home contact block. A server component with real links: the email used to be a
+ * button that set window.location, so the address was never visible or copyable.
+ * The always-on "available now, within 2 hours" badge contradicted the contact
+ * page's one-business-day promise and is gone.
+ */
+export function ContactSection({ lang, copy }: { lang: Locale; copy: Dictionary["contact"] }) {
+  const whatsappDigits = socialLinks.whatsapp.replace(/[^\d]/g, "");
   return (
-    <section
-      id="contact"
-      className="relative py-16 md:py-36 px-6 overflow-hidden apex-contact-bg"
-    >
-      <div
-        className="absolute inset-0 pointer-events-none apex-contact-dots"
-        aria-hidden="true"
-      />
-
-      <div
-        className="absolute rounded-full pointer-events-none apex-contact-glow"
-        style={{
-          top: "30%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "500px",
-          height: "500px",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-1 max-w-3xl mx-auto text-center">
-        <Reveal>
-          <span className="apex-section-label">{contact.badge}</span>
-          <div className="apex-divider" />
-          <h2
-            className={`apex-section-title mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}
-          >
-            {contact.title}
-          </h2>
-          <p
-            className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-            style={{ maxWidth: "480px" }}
-          >
-            {contact.description}
-          </p>
-        </Reveal>
-
-        <Reveal delay={120}>
-          <div className="grid sm:grid-cols-2 gap-5 mt-14 mb-10">
-            <a
-              href={`https://wa.me/${whatsappNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center gap-3 rounded-2xl p-5 md:p-8 text-white font-bold transition-transform hover:-translate-y-1"
-              style={{
-                background: "linear-gradient(135deg, #25D366, #128C7E)",
-                boxShadow: "0 10px 32px rgba(37,211,102,0.28)",
-                border: "none",
-              }}
-            >
-              <MessageCircle size={38} strokeWidth={1.5} />
-              <span className={`text-base ${isAr ? "font-ar" : "font-en"}`}>
-                {contact.whatsapp}
-              </span>
-              <span className="text-sm opacity-80">{whatsapp}</span>
-            </a>
-            <button
-              type="button"
-              onClick={handleEmailClick}
-              className="flex flex-col items-center gap-3 rounded-2xl p-5 md:p-8 text-white font-bold transition-transform hover:-translate-y-1 cursor-pointer"
-              style={{
-                background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
-                boxShadow: "0 10px 32px color-mix(in srgb, var(--color-primary) 35%, transparent)",
-                border: "none",
-              }}
-            >
-              <Mail size={38} strokeWidth={1.5} />
-              <span className={`text-base ${isAr ? "font-ar" : "font-en"}`}>
-                {contact.email}
-              </span>
-              <span className="text-sm opacity-80">
-                {isAr ? "راسلنا عبر البريد" : "Email Us"}
-              </span>
-            </button>
-          </div>
-        </Reveal>
-
-        <Reveal delay={220}>
-          <div
-            className="inline-flex items-center gap-3 px-6 min-h-[44px] rounded-full border"
-            style={{
-              background: "color-mix(in srgb, var(--color-gold) 12%, transparent)",
-              borderColor: "color-mix(in srgb, var(--color-gold) 38%, transparent)",
-            }}
-          >
-            <span className="apex-online-dot" />
-            <span
-              className={`text-sm font-semibold ${isAr ? "font-ar" : "font-en"}`}
-              style={{ color: "var(--color-gold)" }}
-            >
-              {contact.available}
-            </span>
-          </div>
-        </Reveal>
+    <section id="contact" className="apex-section">
+      <div className="mx-auto grid max-w-6xl gap-10 rounded-3xl border border-apex-border bg-apex-card p-6 sm:p-10 md:grid-cols-2 md:p-14">
+        <div>
+          <p className="apex-eyebrow">{copy.badge}</p>
+          <h2 className="apex-section-title">{copy.title}</h2>
+          <p className="apex-section-subtitle mt-4">{copy.description}</p>
+        </div>
+        <div className="flex flex-col gap-3 self-center">
+          <a href={`https://wa.me/${whatsappDigits}`} target="_blank" rel="noopener noreferrer" className="apex-btn-whatsapp min-h-[56px] justify-start px-6 text-base">
+            <MessageCircle size={20} aria-hidden="true" />
+            <span>{copy.whatsapp}</span>
+            <span dir="ltr" className="ms-auto font-normal opacity-90">{socialLinks.whatsapp}</span>
+          </a>
+          <a href={`mailto:${socialLinks.email}`} className="apex-btn-outline min-h-[56px] justify-start px-6 text-base">
+            <Mail size={20} aria-hidden="true" />
+            <span>{copy.email}</span>
+            <span dir="ltr" className="ms-auto truncate font-normal">{socialLinks.email}</span>
+          </a>
+          <Link href={`/${lang}/contact`} className="apex-btn-primary min-h-[56px] text-base">
+            {copy.formLink}
+          </Link>
+        </div>
       </div>
     </section>
   );

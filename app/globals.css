@@ -1,90 +1,69 @@
 @import "tailwindcss";
 
-/* Tailwind v4 reads theme tokens from here, not from tailwind.config.ts (removed).
-   Utilities like text-apex-primary / border-apex-border / font-ar are generated from these. */
-@theme {
+/* Tailwind v4 reads theme tokens from here. Utilities like text-apex-primary and
+   border-apex-border are generated from these and follow the active theme. */
+@theme inline {
   --color-apex-bg:        var(--color-background);
   --color-apex-card:      var(--color-card);
   --color-apex-text:      var(--color-primary-text);
   --color-apex-muted:     var(--color-secondary-text);
   --color-apex-primary:   var(--color-primary);
-  --color-apex-primary-l: var(--color-primary-light);
   --color-apex-accent:    var(--color-accent);
+  --color-apex-brand:     var(--color-brand);
   --color-apex-border:    var(--color-border);
-  --color-apex-gold:      var(--color-gold);
-
-  --font-ar: var(--font-ar), sans-serif;
-  --font-en: var(--font-en), serif;
-
-  --animate-fade-up:    apex-fade-up 0.75s ease both;
-  --animate-float:      apex-float 4s ease-in-out infinite;
-  --animate-shimmer:    apex-shimmer 4s linear infinite;
-  --animate-pulse-ring: apex-pulse-ring 2s ease-out infinite;
-  --animate-dot-blink:  apex-dot-blink 2.5s ease-in-out infinite;
-
-  --spacing-18: 4.5rem;
-  --spacing-22: 5.5rem;
-
-  --radius-4xl: 2rem;
-  --radius-5xl: 2.5rem;
-
-  --shadow-apex-glow:    0 8px 30px color-mix(in srgb, var(--color-primary) 35%, transparent);
-  --shadow-apex-glow-lg: 0 20px 60px color-mix(in srgb, var(--color-primary) 22%, transparent);
-  --shadow-apex-gold:    0 8px 30px color-mix(in srgb, var(--color-gold) 35%, transparent);
+  --color-apex-control:   var(--color-control-border);
+  --color-apex-gold:      var(--color-gold-ink);
+  --color-apex-danger:    var(--color-danger);
+  --color-apex-success:   var(--color-success);
 }
 
+/* One brand ramp derived from the logo blue (#22aaee). The logo tint itself is
+   too light for text on white, so `--color-primary` is a darker step of the same
+   hue. Every text/fill pair below passes WCAG AA in its theme. */
 :root {
-  
   --color-background:      #ffffff;
-  --color-card:            #f8f9fa;
-  --color-primary-text:    #1b1b1b;
-  --color-secondary-text:  #555555;
-  --color-primary:         #3f51b5;
-  --color-primary-light:   #5c6bc0;
-  --color-accent:          #1e88e5;
-  --color-border:          #e0e0e0;
-  --color-gold:            #ffbf00;
-  --shadow:                0 2px 40px rgba(0,0,0,0.08);
+  --color-card:            #f3f5f8;
+  --color-primary-text:    #16191d;
+  --color-secondary-text:  #4f5661;
+  --color-brand:           #22aaee;
+  --color-primary:         #0b6aa8;   /* 5.8:1 on white */
+  --color-accent:          #085486;   /* gradient end; white text 8:1 */
+  --color-on-primary:      #ffffff;
+  --color-border:          #d5dae1;
+  --color-control-border:  #8a929c;   /* 3.3:1, the non-text minimum */
+  --color-gold:            #ffbf00;   /* decorative only */
+  --color-gold-ink:        #8a6100;   /* gold as text, 5.6:1 on white */
+  --color-danger:          #b42318;
+  --color-success:         #1f7a3f;
+  --shadow:                0 2px 30px rgba(15, 30, 50, 0.08);
 
-  
-  --color-footer-bg:           #111111;
-  --color-footer-heading:      #eeeeee;
-  --color-footer-text:         #cccccc;
-  --color-footer-text-muted:   #aaaaaa;
-  --color-footer-border:       #2a2a2a;
-  --color-footer-primary:      #7986cb;   
-
-  --color-lang-pill-text:      #1b1b1b;
-  --color-lang-pill-border:    #c7a600;
-  --color-lang-pill-bg:        #fff4bf;
+  /* Motion tokens: two durations and one easing for the whole site. */
+  --ease-out:              cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast:              180ms;
+  --dur-slow:              600ms;
 }
 
 .dark {
-  
-  --color-background:      #121212;
-  --color-card:            #1e1e1e;
-  --color-primary-text:    #e0e0e0;
-  --color-secondary-text:  #aaaaaa;
-  --color-primary:         #00bcd4;
-  --color-primary-light:   #26c6da;
-  --color-accent:          #4dd0e1;
-  --color-border:          #2c2c2c;
+  --color-background:      #0f1216;
+  --color-card:            #181d23;
+  --color-primary-text:    #e6e9ee;
+  --color-secondary-text:  #a7b0bc;
+  --color-brand:           #22aaee;
+  --color-primary:         #38bdf8;   /* 8.7:1 on the background */
+  --color-accent:          #7dd3fc;
+  --color-on-primary:      #04263a;   /* dark text on the light fill */
+  --color-border:          #2c343e;
+  --color-control-border:  #5d6875;
   --color-gold:            #ffbf00;
-  --shadow:                0 2px 40px rgba(0,0,0,0.5);
-
-  
-  --color-footer-bg:           #0a0a0a;
-  --color-footer-heading:      #f5f5f5;
-  --color-footer-text:         #d4d4d4;
-  --color-footer-text-muted:   #9e9e9e;
-  --color-footer-border:       #1e1e1e;
-  --color-footer-primary:      #00bcd4;  
-
-  --color-lang-pill-text:      #ffbf00;
-  --color-lang-pill-border:    #806200;
-  --color-lang-pill-bg:        #2a2200;
+  --color-gold-ink:        #ffcc33;
+  --color-danger:          #f87171;
+  --color-success:         #4ade80;
+  --shadow:                0 2px 30px rgba(0, 0, 0, 0.45);
 }
 
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -93,8 +72,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
-  /* Keeps anchor targets clear of the 70px fixed header instead of hiding the
-     heading behind it. */
+  /* Keeps anchor targets clear of the 70px fixed header. */
   scroll-padding-top: 86px;
 }
 
@@ -103,507 +81,502 @@ html, body {
   color: var(--color-primary-text);
 }
 
+/* Two-tone ring: visible on light and dark surfaces alike. */
 :focus-visible {
-  outline: 3px solid var(--color-gold);
-  outline-offset: 3px;
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--color-background);
 }
-
-
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--color-background); }
-::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 3px; }
-
 
 ::selection {
   background: color-mix(in srgb, var(--color-primary) 25%, transparent);
   color: var(--color-primary-text);
 }
 
+.font-ar { font-family: var(--font-plex-ar), "Segoe UI", Tahoma, sans-serif; }
+.font-en { font-family: var(--font-plex-en), Georgia, serif; }
 
-.font-ar { font-family: var(--font-ar), sans-serif; }
-.font-en { font-family: var(--font-en), serif; }
+/* `direction` comes from the dir attribute; alignment follows it via `start`, so
+   utilities like text-center still win. The old `text-align: right` was
+   unlayered and overrode every centred block on Arabic pages. */
+[dir="rtl"] { text-align: start; }
+[dir="rtl"] [dir="ltr"] { unicode-bidi: embed; }
 
-.apex-section-alt { background: color-mix(in srgb, var(--color-background) 92%, var(--color-card)); }
-.apex-card-base {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-}
-.apex-card-base:hover {
-  border-color: var(--card-accent) !important;
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--card-accent) 16%, transparent);
-}
-.apex-card-base:hover .card-emoji {
-  transform: scale(1.1);
-}
-.apex-card-base:hover .apex-arrow::after {
-  transform: translateX(4px);
-}
-[dir="rtl"] .apex-card-base:hover .apex-arrow::after {
-  transform: translateX(-4px);
+/* Arabic needs more line height than Latin, and tracking breaks its joins. */
+[dir="rtl"] :is(h1, h2, h3, .apex-page-title, .apex-section-title, .apex-hero-title) { line-height: 1.45; }
+[dir="rtl"] :is(.apex-eyebrow, .apex-cat-label) { letter-spacing: 0; text-transform: none; font-size: 0.875rem; }
+
+/* Directional icons opt in to mirroring; everything else (ticks, mail, moon) is left alone. */
+[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
+
+/* ---------------------------------------------------------------------------
+   Components
+   Layered so a utility on the element (padding, size) still wins.
+   --------------------------------------------------------------------------- */
+
+@layer components {
+  .apex-section { padding: 4rem 1.5rem; }
+  @media (min-width: 768px) { .apex-section { padding: 6rem 2.5rem; } }
+  .apex-section-alt { background: var(--color-card); }
+
+  .apex-page-title {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--color-primary-text);
+    text-wrap: balance;
+  }
+  .apex-section-title {
+    font-size: clamp(1.625rem, 3.4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-primary-text);
+    text-wrap: balance;
+  }
+  .apex-section-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--color-secondary-text);
+    max-width: 42rem;
+  }
+  .apex-eyebrow {
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  .apex-btn-primary,
+  .apex-btn-outline,
+  .apex-btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.75rem 1.75rem;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) ease, border-color var(--dur-fast) ease;
+  }
+  .apex-btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: var(--color-on-primary);
+  }
+  .apex-btn-primary:hover { transform: translateY(-1px); }
+  .apex-btn-outline {
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+  }
+  .apex-btn-outline:hover { background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
+  /* WhatsApp's own green is 2:1 against white text; this darker step is 5.1:1. */
+  .apex-btn-whatsapp { background: #128c4a; color: #ffffff; }
+  .apex-btn-whatsapp:hover { background: #0f7a40; }
+
+  .apex-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 44px;
+    padding: 0 1.125rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-background);
+    color: var(--color-primary-text);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+  }
+  .apex-chip:hover { border-color: var(--color-primary); }
+  .apex-chip-active,
+  .apex-chip[aria-current="page"] {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .apex-card {
+    border: 1px solid var(--color-border);
+    border-radius: 1.25rem;
+    background: var(--color-background);
+    transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+  }
+  .apex-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+  .apex-section-alt .apex-card { background: var(--color-background); }
+
+  /* The heading link's hit area covers the whole card, so a card is one link
+     instead of nested ones, and the title is the accessible name. */
+  .apex-stretched-link { text-decoration: none; color: inherit; }
+  .apex-stretched-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  .apex-stretched-link:focus-visible { outline: none; box-shadow: none; }
+  .apex-card:has(.apex-stretched-link:focus-visible) { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+  .apex-cat-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--cat, var(--color-primary)) 70%, var(--color-primary-text));
+  }
+
+  /* Typographic cover for articles without an image: the cluster's hue as a
+     tint, an outlined icon, and a perspective grid for depth. */
+  .apex-cover {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 85% 10%, color-mix(in oklch, var(--cat, var(--color-primary)) 28%, transparent), transparent 60%),
+      color-mix(in oklch, var(--cat, var(--color-primary)) 10%, var(--color-card));
+  }
+  .apex-cover::before {
+    content: "";
+    position: absolute;
+    inset: 40% -20% -40%;
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--cat, var(--color-primary)) 30%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--cat, var(--color-primary)) 30%, transparent) 1px, transparent 1px);
+    background-size: 28px 28px;
+    transform: perspective(300px) rotateX(55deg);
+    mask-image: linear-gradient(to bottom, transparent, black 60%);
+  }
+  .apex-cover-icon {
+    position: relative;
+    width: 4.5rem;
+    height: 4.5rem;
+    color: color-mix(in oklch, var(--cat, var(--color-primary)) 80%, var(--color-primary-text));
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .group:hover .apex-cover-icon { transform: translateY(-4px) rotate(-4deg); }
+
+  .apex-icon-tile {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    color: var(--color-primary);
+    background: linear-gradient(145deg, color-mix(in srgb, var(--color-primary) 16%, var(--color-background)), color-mix(in srgb, var(--color-primary) 6%, var(--color-background)));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 50%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  }
+  .apex-icon-tile-lg { width: 7.5rem; height: 7.5rem; border-radius: 1.75rem; }
+
+  .apex-stat {
+    font-family: var(--font-plex-en), Georgia, serif;
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .apex-step {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .apex-link-arrow::after { content: "→"; display: inline-block; margin-inline-start: 0.375rem; transition: transform var(--dur-fast) var(--ease-out); }
+  [dir="rtl"] .apex-link-arrow::after { content: "←"; }
+  .group:hover .apex-link-arrow::after { transform: translateX(4px); }
+  [dir="rtl"] .group:hover .apex-link-arrow::after { transform: translateX(-4px); }
+
+  .apex-faq { border-bottom: 1px solid var(--color-border); }
+  .apex-faq > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 56px;
+    padding: 0.75rem 0;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-primary-text);
+    cursor: pointer;
+    list-style: none;
+  }
+  .apex-faq > summary::-webkit-details-marker { display: none; }
+  .apex-faq > summary::after { content: "+"; font-size: 1.5rem; color: var(--color-primary); transition: transform var(--dur-fast) ease; }
+  .apex-faq[open] > summary::after { transform: rotate(45deg); }
+  .apex-faq > p { padding-bottom: 1.25rem; font-size: 1rem; line-height: 1.8; color: var(--color-secondary-text); }
+
+  .apex-footer-heading {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary-text);
+  }
+
+  .apex-skip-link {
+    position: fixed;
+    inset-inline-start: 1rem;
+    top: -4rem;
+    z-index: 200;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-weight: 700;
+  }
+  .apex-skip-link:focus { top: 1rem; }
+
+  .apex-takeaways {
+    padding: 1.25rem 1.5rem;
+    border-inline-start: 4px solid var(--color-primary);
+    border-radius: 0.75rem;
+    background: var(--color-card);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .apex-takeaways li { padding-inline-start: 1.25rem; position: relative; }
+  .apex-takeaways li::before { content: ""; position: absolute; inset-inline-start: 0; top: 0.75em; width: 6px; height: 6px; border-radius: 999px; background: var(--color-primary); }
 }
 
-/* The vw terms here were tuned against desktop widths and never engaged on a
-   phone: 3.9vw only clears the 28px floor at 718px, and 1.6vw clears 14px at
-   875px. Every phone therefore rendered these at exactly the floor, with no
-   response to screen size. The vw terms below cross their floors inside the
-   phone range instead, while the max values keep desktop rendering unchanged. */
-.apex-section-title {
-  font-size: clamp(26px, 6.4vw, 52px);
-  color: var(--color-primary-text);
-  text-wrap: balance;
-}
+/* ---------------------------------------------------------------------------
+   Article prose
+   --------------------------------------------------------------------------- */
 
-.apex-section-subtitle {
-  font-size: clamp(15px, 3.8vw, 17px);
-  color: var(--color-secondary-text);
-}
+.apex-prose { font-size: 1.0625rem; }
+[dir="rtl"] .apex-prose { font-size: 1.125rem; }
 
-.apex-btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  box-shadow: 0 8px 28px color-mix(in srgb, var(--color-primary) 38%, transparent);
-}
 .apex-prose-h2 {
-  font-size: clamp(20px, 5vw, 26px);
-  margin-top: 22px;
-  margin-bottom: 10px;
+  margin: 2.5rem 0 0.75rem;
+  font-size: clamp(1.375rem, 2.6vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.3;
   color: var(--color-primary-text);
 }
 .apex-prose-h3 {
-  font-size: clamp(18px, 4.4vw, 22px);
-  margin-top: 18px;
-  margin-bottom: 8px;
+  margin: 1.75rem 0 0.5rem;
+  font-size: clamp(1.125rem, 2.2vw, 1.3125rem);
+  font-weight: 700;
+  line-height: 1.4;
   color: var(--color-primary-text);
 }
 .apex-prose-p {
-  font-size: 15px;
+  margin-bottom: 1.1em;
   line-height: 1.8;
-  color: var(--color-secondary-text);
+  color: var(--color-primary-text);
 }
-
 .apex-prose-list {
-  margin: 12px 0 18px;
-  padding-inline-start: 18px;
-  color: var(--color-secondary-text);
-  font-size: 15px;
-  line-height: 1.7;
+  margin: 0.75rem 0 1.25rem;
+  padding-inline-start: 1.25rem;
+  line-height: 1.75;
 }
-.apex-prose-list li { margin: 6px 0; }
-
+.apex-prose-list li { margin: 0.375rem 0; }
 .apex-prose-quote {
-  margin: 16px 0;
-  padding: 10px 14px;
-  border-inline-start: 3px solid var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
-  color: var(--color-primary-text);
-  font-style: italic;
-}
-
-/* Fenced code blocks. `text-align: start` would follow the Arabic article's RTL
-   direction, so alignment is pinned to `left` to match the `dir="ltr"` the
-   renderer sets on the element. `white-space: pre` (not pre-wrap) keeps the
-   author's line breaks and indentation, with the overflow scrolling inside the
-   block rather than widening the article. */
-.apex-prose-pre {
-  margin: 18px 0;
-  padding: 14px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.25rem;
+  border-inline-start: 4px solid var(--color-primary);
   background: var(--color-card);
-  color: var(--color-primary-text);
+}
+/* Arabic has no italic face, and a synthesised slant reads as a rendering bug. */
+[dir="ltr"] .apex-prose-quote { font-style: italic; }
+
+/* Code reads left to right even inside an Arabic article. */
+.apex-prose-pre {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-card);
   overflow-x: auto;
   white-space: pre;
   text-align: left;
-  font-size: 13.5px;
+  font-size: 0.875rem;
   line-height: 1.7;
   tab-size: 2;
 }
-
-/* The inner <code> inherits the block's own background and padding — repeating
-   them here would draw a second panel inside the first. */
-.apex-prose-pre code {
-  font-family: inherit;
-  font-size: inherit;
-  background: none;
-  padding: 0;
-  border: 0;
-  color: inherit;
-}
-
-.apex-byline {
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-
-.apex-byline:hover,
-.apex-byline:focus-visible {
-  color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* In-article table of contents. Counters are used rather than `list-decimal` so
-   the number can be styled and sit in the accent colour alongside the link. */
-.apex-toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  counter-reset: apex-toc;
-  display: grid;
-  gap: 8px;
-}
-
-.apex-toc-list li {
-  counter-increment: apex-toc;
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.apex-toc-list li::before {
-  content: counter(apex-toc);
-  flex: none;
-  min-width: 1.4em;
-  font-size: 12px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-primary);
-  opacity: 0.75;
-}
-
-.apex-toc-link {
-  color: var(--color-secondary-text);
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-
-.apex-toc-link:hover,
-.apex-toc-link:focus-visible {
-  color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* Inline `code` spans inside prose, which keep the pill treatment. */
+.apex-prose-pre code { font: inherit; background: none; padding: 0; border: 0; }
 .apex-prose-code {
   padding: 0.1em 0.4em;
   border-radius: 4px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   font-size: 0.88em;
-  color: var(--color-primary-text);
   unicode-bidi: embed;
   direction: ltr;
 }
 
-.apex-contact-bg {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-background) 88%, var(--color-primary)),
-    color-mix(in srgb, var(--color-background) 92%, var(--color-gold))
-  );
+/* Wide tables scroll inside their own box; the fading edge signals there is more. */
+.apex-table-wrap {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(to right, var(--color-background) 30%, transparent) left / 2rem 100% no-repeat local,
+    linear-gradient(to left, var(--color-background) 30%, transparent) right / 2rem 100% no-repeat local,
+    linear-gradient(to right, color-mix(in srgb, var(--color-primary-text) 12%, transparent), transparent) left / 0.75rem 100% no-repeat scroll,
+    linear-gradient(to left, color-mix(in srgb, var(--color-primary-text) 12%, transparent), transparent) right / 0.75rem 100% no-repeat scroll;
 }
-.apex-contact-dots {
-  background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 9%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.6;
+.apex-table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.apex-table-wrap th,
+.apex-table-wrap td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border); text-align: start; vertical-align: top; }
+.apex-table-wrap th { background: var(--color-card); font-weight: 700; white-space: nowrap; }
+.apex-table-wrap tr:last-child td { border-bottom: 0; }
+
+.apex-toc-list { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; counter-reset: apex-toc; }
+.apex-toc-list li { counter-increment: apex-toc; display: flex; gap: 0.625rem; align-items: baseline; font-size: 0.9375rem; line-height: 1.5; }
+.apex-toc-list li::before { content: counter(apex-toc); flex: none; min-width: 1.4em; font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); }
+.apex-toc-link { display: inline-flex; align-items: center; min-height: 40px; color: var(--color-secondary-text); text-decoration: none; }
+.apex-toc-link:hover { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------------------------------------------------------------------------
+   Hero
+   --------------------------------------------------------------------------- */
+
+.apex-hero { background: var(--color-background); }
+
+.apex-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(60% 70% at 80% 30%, color-mix(in srgb, var(--color-brand) 18%, transparent), transparent 70%),
+    radial-gradient(40% 50% at 10% 90%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 70%);
 }
-.apex-contact-glow {
-  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%);
-}
+[dir="rtl"] .apex-hero-backdrop { transform: scaleX(-1); }
 
-
-
-
-[dir="rtl"] {
-  text-align: right;
-  direction: rtl;
-}
-
-[dir="rtl"] [dir="ltr"]                          { direction: ltr; unicode-bidi: embed; }
-[dir="rtl"] .lucide:not(.no-flip)                { transform: scaleX(-1); }
-
-
-[dir="rtl"] .ms-auto { margin-right: auto    !important; margin-left: initial  !important; }
-[dir="rtl"] .me-auto { margin-left:  auto    !important; margin-right: initial !important; }
-
-.apex-arrow::after {
-  content: "→";
-  display: inline-block;
-  margin-inline-start: 6px;
-  transition: transform 0.2s ease;
-}
-[dir="rtl"] .apex-arrow::after { content: "←"; }
-.apex-arrow-shift::after { transform: translateX(4px); }
-[dir="rtl"] .apex-arrow-shift::after { transform: translateX(-4px); }
-.group:hover .apex-arrow-group::after { transform: translateX(4px); }
-[dir="rtl"] .group:hover .apex-arrow-group::after { transform: translateX(-4px); }
-
-.apex-back:hover { color: var(--color-primary) !important; }
-
-.apex-tag-chip {
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-  color: var(--color-primary);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
-}
-
-.apex-feature { transition: border-color 0.2s ease, background 0.2s ease; }
-
-.apex-cta-btn:hover { opacity: 0.92; transform: translateY(-2px); }
-
-.apex-btn-outline:hover { background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
-
-.apex-btn-primary:hover { opacity: 0.92; transform: translateY(-2px); }
-
-.apex-prose-bullet { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-.apex-related:hover { border-color: var(--color-primary) !important; transform: translateY(-3px); }
-
-@keyframes apex-spin {
-  to { transform: rotate(360deg); }
+/* A receding grid the robot stands on: real perspective, no canvas. */
+.apex-hero-floor {
+  position: absolute;
+  inset: 55% -25% -30%;
+  z-index: -1;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-primary) 16%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 16%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transform: perspective(700px) rotateX(62deg);
+  transform-origin: 50% 0;
+  mask-image: linear-gradient(to bottom, transparent, black 25%, black 60%, transparent);
 }
 
-@keyframes apex-fade-up {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+.apex-hero-title {
+  margin-top: 0.25rem;
+  font-size: clamp(2.25rem, 5.6vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1.08;
+  text-wrap: balance;
 }
+/* Arabic words are longer per line; a step down keeps the headline to three lines. */
+[dir="rtl"] .apex-hero-title { font-size: clamp(2rem, 4.6vw, 3.5rem); }
 
-@keyframes apex-float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
-}
-
-@keyframes apex-shimmer {
-  to { background-position: 200% center; }
-}
-
-@keyframes apex-pulse-ring {
-  0%   { transform: scale(0.9); opacity: 0.7; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-@keyframes apex-dot-blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.35; }
-}
-
-/* Entrance animation. `both` means the 0% keyframe (opacity:0) also applies during
-   animation-delay, so any delayed element is briefly invisible. That is fine for
-   decorative content but not for the LCP element, so the hero <h1> is exempted
-   from its delay below. */
-.apex-fade-up { animation: apex-fade-up 0.75s ease both; }
-.apex-delay-1 { animation-delay: 0.06s; }
-.apex-delay-2 { animation-delay: 0.14s; }
-.apex-delay-3 { animation-delay: 0.22s; }
-.apex-delay-4 { animation-delay: 0.30s; }
-.apex-delay-5 { animation-delay: 0.38s; }
-
-/* The hero headline is the LCP candidate. Holding it at opacity:0 through a delay
-   pushes Largest Contentful Paint out by that much for no visual gain, so it
-   starts fading immediately while the elements around it stay staggered. */
-h1.apex-fade-up { animation-delay: 0s; }
-
-.apex-shimmer-text {
-  background: linear-gradient(
-    90deg,
-    var(--color-primary),
-    var(--color-gold),
-    var(--color-primary)
-  );
-  background-size: 200% auto;
+/* The gradient is painted with room above and below the glyphs, so Arabic
+   letters with dots below the line (the final ي in الرقمي) are not clipped. */
+.apex-gradient-text {
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+  background: linear-gradient(90deg in oklch, var(--color-primary), var(--color-brand));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: apex-shimmer 4s linear infinite;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
-.apex-section-label {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-primary);
+.apex-hero-stage {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  perspective: 900px;
 }
-.apex-section-label.gold { color: var(--color-gold); }
-
-.apex-divider {
-  width: 56px;
-  height: 2px;
-  margin: 12px auto 0;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-gold));
+.apex-hero-robot {
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition: transform 400ms var(--ease-out);
+  animation: apex-float 6s ease-in-out infinite;
 }
-.apex-divider.reverse {
-  background: linear-gradient(90deg, var(--color-gold), var(--color-primary));
-}
-
-.apex-glow {
-  text-shadow: 0 0 32px color-mix(in srgb, var(--color-primary) 22%, transparent);
-}
-
-.apex-online-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
+/* Contact shadow on the floor; it shrinks as the robot floats up. */
+.apex-hero-shadow {
+  position: absolute;
+  inset-inline: 22%;
+  bottom: 4%;
+  height: 8%;
   border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px #22c55e;
-  animation: apex-dot-blink 2.5s ease-in-out infinite;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-primary-text) 30%, transparent), transparent);
+  filter: blur(6px);
+  animation: apex-shadow 6s ease-in-out infinite;
 }
 
-.apex-card-hover {
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.apex-card-hover:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--color-primary) 16%, transparent);
-}
-
-.apex-tag {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  background: color-mix(in srgb, var(--color-background) 82%, transparent);
-  color: var(--color-primary);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
-  backdrop-filter: blur(6px);
+/* Scroll parallax where scroll-driven animations exist; elsewhere the robot is static. */
+@supports (animation-timeline: view()) {
+  .apex-hero-stage {
+    animation: apex-parallax linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 100%;
+  }
 }
 
-.apex-btn { transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; }
-.apex-btn:hover { opacity: 0.94; }
-
-@keyframes apex-card-fade-in {
-  from { opacity: 0; transform: translateY(14px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes apex-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -12px; }
+}
+@keyframes apex-shadow {
+  0%, 100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(0.85); opacity: 0.7; }
+}
+@keyframes apex-parallax {
+  to { translate: 0 18%; opacity: 0.4; }
 }
 
-@supports not (color: color-mix(in srgb, white, black)) {
-  .apex-section-alt, .apex-contact-bg { background: var(--color-card); }
-  .apex-tag { background: var(--color-card); border-color: var(--color-primary); }
-  .apex-card-hover:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
-  .apex-card-base:hover { box-shadow: var(--shadow); }
-  .apex-btn-primary { box-shadow: 0 8px 28px rgba(30, 136, 229, 0.35); }
-  .apex-tag-chip { background: var(--color-card); border-color: var(--color-primary); }
+/* Entrance animation: CSS only, so content is visible without JavaScript.
+   The headline itself is not delayed because it is the LCP element. */
+.apex-fade-up { animation: apex-fade-up var(--dur-slow) var(--ease-out) both; }
+.apex-delay-1 { animation-delay: 60ms; }
+.apex-delay-3 { animation-delay: 160ms; }
+.apex-delay-4 { animation-delay: 220ms; }
+.apex-delay-5 { animation-delay: 280ms; }
+@keyframes apex-fade-up {
+  from { opacity: 0; translate: 0 14px; }
+  to { opacity: 1; translate: 0 0; }
 }
+
+/* ---------------------------------------------------------------------------
+   Horizontal rails (filters, category chips)
+   --------------------------------------------------------------------------- */
+
+.apex-rail {
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.apex-rail::-webkit-scrollbar { display: none; }
+.apex-rail > * { scroll-snap-align: start; flex-shrink: 0; }
+@media (max-width: 767px) {
+  .apex-rail { margin-inline: -1.5rem; padding-inline: 1.5rem; }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   --------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
-  /* The shimmer relies on a moving gradient for its colour; with the animation
-     frozen, fall back to a solid readable fill instead of transparent text. */
-  .apex-shimmer-text {
-    background: none;
-    -webkit-background-clip: border-box;
-    background-clip: border-box;
-    color: var(--color-primary);
-  }
-  .apex-card-hover:hover { transform: none; }
-}
-
-
-/* ---------------------------------------------------------------------------
-   Hero — mobile layout
-   ---------------------------------------------------------------------------
-   The hero was authored desktop-first: a locked 100svh with the copy in a
-   45%-wide column and every decorative layer (WebGL video, particle canvas)
-   behind a `md:` prefix. On a phone that produced a full viewport of mostly
-   empty gradient. Height is now content-driven below md, and 100svh returns at
-   md where the decorative layers actually exist to fill it. */
-.apex-hero {
-  min-height: auto;
-}
-
-@media (min-width: 768px) {
-  .apex-hero {
-    min-height: 100svh;
-  }
-}
-
-/* Mobile stand-in for the desktop particle canvas. Two drifting radial
-   gradients on a pseudo-element: no canvas, no JS, no per-frame main-thread
-   work, and it composites on the GPU. It exists only below md, where the real
-   canvas is never mounted. */
-.apex-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      42vw 42vw at 78% 18%,
-      color-mix(in srgb, var(--color-primary) 16%, transparent) 0%,
-      transparent 68%
-    ),
-    radial-gradient(
-      36vw 36vw at 18% 72%,
-      color-mix(in srgb, var(--color-gold) 12%, transparent) 0%,
-      transparent 70%
-    );
-  animation: apex-hero-drift 18s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-@media (min-width: 768px) {
-  .apex-hero::after {
-    content: none;
-  }
-}
-
-@keyframes apex-hero-drift {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(0, -2.5%, 0) scale(1.06); }
-}
-
-.apex-hero-float {
-  animation: apex-float 6s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .apex-hero::after,
-  .apex-hero-float {
-    animation: none;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Filter rails (portfolio / academy / blog categories)
-   ---------------------------------------------------------------------------
-   These are `flex-nowrap overflow-x-auto` below md, which is the right call —
-   wrapping eight chips onto four lines wastes a phone screen. But a bare
-   overflow container gives no sign that there is more to the right, and a
-   scrollbar gutter appears on hover on desktop-class pointers. This adds momentum
-   scrolling, snapping, a hidden scrollbar, and edge padding that lets the last
-   chip clear the viewport edge. */
-.apex-rail {
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-  scroll-padding-inline: 1.5rem;
-}
-
-.apex-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.apex-rail > * {
-  scroll-snap-align: start;
-  flex-shrink: 0;
-}
-
-/* Bleed to the viewport edge below md so the rail scrolls past the page gutter
-   rather than stopping short of it, which reads as a clipped row. */
-@media (max-width: 767px) {
-  .apex-rail {
-    margin-inline: -1.5rem;
-    padding-inline: 1.5rem;
-  }
+  .apex-hero-robot { animation: none; transform: none; }
+  .apex-hero-stage { animation: none; }
+  .apex-card:hover { transform: none; }
 }

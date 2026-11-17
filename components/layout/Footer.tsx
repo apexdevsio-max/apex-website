@@ -1,136 +1,108 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getRtlClasses } from "@/lib/i18n/rtl";
+
+import { ConsentSettingsButton } from "@/components/analytics/ConsentSettingsButton";
+import { navigationItems } from "@/data/navigation";
+import { socialLinks } from "@/data/social-links";
+import { getServices } from "@/lib/content/content-loader";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
 import type { Locale } from "@/lib/i18n/locale";
 
-// Each slug is paired with the dictionary index it takes its label from, so
-// reordering `services.items` in the dictionaries cannot silently repoint these
-// links at the wrong service.
-const FOOTER_SERVICES = [
-  { slug: "web-development", titleIndex: 0 },
-  { slug: "mobile-apps", titleIndex: 1 },
-  { slug: "ai-solutions", titleIndex: 2 },
-] as const;
+const linkClass = "text-sm transition-colors hover:text-apex-primary flex items-center min-h-[44px]";
 
-export function Footer({
-  lang,
-  dictionary,
-}: {
-  lang: Locale;
-  dictionary: Dictionary;
-}) {
-  const rtl = getRtlClasses(lang);
-  const { footer, services } = dictionary;
+export async function Footer({ lang, dictionary }: { lang: Locale; dictionary: Dictionary }) {
+  const { footer, navigation } = dictionary;
   const isAr = lang === "ar";
+  const services = await getServices(lang);
+  const whatsappDigits = socialLinks.whatsapp.replace(/[^\d]/g, "");
 
-  // Pages are statically generated, so this is the build year. Accurate enough for
-  // a copyright line; it refreshes on the next deploy.
+  // Statically generated, so this is the build year; it refreshes on the next deploy.
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      className="border-t border-apex-border bg-apex-bg py-12 md:py-16"
-      dir={rtl.dirAttr}
-      style={{ contain: "layout paint size", minHeight: "200px" }}
-    >
+    <footer className="border-t border-apex-border bg-apex-bg py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className={`grid grid-cols-1 gap-8 lg:gap-12 ${
-          isAr 
-            ? "lg:grid-cols-4 lg:text-right" 
-            : "lg:grid-cols-4 lg:text-left"
-        }`}>
-          <div className={`flex flex-col ${rtl.flexRev}`}>
-            <Link href={`/${lang}`} className="mb-6 flex items-center gap-2">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+          <div className="flex flex-col gap-4">
+            <Link href={`/${lang}`} className="inline-flex w-fit">
               <Image
                 src="/images/Apex_logo.png"
-                alt={isAr ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
+                alt={isAr ? "أبيكس — الصفحة الرئيسية" : "APEX — home"}
                 width={120}
-                height={40}
-                quality={75}
+                height={44}
                 sizes="120px"
-                loading="lazy"
               />
             </Link>
-            <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.8, lineHeight: "1.625" }}>
-              {footer.description}
-            </p>
+            <p className="text-sm leading-relaxed text-apex-muted">{footer.description}</p>
+            <p className="text-sm leading-relaxed text-apex-muted">{footer.location}</p>
           </div>
+
+          <nav aria-label={footer.quickLinks}>
+            <h2 className="apex-footer-heading">{footer.quickLinks}</h2>
+            <ul>
+              {navigationItems.map((item) => (
+                <li key={item.key}>
+                  <Link href={item.path === "/" ? `/${lang}` : `/${lang}/${item.path}`} className={linkClass}>
+                    {navigation[item.key]}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href={`/${lang}/about`} className={linkClass}>
+                  {navigation.about}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <nav aria-label={footer.servicesHeading}>
+            <h2 className="apex-footer-heading">{footer.servicesHeading}</h2>
+            <ul>
+              {services.map((service) => (
+                <li key={service.slug}>
+                  <Link href={`/${lang}/services/${service.slug}`} className={linkClass}>
+                    {service.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <div>
-            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
-              {footer.quickLinks}
-            </h3>
-            <ul className="space-y-2">
-              {(Object.entries(dictionary.navigation || {}) as [string, string][])
-                .filter(([key]) => key !== "letsTalk")
-                .map(([key, label]) => {
-                  const path = key === "home" ? "" : key;
-                  return (
-                    <li key={key}>
-                      <Link
-                        href={`/${lang}${path ? `/${path}` : ""}`}
-                        className="text-sm transition-colors hover:text-apex-primary block py-3 min-h-[44px] flex items-center"
-                      >
-                        {label}
-                      </Link>
-                    </li>
-                  );
-                })}
+            <h2 className="apex-footer-heading">{footer.quickContact}</h2>
+            <ul>
+              <li>
+                <a href={`https://wa.me/${whatsappDigits}`} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  WhatsApp: <span dir="ltr" className="ms-1">{socialLinks.whatsapp}</span>
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${socialLinks.email}`} className={linkClass}>
+                  {footer.emailLabel}: <span dir="ltr" className="ms-1">{socialLinks.email}</span>
+                </a>
+              </li>
             </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
-              {services.title}
-            </h3>
-            <ul className="space-y-2">
-              {FOOTER_SERVICES.map(({ slug, titleIndex }) => {
-                const title = services.items[titleIndex]?.title;
-                if (!title) return null;
-                return (
-                  <li key={slug}>
-                    <Link
-                      href={`/${lang}/services/${slug}`}
-                      className="text-sm transition-colors hover:text-apex-primary block py-3 min-h-[44px] flex items-center"
-                    >
-                      {title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          <div className={`${rtl.flexRev}`}>
-            <h3 className="mb-6 font-bold text-lg" style={{ color: "var(--color-primary)", lineHeight: "1.4" }}>
-              {footer.quickContact}
-            </h3>
-            <Link
-              href={`/${lang}/contact`}
-              className={`inline-flex items-center gap-2 text-sm font-bold transition-all px-5 py-3.5 rounded-full border-2 border-apex-primary text-apex-primary hover:bg-apex-primary hover:text-white ${rtl.fontClass}`}
-            >
-              {dictionary.navigation.letsTalk}
-              <span className={`${rtl.arrowRotate}`} aria-hidden="true">→</span>
+            <Link href={`/${lang}/contact`} className="apex-btn-outline mt-4">
+              {navigation.letsTalk}
             </Link>
           </div>
         </div>
 
-        <div className="border-t border-apex-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className={`text-sm ${rtl.fontClass}`} style={{ opacity: 0.6, lineHeight: "1.5" }}>
-            © {year} Apex. {footer.rights}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-apex-border pt-8 md:flex-row">
+          <p className="text-sm text-apex-muted">
+            © {year} APEX. {footer.rights}
           </p>
-          <div className="flex gap-4">
-            <Link href={`/${lang}/privacy`} className="text-sm hover:text-apex-primary transition-colors py-2 min-h-[44px] flex items-center">
+          <div className="flex flex-wrap items-center gap-x-6">
+            <Link href={`/${lang}/privacy`} className={linkClass}>
               {footer.privacy}
             </Link>
-            <Link href={`/${lang}/terms`} className="text-sm hover:text-apex-primary transition-colors py-2 min-h-[44px] flex items-center">
+            <Link href={`/${lang}/terms`} className={linkClass}>
               {footer.terms}
             </Link>
+            <ConsentSettingsButton label={footer.privacySettings} />
           </div>
         </div>
       </div>
     </footer>
   );
 }
-

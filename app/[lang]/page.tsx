@@ -1,47 +1,23 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 
-const HeroSection = dynamic(
-  () => import("@/components/sections/HeroSection").then((m) => m.HeroSection),
-  { ssr: true }
-);
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale, toLocale } from "@/lib/i18n/locale";
-import { socialLinks } from "@/data/social-links";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
-  JsonLd,
   buildOrganizationSchema,
   buildWebSiteSchema,
   buildServiceSchema,
 } from "@/lib/seo/schema";
-import { MOCK_SERVICES, MOCK_SERVICE_SLUGS } from "@/lib/mock/services-data";
-
-const AboutSection = dynamic(
-  () => import("@/components/sections/AboutSection").then((m) => m.AboutSection),
-  { ssr: true }
-);
-
-const ServicesSection = dynamic(
-  () => import("@/components/sections/ServicesSection").then((m) => m.ServicesSection),
-  { ssr: true }
-);
-
-// Imported directly rather than through next/dynamic: this is an async server
-// component that awaits real portfolio content, and next/dynamic does not support
-// awaiting an async server component's data during SSR.
+import { JsonLd } from "@/components/seo/JsonLd";
+import { getBlogPosts, getPortfolioItems, getServices } from "@/lib/content/content-loader";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { AboutSection } from "@/components/sections/AboutSection";
+import { ServicesSection } from "@/components/sections/ServicesSection";
 import { PortfolioPreview } from "@/components/sections/PortfolioPreview";
-
-const Testimonials = dynamic(
-  () => import("@/components/sections/Testimonials").then((m) => m.Testimonials),
-  { ssr: true }
-);
-
-const ContactSection = dynamic(
-  () => import("@/components/sections/ContactSection").then((m) => m.ContactSection),
-  { ssr: true }
-);
+import { WhyApex } from "@/components/sections/WhyApex";
+import { ContactSection } from "@/components/sections/ContactSection";
+import { LatestGuides } from "@/components/sections/LatestGuides";
 
 export async function generateMetadata({
   params,
@@ -55,18 +31,21 @@ export async function generateMetadata({
 type Props = { params: Promise<{ lang: string }> };
 
 export default async function HomePage({ params }: Props) {
-  const { lang: langParam } = await params;
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
 
-  if (!isLocale(langParam)) notFound();
+  const [dictionary, services, projects, posts] = await Promise.all([
+    getDictionary(lang),
+    getServices(lang),
+    getPortfolioItems(lang),
+    getBlogPosts(lang),
+  ]);
 
-  const lang = langParam as "en" | "ar";
-  const dictionary = await getDictionary(lang);
-
-  const serviceSchemas = MOCK_SERVICE_SLUGS.map((slug) => {
-    const service = MOCK_SERVICES[slug];
-    const content = service[lang];
-    return buildServiceSchema(slug, content.title, content.summary, lang);
-  });
+  // Built from the real service pages, so every Service node points at a URL
+  // that exists. It used to come from mock data and named two services that 404.
+  const serviceSchemas = services.map((service) =>
+    buildServiceSchema(service.slug, service.title, service.summary, lang)
+  );
 
   return (
     <>
@@ -76,16 +55,17 @@ export default async function HomePage({ params }: Props) {
         <JsonLd key={schema.url as string} schema={schema} />
       ))}
 
-      <HeroSection lang={lang} dictionary={dictionary} />
-      <AboutSection lang={lang} dictionary={dictionary} />
-      <ServicesSection lang={lang} dictionary={dictionary} />
-      <PortfolioPreview lang={lang} dictionary={dictionary} />
-      <Testimonials lang={lang} dictionary={dictionary} />
-      <ContactSection
+      <HeroSection lang={lang} hero={dictionary.heroSection} />
+      <ServicesSection lang={lang} copy={dictionary.services} services={services} />
+      <PortfolioPreview lang={lang} copy={dictionary.portfolio} />
+      <AboutSection
         lang={lang}
-        dictionary={dictionary}
-        whatsapp={socialLinks.whatsapp}
+        about={dictionary.about}
+        counts={{ projects: projects.length, services: services.length, articles: posts.length }}
       />
+      <WhyApex copy={dictionary.whyApex} />
+      <LatestGuides lang={lang} posts={posts.slice(0, 3)} />
+      <ContactSection lang={lang} copy={dictionary.contact} />
     </>
   );
 }

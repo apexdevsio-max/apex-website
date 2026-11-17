@@ -4,428 +4,154 @@ import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 
-import {
-  getPortfolioItemBySlug,
-  getPortfolioItems,
-} from "@/lib/content/content-loader";
-import { SUPPORTED_LOCALES, isLocale, toLocale } from "@/lib/i18n/locale";
+import { getPortfolioItemBySlug, getPortfolioItems } from "@/lib/content/content-loader";
+import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
-import {
-  JsonLd,
-  buildOrganizationSchema,
-  buildCreativeWorkSchema,
-  buildBreadcrumbSchema,
-} from "@/lib/seo/schema";
-import {
-  FALLBACK_PORTFOLIO,
-  MOCK_PORTFOLIO,
-} from "@/lib/mock/portfolio-data";
+import { buildOrganizationSchema, buildCreativeWorkSchema, buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { MarkdownContent } from "@/components/content/MarkdownContent";
+import { Breadcrumbs } from "@/components/content/Breadcrumbs";
+import { ProjectCard } from "@/components/content/ProjectCard";
+import { PROJECT_CATEGORY_LABELS } from "@/lib/content/project-style";
 
-// Only projects backed by a real MDX file are prerendered. Prerendering
-// MOCK_PORTFOLIO_SLUGS too published `ai-design-brand` and `ai-video-series` as
-// indexable routes carrying ~115 words of placeholder copy, which counts against
-// site quality. An unbacked slug now 404s until its MDX is written.
+type Props = { params: Promise<{ lang: string; slug: string }> };
+
 export async function generateStaticParams() {
-  const seen = new Set<string>();
-  const params: { lang: string; slug: string }[] = [];
-
-  for (const lang of SUPPORTED_LOCALES) {
-    const mdxItems = await getPortfolioItems(lang);
-
-    for (const item of mdxItems) {
-      const key = `${lang}:${item.slug}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        params.push({ lang, slug: item.slug });
-      }
-    }
-  }
-
-  return params;
+  const params = await Promise.all(
+    SUPPORTED_LOCALES.map(async (lang) => (await getPortfolioItems(lang)).map((item) => ({ lang, slug: item.slug })))
+  );
+  return params.flat();
 }
 
-// Without this, a slug dropped above still renders on demand from MOCK_PORTFOLIO.
 export const dynamicParams = false;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string; slug: string }>;
-}): Promise<Metadata> {
+/** The service each kind of project demonstrates, for the closing call to action. */
+const SERVICE_FOR = { app: "mobile-apps", "ai-content": "ai-solutions", video: "content-creation" } as const;
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, slug } = await params;
-  const locale = toLocale(lang);
-  const mock = MOCK_PORTFOLIO[slug]?.[locale];
-  let mdxItem = null;
-  try {
-    mdxItem = await getPortfolioItemBySlug(locale, slug);
-  } catch (error) {
-    // Content validation errors are recoverable here (the page falls back to
-    // static metadata), but they describe real malformed content, so surface
-    // them instead of failing silently.
-    console.error("Content load failed:", error);
-    mdxItem = null;
-  }
-
-  const thumbnail = mdxItem?.thumbnail ?? mdxItem?.images?.[0];
-
-  return buildPageMeta(locale, {
-    title: mdxItem?.title ?? mock?.title ?? slug,
-    description: mdxItem?.summary ?? mock?.summary ?? "",
+  if (!isLocale(lang)) return {};
+  const item = await getPortfolioItemBySlug(lang, slug);
+  if (!item) return {};
+  return buildPageMeta(lang, {
+    title: item.title,
+    description: item.summary,
     path: `/${lang}/portfolio/${slug}`,
-    ...(thumbnail ? { image: `${siteUrl}${thumbnail.startsWith("/") ? "" : "/"}${thumbnail}` } : {}),
+    image: { url: `${siteUrl}${item.cover}` },
   });
 }
 
-const hoverStyles = `
-  .apex-back-link:hover { color: var(--color-primary) !important; }
-  .apex-result-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .apex-result-item:last-child { border-bottom: none; }
-`;
-
-export default async function PortfolioItemPage({
-  params,
-}: {
-  params: Promise<{ lang: string; slug: string }>;
-}) {
+export default async function PortfolioItemPage({ params }: Props) {
   const { lang, slug } = await params;
-  if (!isLocale(lang) || !slug) notFound();
+  if (!isLocale(lang)) notFound();
+
+  const [item, all] = await Promise.all([getPortfolioItemBySlug(lang, slug), getPortfolioItems(lang)]);
+  if (!item) notFound();
 
   const isAr = lang === "ar";
-  let mdxItem = null;
-  try {
-    mdxItem = await getPortfolioItemBySlug(lang, slug);
-  } catch (error) {
-    // Content validation errors are recoverable here (the page falls back to
-    // static metadata), but they describe real malformed content, so surface
-    // them instead of failing silently.
-    console.error("Content load failed:", error);
-    mdxItem = null;
-  }
-  const mock = MOCK_PORTFOLIO[slug];
-  const mockContent = mock?.[lang];
-  const fallback = FALLBACK_PORTFOLIO(slug, lang);
+  const url = `${siteUrl}/${lang}/portfolio/${slug}`;
+  const gallery = (item.images ?? []).filter((src) => src !== item.cover);
+  const isPortraitGallery = item.category === "app";
+  const more = all.filter((other) => other.slug !== slug && other.category === item.category).slice(0, 3);
 
-  if (!mdxItem && !mock) notFound();
-
-  const title = mdxItem?.title ?? mockContent?.title ?? fallback.title;
-  const summary = mdxItem?.summary ?? mockContent?.summary ?? fallback.summary;
-  const description =
-    mdxItem?.description ?? mockContent?.description ?? fallback.description;
-  const emoji = mock?.emoji ?? fallback.emoji;
-  const gradient = mock?.gradient ?? fallback.gradient;
-  const accentColor = mock?.accentColor ?? fallback.accentColor;
-  const tags = mock?.tags ?? fallback.tags;
-  const category = mock?.category ?? fallback.category;
-  const images = mdxItem?.images;
-  const thumbnail = images?.[0] ?? mdxItem?.thumbnail;
-  const driveUrl = mdxItem?.driveUrl;
-
-  const lines = description.split("\n").filter((line) => line.trim() !== "");
+  const trail = [
+    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+    { name: isAr ? "أعمالنا" : "Portfolio", url: `${siteUrl}/${lang}/portfolio` },
+    { name: item.title, url },
+  ];
 
   return (
-    <div
-      className="min-h-screen pt-24 pb-24 px-6"
-      style={{ background: "var(--color-background)" }}
-      dir={isAr ? "rtl" : "ltr"}
-    >
+    <div className="px-6 pt-8 pb-20">
       <JsonLd schema={buildOrganizationSchema(lang)} />
-      <JsonLd
-        schema={buildBreadcrumbSchema([
-          { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
-          { name: isAr ? "أعمالنا" : "Portfolio", url: `${siteUrl}/${lang}/portfolio` },
-          { name: title, url: `${siteUrl}/${lang}/portfolio/${slug}` },
-        ])}
-      />
-      <JsonLd
-        schema={buildCreativeWorkSchema({
-          title,
-          summary,
-          description,
-          url: `${siteUrl}/${lang}/portfolio/${slug}`,
-          image: thumbnail || undefined,
-          tags: tags,
-          lang,
-        })}
-      />
-      <style dangerouslySetInnerHTML={{ __html: hoverStyles }} />
-      <div className="max-w-4xl mx-auto">
-        <Link
-          href={`/${lang}/portfolio`}
-          className={`apex-back-link inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-colors ${
-            isAr ? "font-ar flex-row-reverse" : "font-en"
-          }`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              transform: isAr ? "none" : "rotate(180deg)",
-            }}
-          >
-            →
-          </span>
-          {isAr ? "العودة إلى الأعمال" : "Back to Portfolio"}
-        </Link>
+      <JsonLd schema={buildBreadcrumbSchema(trail)} />
+      <JsonLd schema={buildCreativeWorkSchema({ title: item.title, summary: item.summary, url, image: item.cover, lang, dateModified: item.dateModified })} />
 
-        <div
-          className="relative rounded-3xl overflow-hidden mb-10"
-          style={{ height: "clamp(240px,30vw,380px)", background: gradient }}
-        >
-          {thumbnail ? (
-            <Image
-              src={thumbnail}
-              alt={title}
-              fill
-              sizes="(max-width: 768px) 100vw, 800px"
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <>
-              <div
-                className="absolute inset-0 opacity-15"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-                  backgroundSize: "28px 28px",
-                }}
-                aria-hidden="true"
-              />
-              <div
-                className="absolute rounded-full pointer-events-none"
-                style={{
-                  width: "300px",
-                  height: "300px",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%,-50%)",
-                  background: `radial-gradient(circle,${accentColor}35 0%,transparent 70%)`,
-                }}
-                aria-hidden="true"
-              />
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{
-                  fontSize: "96px",
-                  filter: "drop-shadow(0 0 30px rgba(255,255,255,0.35))",
-                }}
-              >
-                {emoji}
-              </div>
-            </>
-          )}
-          <div
-            className="absolute top-4 px-4 py-1.5 rounded-full text-xs font-bold"
-            style={{
-              [isAr ? "left" : "right"]: "16px",
-              background: `color-mix(in srgb,${accentColor} 18%,rgba(0,0,0,0.6))`,
-              border: `1px solid ${accentColor}55`,
-              color: accentColor,
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            {category}
-          </div>
+      <div className="mx-auto max-w-5xl">
+        <Breadcrumbs
+          label={isAr ? "مسار التنقل" : "Breadcrumb"}
+          items={trail.map((entry, index) => ({ name: entry.name, href: index < trail.length - 1 ? entry.url.replace(siteUrl, "") : undefined }))}
+        />
+
+        <header className="mb-8 max-w-3xl">
+          <p className="apex-cat-label mb-3">{PROJECT_CATEGORY_LABELS[item.category][lang]}</p>
+          <h1 className="apex-page-title">{item.title}</h1>
+          <p className="mt-4 text-lg leading-relaxed text-apex-muted">{item.summary}</p>
+        </header>
+
+        {/* Shown whole: portrait stills sit over a blurred copy of themselves. */}
+        <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-3xl border border-apex-border bg-apex-card">
+          <Image src={item.cover} alt="" fill aria-hidden="true" className="scale-110 object-cover opacity-50 blur-2xl" sizes="300px" quality={40} />
+          <Image
+            src={item.cover}
+            alt={item.title}
+            fill
+            preload
+            className="object-contain"
+            sizes="(max-width: 1024px) 100vw, 1024px"
+          />
         </div>
 
-        <div className={`flex flex-wrap gap-2 mb-5 ${isAr ? "flex-row-reverse" : ""}`}>
-          {tags.map((tag) => (
-            <span key={tag} className="apex-tag-chip text-xs font-bold px-3 py-1 rounded-full">
-              {tag}
-            </span>
-          ))}
-        </div>
+        <article className="apex-prose max-w-[72ch]">
+          <MarkdownContent source={item.description} lang={lang} />
+        </article>
 
-        <h1
-          className={`font-bold mb-4 leading-tight ${isAr ? "font-ar" : "font-en"}`}
-          style={{ fontSize: "clamp(24px,3.5vw,42px)", color: "var(--color-primary-text)" }}
-        >
-          {title}
-        </h1>
-
-        <p
-          className={`text-lg mb-10 leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-          style={{ color: "var(--color-secondary-text)" }}
-        >
-          {summary}
-        </p>
-
-        <div
-          className="rounded-2xl border p-8 mb-12"
-          style={{ background: "var(--color-card)", borderColor: "var(--color-border)" }}
-        >
-          {lines.map((line, index) => {
-            const isBullet = line.startsWith("• ");
-            const isResult = line.startsWith("النتيجة") || line.startsWith("Result");
-            // The MDX body appended by the content loader is Markdown, so `## `
-            // headings arrive here as literal text. Rendered as real headings they
-            // also give these pages the section structure crawlers read.
-            const isHeading = line.startsWith("## ");
-
-            if (isHeading) {
-              return (
-                <h2
-                  key={index}
-                  className={`mt-8 mb-3 font-bold ${isAr ? "font-ar" : "font-en"}`}
-                  style={{ fontSize: "18px", color: "var(--color-primary-text)" }}
-                >
-                  {line.replace("## ", "")}
-                </h2>
-              );
-            }
-
-            if (isResult) {
-              return (
-                <div
-                  key={index}
-                  className={`mt-6 pt-5 border-t ${isAr ? "font-ar" : "font-en"}`}
-                  style={{ borderColor: "var(--color-border)" }}
-                >
-                  <p className="font-bold" style={{ color: accentColor, fontSize: "15px" }}>
-                    {line}
-                  </p>
-                </div>
-              );
-            }
-
-            if (isBullet) {
-              return (
-                <div key={index} className="apex-result-item">
-                  <span
-                    className="mt-1 w-2 h-2 rounded-full shrink-0"
-                    style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }}
-                  />
-                  <span
-                    className={`text-sm leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-                    style={{ color: "var(--color-primary-text)" }}
-                  >
-                    {line.replace("• ", "")}
-                  </span>
-                </div>
-              );
-            }
-
-            // Body paragraphs use Markdown bold for the lead-in of each point.
-            // Rendered literally it would show the asterisks, so the segments are
-            // split out and the odd ones (the delimited spans) emphasised.
-            const segments = line.split("**");
-
-            return (
-              <p
-                key={index}
-                className={`mb-3 leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-                style={{ color: "var(--color-secondary-text)", fontSize: "15px" }}
-              >
-                {segments.map((segment, segmentIndex) =>
-                  segmentIndex % 2 === 1 ? (
-                    <strong key={segmentIndex} style={{ color: "var(--color-primary-text)" }}>
-                      {segment}
-                    </strong>
-                  ) : (
-                    segment
-                  )
-                )}
-              </p>
-            );
-          })}
-        </div>
-
-        {images && images.length > 1 && (
-          <div className="mb-10">
-            <h2
-              className={`font-bold mb-5 ${isAr ? "font-ar" : "font-en"}`}
-              style={{ fontSize: "17px", color: "var(--color-primary-text)" }}
-            >
-              {isAr ? "معرض الصور" : "Gallery"}
+        {gallery.length > 0 && (
+          <section aria-labelledby="gallery" className="mt-14">
+            <h2 id="gallery" className="apex-section-title mb-6">
+              {isAr ? "من التنفيذ" : "From the project"}
             </h2>
-            {images.length === 6 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
-                {images.map((src, i) => (
-                  <div key={i} className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl" style={{ aspectRatio: "590 / 1280", background: "var(--color-card)" }}>
-                    <Image src={src} alt={`${title} - ${i + 1}`} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover transition-all duration-700 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {images.map((src, i) => (
-                  <div
-                    key={i}
-                    className="relative rounded-2xl overflow-hidden"
-                    style={{ aspectRatio: "16 / 9", background: "var(--color-card)" }}
-                  >
+            <ul className={`grid gap-4 ${isPortraitGallery ? "grid-cols-2 sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+              {gallery.map((src, index) => (
+                <li key={src}>
+                  {/* Opens the full-size image, so phone screenshots can be read. */}
+                  <a href={src} target="_blank" rel="noopener" className="block overflow-hidden rounded-2xl border border-apex-border hover:border-apex-primary">
                     <Image
                       src={src}
-                      alt={`${title} - ${i + 1}`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
+                      alt={isAr ? `${item.title} — صورة ${index + 1}` : `${item.title} — image ${index + 1}`}
+                      width={isPortraitGallery ? 590 : 1080}
+                      height={isPortraitGallery ? 1280 : 1080}
+                      className="h-auto w-full"
+                      sizes={isPortraitGallery ? "(max-width: 640px) 50vw, 320px" : "(max-width: 640px) 100vw, 480px"}
                     />
-                  </div>
-                ))}
-              </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <aside className="mt-14 flex flex-col gap-4 rounded-2xl border border-apex-border bg-apex-card p-6 md:flex-row md:items-center md:justify-between md:p-8">
+          <div>
+            <p className="text-lg font-bold text-apex-text">{isAr ? "تريد عملاً مشابهاً؟" : "Want something similar?"}</p>
+            {item.driveUrl && (
+              <a href={item.driveUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-[44px] items-center gap-2 text-apex-primary underline underline-offset-4">
+                {isAr ? "مشاهدة الملفات الكاملة على Google Drive" : "View the full files on Google Drive"}
+                <ExternalLink size={14} aria-hidden="true" />
+              </a>
             )}
           </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href={`/${lang}/services/${SERVICE_FOR[item.category]}`} className="apex-btn-outline">
+              {isAr ? "تفاصيل الخدمة" : "About this service"}
+            </Link>
+            <Link href={`/${lang}/contact`} className="apex-btn-primary">
+              {isAr ? "تواصل معنا" : "Get in touch"}
+            </Link>
+          </div>
+        </aside>
+
+        {more.length > 0 && (
+          <section aria-labelledby="more-work" className="mt-16">
+            <h2 id="more-work" className="apex-section-title mb-6">
+              {isAr ? "أعمال أخرى من النوع نفسه" : "More work like this"}
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {more.map((project) => (
+                <ProjectCard key={project.slug} project={project} lang={lang} />
+              ))}
+            </div>
+          </section>
         )}
-
-        {driveUrl && (
-          <a
-            href={driveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mb-8 flex items-center justify-center gap-3 rounded-2xl border-2 p-5 transition-all hover:opacity-85"
-            style={{
-              borderColor: `color-mix(in srgb,${accentColor} 35%,transparent)`,
-              background: `color-mix(in srgb,${accentColor} 8%,var(--color-card))`,
-              color: accentColor,
-            }}
-          >
-            <ExternalLink size={20} />
-            <span className={`text-sm font-bold ${isAr ? "font-ar" : "font-en"}`}>
-              {isAr ? "شاهد المشروع على Google Drive" : "View Project on Google Drive"}
-            </span>
-          </a>
-        )}
-
-        <div className={`flex flex-wrap gap-4 ${isAr ? "flex-row-reverse" : ""}`}>
-          <Link
-            href={`/${lang}/contact`}
-            className={`apex-btn-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-white transition-all ${
-              isAr ? "font-ar" : "font-en"
-            }`}
-            style={{
-              background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-              boxShadow: "0 8px 28px color-mix(in srgb,var(--color-primary) 38%,transparent)",
-            }}
-          >
-            {isAr ? "ابدأ مشروعًا مشابهًا" : "Start a Similar Project"}
-            <span
-              style={{
-                display: "inline-block",
-                transform: isAr ? "rotate(180deg)" : "none",
-              }}
-            >
-              →
-            </span>
-          </Link>
-
-          <Link
-            href={`/${lang}/portfolio`}
-            className={`apex-btn-outline inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all border-2 ${
-              isAr ? "font-ar" : "font-en"
-            }`}
-            style={{ color: "var(--color-primary)", borderColor: "var(--color-primary)" }}
-          >
-            {isAr ? "عرض المزيد من الأعمال" : "More Projects"}
-          </Link>
-        </div>
       </div>
     </div>
   );

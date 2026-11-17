@@ -62,8 +62,9 @@ function warnOnPlaceholderIdentity(): void {
 
 if (isBuildEntrypoint()) warnOnPlaceholderIdentity();
 
-// Note: www → non-www redirect (apex.sy) must be configured at the CDN/server level (Vercel/Cloudflare),
-// not in Next.js config. No redirect chains exist — the middleware handles locale detection in one hop.
+// www.apex.sy has no DNS record today. Add a CNAME for it at the DNS provider and
+// attach it to the Vercel project as a redirect to apex.sy; nothing in this file
+// can create a hostname that does not resolve.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
@@ -75,12 +76,52 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: false,
   },
   outputFileTracingRoot: projectRoot,
+  // The social cards read their fonts and content from disk. Listing them here
+  // keeps them in the deployed function even when a card is rendered on demand.
+  outputFileTracingIncludes: {
+    "/[lang]/opengraph-image": ["./fonts/**/*.ttf"],
+    "/[lang]/blog/[slug]/opengraph-image": ["./fonts/**/*.ttf", "./content/blog/**"],
+    "/[lang]/services/[service]/opengraph-image": ["./fonts/**/*.ttf", "./content/services/**"],
+  },
   reactStrictMode: true,
+  async redirects() {
+    return [
+      // Old portfolio category URLs. Handled here so they answer with a real 308
+      // instead of a 200 page carrying a meta refresh.
+      {
+        source: "/:lang(en|ar)/portfolio/category/:slug",
+        destination: "/:lang/portfolio",
+        permanent: true,
+      },
+      // Five near-identical city pages were merged into one honest guide.
+      ...[
+        "app-development-company-riyadh",
+        "app-development-jeddah",
+        "app-development-abu-dhabi",
+        "web-design-company-dubai",
+        "software-company-qatar",
+      ].map((slug) => ({
+        source: `/:lang(en|ar)/blog/${slug}`,
+        destination: "/:lang/blog/gulf-app-development-guide",
+        permanent: true,
+      })),
+      // Blog categories were rebuilt around topic clusters.
+      ...[
+        ["languages-frameworks", "mobile-development"],
+        ["web-development", "web-ecommerce"],
+        ["comparisons", "choosing-a-vendor"],
+        ["selected-topics", "gulf-compliance"],
+        ["practical-guides", "choosing-a-vendor"],
+      ].flatMap(([from, to]) => [
+        { source: `/:lang(en|ar)/blog/category/${from}`, destination: `/:lang/blog/category/${to}`, permanent: true },
+        { source: `/:lang(en|ar)/blog/category/${from}/page/:page`, destination: `/:lang/blog/category/${to}`, permanent: true },
+      ]),
+      // The academy held placeholder lessons and was removed.
+      { source: "/:lang(en|ar)/academy/:path*", destination: "/:lang/blog", permanent: true },
+    ];
+  },
   experimental: {
     globalNotFound: true,
-    optimizePackageImports: ['lucide-react'],
-    inlineCss: true,
-    serverMinification: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {

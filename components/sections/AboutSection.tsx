@@ -1,19 +1,67 @@
- import type { Dictionary } from "@/lib/i18n/i18n-types"; import type { Locale } from "@/lib/i18n/locale"; import { Reveal } from "@/components/ui/Reveal";  function StatCounter({ value, label }: { value: string; label: string }) {   return (     <div       className="text-center"     >       <div         className="font-bold leading-none"         style={{           fontSize: "clamp(32px, 4vw, 52px)",           color: "var(--color-primary)",           fontFamily: "var(--font-en), serif",         }}       >         {value}       </div>       <div className="mt-1.5 text-sm" style={{ color: "var(--color-secondary-text)" }}>         {label}       </div>     </div>   ); }  export function AboutSection({   lang,   dictionary, }: {   lang: Locale;   dictionary: Dictionary; }) {   const isAr = lang === "ar";   const { about } = dictionary;    return (     <section       id="about"       className="relative py-16 md:py-36 px-6"       style={{         background:           "linear-gradient(180deg, var(--color-background) 0%, color-mix(in srgb, var(--color-primary) 4%, var(--color-background)) 100%)",       }}     >       <div         className="absolute top-0 left-1/2 -translate-x-1/2 h-px"         style={{           width: "80%",           background:             "linear-gradient(90deg, transparent, var(--color-primary), var(--color-gold), var(--color-primary), transparent)",           opacity: 0.4,         }}         aria-hidden="true"       />        <div className="max-w-6xl mx-auto">         <Reveal className="text-center mb-10 md:mb-16" threshold={0.12} offsetY={24} durationMs={700}>           <span className="apex-section-label">{about.badge}</span>           <div className="apex-divider" />           <h2             className={`apex-glow apex-section-title mt-5 font-bold leading-tight ${isAr ? "font-ar" : "font-en"}`}           >             {about.title}           </h2>           <p             className={`apex-section-subtitle mt-4 mx-auto leading-relaxed ${isAr ? "font-ar" : "font-en"}`}             style={{               maxWidth: "580px",             }}           >             {about.subtitle}           </p>         </Reveal>          <Reveal delay={100} threshold={0.12} offsetY={24} durationMs={700}>           <div className="apex-card-base grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 rounded-3xl p-6 md:p-10 mb-12 md:mb-20">             {about.stats.map((s: { value: string; label: string }, i: number) => (               <StatCounter key={i} value={s.value} label={s.label} />             ))}           </div>         </Reveal>          <div           className={`grid md:grid-cols-2 gap-12 md:gap-16 items-center ${isAr ? "direction-rtl" : ""}`}           dir={isAr ? "rtl" : "ltr"}         >           <Reveal delay={150} threshold={0.12} offsetY={24} durationMs={700}>             <p               className={`leading-loose mb-8 ${isAr ? "font-ar" : "font-en"}`}               style={{                 fontSize: "clamp(14px, 1.5vw, 16px)",                 color: "var(--color-secondary-text)",               }}             >               {about.description}             </p>              <div className="flex flex-col gap-4">               {about.checks.map((item: string, i: number) => (                 <div key={i} className="flex items-center gap-3">                   <span                     className="w-2 h-2 rounded-full shrink-0"                     style={{                       background: "var(--color-primary)",                       boxShadow: "0 0 8px var(--color-primary)",                     }}                   />                   <span                     className={`font-medium ${isAr ? "font-ar" : "font-en"}`}                     style={{                       color: "var(--color-primary-text)",                       fontSize: "clamp(13px, 1.4vw, 15px)",                     }}                   >                     {item}                   </span>                 </div>               ))}             </div>           </Reveal>            <Reveal delay={250} threshold={0.12} offsetY={24} durationMs={700}>                         <div
-               className="relative rounded-3xl p-6 md:p-10 border overflow-hidden apex-card-hover"
-               style={{
-                 background:
-                   "linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 8%, transparent), color-mix(in srgb, var(--color-gold) 6%, transparent))",
-                 borderColor: "color-mix(in srgb, var(--color-primary) 25%, transparent)",
-               }}
-             >
-               <div
-                 className="absolute rounded-full border pointer-events-none -inset-e-6 -top-6"
-                    style={{
-                      color: "var(--color-primary-text)",
-                      fontSize: "clamp(14px, 1.5vw, 16px)",
-                    }}
-                 aria-hidden="true"
-               />                <div className="text-5xl mb-5" aria-hidden="true">                 🚀               </div>                <h3                 className={`font-bold mb-3 ${isAr ? "font-ar" : "font-en"}`}                 style={{                   fontSize: "clamp(18px, 2vw, 22px)",                   color: "var(--color-primary-text)",                 }}               >                 {about.visionTitle}               </h3>                <p                 className={`leading-relaxed mb-6 ${isAr ? "font-ar" : "font-en"}`}                                 style={{
-                  fontSize: "clamp(14px, 1.5vw, 16px)",
-                  color: "var(--color-secondary-text)",
-                }}               >                 {about.visionText}               </p>                <div                 className="inline-block px-5 py-2 rounded-xl font-bold text-sm"                 style={{                   background: "color-mix(in srgb, var(--color-primary) 14%, transparent)",                   border: "1px solid color-mix(in srgb, var(--color-primary) 28%, transparent)",                   color: "var(--color-primary)",                 }}               >                 Code · AI · Future               </div>             </div>           </Reveal>         </div>       </div>     </section>   ); }
+import Link from "next/link";
+import { Check } from "lucide-react";
+
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import type { Dictionary } from "@/lib/i18n/i18n-types";
+import type { Locale } from "@/lib/i18n/locale";
+
+/**
+ * Home "about" block. The figures are counted from the content folders at build
+ * time; they used to be typed into the dictionary and disagreed with the
+ * portfolio page ("9 documented projects" when there were 8, "24+" elsewhere).
+ */
+export function AboutSection({
+  lang,
+  about,
+  counts,
+}: {
+  lang: Locale;
+  about: Dictionary["about"];
+  counts: { projects: number; services: number; articles: number };
+}) {
+  const stats = [
+    { value: counts.projects, label: about.statsLabels.projects },
+    { value: counts.services, label: about.statsLabels.services },
+    { value: counts.articles, label: about.statsLabels.articles },
+    { value: 2, label: about.statsLabels.languages },
+  ];
+
+  return (
+    <section id="about" className="apex-section">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-16">
+          <div>
+            <SectionHeader eyebrow={about.badge} title={about.title} subtitle={about.subtitle} />
+            <p className="text-lg leading-relaxed text-apex-muted">{about.description}</p>
+            <ul className="mt-6 grid gap-3">
+              {about.checks.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-base font-bold text-apex-text">
+                  <Check size={20} aria-hidden="true" className="mt-0.5 shrink-0 text-apex-primary" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <Link href={`/${lang}/about`} className="apex-btn-outline mt-8">
+              {lang === "ar" ? "المزيد عنّا" : "More about us"}
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-apex-border bg-apex-border">
+              {stats.map((stat) => (
+                <div key={stat.label} className="flex flex-col-reverse gap-1 bg-apex-bg p-6">
+                  <dt className="text-sm text-apex-muted">{stat.label}</dt>
+                  <dd className="apex-stat">{stat.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="rounded-2xl border border-apex-border bg-apex-card p-6 md:p-8">
+              <h3 className="text-lg font-bold text-apex-text">{about.visionTitle}</h3>
+              <p className="mt-2 text-base leading-relaxed text-apex-muted">{about.visionText}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

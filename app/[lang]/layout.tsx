@@ -1,14 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale } from "@/lib/i18n/locale";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ibmPlexSansArabic, ibmPlexSerif } from "@/lib/fonts";
-import { metadataBase, siteUrl } from "@/lib/seo/metadata";
+import { metadataBase } from "@/lib/seo/metadata";
 import { AnalyticsConsent } from "@/components/analytics/AnalyticsConsent";
 
 import "../globals.css";
@@ -18,27 +17,23 @@ export const viewport: Viewport = {
   initialScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#121212" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1216" },
   ],
 };
 
 export const metadata: Metadata = {
   metadataBase,
-  title: { default: "APEX — Software Company", template: "%s — APEX" },
-  description: "APEX builds mobile apps, websites, AI solutions, and e-commerce platforms.",
+  title: { default: "APEX", template: "%s — APEX" },
   robots: {
     index: true,
     follow: true,
     googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
   },
-  icons: { icon: "/favicon.ico", shortcut: "/favicon.ico", apple: "/favicon.ico" },
-  alternates: {
-    languages: { en: `${siteUrl}/en`, ar: `${siteUrl}/ar`, "x-default": `${siteUrl}/en` },
-  },
+  icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
+  manifest: "/manifest.webmanifest",
 };
 
 // Applied before first paint so the stored/system colour scheme does not flash.
-// Next.js stamps the CSP nonce from proxy.ts onto this script automatically.
 const themeScript = `(function(){try{var stored=localStorage.getItem("theme");var dark=stored?stored==="dark":matchMedia("(prefers-color-scheme:dark)").matches;document.documentElement.classList.toggle("dark",dark)}catch(e){}})();`;
 
 export const dynamicParams = false;
@@ -62,23 +57,15 @@ export default async function LangLayout({
   const isAr = lang === "ar";
 
   return (
-    <html suppressHydrationWarning lang={lang} dir={isAr ? "rtl" : "ltr"}>
+    <html suppressHydrationWarning lang={lang} dir={isAr ? "rtl" : "ltr"} data-scroll-behavior="smooth">
       <head>
-        <link rel="preconnect" href="https://vitals.vercel-analytics.com" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {/* Scroll-reveal animations are driven by an IntersectionObserver; without
-            JS the observer never fires and the content would stay at opacity 0. */}
-        <noscript>
-          <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
-        </noscript>
       </head>
-      {/* The Arabic family is three weights and 214 KiB, and `font-ar` is only
-          ever applied behind an isAr check, so an English page was downloading a
-          family it can never render. The serif stays on both locales: Arabic
-          pages use var(--font-en) unconditionally for numerals (StatCounter,
-          AcademyGrid, PortfolioGrid). next/font emits the @font-face rules with
-          the variable class, so dropping the class drops the requests. */}
-      <body className={`${isAr ? ibmPlexSansArabic.variable : ""} ${ibmPlexSerif.variable} antialiased`}>
+      {/* The Arabic family is only loaded on Arabic pages; next/font emits its @font-face rules with the variable class. */}
+      <body className={`${isAr ? ibmPlexSansArabic.variable : ""} ${ibmPlexSerif.variable} ${isAr ? "font-ar" : "font-en"} antialiased`}>
+      <a href="#content" className="apex-skip-link">
+        {isAr ? "انتقل إلى المحتوى" : "Skip to content"}
+      </a>
       {/* Reserves the space taken by the fixed header so content starts below it. */}
       <div
         data-header-placeholder
@@ -86,13 +73,13 @@ export default async function LangLayout({
         style={{ height: "70px", flexShrink: 0 }}
       />
 
-      <Header lang={lang} dictionary={dictionary} />
+      <Header lang={lang} navigation={dictionary.navigation} />
 
       {/* Subtracts the header placeholder so a short page fills the viewport
           exactly instead of overflowing it by the header's height. */}
       <main
-        className={`${isAr ? "font-ar" : "font-en"}`}
-        dir={isAr ? "rtl" : "ltr"}
+        id="content"
+        tabIndex={-1}
         style={{ minBlockSize: "calc(100dvh - 70px)" }}
       >
         {children}
@@ -100,7 +87,6 @@ export default async function LangLayout({
 
       <Footer lang={lang} dictionary={dictionary} />
       <AnalyticsConsent lang={lang} />
-      <SpeedInsights />
       </body>
     </html>
   );

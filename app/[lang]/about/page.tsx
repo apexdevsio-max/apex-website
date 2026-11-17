@@ -1,11 +1,16 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { AboutSection } from "@/components/sections/AboutSection";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { author, authorSameAs, hasNamedAuthor } from "@/data/author";
+import { socialLinks } from "@/data/social-links";
+import { getBlogPosts, getPortfolioItems, getServices } from "@/lib/content/content-loader";
 import { getDictionary } from "@/lib/i18n/i18n";
 import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
-import { JsonLd, buildOrganizationSchema, buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { authorName, buildBreadcrumbSchema, buildOrganizationSchema, buildPersonSchema } from "@/lib/seo/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -13,104 +18,147 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(toLocale(lang), {
-    title: isAr ? "من نحن — فريقنا ورؤيتنا" : "About Us — Our Team and Vision",
+    title: isAr ? "من نحن — شركة برمجيات تعمل مع عملاء الخليج" : "About APEX — A Software Company Working With Gulf Clients",
     description: isAr
-      ? "شركة APEX للبرمجيات تبني حلولاً رقمية متكاملة. تعرف على رؤيتنا وفريقنا وقيمنا."
-      : "APEX is a software company building integrated digital solutions. Learn about our vision, team, and values.",
+      ? "APEX شركة برمجيات مقرّها سوريا تعمل عن بُعد مع عملاء في السعودية والإمارات وقطر. كيف نعمل، ولماذا نركّز على العربية، وما الذي نبنيه."
+      : "APEX is a software company based in Syria, working remotely with clients in Saudi Arabia, the UAE and Qatar. How we work, why we focus on Arabic, and what we build.",
     path: `/${lang}/about`,
-    keywords: isAr
-      ? ["شركة برمجيات", "عن APEX", "فريق تطوير", "شركة تقنية", "تطوير برمجيات الخليج"]
-      : ["software company", "about APEX", "development team", "Gulf software company", "technology partner"],
   });
 }
 
-export default async function AboutPage({ params }: Props) {
-  const { lang: langParam } = await params;
-  if (!isLocale(langParam)) notFound();
+const SECTIONS = {
+  en: [
+    {
+      heading: "How we work",
+      body: "Every project starts with a scoping session where we work out the problem you are solving before discussing technology or design. The work is then split into phases, each with output you can review, and you get a testable build every two weeks instead of waiting until the end.",
+    },
+    {
+      heading: "Why we focus on Arabic",
+      body: "Most development tooling assumes English and left-to-right text. The problems that follow (mixed Arabic and Latin strings breaking layout, fonts without proper Arabic support, Hijri dates calculated wrongly) surface late and are expensive to fix. We treat Arabic and RTL support as an architectural decision made at the start.",
+    },
+    {
+      heading: "What we build",
+      body: "Mobile apps in Flutter, websites and online stores, applied AI such as Arabic-capable assistants and document processing, and video and AI-generated content for marketing.",
+    },
+    {
+      heading: "Cost and ownership",
+      body: "We quote in itemised phases that show what each amount covers, and flag the running costs quotes usually leave out: hosting, store fees and payment gateway charges. On completion, the source code and accounts are handed over in your name with the documentation needed to maintain them.",
+    },
+  ],
+  ar: [
+    {
+      heading: "كيف نعمل",
+      body: "يبدأ كل مشروع بجلسة لتحديد النطاق نفهم فيها المشكلة التي تريد حلّها قبل الحديث عن التقنية أو التصميم. ثم نقسّم العمل إلى مراحل لكل منها مخرجات قابلة للمراجعة، وتحصل على نسخة قابلة للاختبار كل أسبوعين بدل الانتظار حتى النهاية.",
+    },
+    {
+      heading: "لماذا نركّز على العربية",
+      body: "معظم أدوات التطوير تفترض الإنجليزية واتجاه الكتابة من اليسار لليمين. والمشكلات التي تنتج عن ذلك (تكسّر النصوص المختلطة، وخطوط لا تدعم العربية جيداً، وتواريخ هجرية تُحسب خطأً) تظهر متأخرة وإصلاحها مكلف. نتعامل مع دعم العربية كقرار معماري يُتخذ من البداية.",
+    },
+    {
+      heading: "ما الذي نبنيه",
+      body: "تطبيقات الجوال بـ Flutter، والمواقع والمتاجر الإلكترونية، وتطبيقات الذكاء الاصطناعي مثل المساعدات التي تتقن العربية ومعالجة المستندات، ومحتوى الفيديو والمحتوى المولّد بالذكاء الاصطناعي للتسويق.",
+    },
+    {
+      heading: "التكلفة والملكية",
+      body: "نقدّم عروضاً مقسّمة على مراحل توضّح ما يقابل كل مبلغ، وننبّه إلى التكاليف التشغيلية التي تغفلها العروض عادة: الاستضافة ورسوم المتاجر وعمولات بوابات الدفع. وعند الاكتمال نسلّم الكود المصدري والحسابات باسمك مع التوثيق اللازم لصيانتها.",
+    },
+  ],
+} as const;
 
-  const lang = langParam as "en" | "ar";
-  const dictionary = await getDictionary(lang);
+export default async function AboutPage({ params }: Props) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
 
   const isAr = lang === "ar";
-  const breadcrumbItems = [
-    { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
-    { name: isAr ? "من نحن" : "About Us", url: `${siteUrl}/${lang}/about` },
+  const [dictionary, services, projects, posts] = await Promise.all([
+    getDictionary(lang),
+    getServices(lang),
+    getPortfolioItems(lang),
+    getBlogPosts(lang),
+  ]);
+  const person = buildPersonSchema(lang);
+  const jobTitle = isAr && author.jobTitleAr ? author.jobTitleAr : author.jobTitle;
+
+  const facts = [
+    { term: isAr ? "المقر" : "Based in", value: isAr ? "سوريا، ونعمل عن بُعد" : "Syria, working remotely" },
+    { term: isAr ? "الأسواق" : "Markets", value: isAr ? "السعودية، الإمارات، قطر" : "Saudi Arabia, UAE, Qatar" },
+    { term: isAr ? "لغات العمل" : "Working languages", value: isAr ? "العربية والإنجليزية" : "Arabic and English" },
+    { term: isAr ? "الخدمات" : "Services", value: services.map((s) => s.title).join(isAr ? "، " : ", ") },
+    { term: isAr ? "الأعمال الموثّقة" : "Documented projects", value: String(projects.length) },
+    { term: isAr ? "الأدلة المنشورة" : "Published guides", value: String(posts.length) },
   ];
 
   return (
     <>
       <JsonLd schema={buildOrganizationSchema(lang)} />
-      <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
-      {/* AboutSection leads with an <h2> because it is also rendered mid-page on
-          the homepage, where the hero owns the <h1>. On this standalone page that
-          left no <h1> at all, so the page heading lives here — visually hidden to
-          keep the existing design, but present for crawlers and screen readers. */}
-      <h1 className="sr-only">{isAr ? "من نحن — APEX" : "About APEX"}</h1>
-      <AboutSection lang={lang} dictionary={dictionary} />
+      {person && <JsonLd schema={person} />}
+      <JsonLd
+        schema={buildBreadcrumbSchema([
+          { name: isAr ? "الرئيسية" : "Home", url: `${siteUrl}/${lang}` },
+          { name: isAr ? "من نحن" : "About", url: `${siteUrl}/${lang}/about` },
+        ])}
+      />
 
-      {/* AboutSection is a shared homepage block built from short slogans and stat
-          chips, which left this standalone page too thin to rank. This section
-          carries the substantive copy that belongs only here. */}
-      <section
-        className="px-6 pb-24"
-        style={{ background: "var(--color-background)" }}
-      >
-        <div className="max-w-3xl mx-auto">
-          {(isAr
-            ? [
-                {
-                  heading: "كيف نعمل",
-                  body: "نبدأ كل مشروع بجلسة تحديد نطاق نفهم فيها المشكلة التي تريد حلّها قبل الحديث عن التقنية أو التصميم. ثم نقسّم العمل إلى مراحل واضحة لكل منها مخرجات قابلة للمراجعة، فتبقى على اطّلاع دائم على ما أُنجز وما تبقّى، ولا تنتظر حتى نهاية المشروع لترى النتيجة.",
-                },
-                {
-                  heading: "لماذا نركّز على العربية",
-                  body: "معظم أدوات التطوير مبنية على افتراض اللغة الإنجليزية واتجاه الكتابة من اليسار إلى اليمين، وما يترتب على ذلك من مشاكل — تكسّر تنسيق النصوص المختلطة، وخطوط لا تدعم التشكيل، وتواريخ هجرية تُحسب خطأً — يظهر متأخراً وإصلاحه مكلف. نتعامل مع دعم العربية كقرار معماري يُتخذ في البداية لا كطبقة تُضاف في النهاية.",
-                },
-                {
-                  heading: "ما نبنيه",
-                  body: "نعمل على تطبيقات الموبايل باستخدام Flutter، ومواقع الويب والمتاجر الإلكترونية، وحلول الذكاء الاصطناعي التطبيقية مثل المساعدات الذكية ومعالجة المستندات. القاسم المشترك بينها أنها أنظمة تُستخدم يومياً في التشغيل الفعلي، لا نماذج أولية تُعرض ثم تُهمل.",
-                },
-                {
-                  heading: "الشفافية في التسعير والملكية",
-                  body: "نقدّم عروضاً مقسّمة على مراحل توضّح ما يقابل كل مبلغ، وننبّه مبكراً إلى التكاليف التشغيلية المستمرة التي تغفلها العروض عادة مثل الاستضافة ورسوم المتاجر وبوابات الدفع. وعند اكتمال المشروع تنتقل ملكية الكود المصدري إليك بالكامل مع التوثيق اللازم.",
-                },
-              ]
-            : [
-                {
-                  heading: "How we work",
-                  body: "Every project starts with a scoping session where we work out the problem you are actually solving before discussing technology or design. We then split the work into clear phases, each with reviewable output, so you can see progress throughout instead of waiting until the end to find out what was built.",
-                },
-                {
-                  heading: "Why we focus on Arabic",
-                  body: "Most development tooling assumes English and left-to-right text. The problems that follow — mixed Arabic-Latin strings breaking layout, fonts without proper diacritic support, Hijri dates calculated incorrectly — surface late and are expensive to retrofit. We treat Arabic and RTL support as an architectural decision made at the start, not a layer added at the end.",
-                },
-                {
-                  heading: "What we build",
-                  body: "We work on mobile applications using Flutter, websites and e-commerce platforms, and applied AI such as Arabic-capable assistants and document processing. What they share is that they are systems used in daily operation, not prototypes that get demonstrated once and then abandoned.",
-                },
-                {
-                  heading: "Transparency on cost and ownership",
-                  body: "We quote in itemised phases that show what each amount covers, and flag the recurring operational costs that quotes usually omit — hosting, app store fees, payment gateway charges. On completion, full ownership of the source code transfers to you along with the documentation needed to maintain it.",
-                },
-              ]
-          ).map((item) => (
-            <div key={item.heading} className="mb-8">
-              <h2
-                className={`font-bold mb-3 ${isAr ? "font-ar" : "font-en"}`}
-                style={{ fontSize: "20px", color: "var(--color-primary-text)" }}
-              >
-                {item.heading}
-              </h2>
-              <p
-                className={`leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-                style={{ fontSize: "15px", color: "var(--color-secondary-text)" }}
-              >
-                {item.body}
-              </p>
+      <div className="px-6 pt-10 pb-20 md:pt-16">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader as="h1" title={dictionary.about.title} subtitle={dictionary.about.subtitle} />
+
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="apex-prose max-w-[72ch]">
+              <p className="apex-prose-p">{dictionary.about.description}</p>
+              {SECTIONS[lang].map((section) => (
+                <section key={section.heading}>
+                  <h2 className="apex-prose-h2">{section.heading}</h2>
+                  <p className="apex-prose-p">{section.body}</p>
+                </section>
+              ))}
+
+              {hasNamedAuthor() && (
+                <section id="author" className="scroll-mt-28">
+                  <h2 className="apex-prose-h2">{isAr ? "كاتب الأدلة" : "Who writes the guides"}</h2>
+                  <p className="apex-prose-p">
+                    <strong>{authorName(lang)}</strong>
+                    {jobTitle ? ` — ${jobTitle}` : ""}
+                  </p>
+                  {authorSameAs().length > 0 && (
+                    <ul className="apex-prose-list">
+                      {authorSameAs().map((url) => (
+                        <li key={url}>
+                          <a href={url} target="_blank" rel="noopener noreferrer me" className="text-apex-primary underline">
+                            {url.replace(/^https?:\/\//, "")}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              )}
             </div>
-          ))}
+
+            <aside className="flex flex-col gap-6">
+              <dl className="rounded-2xl border border-apex-border bg-apex-card p-6">
+                {facts.map((fact) => (
+                  <div key={fact.term} className="border-b border-apex-border py-3 first:pt-0 last:border-0 last:pb-0">
+                    <dt className="text-sm text-apex-muted">{fact.term}</dt>
+                    <dd className="mt-1 font-bold text-apex-text">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="flex flex-col gap-3">
+                <Link href={`/${lang}/portfolio`} className="apex-btn-outline">
+                  {isAr ? "شاهد أعمالنا" : "See our work"}
+                </Link>
+                <Link href={`/${lang}/contact`} className="apex-btn-primary">
+                  {isAr ? "تواصل معنا" : "Get in touch"}
+                </Link>
+                <a href={`mailto:${socialLinks.email}`} dir="ltr" className="text-center text-sm text-apex-muted underline">
+                  {socialLinks.email}
+                </a>
+              </div>
+            </aside>
+          </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }

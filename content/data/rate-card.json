@@ -1,0 +1,31 @@
+{
+  "$comment": "The single source of every price range in the blog. Articles quote these tiers verbatim. USD is the base; SAR, AED and QAR are pegged to the dollar, so the conversions are exact and do not drift. Update asOf whenever a range changes. The test in tests/content.test.mjs checks the cost cluster against this file.",
+  "asOf": "2026-11",
+  "pegs": { "SAR": 3.75, "AED": 3.6725, "QAR": 3.64 },
+  "apps": {
+    "simple": { "usd": [5000, 15000], "weeks": [6, 10], "en": "Simple app", "ar": "تطبيق بسيط" },
+    "mid": { "usd": [15000, 45000], "months": [3, 5], "en": "Mid-complexity app", "ar": "تطبيق متوسط التعقيد" },
+    "advanced": { "usd": [45000, 100000], "months": [5, 9], "en": "Advanced app or platform", "ar": "تطبيق متقدم أو منصة" },
+    "ecommerce": { "usd": [20000, 65000], "months": [4, 7], "en": "E-commerce app", "ar": "تطبيق متجر إلكتروني" },
+    "ai": { "usd": [40000, 150000], "months": [6, 12], "openEnded": true, "en": "AI-powered app", "ar": "تطبيق مدعوم بالذكاء الاصطناعي" }
+  },
+  "websites": {
+    "landing": { "usd": [1500, 5000], "en": "Landing page or small brochure site", "ar": "صفحة هبوط أو موقع تعريفي صغير" },
+    "company": { "usd": [8000, 25000], "en": "Mid-size company website", "ar": "موقع شركة متوسط" },
+    "custom": { "usd": [25000, 80000], "en": "Custom web application", "ar": "تطبيق ويب مخصّص" }
+  },
+  "features": {
+    "payments": { "usd": [3000, 7000], "en": "In-app payments", "ar": "الدفع داخل التطبيق" },
+    "paymentGateway": { "usd": [1500, 5000], "en": "Each additional local payment gateway", "ar": "كل بوابة دفع محلية إضافية" },
+    "gps": { "usd": [4000, 8000], "en": "Real-time GPS tracking", "ar": "تتبع الموقع لحظياً" },
+    "chat": { "usd": [5000, 10000], "en": "In-app chat", "ar": "المحادثة داخل التطبيق" },
+    "aiIntegration": { "usd": [10000, 40000], "openEnded": true, "en": "AI/ML integration", "ar": "دمج الذكاء الاصطناعي" },
+    "socialLogin": { "usd": [1000, 2000], "en": "Social login", "ar": "تسجيل الدخول عبر الشبكات الاجتماعية" },
+    "push": { "usd": [1500, 3000], "en": "Push notifications", "ar": "الإشعارات الفورية" }
+  },
+  "rates": {
+    "freelancer": { "usdPerHour": [15, 40], "en": "Independent freelancer", "ar": "مطور مستقل" },
+    "agency": { "usdPerHour": [50, 100], "en": "Regional or local development agency", "ar": "شركة تطوير إقليمية أو محلية" }
+  },
+  "maintenance": { "annualPercentOfBuild": [15, 20] }
+}

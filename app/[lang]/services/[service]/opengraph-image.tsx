@@ -1,78 +1,38 @@
-import { ImageResponse } from "next/og";
-import { MOCK_SERVICES } from "@/lib/mock/services-data";
-import { toLocale } from "@/lib/i18n/locale";
+import { notFound } from "next/navigation";
 
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+import { getServiceBySlug, getServices } from "@/lib/content/content-loader";
+import { isLocale, SUPPORTED_LOCALES } from "@/lib/i18n/locale";
+import { OG_CONTENT_TYPE, OG_SIZE, renderOgCard } from "@/lib/seo/og-card";
 
-export default async function Image({ params }: { params: Promise<{ lang: string; service: string }> }) {
-  const { lang, service: slug } = await params;
-  const locale = toLocale(lang);
-  const mock = MOCK_SERVICES[slug]?.[locale];
-  const title = mock?.title ?? slug;
+export const size = OG_SIZE;
+export const contentType = OG_CONTENT_TYPE;
+export const dynamicParams = false;
 
-  return new ImageResponse(
-    <div
-      style={{
-        background: "linear-gradient(135deg,#121212,#1a1a2e)",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-        fontFamily: "system-ui,sans-serif",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          opacity: 0.06,
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.1) 1px,transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          top: 40,
-          left: 48,
-          fontSize: 20,
-          fontWeight: 700,
-          color: "#00BCD4",
-          letterSpacing: "4px",
-        }}
-      >
-        APEX
-      </div>
-      <div
-        style={{
-          fontSize: 56,
-          fontWeight: 700,
-          color: "#ffffff",
-          textAlign: "center",
-          lineHeight: 1.2,
-          maxWidth: 800,
-        }}
-      >
-        {title}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: 40,
-          right: 48,
-          fontSize: 16,
-          color: "rgba(255,255,255,0.3)",
-          letterSpacing: "2px",
-        }}
-      >
-        apex.sy
-      </div>
-    </div>,
-    size,
+export async function generateStaticParams() {
+  const params = await Promise.all(
+    SUPPORTED_LOCALES.map(async (lang) =>
+      (await getServices(lang)).map((service) => ({ lang, service: service.slug }))
+    )
   );
+  return params.flat();
+}
+
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ lang: string; service: string }>;
+}) {
+  const { lang, service: slug } = await params;
+  if (!isLocale(lang)) notFound();
+
+  // The title used to fall back to the raw URL segment, so any path rendered
+  // attacker-chosen text under the brand. Unknown slugs now 404.
+  const service = await getServiceBySlug(lang, slug);
+  if (!service) notFound();
+
+  return renderOgCard({
+    locale: lang,
+    eyebrow: lang === "ar" ? "خدماتنا" : "Services",
+    title: service.title,
+  });
 }

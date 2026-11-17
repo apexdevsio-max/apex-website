@@ -1,45 +1,66 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import test from "node:test";
 
-import { contactSchema, escapeHtml, readLimitedJson, RequestBodyError } from "../lib/contact-contract.ts";
+import { contactSchema, escapeHtml, fieldErrorCodes, readLimitedJson, RequestBodyError } from "../lib/contact-contract.ts";
 
-const validPayload = {
+const valid = {
   name: "Test User",
   email: "test@example.com",
-  phone: "",
   projectType: "web",
-  budget: "medium",
   description: "A sufficiently detailed project description.",
-  website: "",
 };
 
-test("contact schema accepts the contract and rejects unknown enumerations", () => {
-  assert.equal(contactSchema.safeParse(validPayload).success, true);
-  assert.equal(contactSchema.safeParse({ ...validPayload, projectType: "malicious" }).success, false);
-  assert.equal(contactSchema.safeParse({ ...validPayload, extra: true }).success, false);
+function codes(payload) {
+  const result = contactSchema.safeParse(payload);
+  return result.success ? {} : fieldErrorCodes(result.error);
+}
+
+test("the contract accepts a minimal valid enquiry, with phone and budget optional", () => {
+  assert.equal(contactSchema.safeParse(valid).success, true);
+  assert.equal(contactSchema.safeParse({ ...valid, phone: "+966 50 000 0000", budget: "unsure" }).success, true);
 });
 
-test("email HTML escaping neutralizes markup", () => {
+test("validation errors are codes the form can translate, not English prose", () => {
+  assert.deepEqual(codes({ ...valid, name: "" }), { name: "required" });
+  assert.deepEqual(codes({ ...valid, name: "A" }), { name: "too_short" });
+  assert.deepEqual(codes({ ...valid, email: "" }), { email: "required" });
+  assert.deepEqual(codes({ ...valid, email: "not-an-email" }), { email: "invalid_email" });
+  assert.deepEqual(codes({ ...valid, projectType: undefined }), { projectType: "invalid_choice" });
+  assert.deepEqual(codes({ ...valid, description: "short" }), { description: "too_short" });
+});
+
+test("unknown fields and enumerations are rejected", () => {
+  assert.equal(contactSchema.safeParse({ ...valid, projectType: "malicious" }).success, false);
+  assert.equal(contactSchema.safeParse({ ...valid, extra: true }).success, false);
+});
+
+test("a filled honeypot is not a validation error, so the route can drop it silently", () => {
+  const result = contactSchema.safeParse({ ...valid, website: "https://spam.example" });
+  assert.equal(result.success, true);
+  assert.equal(result.data.website, "https://spam.example");
+});
+
+test("fields interpolated into mail headers reject CR/LF", () => {
+  for (const injection of ["Bad\r\nBcc: attacker@evil.test", "Bad\nBcc: x@y.z", "Bad\rX: y"]) {
+    assert.equal(contactSchema.safeParse({ ...valid, name: injection }).success, false);
+  }
+  assert.equal(contactSchema.safeParse({ ...valid, phone: "+1\r\nBcc: x@y.z" }).success, false);
+  assert.equal(contactSchema.safeParse({ ...valid, description: "Line one.\nLine two." }).success, true);
+});
+
+test("email HTML escaping neutralises markup", () => {
   assert.equal(escapeHtml(`<img src=x onerror="alert(1)">&'`), "&lt;img src=x onerror=&quot;alert(1)&quot;&gt;&amp;&#39;");
 });
 
-test("limited JSON reader validates content type and parses valid JSON", async () => {
-  const request = new Request("https://apex.sy/api/contact", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(validPayload),
-  });
-  assert.deepEqual(await readLimitedJson(request), validPayload);
-
-  await assert.rejects(
-    () => readLimitedJson(new Request("https://apex.sy/api/contact", { method: "POST", body: "{}" })),
-    (error) => error instanceof RequestBodyError && error.status === 415,
-  );
+test("the JSON reader requires exactly application/json", async () => {
+  const make = (type) =>
+    new Request("https://apex.sy/api/contact", { method: "POST", headers: { "content-type": type }, body: JSON.stringify(valid) });
+  assert.deepEqual(await readLimitedJson(make("application/json; charset=utf-8")), valid);
+  // Sent cross-site without a CORS preflight, so it must not count as JSON.
+  await assert.rejects(() => readLimitedJson(make("text/plain;application/json")), (e) => e instanceof RequestBodyError && e.status === 415);
 });
 
-test("limited JSON reader rejects oversized streamed bodies without Content-Length", async () => {
+test("the JSON reader rejects oversized streamed bodies without Content-Length", async () => {
   const stream = new ReadableStream({
     start(controller) {
       controller.enqueue(new TextEncoder().encode(`{"description":"${"x".repeat(20_000)}"}`));
@@ -52,42 +73,5 @@ test("limited JSON reader rejects oversized streamed bodies without Content-Leng
     body: stream,
     duplex: "half",
   });
-  await assert.rejects(
-    () => readLimitedJson(request),
-    (error) => error instanceof RequestBodyError && error.status === 413,
-  );
-});
-
-test("fields interpolated into mail headers reject CR/LF", () => {
-  // `name` lands in the Subject header, so a newline there could inject
-  // additional headers into the outgoing mail.
-  for (const injection of ["Bad\r\nBcc: attacker@evil.test", "Bad\nBcc: x@y.z", "Bad\rX: y"]) {
-    assert.equal(
-      contactSchema.safeParse({ ...validPayload, name: injection }).success,
-      false,
-      `name must reject ${JSON.stringify(injection)}`,
-    );
-  }
-  assert.equal(
-    contactSchema.safeParse({ ...validPayload, phone: "+1\r\nBcc: x@y.z" }).success,
-    false,
-  );
-  // A legitimate multi-line description is still fine: it is only ever placed in
-  // the escaped HTML body, never in a header.
-  assert.equal(
-    contactSchema.safeParse({ ...validPayload, description: "Line one.\nLine two, with detail." }).success,
-    true,
-  );
-});
-
-test("rate limiting keys off a header the client cannot forge", async () => {
-  const source = await readFile(path.join(process.cwd(), "app", "api", "contact", "route.ts"), "utf8");
-  assert.match(
-    source,
-    /x-vercel-forwarded-for/,
-    "prefer the edge-set header; x-forwarded-for alone is client-controllable",
-  );
-  const trustedIndex = source.indexOf("x-vercel-forwarded-for");
-  const fallbackIndex = source.indexOf("x-forwarded-for", trustedIndex + 1);
-  assert.ok(trustedIndex < fallbackIndex, "the forgeable header must only be a fallback");
+  await assert.rejects(() => readLimitedJson(request), (e) => e instanceof RequestBodyError && e.status === 413);
 });

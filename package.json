@@ -7,55 +7,57 @@
     "typegen": "next typegen",
     "predev": "next typegen",
     "prebuild": "next typegen",
-    "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/*.test.mjs",
-    "check": "npm run lint && npx tsc --noEmit --pretty false && npm test"
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --import ./tests/register.mjs --test tests/*.test.mjs",
+    "check": "npm run lint && npx tsc --noEmit --pretty false && npm test",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@vercel/speed-insights": "^2.0.0",
     "lucide-react": "^0.576.0",
-    "next": "16.2.10",
+    "next": "16.4.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "resend": "^6.12.4",
-    "zod": "^3.24.0"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "autoprefixer": "^10.4.25",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "postcss": "8.5.10",
+    "eslint-config-next": "16.4.6",
+    "postcss": "8.5.33",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.1",
-    "typescript": "^5",
-    "wawoff2": "^2.0.1"
+    "typescript": "^5"
   },
   "browserslist": {
     "production": [
-      "chrome >= 100",
-      "edge >= 100",
-      "firefox >= 100",
+      "chrome >= 111",
+      "edge >= 111",
+      "firefox >= 128",
       "safari >= 16.4",
       "ios_saf >= 16.4"
     ],
     "development": [
-      "chrome >= 100",
-      "edge >= 100",
-      "firefox >= 100",
+      "chrome >= 111",
+      "edge >= 111",
+      "firefox >= 128",
       "safari >= 16.4",
       "ios_saf >= 16.4"
     ]
   },
   "overrides": {
-    "postcss": "8.5.10"
+    "postcss": "8.5.33"
+  },
+  "engines": {
+    "node": ">=22.18"
   }
 }
