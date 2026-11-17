@@ -49,6 +49,10 @@ test("article dates are real: never before the file's first commit, never modifi
   // new files have no entry yet.
   const firstAdded = new Map();
   try {
+    // In a shallow clone every file looks first-added at the oldest fetched
+    // commit, which would flag every real publication date as too early.
+    const shallow = execFileSync("git", ["rev-parse", "--is-shallow-repository"], { encoding: "utf8" }).trim() === "true";
+    if (shallow) throw new Error("shallow clone");
     const log = execFileSync("git", ["log", "--diff-filter=A", "--name-only", "--format=@%cs", "--", "content/blog"], {
       encoding: "utf8",
       maxBuffer: 16 * 1024 * 1024,
