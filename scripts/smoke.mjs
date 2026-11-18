@@ -90,6 +90,11 @@ try {
 
   await expectStatus("/en/portfolio/category/web-apps", 308, "/en/portfolio");
   await expectStatus("/en/blog/no-such-post", 404);
+  await expectStatus("/EN/blog", 308, "/en/blog");
+  await expectStatus("/Ar", 308, "/ar");
+  await expectStatus("/aR/blog/flutter", 308, "/ar/blog/flutter");
+  await expectStatus("/en/blog", 200);
+  await expectStatus("/ar", 200);
   await expectStatus("/en/blog/no-such-post/opengraph-image", 404);
   await expectStatus("/en/services/anything-at-all/opengraph-image", 404);
   await expectStatus("/en/blog/page/0", 404);
