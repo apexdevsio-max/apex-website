@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n/locale";
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n/locale";
 
 /** Set by the header's language switch; a visitor's explicit choice beats the browser setting. */
 const LOCALE_COOKIE = "NEXT_LOCALE";
@@ -31,12 +31,11 @@ function preferredLocale(request: NextRequest): Locale {
 
 /**
  * Runs only for paths without a locale prefix (see the matcher), so ordinary
- * page views no longer pass through it. Uppercase prefixes such as /EN/ are
- * redirected in next.config.ts before the proxy runs.
+ * page views no longer pass through it.
  */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const [, first = ""] = pathname.split("/");
+  const [, first = "", ...rest] = pathname.split("/");
   const url = request.nextUrl.clone();
 
   // The bare root negotiates a language. Temporary, and marked as varying, so
@@ -46,6 +45,13 @@ export function proxy(request: NextRequest) {
     const response = NextResponse.redirect(url, { status: 307 });
     response.headers.set("Vary", "Accept-Language, Cookie");
     return response;
+  }
+
+  // /EN/blog -> /en/blog
+  const lowered = first.toLowerCase();
+  if (lowered !== first && (SUPPORTED_LOCALES as readonly string[]).includes(lowered)) {
+    url.pathname = `/${[lowered, ...rest].join("/")}`;
+    return NextResponse.redirect(url, { status: 308 });
   }
 
   if (KNOWN_ROUTES.has(first)) {

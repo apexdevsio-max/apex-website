@@ -86,11 +86,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   async redirects() {
     return [
-      // /EN/blog -> /en/blog. Every non-lowercase spelling of each locale.
-      ...["EN", "En", "eN", "AR", "Ar", "aR"].flatMap((variant) => [
-        { source: `/${variant}`, destination: `/${variant.toLowerCase()}`, permanent: true },
-        { source: `/${variant}/:path*`, destination: `/${variant.toLowerCase()}/:path*`, permanent: true },
-      ]),
       // Old portfolio category URLs. Handled here so they answer with a real 308
       // instead of a 200 page carrying a meta refresh.
       {
@@ -127,11 +122,6 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     globalNotFound: true,
-    // Route matching is case-insensitive by default, both in Next and in the
-    // routing rules Vercel generates from the routes manifest. That made the
-    // proxy matcher skip /EN/... (so it 404'd) and would make the uppercase
-    // redirects below also match /en/..., looping. Exact matching avoids both.
-    caseSensitiveRoutes: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
