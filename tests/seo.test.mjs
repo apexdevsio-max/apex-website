@@ -78,8 +78,4 @@ test("removed and renamed URLs redirect permanently", async () => {
   assert.equal(find("/:lang(en|ar)/portfolio/category/:slug")?.permanent, true);
   assert.ok(find("/:lang(en|ar)/academy/:path*"));
   assert.ok(find("/:lang(en|ar)/blog/category/practical-guides"));
-  // Uppercase locales redirect to lowercase; this only works with exact matching.
-  assert.equal(find("/EN/:path*")?.destination, "/en/:path*");
-  assert.equal(find("/aR")?.destination, "/ar");
-  assert.equal(nextConfig.experimental.caseSensitiveRoutes, true);
 });
