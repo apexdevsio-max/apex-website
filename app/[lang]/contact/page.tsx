@@ -36,7 +36,7 @@ const NEXT_STEPS = {
     },
     {
       heading: "Just exploring?",
-      body: "An exploratory conversation with no commitment is fine. If your question is about costs or technical comparisons, the blog covers Gulf pricing, framework comparisons and local compliance.",
+      body: "An exploratory conversation with no commitment is fine. If your question is about costs or technical comparisons, the blog covers pricing, framework comparisons, Arabic localisation and compliance.",
     },
   ],
   ar: [
@@ -50,7 +50,7 @@ const NEXT_STEPS = {
     },
     {
       heading: "تستكشف الخيارات فقط؟",
-      body: "لا مانع من محادثة استكشافية دون التزام. وإن كان سؤالك عن التكاليف أو المقارنات التقنية، فالمدونة تغطي أسعار السوق الخليجي ومقارنات الأطر ومتطلبات الامتثال المحلية.",
+      body: "لا مانع من محادثة استكشافية دون التزام. وإن كان سؤالك عن التكاليف أو المقارنات التقنية، فالمدونة تغطي الأسعار ومقارنات الأطر والتعريب ومتطلبات الامتثال.",
     },
   ],
 } as const;

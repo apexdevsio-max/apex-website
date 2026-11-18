@@ -103,13 +103,13 @@ export function buildPageMeta(lang: Locale, input: PageMetaInput): Metadata {
 export function buildPageMetadata(lang: Locale): Metadata {
   const isAr = lang === "ar";
   const title = isAr
-    ? "تطوير تطبيقات ومواقع وذكاء اصطناعي لعملاء الخليج | APEX"
-    : "App, Web & AI Development for Gulf Businesses | APEX";
+    ? "تطوير تطبيقات ومواقع وحلول ذكاء اصطناعي بالعربية والإنجليزية | APEX"
+    : "App, Web & AI Development in Arabic and English | APEX";
   const meta = buildPageMeta(lang, {
     title,
     description: isAr
-      ? "تبني APEX تطبيقات الجوال والمواقع وأنظمة الذكاء الاصطناعي بدعم كامل للعربية لعملاء في السعودية والإمارات وقطر، بعقود واضحة وتسليم على مراحل."
-      : "APEX builds mobile apps, websites and AI systems with full Arabic support for clients in Saudi Arabia, the UAE and Qatar, with clear contracts and phased delivery.",
+      ? "تبني APEX تطبيقات الجوال والمواقع وأنظمة الذكاء الاصطناعي بالعربية والإنجليزية لعملاء حول العالم، بعقود واضحة وتسليم على مراحل."
+      : "APEX builds mobile apps, websites and AI systems in Arabic and English for clients around the world, with clear contracts and phased delivery.",
     path: `/${lang}`,
   });
   // Absolute: the layout template would otherwise append " — APEX" a second time.

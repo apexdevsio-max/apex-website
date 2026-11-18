@@ -30,7 +30,8 @@ test("every apex-* class used in markup is defined in the stylesheet", () => {
   const generated = /^apex-(bg|card|text|muted|primary|accent|brand|border|control|gold|danger|success)$|^apex-theme-change$/;
   for (const name of used) {
     if (generated.test(name)) continue;
-    assert.ok(css.includes(`.${name}`), `.${name} is used but not defined in app/globals.css`);
+    // Inline `animation:` values reference keyframes rather than classes.
+    assert.ok(css.includes(`.${name}`) || css.includes(`@keyframes ${name}`), `.${name} is used but not defined in app/globals.css`);
   }
 });
 

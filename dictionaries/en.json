@@ -8,22 +8,18 @@
     "letsTalk": "Let's Talk"
   },
   "heroSection": {
-    "badge": "Software studio for Saudi, UAE & Qatar businesses",
-    "headline": "Apps, websites and AI",
-    "highlight": "built for the Gulf",
-    "subheadline": "We design and build mobile apps, websites and AI tools for companies in Saudi Arabia, the UAE and Qatar, with full Arabic support and a testable build every two weeks.",
-    "cta": "Discuss your project",
-    "ctaSecondary": "See our work",
-    "proof": [
-      "Arabic and English from day one",
-      "Reply within one business day",
-      "Written proposal, priced by phase"
-    ]
+    "badge": "Software Company · Arabic & English",
+    "headline": "We Build",
+    "highlight": "Digital Futures",
+    "subheadline": "Mobile Apps · Web & E‑Commerce · AI · Visual Content",
+    "cta": "Explore Our Work",
+    "ctaSecondary": "Get In Touch",
+    "tagline": "Code · AI · Future"
   },
   "about": {
     "badge": "About APEX",
     "title": "Software that works properly in Arabic",
-    "subtitle": "A software company based in Syria, working remotely with clients in Saudi Arabia, the UAE and Qatar.",
+    "subtitle": "A software company based in Syria, working remotely with clients around the world in Arabic and English.",
     "description": "We build mobile apps, websites and AI tools, and we treat Arabic as a first language rather than a translation layer: right-to-left layouts, Arabic typography, Hijri dates and mixed-direction text are part of the first build, not a later fix.",
     "statsLabels": {
       "projects": "Projects documented in our portfolio",
@@ -66,7 +62,7 @@
       "email": "Email Address",
       "emailPlaceholder": "you@example.com",
       "phone": "Phone number",
-      "phonePlaceholder": "+966 5X XXX XXXX",
+      "phonePlaceholder": "Include the country code, e.g. +44 20 7946 0000",
       "projectType": "Project Type",
       "projectTypePlaceholder": "Select your project type",
       "projectTypeOptions": {
@@ -126,7 +122,7 @@
     "terms": "Terms",
     "servicesHeading": "Services",
     "privacySettings": "Privacy settings",
-    "location": "Based in Syria · working remotely with clients in Saudi Arabia, the UAE and Qatar.",
+    "location": "Based in Syria · working remotely with clients worldwide.",
     "emailLabel": "Email"
   },
   "whyApex": {

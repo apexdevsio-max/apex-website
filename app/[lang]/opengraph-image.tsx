@@ -20,7 +20,7 @@ export default async function Image({ params }: { params: Promise<{ lang: string
     locale: lang,
     eyebrow: isAr ? "تطبيقات · ويب · ذكاء اصطناعي" : "Apps · Web · AI",
     title: isAr
-      ? "نبني تطبيقات ومواقع وحلول ذكاء اصطناعي لعملاء السعودية والإمارات وقطر"
-      : "Apps, websites and AI systems for businesses in Saudi Arabia, the UAE and Qatar",
+      ? "نبني التطبيقات والمواقع وحلول الذكاء الاصطناعي بالعربية والإنجليزية"
+      : "We build apps, websites and AI systems, in Arabic and English",
   });
 }

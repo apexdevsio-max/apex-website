@@ -18,8 +18,8 @@ export async function buildLlmsTxt(lang: Locale): Promise<string> {
     "# APEX",
     "",
     isAr
-      ? "> شركة برمجيات مقرّها سوريا تبني تطبيقات الجوال والمواقع وأنظمة الذكاء الاصطناعي بدعم كامل للعربية، وتعمل عن بُعد مع عملاء في السعودية والإمارات وقطر."
-      : "> A software company based in Syria that builds mobile apps, websites and AI systems with full Arabic support, working remotely with clients in Saudi Arabia, the UAE and Qatar.",
+      ? "> شركة برمجيات مقرّها سوريا تبني تطبيقات الجوال والمواقع وأنظمة الذكاء الاصطناعي بالعربية والإنجليزية، وتعمل عن بُعد مع عملاء حول العالم."
+      : "> A software company based in Syria that builds mobile apps, websites and AI systems in Arabic and English, working remotely with clients around the world.",
     "",
     isAr
       ? `التواصل: واتساب ${socialLinks.whatsapp}، البريد ${socialLinks.email}. اللغات: العربية والإنجليزية. النسخة الإنجليزية: ${siteUrl}/llms.txt`

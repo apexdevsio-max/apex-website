@@ -63,7 +63,7 @@ function content(lang: Locale) {
           paragraphs: [
             `يمكنك طلب الاطلاع على بياناتك أو تصحيحها أو حذفها، أو الاعتراض على معالجتها، بمراسلتنا على ${email}. نردّ خلال 30 يوماً.`,
             "يمكنك سحب موافقتك على التحليلات في أي وقت من رابط «إعدادات الخصوصية» أسفل كل صفحة.",
-            "إن كنت في السعودية أو الإمارات أو قطر، فقد تمنحك قوانين حماية البيانات المحلية حقوقاً إضافية، ويحق لك تقديم شكوى إلى الجهة المختصة في بلدك.",
+            "بحسب البلد الذي تقيم فيه، قد تمنحك قوانين حماية البيانات المحلية حقوقاً إضافية، ويحق لك تقديم شكوى إلى الجهة المختصة في بلدك.",
           ],
         },
         { heading: "التعديلات", paragraphs: ["عند تغيير هذه السياسة نحدّث تاريخ «آخر تحديث» أعلاه. التغييرات الجوهرية نعلنها على هذه الصفحة."] },
@@ -113,7 +113,7 @@ function content(lang: Locale) {
         paragraphs: [
           `You can ask to access, correct or delete your data, or object to its processing, by emailing ${email}. We reply within 30 days.`,
           "You can withdraw analytics consent at any time with the Privacy settings link at the bottom of every page.",
-          "If you are in Saudi Arabia, the UAE or Qatar, local data protection law may give you further rights, and you may complain to the regulator in your country.",
+          "Depending on where you live, local data protection law may give you further rights, and you may complain to the regulator in your country.",
         ],
       },
       { heading: "Changes", paragraphs: ["When this policy changes we update the date above. Material changes are announced on this page."] },

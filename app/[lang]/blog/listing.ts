@@ -11,10 +11,10 @@ import { POSTS_PER_PAGE } from "@/lib/content/taxonomy";
 export function listingCopy(lang: Locale) {
   const isAr = lang === "ar";
   return {
-    heading: isAr ? "أدلة تطوير البرمجيات للسوق الخليجي" : "Software development guides for the Gulf",
+    heading: isAr ? "أدلة عملية لتطوير البرمجيات" : "Practical software development guides",
     intro: isAr
-      ? "تكاليف مؤرخة، ومقارنات تقنية، ومتطلبات الامتثال في السعودية والإمارات وقطر، مكتوبة لمن يخطط لمشروع."
-      : "Dated costs, technical comparisons and compliance requirements in Saudi Arabia, the UAE and Qatar, written for people planning a project.",
+      ? "تكاليف مؤرخة، ومقارنات تقنية، والتعريب، والذكاء الاصطناعي، ومتطلبات الامتثال، مكتوبة لمن يخطط لمشروع."
+      : "Dated costs, technical comparisons, Arabic localisation, AI and compliance, written for people planning a project.",
   };
 }
 
@@ -45,8 +45,8 @@ export function buildListingMetadata({
       ? `المدونة — أدلة تطوير البرمجيات${suffix}`
       : `Blog — Software Development Guides${suffix}`,
     description: isAr
-      ? `أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج: أسعار مؤرخة، مقارنات تقنية، ومتطلبات الامتثال المحلية.${pageNote}`
-      : `Practical guides to app and web development costs in the Gulf: dated pricing, technical comparisons and local compliance requirements.${pageNote}`,
+      ? `أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها: أسعار مؤرخة، ومقارنات تقنية، والتعريب، ومتطلبات الامتثال.${pageNote}`
+      : `Practical guides to app and web development: dated pricing, technical comparisons, Arabic localisation and compliance.${pageNote}`,
     path,
   });
 

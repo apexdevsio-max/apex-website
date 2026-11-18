@@ -35,6 +35,7 @@
   --color-gold-ink:        #8a6100;   /* gold as text, 5.6:1 on white */
   --color-danger:          #b42318;
   --color-success:         #1f7a3f;
+  --hero-shimmer:          #3f51b5;
   --shadow:                0 2px 30px rgba(15, 30, 50, 0.08);
 
   /* Motion tokens: two durations and one easing for the whole site. */
@@ -58,6 +59,7 @@
   --color-gold-ink:        #ffcc33;
   --color-danger:          #f87171;
   --color-success:         #4ade80;
+  --hero-shimmer:          #00bcd4;
   --shadow:                0 2px 30px rgba(0, 0, 0, 0.45);
 }
 
@@ -103,7 +105,7 @@ html, body {
 [dir="rtl"] [dir="ltr"] { unicode-bidi: embed; }
 
 /* Arabic needs more line height than Latin, and tracking breaks its joins. */
-[dir="rtl"] :is(h1, h2, h3, .apex-page-title, .apex-section-title, .apex-hero-title) { line-height: 1.45; }
+[dir="rtl"] :is(h2, h3, .apex-page-title, .apex-section-title) { line-height: 1.45; }
 [dir="rtl"] :is(.apex-eyebrow, .apex-cat-label) { letter-spacing: 0; text-transform: none; font-size: 0.875rem; }
 
 /* ---------------------------------------------------------------------------
@@ -440,113 +442,80 @@ html, body {
 
 /* ---------------------------------------------------------------------------
    Hero
+   Height is content-driven below md and 100svh from md, where the decorative
+   layers (WebGL video, particle canvas) exist to fill it.
    --------------------------------------------------------------------------- */
 
-.apex-hero { background: var(--color-background); }
+.apex-hero { min-height: auto; }
+@media (min-width: 768px) {
+  .apex-hero { min-height: 100svh; }
+}
 
-.apex-hero-backdrop {
+/* Mobile stand-in for the desktop particle canvas: two drifting gradients on a
+   pseudo-element, no canvas and no JavaScript. */
+.apex-hero::after {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: 10;
+  pointer-events: none;
   background:
-    radial-gradient(60% 70% at 80% 30%, color-mix(in srgb, var(--color-brand) 18%, transparent), transparent 70%),
-    radial-gradient(40% 50% at 10% 90%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 70%);
+    radial-gradient(42vw 42vw at 78% 18%, color-mix(in srgb, var(--color-primary) 16%, transparent) 0%, transparent 68%),
+    radial-gradient(36vw 36vw at 18% 72%, color-mix(in srgb, var(--color-gold) 12%, transparent) 0%, transparent 70%);
+  animation: apex-hero-drift 18s ease-in-out infinite alternate;
+  will-change: transform;
 }
-[dir="rtl"] .apex-hero-backdrop { transform: scaleX(-1); }
-
-/* A receding grid the robot stands on: real perspective, no canvas. */
-.apex-hero-floor {
-  position: absolute;
-  inset: 55% -25% -30%;
-  z-index: -1;
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--color-primary) 16%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 16%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
-  transform: perspective(700px) rotateX(62deg);
-  transform-origin: 50% 0;
-  mask-image: linear-gradient(to bottom, transparent, black 25%, black 60%, transparent);
+@media (min-width: 768px) {
+  .apex-hero::after { content: none; }
+}
+@keyframes apex-hero-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(0, -2.5%, 0) scale(1.06); }
 }
 
-.apex-hero-title {
-  margin-top: 0.25rem;
-  font-size: clamp(2.25rem, 5.6vw, 4.25rem);
-  font-weight: 700;
-  line-height: 1.08;
-  text-wrap: balance;
+.apex-hero-float { animation: apex-float 6s ease-in-out infinite; }
+@keyframes apex-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
-/* Arabic words are longer per line; a step down keeps the headline to three lines. */
-[dir="rtl"] .apex-hero-title { font-size: clamp(2rem, 4.6vw, 3.5rem); }
 
-/* The gradient is painted with room above and below the glyphs, so Arabic
-   letters with dots below the line (the final ي in الرقمي) are not clipped. */
-.apex-gradient-text {
+@keyframes apex-dot-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* Moving gradient headline. The block padding gives the gradient room above
+   and below the glyphs, so Arabic letters with dots below the line (the final
+   ي of الرقمي) are painted instead of cut off. */
+.apex-shimmer-text {
   padding-block: 0.12em;
   margin-block: -0.12em;
-  background: linear-gradient(90deg in oklch, var(--color-primary), var(--color-brand));
+  /* The hero's original colours, kept apart from the site palette by request. */
+  background: linear-gradient(90deg, var(--hero-shimmer), var(--color-gold), var(--hero-shimmer));
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+  animation: apex-shimmer 4s linear infinite;
 }
-
-.apex-hero-stage {
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  perspective: 900px;
-}
-.apex-hero-robot {
-  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transform-style: preserve-3d;
-  transition: transform 400ms var(--ease-out);
-  animation: apex-float 6s ease-in-out infinite;
-  /* The video frame stops at the robot's waist; fade it instead of a hard cut. */
-  mask-image: linear-gradient(to bottom, black 72%, transparent 96%);
-}
-/* Contact shadow on the floor; it shrinks as the robot floats up. */
-.apex-hero-shadow {
-  position: absolute;
-  inset-inline: 22%;
-  bottom: 4%;
-  height: 8%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-primary-text) 30%, transparent), transparent);
-  filter: blur(6px);
-  animation: apex-shadow 6s ease-in-out infinite;
-}
-
-/* Scroll parallax where scroll-driven animations exist; elsewhere the robot is static. */
-@supports (animation-timeline: view()) {
-  .apex-hero-stage {
-    animation: apex-parallax linear both;
-    animation-timeline: view();
-    animation-range: exit 0% exit 100%;
-  }
-}
-
-@keyframes apex-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -12px; }
-}
-@keyframes apex-shadow {
-  0%, 100% { transform: scaleX(1); opacity: 1; }
-  50% { transform: scaleX(0.85); opacity: 0.7; }
-}
-@keyframes apex-parallax {
-  to { translate: 0 18%; opacity: 0.4; }
+@keyframes apex-shimmer {
+  to { background-position: 200% center; }
 }
 
 /* Entrance animation: CSS only, so content is visible without JavaScript.
-   The headline itself is not delayed because it is the LCP element. */
-.apex-fade-up { animation: apex-fade-up var(--dur-slow) var(--ease-out) both; }
-.apex-delay-1 { animation-delay: 60ms; }
-.apex-delay-3 { animation-delay: 160ms; }
-.apex-delay-4 { animation-delay: 220ms; }
-.apex-delay-5 { animation-delay: 280ms; }
+   The headline is the LCP element, so it is not delayed. */
+.apex-fade-up { animation: apex-fade-up 0.75s ease both; }
+.apex-delay-1 { animation-delay: 0.06s; }
+.apex-delay-2 { animation-delay: 0.14s; }
+.apex-delay-3 { animation-delay: 0.22s; }
+.apex-delay-4 { animation-delay: 0.30s; }
+.apex-delay-5 { animation-delay: 0.38s; }
+h1.apex-fade-up { animation-delay: 0s; }
 @keyframes apex-fade-up {
-  from { opacity: 0; translate: 0 14px; }
-  to { opacity: 1; translate: 0 0; }
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ---------------------------------------------------------------------------
@@ -575,7 +544,8 @@ html, body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .apex-hero-robot { animation: none; transform: none; }
-  .apex-hero-stage { animation: none; }
+  /* The shimmer relies on a moving gradient; frozen, it falls back to a solid fill. */
+  .apex-shimmer-text { background: none; color: var(--hero-shimmer); }
+  .apex-hero::after, .apex-hero-float { animation: none; }
   .apex-card:hover { transform: none; }
 }
