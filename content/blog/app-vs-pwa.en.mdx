@@ -1,55 +1,71 @@
 ---
-{"slug":"app-vs-pwa","title":"Mobile App or Responsive Website (PWA)?","excerpt":"Most companies build an app they don't need. The download barrier, and the only five reasons that justify building one.","date":"2026-07-27","dateModified":"2026-07-27"}
+{"slug": "app-vs-pwa", "title": "Mobile App or Responsive Website (PWA)?", "excerpt": "App or progressive web app: what each costs from our rate card, what a PWA can and cannot do on iOS, and the cases that justify a store app.", "categories": ["mobile"], "keywords": ["app vs PWA", "progressive web app", "responsive website", "download barrier"], "date": "2026-08-15", "dateModified": "2026-11-17", "summary": ["Start with a responsive website or PWA and build a mobile app only if one of five conditions holds: weekly-or-more repeat use, genuine offline work, push notifications critical to the service on iPhone, deep hardware access, or the app itself being the product.", "A PWA is a website that can be installed, work offline and integrate with the device from one codebase with no store review; on iPhone, web push has worked only since iOS 16.4 and only for web apps added to the Home Screen.", "On our rate card (as of November 2026) a website costs $1,500–$5,000 for a landing page, $8,000–$25,000 for a mid-size company site and $25,000–$80,000 for a custom web application, against $5,000–$15,000 for a simple app up to $45,000–$100,000 for an advanced one.", "Apps carry store costs a website does not: Apple's developer program is $99 a year, Google Play charges a one-time $25 fee, and in-app digital sales pay a 15% commission for developers earning under $1M a year, rising to 30% on Google Play above that."], "sources": [{"title": "MDN — Progressive web apps", "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps"}, {"title": "WebKit — Web Push for Web Apps on iOS and iPadOS", "url": "https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/"}, {"title": "Apple Developer Program — What's included (membership fee)", "url": "https://developer.apple.com/programs/whats-included/"}, {"title": "Google Play Console Help — Registration fee", "url": "https://support.google.com/googleplay/android-developer/answer/6112435"}, {"title": "Google Play Console Help — Service fees", "url": "https://support.google.com/googleplay/android-developer/answer/112622"}]}
 ---
 
 # Mobile App or Responsive Website (PWA)? Which Do You Actually Need
 
-This is the most important question in this entire guide series, because the wrong answer costs tens of thousands with no return.
+**Start with a responsive website or progressive web app (PWA), and build a mobile app only if at least one of five conditions holds: customers use you weekly or more, the service must work offline, push notifications to iPhone users are essential, you need deep hardware access, or the app itself is your product.** If none applies, a website reaches more people, appears in search and costs less to run.
 
-**The uncomfortable truth: most companies that ask for an app don't need one.** What they usually need is a fast responsive website — at a third of the cost and with no download barrier.
-
-This guide helps you tell the difference honestly, even if the conclusion is not to buy an app.
+On our published rate card (as of November 2026), a mid-size company website is **$8,000–$25,000** and a simple app **$5,000–$15,000** — but the app adds store accounts, commission on digital sales, store review on every release, and the cost of persuading people to download it.
 
 ---
 
 ## What is a PWA?
 
-A **[progressive web app (PWA)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)** is a website with capabilities approaching an app's: it runs in the browser, but can be **installed to the home screen** with an icon, works partially offline, and sends notifications (with limits on iOS).
+MDN defines a **[progressive web app](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)** as "an app that's built using web platform technologies, but that provides a user experience like that of a platform-specific app." Like a website it runs on any device from one codebase; like an app it "can be installed on the device, can operate while offline and in the background, and can integrate with the device."
 
-In short: **most of an app's benefits, without a store, a download, or a review process.**
+In short: **much of an app's value, without a store, a download, or a review process.**
+
+The main iPhone caveat: Apple added web push notifications in [iOS and iPadOS 16.4](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/) (announced February 2023), and only for web apps the user has added to the Home Screen, with permission requested after a direct user action such as tapping a subscribe button.
+
+If you already lean towards the web, our [web development services](/en/services/web-development) cover responsive sites and PWAs.
 
 ---
 
 ## The reference table
 
-| Criterion | Native app | PWA / responsive site |
+| Criterion | Mobile app | PWA / responsive site |
 |---|---|---|
-| Cost | $8,000 – $120,000 | $3,000 – $25,000 |
-| Timeline | 6 weeks – 18 months | 2 – 12 weeks |
-| **Barrier to reach** | Store download | **A link only** |
-| Appears in search results | No | **Yes — a major advantage** |
-| Push notifications | Excellent | Good on Android, limited on iOS |
-| Offline operation | Complete | Partial |
-| Camera and GPS access | Complete | Good but limited |
-| Store fees | $99 + $25 · plus subscription commission | **None** |
-| Update deployment time | Days (store review) | **Instant** |
+| Build cost (rate card, Nov 2026) | $5,000 – $100,000 (simple to advanced tiers) | $1,500 – $80,000 (landing page to custom web application) |
+| **Barrier to reach** | Store search, download, install | **A link** |
+| Discoverable through Google search | Store listing only | **Every page can rank** |
+| Push notifications | Full support | The [Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API) works across browsers since March 2023; on iPhone only from iOS 16.4 and only once added to the Home Screen |
+| Offline operation | Complete | Possible with service workers, designed page by page |
+| Camera, GPS, sensors | Complete | Common capabilities through browser APIs; deep or background access limited |
+| Store fees | Apple $99/year · Google Play $25 once · commission on digital sales | **None** |
+| Shipping an update | Through store review | **Instant** |
 
-*Indicative estimates based on Apex project experience in this market as of 2026. Actual cost depends on scope, integrations, and the level of customisation your project requires.*
+Store fees are from Apple's [developer program page](https://developer.apple.com/programs/whats-included/) and Google's [registration fee page](https://support.google.com/googleplay/android-developer/answer/6112435). On commission: Google Play [charges 15%](https://support.google.com/googleplay/android-developer/answer/112622) on a developer's first $1M of revenue each year and 30% above that, with 15% on auto-renewing subscriptions; Apple's [Small Business Program](https://developer.apple.com/app-store/small-business-program/) gives a 15% rate to developers earning up to $1M a year.
+
+---
+
+## The rate-card tiers side by side
+
+Ranges from our published rate card, as of November 2026:
+
+| Tier | USD | SAR |
+|---|---|---|
+| Landing page or small brochure site | $1,500 – $5,000 | 5,600 – 18,800 |
+| Mid-size company website | $8,000 – $25,000 | 30,000 – 93,800 |
+| Custom web application (typical for a full PWA) | $25,000 – $80,000 | 93,800 – 300,000 |
+| Simple app | $5,000 – $15,000 | 18,800 – 56,300 |
+| Mid-complexity app | $15,000 – $45,000 | 56,300 – 168,800 |
+| Advanced app or platform | $45,000 – $100,000 | 168,800 – 375,000 |
+
+AED and QAR equivalents are in [Website Design Cost](/en/blog/website-design-cost) and [App Development Cost in the Gulf](/en/blog/mobile-app-development-cost-gulf).
 
 ---
 
 ## The download barrier — the biggest overlooked factor
 
-This decides the fate of most apps, and is rarely discussed before building.
-
-Every step between a customer's interest and their usage loses you part of the audience: they see the link → open the store → wait for the download → grant permissions → create an account. **Every step loses a percentage of people.**
+Every step between a customer's interest and their first use loses some of the audience: they see the link → open the store → wait for the download → grant permissions → create an account. A website removes the middle three steps.
 
 **The decisive question:** is your app's value worth downloading for someone who hasn't tried you yet?
 
-- **A restaurant a customer orders from twice a month** → they won't download. They'll order from a website or a delivery platform.
-- **A bank they use daily** → they'll download without hesitation.
+- **A restaurant a customer orders from twice a month** → they are unlikely to download. They will order from a website or a delivery platform.
+- **A bank they use daily** → they will download without hesitation.
 
-**And most importantly:** apps don't appear in Google search results, websites do. If acquiring customers through search is part of your plan, an app alone cuts off that source entirely.
+**And discovery:** your website's pages can rank in Google search; an app's screens cannot — only its store listing can be found. If acquiring customers through search is part of your plan, an app alone gives that up.
 
 ---
 
@@ -57,39 +73,51 @@ Every step between a customer's interest and their usage loses you part of the a
 
 If none apply, a responsive website will serve you:
 
-**1. Repeat usage by the same customer.** Daily, or weekly at minimum. Banking, fitness, productivity, communication. Repeat usage justifies the one-time download effort.
+**1. Repeat usage by the same customer.** Daily, or weekly at minimum: banking, fitness, productivity, communication. Repeat usage justifies the one-time download effort.
 
-**2. A genuine need for offline operation.** A field app for technicians in areas without coverage, or a travel app. "The connection might drop sometimes" is not sufficient reason.
+**2. A genuine need for offline operation.** A field app for technicians in areas without coverage, or a travel app. "The connection might drop sometimes" is not sufficient reason — a PWA can cache key pages.
 
-**3. Reliable push notifications essential to the service.** Alerting a driver to a new order, a security alert. **Note:** web notifications on iOS are limited, so if your audience is on iPhone and you depend on notifications, that is a genuine reason for an app.
+**3. Reliable push notifications essential to the service.** Alerting a driver to a new order, a security alert. On iPhone, web push needs iOS 16.4 or later and the user must first add your site to the Home Screen — an extra step you cannot count on. If your audience is on iPhone and the service depends on notifications, that is a genuine reason for an app.
 
-**4. Deep device hardware access.** Camera with real-time processing, Bluetooth, biometric sensors, continuous background GPS tracking.
+**4. Deep device hardware access.** Camera with real-time processing, Bluetooth peripherals, biometric sensors, continuous background location tracking.
 
-**5. The app itself is your product.** If you sell the app or monetise from within it, being in the stores is part of your business model.
+**5. The app itself is your product.** If you sell the app or earn from within it, being in the stores is part of your business model.
 
 ---
 
 ## When a website clearly suffices
 
 - **Presenting services and collecting enquiries** — service companies, clinics, professional offices.
-- **An online store** — most stores sell successfully over the web. See our [e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi).
+- **An online store** — most stores can sell over the web. See our [e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi).
 - **Content and blogs** — appearing in search matters far more than an icon on a screen.
-- **Simple appointment booking** — a web booking system costs $3,000–$10,000 and does the job. See our [clinic app guide](/en/blog/clinic-booking-app-cost).
+- **Simple appointment booking** — a web booking flow falls in the company-website or custom-web-application tier, depending on integrations. See our [clinic app guide](/en/blog/clinic-booking-app-cost).
 - **A brochure site** — no debate here.
 
 ---
 
 ## The smarter path: start with web
 
-This is what we recommend to most clients:
+**1. Build an excellent responsive website first** — usually the mid-size company website tier, $8,000–$25,000. Launch within weeks, appear in search, gather real users.
 
-**1. Build an excellent responsive website first** ($3,000–$15,000). Launch within weeks, appear in search, gather real users.
+**2. Measure behaviour.** How many users return weekly? How many ask for notifications? What share of visitors are on mobile, and on which platform?
 
-**2. Measure behaviour.** How many users return weekly? How many want notifications? What share of visitors are on mobile?
+**3. Build the app when the numbers demand it** — with requirements grounded in actual behaviour rather than assumptions. When you get there, [Native vs Hybrid Apps](/en/blog/native-vs-hybrid-app) and [Flutter vs React Native](/en/blog/flutter-vs-react-native) cover the technology choice.
 
-**3. Build the app when the numbers demand it** — with clear requirements grounded in actual behaviour rather than assumptions.
+**Why is this smarter?** You test demand on the cheaper channel, and build the app later knowing what people actually use — rather than building features nobody turns out to want.
 
-**Why is this smarter?** Because you test demand at a third of the cost, and build the app later knowing what people actually use — rather than building features nobody turns out to want.
+---
+
+## Common mistakes in this decision
+
+**Building an app because a competitor did.** The competitor may be wrong, or have a different business model. Your decision follows your own customers' behaviour.
+
+**Measuring success by downloads.** A download says nothing about use. Track how many users come back each week; that is the number that justifies an app.
+
+**Assuming an app brings new customers.** An app serves people who already know you; a website reaches people who don't, through search. Building an app without a website cuts off your main acquisition channel.
+
+**Ignoring the marketing cost.** Building the app is half the equation; getting people to install it is the other half. Budget for it before you budget the build.
+
+**Building both at once from the start.** That doubles cost and effort before you know whether either works. Start with one, prove demand, then expand.
 
 ---
 
@@ -103,38 +131,32 @@ This is what we recommend to most clients:
 
 ## Frequently asked questions
 
-### Does a PWA work on iPhone?
+### Can a PWA send push notifications to iPhone users?
 
-Yes, and it can be installed to the home screen. But push notification support on iOS is narrower than on Android, and some hardware capabilities are limited. If your audience is on iPhone and you depend fundamentally on notifications, that is a genuine reason to build an app.
+Yes, but only on iOS and iPadOS 16.4 or later, and only after the user has added your web app to the Home Screen and granted permission in response to a direct action such as tapping a button. You cannot count on visitors taking that Home Screen step, which is why iPhone-heavy audiences that depend on notifications are a genuine reason to build an app.
 
-### How much do I save choosing web over an app?
+### What does an app cost each year that a website doesn't?
 
-Typically 50–70%. A good responsive website costs $3,000–$15,000 versus $8,000–$60,000 for an app with comparable functionality. Add the savings on store fees and in-app subscription commission (up to 30%), plus faster update deployment.
+Apple's developer program is $99 per membership year and Google Play has a one-time $25 registration fee. If you sell digital goods or subscriptions in the app, the stores take a commission: 15% for smaller developers on both stores, and 30% on Google Play revenue above $1M a year. Every update also goes through store review rather than going live instantly.
 
-### Do apps appear in Google search results?
+### Can a PWA be found through Google search?
 
-No, not the way web pages do. This is among the most important and most overlooked differences: a website brings visitors from search continuously, while an app needs paid marketing or direct referral. If search-based customer acquisition is part of your plan, a website isn't optional but necessary.
+Yes — it is a website, so each page can be indexed and rank like any other. An app's content cannot be found in Google the same way; people find it through its store listing or a link you send them.
 
-### Do I need both?
+### Do I need both a website and an app?
 
-Many companies do — a website for discovery and search acquisition, an app for repeat customers. But **start with web**: the website serves the whole audience, while the app serves a loyal segment that doesn't exist yet if you're just starting.
+Many companies end up with both — a website for discovery and search, an app for repeat customers. But **start with the website**: it serves your whole audience, while the app serves a loyal segment that does not exist yet if you are just starting.
 
-### What is the biggest mistake in this decision?
+### What should I measure before moving from web to an app?
 
-Building an app before verifying repeat demand exists. The loss isn't only build cost, but the wasted months and the paid marketing spent getting people to download something they hadn't been shown to want.
+Weekly return rate, repeated requests for features only an app can deliver well (reliable notifications, offline use, background location), and the share of your mobile visitors on iPhone. If returning users are a small minority, an app will not change that.
 
-### When should I move from web to an app?
+### Can I turn my PWA into a store app later?
 
-When your numbers show repeat behaviour: a high weekly return rate, repeated user requests for a feature that needs an app, or a clear operational need (push notifications, offline operation). The decision follows data, not ambition.
+You can, but think of it as a new build rather than a conversion if you need deep hardware access or native notifications. What carries over is your backend, your content and, most valuably, the usage data that tells you which features the app actually needs.
 
 ---
 
-## Conclusion
+## A website first, an app when it is earned
 
-**Most companies don't need an app** — they need a fast responsive website at a third of the cost, with no download barrier, that appears in search results.
-
-**An app earns its cost** in five cases only: repeat usage, offline operation, critical notifications, advanced hardware, or the app being your product itself.
-
-**And the smarter path:** start with web, measure behaviour, then build the app when your numbers demand it.
-
-**Want an honest opinion?** [Get in touch](/en/contact) for a free assessment — and we'll tell you plainly if a website is enough, even when that means a smaller project for us. See our [web development services](/en/services/web-development).
+If your customers come to you occasionally, a fast website that ranks in search will do more for you than an icon they never install. If they come back every week, depend on notifications or need you offline, an app pays its way. [Share your traffic numbers and use case with us](/en/contact) and we will tell you which side you are on — including when that means a smaller website project rather than an app.

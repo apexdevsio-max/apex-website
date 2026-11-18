@@ -1,76 +1,77 @@
 ---
-{"slug":"api-security-guide","title":"API Security: Common Mistakes and How to Avoid Them","excerpt":"A practical guide to securing APIs — authentication versus authorisation, the most common mistakes in mobile apps, and a pre-launch checklist.","date":"2026-08-11","dateModified":"2026-08-11"}
+{"slug":"api-security-guide","title":"API Security: Common Mistakes and How to Avoid Them","excerpt":"A practical guide to securing APIs — authentication versus authorisation, the most common mistakes in mobile apps, and a pre-launch checklist.","categories":["compliance"],"keywords":["API security","authentication","authorisation","mobile security","vulnerabilities"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["The first risk in the OWASP API Security Top 10 (2023) is Broken Object Level Authorization: an endpoint that takes a record ID must check that the logged-in user may access that specific record.","Everything a mobile app sends is untrusted, so authorisation, validation, prices and secrets must live on the server, never in the app bundle.","OWASP's password storage guidance recommends Argon2id first, scrypt as a fallback, and bcrypt only for legacy systems; fast hashes such as SHA-256 are not suitable.","If a breach of personal data of users in Saudi Arabia may cause harm, the PDPL Implementing Regulations require notifying SDAIA within 72 hours of becoming aware, so monitoring has to detect incidents quickly."],"sources":[{"title":"OWASP API Security Top 10 (2023)","url":"https://api-security.owasp.org/editions/2023/en/0x11-t10"},{"title":"OWASP API1:2023 Broken Object Level Authorization","url":"https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization"},{"title":"OWASP Cheat Sheet Series: Password Storage","url":"https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"},{"title":"SDAIA: Implementing Regulation of the Personal Data Protection Law","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2"}]}
 ---
 
 # API Security: Common Mistakes and How to Avoid Them
 
-Most breaches in mobile applications don't happen in the app itself but in **the API behind it**. The reason is simple: many developers treat the app as a line of defence, when the app is **an entirely untrusted environment**.
+**The most common serious API flaw is missing ownership checks: an endpoint verifies that a user is logged in, but not that the record they asked for is theirs.** OWASP lists it first in the [API Security Top 10 (2023)](https://api-security.owasp.org/editions/2023/en/0x11-t10) as **API1: Broken Object Level Authorization**. The governing rule behind it, and behind most of this guide: everything that arrives from a client is untrusted — even when your own app sent it.
 
-**The governing rule: everything arriving from a client is untrusted — even when your own app sent it.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-> For the industry-standard reference, see the [OWASP API Security Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/) — the most widely adopted reference among security teams.
+This guide covers the mistakes we check for when building the backend behind a [mobile app](/en/services/mobile-apps) or [web application](/en/services/web-development), mapped to the OWASP list so your security reviewer can follow along.
 
 ---
 
-## Why isn't the app a line of defence?
+## Why the app is not a line of defence
 
-Anyone can inspect your app's traffic and see every request it sends and every response it receives. The tools for this are freely available.
+Anyone can inspect your app's traffic and see every request it sends and every response it gets back, with freely available tools.
 
 **What this means:**
-- **Hiding a button in the interface is not authorisation.** An attacker calls the API directly.
-- **Validation in the app is not validation.** Always repeat it on the server.
-- **Any key inside the app is exposed.** Never put secrets in client code.
+- **Hiding a button is not authorisation.** An attacker calls the API directly.
+- **Validation in the app is not validation.** Repeat it on the server.
+- **Any key inside the app is exposed.** Never ship secrets in client code.
 
 ---
 
 ## 1. Authentication and authorisation — the decisive difference
 
-Conflating these two concepts is the source of the most dangerous vulnerabilities.
-
 **Authentication:** who are you?
-**Authorisation:** are you entitled to this specific thing?
-
-**The most common vulnerability in apps:** verifying that the user is logged in, without verifying that **this record belongs to them**.
+**Authorisation:** are you allowed to do this to *this specific record*?
 
 ```
 GET /api/orders/12345
 ```
 
-If the server only validates the token and returns order 12345 to any logged-in user — **any user can read everyone's orders** by changing the number.
+If the server only validates the token and returns order 12345 to any logged-in user, **any user can read everyone's orders** by changing the number. OWASP's [prevention advice for API1](https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization) is to apply an authorisation check in **every function that uses client input to access a record**, and to write tests that try to bypass it.
 
-**The rule:** always verify the requested resource belongs to the requesting user — **at every endpoint without exception**.
+Two related items on the same list:
+
+- **API3: Broken Object Property Level Authorization** — the user may see the record, but not every field on it (an endpoint that lets a user update their own `role` field).
+- **API5: Broken Function Level Authorization** — admin endpoints reachable by ordinary users because nobody checked the role.
 
 ---
 
-## 2. Tokens — correct handling
+## 2. Tokens — correct handling (API2: Broken Authentication)
 
-**Don't store tokens in ordinary insecure storage.** Use the platform's secure storage (Keychain on iOS, Keystore on Android).
+**Store tokens in the platform's secure storage** — Keychain on iOS, Keystore on Android — not in ordinary preferences.
 
 **Use two tokens:**
 - **A short-lived access token** — minutes to an hour.
-- **A longer-lived refresh token** — used to issue a new access token.
+- **A longer-lived refresh token** — used to issue new access tokens.
 
-**Why?** A short token narrows the damage window if it leaks.
+A short access token narrows the damage window if it leaks.
 
-**Provide a revocation mechanism.** If a device is stolen or a compromise is suspected, you must be able to revoke a specific session or all of a user's sessions.
+**Provide revocation.** If a device is stolen or a compromise is suspected, you must be able to end one session or all of a user's sessions.
 
 ---
 
-## 3. The most common mistakes in mobile apps
+## 3. The most common mistakes in mobile backends
 
-**1. Keys buried in the app.** Any key inside the app bundle is extractable. Sensitive keys stay on the server, and the app calls your server rather than the external service directly.
+**1. Keys in the app bundle.** Anything in the bundle can be extracted. Sensitive keys stay on the server; the app calls your server, which calls the external service.
 
-**2. Relying on client-side validation.** Client validation is for user experience only; real validation always happens on the server.
+**2. Relying on client-side validation.** Client validation is for user experience; real validation happens on the server.
 
-**3. Returning more data than needed.** An endpoint returning the full user object — email, phone, role — to display a name. Return what is displayed.
+**3. Returning more data than needed.** An endpoint returns the full user object — email, phone, role — to display a name. Return what is displayed (this is API3 again).
 
-**4. Revealing error messages.** "Wrong password" confirms the email is registered. Use a uniform "invalid credentials".
+**4. Revealing error messages.** "Wrong password" confirms the email is registered. Use one message: "invalid credentials".
 
-**5. No rate limiting.** Without limits, a login endpoint is brute-forceable and a code-sending endpoint is abusable.
+**5. No rate limiting.** Without limits, login is brute-forceable and an SMS-code endpoint becomes someone else's free SMS gateway. OWASP files this under **API4: Unrestricted Resource Consumption** and **API6: Unrestricted Access to Sensitive Business Flows**.
 
-**6. Sequential, guessable identifiers.** `/orders/1`, `/orders/2` invites exploration. Use unguessable identifiers for sensitive resources — **while ownership checks remain mandatory**.
+**6. Sequential identifiers.** `/orders/1`, `/orders/2` invites enumeration. OWASP recommends random, unpredictable IDs such as GUIDs — **but ownership checks remain mandatory**; unguessable IDs only slow an attacker down.
 
-**7. Logging sensitive data.** Logs sometimes contain passwords, tokens, or personal data. Review what you log — and logs are subject to data protection laws too. See our [PDPL compliance guide](/en/blog/pdpl-compliance-guide).
+**7. Forgotten endpoints.** Old versions, debug routes and staging hosts left reachable (**API9: Improper Inventory Management**). Keep a list of what is deployed, and retire what is not.
+
+**8. Logging sensitive data.** Logs sometimes capture passwords, tokens or personal data. Logs are personal data too — see the [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide).
 
 ---
 
@@ -78,103 +79,102 @@ If the server only validates the token and returns order 12345 to any logged-in 
 
 **Validate every field on the server** — type, length, range, format.
 
-**Don't trust hidden fields.** If the app sends `price` with an order, an attacker sends `price: 0`. **Calculate the price on the server** from the product ID.
+**Do not trust hidden fields.** If the app sends `price` with an order, an attacker sends `price: 0`. **Calculate the price on the server** from the product ID.
 
-**Use parameterised queries** to prevent injection — never build queries by string concatenation.
+**Use parameterised queries** — never build queries by string concatenation.
 
-**Inspect uploaded files:** the actual type rather than the extension, a maximum size, and never execute them from a publicly reachable path.
+**Check uploaded files:** the real content type rather than the extension, a maximum size, and never serve them from an executable path.
+
+**Validate URLs you fetch on the user's behalf.** A "fetch this image URL" feature can be turned against your internal network (**API7: Server Side Request Forgery**).
 
 ---
 
 ## 5. Transit and storage
 
-**HTTPS is mandatory** for every connection without exception.
+**HTTPS on every connection,** without exception.
 
-**Encrypt sensitive data in the database** — don't rely on disk encryption alone.
+**Encrypt sensitive fields in the database** — do not rely on disk encryption alone.
 
-**Passwords are stored hashed** with an algorithm designed for it (such as bcrypt or Argon2) — not encrypted, and not hashed with fast algorithms.
+**Hash passwords with a slow, purpose-built algorithm.** OWASP's [Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) recommends **Argon2id** first, **scrypt** if Argon2id is unavailable, and **bcrypt only for legacy systems**. It is explicit that fast hashes such as SHA-256 are not suitable, and that passwords should be hashed, not encrypted.
 
-**Separate production and testing environments completely** — and never use real production data in development, which is a clear breach of data protection law.
+**Keep production and test environments separate,** and do not copy real customer data into development. Article 19 of Saudi Arabia's [PDPL](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) requires organisational, administrative and technical measures to protect personal data; whether a given test-data practice meets that is a question for your lawyer, but a production dump on a developer laptop is a security failure on any reading. Use generated or anonymised data instead.
 
 ---
 
 ## 6. Rate limiting and monitoring
 
-**Rate-limit sensitive endpoints:** login, password reset, code sending, and search.
+**Rate-limit sensitive endpoints:** login, password reset, code sending, search, and anything that costs you money per call.
 
-**Monitor for signals of abuse:**
-- Repeated failed login attempts from one source.
-- Requests for resources not belonging to the user (enumeration attempts).
-- A sudden spike in request rate.
+**Watch for:**
+- Repeated failed logins from one source
+- Requests for resources that do not belong to the user (enumeration)
+- Sudden spikes in request rate
 
-**Monitoring is not a luxury** — Saudi PDPL requires breach notification within 72 hours, and you cannot notify about a breach you never detect.
+**Monitoring is a legal timing issue, not just good practice.** Under Article 24 of Saudi Arabia's [PDPL Implementing Regulation](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2), a controller must notify SDAIA within **72 hours of becoming aware** of a personal data breach that may cause harm, and notify affected users without undue delay. You cannot report on time a breach you have not detected.
 
 ---
 
 ## Pre-launch checklist
 
-- [ ] Every endpoint verifies **ownership**, not just that someone is logged in.
-- [ ] Tokens in the platform's secure storage.
-- [ ] Short access token + refresh token, with a revocation mechanism.
-- [ ] No sensitive keys inside the app bundle.
-- [ ] Complete server-side input validation.
-- [ ] Prices and sensitive calculations computed on the server, not accepted from the client.
-- [ ] Parameterised queries everywhere.
-- [ ] HTTPS mandatory.
-- [ ] Passwords hashed with an appropriate algorithm.
-- [ ] Rate limiting on sensitive endpoints.
-- [ ] Error messages that don't leak information.
-- [ ] Responses don't return unused fields.
-- [ ] Logs free of sensitive data.
-- [ ] Monitoring that detects suspicious patterns.
-- [ ] Development environments contain no production data.
+- [ ] Every endpoint checks **ownership** of the record, not just that someone is logged in (API1)
+- [ ] Field-level checks on what a user may read or update (API3)
+- [ ] Admin functions check the role (API5)
+- [ ] Tokens in platform secure storage; short access token, refresh token, revocation
+- [ ] No sensitive keys in the app bundle
+- [ ] Server-side validation of every input; prices computed on the server
+- [ ] Parameterised queries everywhere
+- [ ] Outbound URL fetching restricted (API7)
+- [ ] HTTPS everywhere
+- [ ] Passwords hashed with Argon2id (or scrypt)
+- [ ] Rate limits on login, reset, code sending and costly endpoints (API4, API6)
+- [ ] Uniform error messages; responses return only displayed fields
+- [ ] Inventory of deployed endpoints and versions; old ones retired (API9)
+- [ ] Logs free of passwords, tokens and unnecessary personal data
+- [ ] Monitoring that can surface a breach well inside 72 hours
+- [ ] No production customer data in development or test
 
 ---
 
 ## Related reading
 
-- [PDPL compliance](/en/blog/pdpl-compliance-guide) — the regulatory side of data protection.
-- [Fintech and SAMA](/en/blog/fintech-sama-compliance) — stricter security requirements in finance.
-- [Mobile app testing](/en/blog/mobile-app-testing) — edge-case testing surfaces vulnerabilities.
+- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) — the regulatory side of data protection.
+- [Gulf compliance guide](/en/blog/gulf-compliance-guide) — which data protection law applies to you.
+- [AI privacy and security risks](/en/blog/ai-privacy-risks) — the extra attack surface when an API calls a language model.
+- [Fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) — where security expectations are set by the licence.
+- [Mobile app testing](/en/blog/mobile-app-testing) — edge-case testing that surfaces vulnerabilities.
 
 ---
 
 ## Frequently asked questions
 
-### What is the most dangerous common API vulnerability?
+### What is Broken Object Level Authorization (BOLA)?
 
-Missing ownership checks: verifying a user is logged in without verifying the requested resource belongs to them. This lets any user read another's data by changing an identifier in the URL, and it is both the most common and the easiest to exploit.
+It is API1 in the OWASP API Security Top 10 (2023): an endpoint accepts a record ID from the client and returns or changes that record without checking that the logged-in user is allowed to. Any user can then reach another user's data by changing the ID. The fix is an ownership check in every function that uses client input to fetch a record.
 
-### Is HTTPS enough to secure an API?
+### Do random IDs (UUIDs) fix BOLA?
 
-No. HTTPS protects data **in transit** only. It doesn't stop an authenticated user from accessing someone else's data, doesn't protect against malicious input, and doesn't compensate for missing authorisation. It is necessary but not sufficient.
+No. OWASP recommends random, unpredictable IDs such as GUIDs because they make enumeration harder, but IDs leak through links, logs and shared screens. The authorisation check on every request is still required.
 
-### How do I protect third-party service keys?
+### Is bcrypt still acceptable for passwords in 2026?
 
-Never put them in the app. Have the app call **your server**, and your server call the external service with its key. That keeps the key beyond the reach of anyone inspecting the app.
+Only for legacy systems. OWASP's Password Storage Cheat Sheet recommends Argon2id first and scrypt as the fallback, with bcrypt reserved for systems where neither is available. Fast hashes such as SHA-256 are not suitable for passwords.
 
-### When should I use rate limiting?
+### How do I keep third-party API keys out of a mobile app?
 
-On every public endpoint, and more strictly on: login, password reset, verification code sending, and search. Those are the most commonly abused automatically.
+Do not put them in the app at all. The app calls your server, and your server calls the external service with the key. Anything inside the app bundle can be extracted by someone inspecting it.
 
-### Do I need a security audit?
+### How fast must I report an API breach in Saudi Arabia?
 
-For projects handling sensitive data or payments: yes, and regulated sectors may require it. For smaller projects, an internal security review against the checklist above covers most common risks.
+If the breach involves personal data and may cause harm, Article 24 of the PDPL Implementing Regulation requires notifying SDAIA within 72 hours of becoming aware of it, and affected users without undue delay. If you do not have all the details within 72 hours, you provide them as soon as possible with reasons for the delay.
 
-### How do I handle a vulnerability discovered after launch?
+### Which endpoints need rate limiting first?
 
-Fix it immediately and ship an update, revoke affected sessions if needed, and assess whether data actually leaked. If there is a breach touching personal data, statutory notification obligations apply — and their deadline is short.
+Login, password reset, verification-code sending, search, and any endpoint that costs you money per call such as SMS or AI requests. OWASP groups these risks under API4 (Unrestricted Resource Consumption) and API6 (Unrestricted Access to Sensitive Business Flows).
 
 ---
 
-## Conclusion
+## Where to start
 
-**The app is an untrusted environment** — every real check happens on the server.
+If you only fix one thing this week, make it API1: grep your backend for every route that takes an ID and confirm each one checks ownership. Then move secrets out of the app bundle and put rate limits on login and code sending. Those three changes close most of what attackers actually try first.
 
-**Verify ownership at every endpoint** — the most dangerous and most easily exploited vulnerability.
-
-**Never put secrets in client code** — everything in the bundle is extractable.
-
-**And compute what matters on the server** — prices and permissions are never accepted from the client.
-
-**Want a security review of your APIs?** [Get in touch](/en/contact) — we apply these principles during the build rather than after a breach. See [our services](/en/services).
+Want a second opinion on an existing backend before launch? [Ask us for an API security review](/en/contact) — we check it against the OWASP list above and tell you what to fix first.

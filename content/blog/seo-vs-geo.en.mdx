@@ -1,286 +1,167 @@
 ---
-{"slug":"seo-vs-geo","title":"SEO vs GEO: How AI Search Is Reshaping Visibility","excerpt":"How generative engine optimisation differs from classic SEO, what AI search rewards, and the practical changes that make content quotable by assistants.","date":"2026-05-23","dateModified":"2026-08-14"}
+{"slug":"seo-vs-geo","title":"SEO vs GEO: How AI Search Is Reshaping Visibility","excerpt":"How generative engine optimisation differs from classic SEO, what AI search rewards, and the practical changes that make content quotable by assistants.","categories":["web-ecommerce"],"keywords":["SEO","GEO","generative engine optimization","AI search","digital marketing","answer engines"],"date":"2026-05-23","dateModified":"2026-11-17","summary":["Generative engine optimisation (GEO) is the practice of making a page easy for AI answer engines such as Google AI Overviews, ChatGPT search and Perplexity to find, understand and quote, so it is cited inside the generated answer rather than only listed as a link.","GEO is not a separate discipline from SEO: Google's own guide says optimising for its generative AI features is still SEO, and that no special files, schema or markup are required to appear in AI Overviews or AI Mode.","In the KDD 2024 GEO study by Aggarwal et al., adding quotations raised a source's visibility in generated answers by about 41%, adding statistics by about 31% and citing sources by about 27%, while keyword stuffing lowered it by about 8%.","The concrete work is: serve important content as server-rendered text, write one quotable sentence per question under a clear heading, back figures with linked primary sources, let search crawlers such as Googlebot and OAI-SearchBot in, and treat llms.txt and FAQ markup as optional extras rather than ranking levers."],"sources":[{"title":"Google Search Central: Optimizing your website for generative AI features on Google Search","url":"https://developers.google.com/search/docs/fundamentals/ai-optimization-guide"},{"title":"Google Search Central: AI features and your website","url":"https://developers.google.com/search/docs/appearance/ai-features"},{"title":"Aggarwal et al., GEO: Generative Engine Optimization (KDD 2024)","url":"https://arxiv.org/abs/2311.09735"},{"title":"Pew Research Center: Google users are less likely to click on links when an AI summary appears (July 2025)","url":"https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/"},{"title":"The /llms.txt file proposal","url":"https://llmstxt.org/"}]}
 ---
 
-# SEO vs GEO: How AI Search Engines Are Reshaping the Future of Digital Visibility
+# SEO vs GEO: How AI Search Engines Are Reshaping Digital Visibility
 
-A comprehensive guide explaining the difference between SEO and GEO, and how AI-powered search is transforming the future of digital content and online visibility.
+**Generative engine optimisation (GEO) is the practice of making a page easy for AI answer engines — Google AI Overviews and AI Mode, ChatGPT search, Perplexity — to find, understand and quote, so that the page is cited inside the generated answer rather than only listed as a link.**
 
-For more than two decades, **SEO** (Search Engine Optimization) has been the foundation of digital visibility and organic traffic growth. However, with the rise of generative AI platforms such as [ChatGPT](https://chatgpt.com/), [Perplexity AI](https://www.perplexity.ai/), and [Google AI Overviews](https://blog.google/products/search/generative-ai-search/), the rules of online discovery are changing rapidly.
+GEO does not replace SEO. Google's own [guide to generative AI features](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide) states that "optimizing for generative AI search is optimizing for the search experience, and thus still SEO", and that no special files, markup or schema are needed. What changes is the unit of success: the sentence that gets quoted, not only the page that gets ranked.
 
-Today, users are no longer searching only for "links." Instead, they increasingly expect direct, fast, and trustworthy answers. This shift has made the debate around **SEO vs GEO** one of the most important discussions in modern digital marketing.
-
-As AI-powered search evolves, businesses and content creators are now rethinking how these two approaches will shape the future of content strategy and digital authority.
-
-> GEO — Generative Engine Optimization
-
-GEO is an emerging approach focused on optimizing content for AI-generated answers rather than only traditional search engine rankings. This is why companies are beginning to redesign their content strategies to build stronger digital visibility in the years ahead.
-
-![SEO vs GEO illustration](/images/blog/seo-vs-geo/seo-vs-geo-hero.jpeg)
+![Illustration comparing classic search results with an AI-generated answer](/images/blog/seo-vs-geo/seo-vs-geo-hero.jpeg)
 
 ---
 
-## What Is SEO?
+## The short version
 
-SEO (Search Engine Optimization) is the process of improving web pages so they rank higher in search engines such as [Google](https://www.google.com/) and [Bing](https://www.bing.com/).
-
-Traditional SEO relies on several core factors:
-
-- Keyword optimization
-- Website speed
-- User experience (UX)
-- Backlinks
-- Technical SEO
-- Structured content and headings
-
-### How Traditional Search Engines Work
-
-![Search engine workflow](/images/blog/seo-vs-geo/search-engine-workflow.jpeg)
-
-1. **Crawling:** Search engines discover web pages.
-2. **Indexing:** Content is stored and organized in databases.
-3. **Ranking:** Pages are ranked based on relevance and quality.
-
-The results are then displayed to users as a list of ranked links.
-
-> For years, reaching the first page of Google was the primary goal for most websites and brands. However, the rise of answer engines has fundamentally changed how businesses think about digital visibility strategies.
-
----
-
-## What Is GEO?
-
-GEO (Generative Engine Optimization) is a modern concept focused on optimizing content for AI-powered answer engines.
-
-Instead of concentrating only on rankings, GEO aims to make content:
-
-- Clear and easy to understand
-- Logically structured
-- Rich in context and information
-- Easy for AI systems to quote and reference
-- Trustworthy and source-backed
-
-### How AI Search Systems Work
-
-![AI search concept](/images/blog/seo-vs-geo/ai-search-concept.jpeg)
-
-Modern AI systems no longer display only links. Instead, they analyze, interpret, and synthesize content to generate direct responses for users.
-
-> In the AI era, the question is no longer: "How do I rank first on Google?"
-> The real question is: "How do I make AI systems trust and reference my content?"
-
----
-
-## The Real Difference Between SEO and GEO
-
-| Element | SEO | GEO |
+| | SEO | GEO |
 |---|---|---|
-| Primary Goal | Improve rankings | Appear in AI-generated answers |
-| Interface Type | Search results | Direct AI responses |
-| Success Metric | Organic traffic | AI citations and references |
-| Keywords | Critical factor | Less dominant |
-| Content Quality | Important | Essential |
-| Backlinks | Strong ranking factor | Lower relative impact |
-| Content Structure | Recommended | Absolutely necessary |
+| Goal | Rank a page in a list of results | Have a passage quoted or cited inside an AI answer |
+| Unit that wins | The page | A self-contained sentence, figure or definition |
+| Who reads it first | Search crawlers and the ranking system | The same crawlers, then a language model that summarises |
+| Success metric | Clicks and impressions | Citations, mentions and the clicks that still follow them |
+| Foundation | Crawlable, indexed, useful content | Exactly the same — plus passages specific enough to quote |
 
-This is where the true shift becomes clear. Success is no longer measured only by clicks and rankings, but also by whether content becomes a trusted source for AI systems.
+The rest of this article is the evidence for that table and the concrete changes it implies.
 
 ---
 
-## Why GEO Became So Important in 2026
+## Why it matters now: fewer clicks when an answer appears
 
-Search engines are gradually evolving from "search engines" into "answer engines."
+The clearest measurement so far comes from [Pew Research Center](https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/), which tracked the browsing of 900 U.S. adults in March 2025. When a Google results page showed an AI summary, users clicked a traditional result in **8% of visits**, against **15%** when no summary appeared. They clicked a link inside the summary itself in only **1%** of visits. About 18% of the searches in the study produced an AI summary.
 
-For example:
-
-- Google introduced AI Overviews
-- Perplexity focuses on source-backed direct answers
-- ChatGPT has become a search alternative for millions of users
-
-This transformation has significantly changed user behavior:
-
-- Lower click-through rates on traditional links
-- Increased reliance on instant answers
-- Higher demand for deep, structured content
-- Greater importance of digital authority and trust
-
-> Multiple industry reports indicate the rise of "Zero-Click Searches," where users get answers without visiting websites directly. This is one of the main reasons why the shift has become a major focus in digital marketing discussions.
+Two conclusions follow. Ranking alone now delivers less traffic for the queries that trigger an answer. And when your page *is* the cited source, you are among the very few links that still get a click.
 
 ---
 
-## A Practical Comparison: Search-Only Content vs Content Optimised for Both
+## What SEO is, and why GEO still depends on it
 
-The difference between the two approaches becomes obvious when you compare two pages covering the same topic.
+SEO is the work of making pages that search engines can crawl, index and rank for the queries your customers type. Classic search works in three stages:
 
-### Page One: Traditional SEO Only
+![Diagram of the crawl, index and rank stages of a search engine](/images/blog/seo-vs-geo/search-engine-workflow.jpeg)
 
-The content focuses mainly on:
+1. **Crawling:** the engine discovers and downloads pages.
+2. **Indexing:** it stores and understands their content.
+3. **Ranking:** it orders indexed pages by relevance and quality for each query.
 
-- Keywords
-- Meta descriptions
-- Internal links
-- Title optimization
-
-However, the article itself remains relatively shallow and is written more for search engines than for real readers.
-
-**What typically happens:** the page may rank acceptably, but it is rarely cited inside AI-generated answers — simply because it contains no specific claim worth quoting.
-
-### Page Two: GEO + SEO Together
-
-The second version adds:
-
-- In-depth explanations and practical examples
-- FAQ sections with direct answers
-- Comparison tables and concrete numbers
-- A clear hierarchical structure
-
-**Why it wins:** AI systems need something quotable — a number, a definition, or a direct answer. The second page supplies that; the first does not.
-
-> A note on method: results vary widely by industry and competition level, and there are no universal figures worth generalising. Measure the impact of these changes on your own site through Search Console and your traffic data, rather than trusting numbers borrowed from studies that do not resemble your market.
+AI answer engines sit on top of the same stages. Google [says](https://developers.google.com/search/docs/appearance/ai-features) that to be eligible for AI Overviews and AI Mode a page must be indexed and eligible to show with a snippet, and that "there are no additional technical requirements." A page that is blocked, unindexed or invisible to the crawler cannot be quoted, however well it is written. That is why GEO is a layer on top of SEO rather than a replacement for it.
 
 ---
 
-## How to Create GEO-Friendly Content
+## What GEO adds: content specific enough to quote
 
-### 1. Write for Humans First
+![Illustration of an AI system reading several sources and composing one answer](/images/blog/seo-vs-geo/ai-search-concept.jpeg)
 
-Content written only to satisfy algorithms is becoming less effective. Modern AI systems prioritize contextual understanding and real informational value.
+An answer engine retrieves several sources and writes one response. It quotes the passages that answer the question directly and verifiably. The best evidence on what makes a passage get picked is the [GEO study by Aggarwal et al.](https://arxiv.org/abs/2311.09735), published at KDD 2024, which tested nine rewriting methods against a benchmark of 10,000 queries:
 
-### 2. Use a Clear Structure
+| Change to the source text | Effect on visibility in generated answers |
+|---|---|
+| Adding quotations from relevant sources | about **+41%** |
+| Adding statistics | about **+31%** |
+| Citing sources | about **+27%** |
+| Writing in a more authoritative tone | about **+10%** |
+| Keyword stuffing | about **−8%** |
 
-Your content should include:
+*Measured on the paper's position-adjusted word count metric, with a GPT-3.5 based engine; the authors note the effect varies by domain.*
 
-- H1, H2, and H3 headings
-- Tables
-- Lists
-- Quotes
-- FAQ sections
+The pattern is the opposite of old-school keyword optimisation: evidence makes a passage more quotable; repetition makes it less so. Google's [people-first content guidance](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) points the same way — of experience, expertise, authoritativeness and trust, "trust is most important."
 
-Clear structure counts for little if the page is slow: load speed is a direct ranking factor and affects how often search engines crawl your site. Your platform choice sets that ceiling first — see [WordPress vs Next.js](/en/blog/wordpress-vs-nextjs) and [Hosting your site: Vercel or AWS?](/en/blog/hosting-comparison).
-
-### 3. Provide Direct Answers
-
-AI systems prefer content that answers questions clearly and efficiently without unnecessary filler.
-
-### 4. Build Trust and Credibility
-
-Trustworthiness is now a critical ranking factor in modern digital visibility.
-
-- Use official sources
-- Add statistics and data
-- Include real-world examples
-- Build a strong brand identity
-
-### 5. Focus on E-E-A-T
-
-Google and AI systems increasingly evaluate:
-
-- Experience
-- Expertise
-- Authority
-- Trustworthiness
+If your site is being rebuilt, these choices belong in the build, not in a later clean-up. Our [web development service](/en/services/web-development) ships server-rendered pages, heading anchors and structured data as part of the base build.
 
 ---
 
-## Will GEO Replace SEO?
+## Seven things a site can concretely do
 
-The realistic answer is:
+### 1. Put a one-sentence answer under every question heading
 
-> No. GEO will become an additional layer on top of traditional SEO.
+Write the answer first, in a sentence that still makes sense when lifted out of the page: the name, the number, the rule. Put the detail and the caveats after it. This is the single change most directly tied to being quoted, because an answer engine needs a passage it can reuse without the surrounding paragraphs.
 
-In reality, GEO still depends heavily on strong SEO foundations because AI systems themselves rely on indexed web content.
+### 2. Back every figure with a linked primary source
 
-> SEO + Structured Content + Authority + AI Readability = GEO Success
+Statistics and citations were two of the three strongest methods in the GEO study. Link the regulator's page, the vendor's documentation or the original study — not a blog that summarises it — and give the year. "Industry reports show" is neither quotable nor trustworthy.
 
-This is why the conversation is not about replacing one with the other. It is about integrating both into a smarter and more sustainable digital strategy.
+### 3. Serve important content as server-rendered text
+
+Google [processes JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics) in a separate rendering queue and still calls server-side or pre-rendering "a great idea because it makes your website faster for users and crawlers", noting that "not all bots can run JavaScript." Its AI features page also asks that important content be "available in textual form." In practice: the answer should be in the HTML the server sends, not assembled in the browser or locked inside an image. Platform choice decides this early — see [WordPress vs Next.js](/en/blog/wordpress-vs-nextjs).
+
+### 4. Use descriptive headings with stable anchors
+
+Give each section an H2 or H3 that states the question or topic in plain words, and give each heading an `id` so it has its own URL fragment. A clear outline lets both crawlers and readers jump straight to the passage that answers them, and lets you link to one answer rather than a whole page. Google also says there is no need to break content into tiny pieces and "there's no ideal page length" — structure for the reader, not for an imagined chunk size.
+
+### 5. Let the right crawlers in
+
+Check `robots.txt`, your CDN and any bot-protection layer. Google requires that crawling be allowed for AI Overviews eligibility. For ChatGPT search, OpenAI's [crawler documentation](https://developers.openai.com/api/docs/bots) says sites should allow **OAI-SearchBot**; blocking it removes you from ChatGPT search answers. Its separate **GPTBot** crawler is for model training, so you can block training while still allowing search.
+
+### 6. Keep structured data accurate — but know what it does today
+
+Google's guide is explicit: "Structured data isn't required for generative AI search, and there's no special schema.org markup you need to add." It still recommends structured data for ordinary SEO, and asks that it match the visible text. Note one change in 2026: Google [stopped showing FAQ rich results](https://developers.google.com/search/updates) from 7 May 2026. FAQ markup no longer earns an expanded result in Google; a visible, well-written FAQ section with question headings still gives every engine discrete, quotable answers.
+
+### 7. Treat llms.txt as optional
+
+[llms.txt](https://llmstxt.org/) is a proposal, published by Jeremy Howard in September 2024, for a Markdown file at the site root that gives language-model tools a curated map of a site. It is not a standard, and Google's guide says plainly that Google Search "doesn't use" such files. It costs little to publish one for other tools and agents that read it; it will not move your Google visibility.
 
 ---
 
-## The Future of the Web: From Search Engines to Answer Engines
+## Writing the same page two ways
 
-![Future of AI search](/images/blog/seo-vs-geo/future-of-ai-search.jpeg)
+Take two service pages on the same topic.
 
-The digital world is rapidly moving toward an "answer engine" era, and this transformation will impact:
+**Page one** is tuned for keywords: the target phrase in the title, the meta description and every second paragraph, with general claims such as "we deliver high-quality solutions." It may rank, but there is nothing in it an answer engine can quote — no number, no definition, no named source.
 
-- Digital marketing
-- Journalism and media
-- E-commerce
-- Content creation
-- Brand building
+**Page two** opens with a one-sentence answer, gives a table with concrete figures, cites the regulator or vendor page behind each figure, and closes with a FAQ whose questions are headings. Every one of those elements matches a method that the GEO study found increases visibility, and none of them conflicts with Google's guidance.
 
-In the near future, the main question will no longer be:
+Measure the difference on your own site rather than borrowing someone else's numbers: Google's guide points to the generative AI performance data in Search Console, and your analytics will show referral traffic from AI assistants' domains.
 
-> "Are we ranking on the first page of Google?"
+---
 
-Instead, businesses will ask:
+## Will GEO replace SEO?
 
-> "Can AI systems understand, trust, and reference our brand content?"
+No. Google describes optimising for its AI features as SEO, and every answer engine still has to crawl and index a page before it can quote it. GEO is the discipline of writing pages that are worth quoting once they are found; SEO is still what gets them found.
+
+![Illustration of search moving from lists of links towards direct answers](/images/blog/seo-vs-geo/future-of-ai-search.jpeg)
 
 ---
 
 ## Related reading
 
-- [Website design cost](/en/blog/website-design-cost) — placing content optimisation within your site budget.
-- [WordPress vs Next.js](/en/blog/wordpress-vs-nextjs) — how platform choice affects performance and search ranking.
-- [Arabic web fonts](/en/blog/arabic-web-fonts) — speed is a ranking factor, and fonts are among its heaviest items.
-- [Hosting your site: Vercel or AWS?](/en/blog/hosting-comparison) — how hosting affects response times.
-- [Template vs custom design](/en/blog/template-vs-custom-design) — how design affects conversion rate.
-- [Web design company in Dubai](/en/blog/web-design-company-dubai) — if you are targeting the UAE market.
+- [Website speed optimisation](/en/blog/website-speed-optimization) — page experience is one of Google's listed foundations.
+- [WordPress vs Next.js](/en/blog/wordpress-vs-nextjs) — how the platform decides whether content is server-rendered.
+- [Website redesign guide](/en/blog/website-redesign-guide) — keeping rankings and citations through a rebuild.
+- [Arabic web fonts](/en/blog/arabic-web-fonts) — fonts are among the heaviest items on an Arabic page.
+- [Website design cost](/en/blog/website-design-cost) — where content and SEO work sit in a site budget.
 
 ---
 
 ## Frequently asked questions
 
-### What is the difference between SEO and GEO in short?
+### Do I need a separate GEO strategy for Google AI Overviews?
 
-SEO aims to raise your page's ranking in traditional search results. GEO aims to make your content quotable inside AI-generated answers from systems like ChatGPT, Perplexity, and AI Overviews. The first is measured in traffic, the second in citations.
+No. Google says there are no additional requirements or special optimisations for AI Overviews or AI Mode: the page must be indexed and eligible for a snippet. The useful work is the same as for search — crawlable text, specific answers and trustworthy sources.
 
-### Will GEO replace SEO?
+### Does FAQ schema still help after Google removed FAQ rich results?
 
-No. GEO is an additional layer on top of SEO, not a replacement, because AI systems rely fundamentally on content indexed by search engines. Anyone neglecting SEO in favour of GEO loses both.
+It no longer produces an FAQ rich result in Google, which stopped showing them from 7 May 2026, and Google says no special schema is needed for its AI features. A visible FAQ section with question headings and one-sentence answers still helps every engine find a quotable passage; keep any markup accurate to the visible text.
 
-### How do I make my content quotable by AI?
+### Should I publish an llms.txt file?
 
-Write direct, specific answers, include clear numbers and definitions, and structure content with hierarchical headings, tables, and FAQ sections. AI systems need a self-contained sentence they can quote; vague general content does not get cited.
+Publish one if it is cheap for you, but do not expect it to change your Google visibility: Google's guide says Google Search does not use llms.txt. It is an informal proposal that some other AI tools and agents read.
 
-### What does Zero-Click Search mean?
+### Which GEO changes have measured evidence behind them?
 
-It refers to searches where the user gets their answer directly from the results page or an AI-generated response without visiting any website. Its rise means appearing inside the answer itself now matters more than ranking alone.
+In the KDD 2024 GEO study, adding quotations raised visibility in generated answers by about 41%, adding statistics by about 31% and citing sources by about 27%; keyword stuffing reduced it by about 8%. Results varied by subject area, so test on your own pages.
 
-### Do backlinks still matter?
+### Can I block AI training but still appear in ChatGPT search?
 
-Yes, but their relative weight differs. In traditional SEO they are a strong ranking factor. In GEO their direct influence decreases relative to content clarity, structure, and source credibility — though the authority backlinks build still shapes how much AI systems trust you as a source.
+Yes. OpenAI uses OAI-SearchBot for ChatGPT search and GPTBot for model training. Allow OAI-SearchBot and disallow GPTBot in `robots.txt`; OpenAI says such changes take about 24 hours to apply to search.
 
-### How do I measure GEO success?
+### How do I measure whether AI engines cite my pages?
 
-No mature measurement tool exists yet as it does for SEO. Practically: watch for referral traffic from AI tool domains in your analytics, test your field's questions directly inside ChatGPT and Perplexity to see whether your content is mentioned, and track impressions in Search Console.
-
----
-
-## External Sources & References
-
-- [Google Search Central](https://developers.google.com/search)
-- [OpenAI Research](https://openai.com/research/)
-- [Microsoft AI Blog](https://blogs.microsoft.com/ai/)
-- [Ahrefs Blog](https://ahrefs.com/blog/)
-- [Semrush Blog](https://www.semrush.com/blog/)
-- [Google Search Blog](https://blog.google/products/search/)
+Use the generative AI performance data in Google Search Console, watch analytics for referrals from AI assistants' domains, and periodically ask the questions your customers ask in ChatGPT, Perplexity and Google to see which sources are cited. No tool yet gives a complete picture across all engines.
 
 ---
 
-## Conclusion
+## Where to start
 
-Traditional SEO alone is no longer enough to build strong digital visibility in the age of AI.
+Pick the ten pages that answer your customers' most common questions. For each, write a one-sentence answer under a question heading, add the figure and its primary source, and check that the text arrives in the server's HTML. That is a week of work for most sites, and it improves classic search at the same time.
 
-The future belongs to content that can be understood, trusted, and referenced by AI systems, making GEO a critical part of modern digital strategy.
-
-The websites that will succeed in the coming years are those capable of balancing:
-
-- Traditional SEO
-- Content quality
-- Trustworthiness
-- Information structure
-- AI readability
-
-This is why understanding both approaches is no longer optional. It has become a strategic necessity for any digital project aiming to compete and survive in the AI-driven future of the web.
-
-**Want a site built on these foundations from the start?** [Get in touch](/en/contact) for a free, no-obligation assessment of your current site or next project. See our [web development services](/en/services/web-development) and [previous work](/en/portfolio).
+If you would like a second pair of eyes on which pages to fix first, [send us your site](/en/contact) and we will point out the gaps. For writing the pages themselves, see our [content creation service](/en/services/content-creation).

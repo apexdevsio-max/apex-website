@@ -1,172 +1,175 @@
 ---
-{"slug":"llm-running-costs","title":"What AI Actually Costs to Run in Production","seoTitle":"LLM Running Costs in Production","excerpt":"How token pricing works, why Arabic costs more, the levers that cut spend by 60–90%, and how to estimate before you build rather than discover after launch.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"llm-running-costs","title":"What AI Actually Costs to Run in Production","seoTitle":"LLM Running Costs in Production","excerpt":"How token pricing works, a worked monthly bill at November 2026 list prices, why Arabic changes the arithmetic, and the levers that cut spend before launch.","categories":["costs","ai"],"keywords":["LLM running costs","token pricing","AI API cost","reduce AI costs","prompt caching","AI budget"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["At list prices read on 17 November 2026, a support assistant handling 3,000 conversations a month (18,000 model calls) costs about $216 a month on a mid-tier model such as Claude Sonnet 5.5 or OpenAI gpt-6.2-sol, both priced at $2 per million input tokens and $10 per million output tokens.","Caching the fixed 2,000-token system prompt cuts that example to about $148, because cached input is billed at $0.10 per million tokens instead of $2.","Routing 80% of calls to a small model such as Claude Haiku 5.5 or gpt-6-luna ($0.10 input / $0.50 output per million) brings the same workload to about $36 a month.","Running cost is separate from build cost: adding an AI feature to an existing product is $10,000–$40,000+ on our rate card as of November 2026, and the model bill continues every month after launch."],"sources":[{"title":"Anthropic: Claude API pricing","url":"https://platform.claude.com/docs/en/about-claude/pricing"},{"title":"OpenAI: API pricing","url":"https://developers.openai.com/api/docs/pricing"},{"title":"Google: Gemini API pricing","url":"https://aistudio.google.com/docs/pricing"},{"title":"Anthropic: prompt caching (lifetime, prefix order, invalidation)","url":"https://platform.claude.com/docs/en/build-with-claude/prompt-caching"},{"title":"Anthropic: token counting endpoint","url":"https://platform.claude.com/docs/en/build-with-claude/token-counting"}]}
 ---
 
 # What AI Actually Costs to Run in Production
 
-The pilot cost forty dollars a month and everyone approved it. Then it launched, and the invoice arrived with four more digits than anyone expected.
+**A customer-support assistant handling 3,000 conversations a month costs roughly $36 to $216 a month in model fees at November 2026 list prices.** The top of that range is a mid-tier model with no optimisation; the bottom is the same workload with prompt caching and most calls routed to a small model. Both figures are worked out line by line below from the providers' own pricing pages, read on 17 November 2026.
 
-This is the most common financial surprise in AI projects, and it is entirely predictable. AI has a cost structure most software does not: **it charges every time it runs, forever.**
-
-**The short answer: cost scales with text volume in both directions. The three levers that matter are caching repeated context, choosing model size per task rather than globally, and not sending more text than the job needs. Together they routinely cut spend by 60–90%.**
-
-This guide covers how pricing works, why Arabic changes the arithmetic, and how to estimate before you commit.
+That bill is separate from building the feature. Adding AI to an existing product is $10,000–$40,000+ on our rate card as of November 2026 (SAR 37,500–150,000+ / AED 36,500–147,000+ / QAR 36,500–145,500+). The model bill then arrives every month for as long as the feature runs, which is what most budgets miss.
 
 ---
 
-## How pricing actually works
+## How pricing works
 
-**You pay per token, in both directions.** A token is a fragment of text — often part of a word. Both what you send and what the model returns are billed, and **output is typically several times more expensive than input.**
+**You pay per token, in both directions.** A token is a fragment of text, often part of a word. What you send (input) and what the model returns (output) are both billed, and output costs five times as much as input on every model in the example below.
 
-**What counts as input is larger than people expect.** On every single call you are billed for:
+**Input is larger than people expect.** On every call you are billed for:
 
-- The system prompt
+- The system prompt and tool definitions
 - The entire conversation history you resend
 - Any retrieved documents or context
 - The user's actual message
 
-**This is why conversations get expensive non-linearly.** Turn one sends a short message. Turn twenty resends the whole preceding conversation. The tenth message in a session can cost ten times the first — and nothing in your code looks different.
-
-**Prices change constantly and vary by model tier.** Any figure printed in an article ages badly, so this guide deliberately gives you the method rather than numbers. Get current rates from your provider and apply the estimation below.
+**This is why conversations get expensive as they go on.** Turn one sends a short message. Turn ten resends the nine turns before it, so later messages cost several times the first, and nothing in your code looks different.
 
 ---
 
-## Why Arabic costs more
+## Worked example: a support assistant, priced on 17 November 2026
 
-**Arabic consumes noticeably more tokens than English for the same meaning.** Tokenisers are trained predominantly on English text, so English words often map to a single token while Arabic words fragment into several.
+**The workload (assumptions; replace with your own measurements):**
 
-**Three consequences that matter:**
+- 3,000 conversations a month, 6 model calls each: **18,000 calls**
+- Fixed prefix per call (system prompt, instructions, tool definitions): **2,000 tokens**
+- Variable input per call (history, retrieved passages, user message): **2,500 tokens on average**
+- Output per call: **300 tokens**
 
-1. **Every estimate built on English samples understates an Arabic workload.** Do not take an English figure and adjust it — measure Arabic directly.
-2. **Context limits arrive sooner.** The same conversation in Arabic fills a context window faster.
-3. **Bilingual products have asymmetric costs.** Your Arabic users cost more to serve than your English users, at identical usage.
+Monthly volume: 36 million prefix tokens, 45 million variable input tokens and 5.4 million output tokens.
 
-**What to do:** measure with real Arabic text from your own domain, using your provider's token counting endpoint. Not translated English, not sample text — your actual content. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers the wider evaluation.
+**List prices per million tokens, standard tier, read 17 November 2026:**
+
+| Model | Input | Cached input | Output |
+|---|---|---|---|
+| [Claude Sonnet 5.5](https://platform.claude.com/docs/en/about-claude/pricing) (Anthropic) | $2.00 | $0.10 | $10.00 |
+| [gpt-6.2-sol](https://developers.openai.com/api/docs/pricing) (OpenAI) | $2.00 | $0.10 | $10.00 |
+| Claude Haiku 5.5, prompts up to 100,000 tokens (Anthropic) | $0.10 | $0.01 | $0.50 |
+| gpt-6-luna (OpenAI) | $0.10 | $0.01 | $0.50 |
+
+At these prices the Anthropic and OpenAI models in each pair cost the same, so the arithmetic below holds for either provider.
+
+**The monthly bill:**
+
+| Setup | Calculation | Per month |
+|---|---|---|
+| Mid-tier model, no caching | 81M × $2 + 5.4M × $10 | **$216.00** |
+| Mid-tier model, prefix cached | 36M × $0.10 + 45M × $2 + 5.4M × $10 | **$147.60** |
+| Mid-tier model, cached, history trimmed to 1,250 tokens | 36M × $0.10 + 22.5M × $2 + 5.4M × $10 | **$102.60** |
+| Small model, prefix cached | 36M × $0.01 + 45M × $0.10 + 5.4M × $0.50 | **$7.56** |
+| 80% small, 20% mid, both cached | 0.8 × $7.56 + 0.2 × $147.60 | **$35.57** |
+
+Providers bill in US dollars; at the fixed pegs, $100 is SAR 375, AED 367 or QAR 364.
+
+**What the table shows:**
+
+- **Output is not where this bill goes.** At 300 tokens per reply, output is $54 of the $216. Input, which is resent on every call, is the rest. Trimming what you send moves the bill more than capping replies.
+- **Caching alone saved 32% here,** because the cached prefix is billed at 5% of the input price on these two mid-tier models. Anthropic also charges for writing the cache, at $2.50 per million tokens for the 5-minute cache on Sonnet 5.5; at this volume that is a few dollars a month.
+- **Routing saved the most.** Sending the simple 80% of questions to a small model cut the bill by 84% against the unoptimised baseline, provided the small model answers those questions well enough. Test that on your own transcripts before you rely on it.
+- **Prices move, in both directions.** Google's [Gemini API pricing page](https://aistudio.google.com/docs/pricing) lists gemini-3.8-flash at $0.75 input and $3.75 output per million tokens through 31 December 2026, rising to $1.50 and $7.50 from 1 January 2027. The same workload without caching would go from $81 to $162 a month on the change date. Re-read your provider's pricing page whenever you budget.
 
 ---
 
-## The three levers that actually work
+## Why Arabic changes the arithmetic
 
-Ordered by impact. Most teams apply none of them and then complain about cost.
+**Token counts depend on the language and on the tokenizer.** Tokenizers are built from training text, and the same meaning can split into a different number of tokens in Arabic than in English. Token counts are not even stable between model generations from one provider: Anthropic's [token counting documentation](https://platform.claude.com/docs/en/build-with-claude/token-counting) says its newer tokenizer produces approximately 30 percent more tokens for the same input text than earlier models.
 
-### 1. Cache the repeated prefix
+**Three consequences:**
 
-If every request sends the same system prompt, the same instructions, or the same reference documents, you are paying full price to send identical text repeatedly.
+1. **An estimate built on English samples does not tell you the Arabic bill.** Measure Arabic directly. If your Arabic transcripts turned out to use 1.5 times the tokens of the English ones (an assumption for illustration, not a measured ratio), the cached mid-tier bill above would rise from $147.60 to $221.40.
+2. **Context limits arrive sooner** when the same conversation takes more tokens.
+3. **Bilingual products can have uneven costs** per user, depending on the language each user writes in.
 
-**Prompt caching charges a reduced rate for content the provider has already seen.** For a system with a large fixed context, this is frequently the single largest saving available.
+**What to do:** count tokens with real Arabic text from your own domain, using the model you will deploy. Anthropic's token counting endpoint is free to use, subject to rate limits. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers quality as well as cost.
 
-**How to actually get cache hits:**
+---
 
-- **Put stable content first**, volatile content last. Caching matches on prefix, so a timestamp near the top invalidates everything after it.
-- **Keep the tool list and system prompt byte-identical** between calls. Non-deterministic JSON ordering silently breaks caching.
-- **Verify it is working.** Providers report cache hit statistics — if they show zero across repeated calls, something in your prefix is changing.
+## The three levers, in order of effect
 
-> **The silent invalidator:** injecting the current time or a request ID into the system prompt. It looks harmless and it disables caching entirely.
+### 1. Route by task difficulty
 
-### 2. Match model size to the task
+Teams pick one capable model and send everything through it. Classification, routing, extraction and short answers from a known document rarely need a frontier model; complex reasoning and careful writing do. Handle requests with a small model and escalate to a larger one when the task is complex or confidence is low. In the example above this was the biggest single saving.
 
-Teams pick one capable model and route everything through it. This is like using a senior engineer for data entry.
+### 2. Cache the repeated prefix
 
-**Split by task difficulty:** classification, routing, extraction, and short summaries rarely need a frontier model. Complex reasoning, nuanced writing, and difficult judgement do.
+If every request sends the same system prompt, instructions or reference documents, caching bills that repeated text at a fraction of the input price. To actually get cache hits, per Anthropic's [prompt caching documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-caching):
 
-**A practical routing pattern:** handle the task with a smaller model, and escalate to a larger one only when confidence is low or the task is identified as complex. On a workload dominated by simple requests — which most support workloads are — this alone can cut spend substantially.
-
-**Test before assuming.** Run your actual task against a smaller model and measure quality on your own examples. Teams routinely discover the cheaper option is indistinguishable for their use case.
+- **Put stable content first.** The cache matches on the prefix in the order tools, system, messages; a change at one level invalidates everything after it.
+- **Keep it byte-identical.** Cache hits need 100 percent identical prompt segments, so a timestamp or request ID injected into the system prompt silently disables caching.
+- **Mind the lifetime.** The default cache lives 5 minutes and is refreshed each time it is used; low-traffic features may need the paid 1-hour cache or will mostly miss.
+- **Mind the minimum.** Prompts shorter than the model's minimum cacheable length (512 tokens on the current Claude models) are processed without caching and no error is returned.
+- **Verify.** The API reports cached tokens on each response. Zero cache reads on repeated calls means something in your prefix is changing.
 
 ### 3. Send less text
 
-The cheapest token is the one you do not send.
+- **Trim conversation history.** Keep recent turns and a summary of earlier ones. Halving the variable input in the example cut $45 a month.
+- **Right-size retrieved context.** Retrieved passages are billed as input on every call; see [RAG](/en/blog/rag-knowledge-base) on chunk sizing.
+- **Cap output length.** Set a sensible maximum so an occasional runaway answer cannot inflate the bill.
+- **Tighten the system prompt.** It is billed, cached or not, on every call for the life of the product.
 
-**Trim conversation history.** Most conversations do not need all twenty previous turns. Keep recent turns and a summary of earlier ones.
-
-**Right-size retrieved context.** In a RAG system, retrieved passages are billed as input. Retrieving ten chunks when three would do triples that portion of your bill — see [RAG](/en/blog/rag-knowledge-base) on chunk sizing.
-
-**Cap output length.** Set a sensible maximum. Output is the expensive direction, and an unbounded limit occasionally produces very long, very costly responses.
-
-**Tighten the prompt.** Long, rambling system prompts are billed on every call, forever. A prompt trimmed from 2,000 to 800 tokens saves on every request for the life of the product.
+For work that does not need an immediate answer, such as overnight document processing, Anthropic's Batch API bills input and output at 50 percent of the standard price.
 
 ---
 
 ## Estimating before you build
 
-The method that prevents the launch surprise:
-
-**1. Take a real sample.** Twenty actual interactions from your business — real customer questions, real documents. Not invented examples, which are always shorter and cleaner than reality.
-
-**2. Measure token consumption per interaction**, including the system prompt, context, and expected output. Use the provider's token counting endpoint rather than estimating from character counts.
-
-**3. Multiply by realistic volume**, not launch volume. Model month one, month six, and month twelve.
-
-**4. Add 50%.** Retries after failures, longer-than-expected inputs, users behaving unexpectedly, and growth. This buffer is not pessimism — it is what the gap between pilot and production consistently looks like.
-
-**5. Compare against the thing it replaces.** If it saves 40 hours of staff time monthly, the relevant comparison is against that cost, not against zero.
-
-**The failure mode this prevents:** pilots run on small, clean inputs with few users. Production runs on messy inputs at scale. A pilot cost multiplied by user count understates reality, often by a lot.
+1. **Take a real sample.** Twenty actual interactions from your business: real customer questions, real documents, in the languages your users write.
+2. **Count tokens per interaction** with the provider's token counting endpoint, including the system prompt, context and a realistic reply length.
+3. **Multiply by realistic volume** for month one, month six and month twelve.
+4. **Price it with today's list prices,** as in the worked example, and note the date you read them.
+5. **Add a contingency.** We plan with 50% for retries, longer-than-expected inputs and growth.
+6. **Compare against what it replaces.** If the assistant saves staff time, the comparison is with that cost, not with zero.
 
 ---
 
 ## Controls to build in from the start
 
-**Set hard spend limits at the provider.** Every major provider supports budget caps and alerts. Configure them on day one — before a bug or an abusive user produces a surprise.
-
-**Rate-limit per user.** Without it, one automated client can consume a month's budget in an afternoon.
-
-**Log token usage per request.** Store it alongside the user and feature. When cost rises you need to know *which* feature, and this data is impossible to reconstruct after the fact.
-
-**Alert on anomalies.** A sudden spike usually means a bug — a retry loop, a prompt injection, or runaway context growth. Catching it in hours rather than at invoice time is the difference between an incident and a write-off.
-
-**Show cost per outcome, not total.** "Cost per resolved conversation" is a number the business can evaluate. "Monthly API spend" invites cuts without understanding what they cost.
+- **Spend limits and alerts at the provider,** configured on day one.
+- **Per-user rate limits,** so one automated client cannot consume a month's budget in an afternoon.
+- **Token usage logged per request,** alongside the user and feature, so you can tell which feature drives cost.
+- **Anomaly alerts.** A sudden spike usually means a bug, such as a retry loop or runaway context growth.
+- **Cost per outcome.** "Cost per resolved conversation" is a number the business can judge; "monthly API spend" is not.
 
 ---
 
 ## Related reading
 
-- [AI for business](/en/blog/ai-for-business-guide) — deciding whether the use case justifies the cost.
-- [AI chatbot costs](/en/blog/ai-chatbot-cost) — the full cost picture for the most common case.
-- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) — quality and cost tradeoffs.
-- [RAG](/en/blog/rag-knowledge-base) — where retrieved context drives cost.
-- [Arabic document processing](/en/blog/arabic-ocr-document-processing) — per-document economics.
+- [AI chatbot costs](/en/blog/ai-chatbot-cost): build cost by tier, plus how this running cost fits in.
+- [AI for business](/en/blog/ai-for-business-guide): whether the use case justifies the cost at all.
+- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic): quality and cost trade-offs.
+- [RAG](/en/blog/rag-knowledge-base): where retrieved context drives cost.
+- [Arabic document processing](/en/blog/arabic-ocr-document-processing): per-document economics.
+
+For the build side of an AI feature, see our [AI solutions service](/en/services/ai-solutions).
 
 ---
 
 ## Frequently asked questions
 
-### How is AI usage priced?
+### What does an AI assistant with 3,000 conversations a month cost to run?
 
-Per token — fragments of text — in both directions, with output typically several times more expensive than input. Input includes the system prompt, the full conversation history you resend, any retrieved context, and the user's message. This is why long conversations become expensive non-linearly.
+About $216 a month on a mid-tier model at November 2026 list prices with no optimisation, about $148 with prompt caching, and about $36 if 80% of calls go to a small model. That assumes 6 calls per conversation and 4,500 input and 300 output tokens per call.
 
-### Why does my AI cost more than the pilot suggested?
+### Why is input, not output, most of my bill when output costs more per token?
 
-Pilots run on short, clean inputs with few users; production runs on messy inputs at scale. Conversation history is also resent on every turn, so the tenth message in a session can cost many times the first. Estimate from real samples at realistic volume and add 50%.
+Because input is resent on every call: the system prompt, the whole conversation so far and any retrieved passages. In the worked example input was $162 of a $216 bill even though output costs five times as much per token.
 
-### Why does Arabic cost more than English?
+### How much does prompt caching actually save?
 
-Tokenisers are trained predominantly on English, so English words often map to one token while Arabic words fragment into several. The same meaning therefore costs more in Arabic. Measure with real Arabic content from your own domain rather than adjusting an English figure.
+In the example, 32%: the 2,000-token fixed prefix drops from $2 to $0.10 per million tokens on a mid-tier model. The saving grows with the share of each request that is identical, and disappears if a timestamp or request ID changes the prefix.
 
-### What is the single biggest way to cut AI costs?
+### Will my Arabic users cost more to serve than English users?
 
-Prompt caching, when you have a large fixed context sent on every request. It charges a reduced rate for content the provider has already seen. To get hits, put stable content first and volatile content last, and never inject a timestamp or request ID into the system prompt — that silently disables caching entirely.
+They can, because the same meaning may take a different number of tokens in Arabic. Do not guess a ratio: count tokens on real Arabic transcripts with the model you will deploy, then price the result.
 
-### Should I use a cheaper model?
+### How often should I re-check model prices?
 
-Per task, yes — not globally. Classification, routing, extraction, and short summaries rarely need a frontier model, while complex reasoning does. Route simple requests to a smaller model and escalate only when needed. Test on your own examples first; teams often find the cheaper option is indistinguishable for their case.
+Every time you budget. In the month this article was updated, Google listed a price for gemini-3.8-flash that doubles on 1 January 2027, while Anthropic and OpenAI priced their mid-tier models at $2 and $10 per million tokens.
 
-### How do I avoid a surprise AI bill?
+### Is the running cost included in the build price?
 
-Set hard spend caps and alerts at the provider on day one, rate-limit per user, log token usage per request alongside the feature, and alert on anomalies. A sudden spike usually indicates a bug such as a retry loop rather than genuine growth, and catching it in hours rather than at invoice time is the whole point.
-
-### How do I estimate AI costs before building?
-
-Take twenty real interactions, measure token consumption per interaction including system prompt and context using the provider's token counting endpoint, multiply by realistic volume at month one, six, and twelve, then add 50% for retries and growth. Compare the result against the cost of the work it replaces, not against zero.
+No. Building an AI feature into an existing product is $10,000–$40,000+ on our rate card as of November 2026; model fees, hosting and vector search are billed monthly by the providers you use.
 
 ---
 
-## Conclusion
+## Before you commit to an AI feature
 
-**Cost per use is the structural difference** from other software, and the reason pilots mislead so reliably. Estimate with real samples at real volume, in the language your users actually write.
-
-**Three levers do most of the work** — cache the repeated prefix, match model size to task difficulty, and send less text. Applied together they routinely cut spend by most of it.
-
-**And build the controls before launch.** Spend caps, per-user limits, and usage logging cost a day to implement and prevent the invoice nobody planned for.
-
-**Planning an AI feature?** [Get in touch](/en/contact) — we estimate running cost as part of scoping rather than after launch. See our [AI solutions](/en/services/ai-solutions).
+The bill is predictable if you measure before launch: real samples, today's prices, realistic volume and a contingency. When we scope an AI feature we include that running-cost estimate next to the build quote. [Send us a description of the workload and a handful of real examples](/en/contact) and we will price both sides.

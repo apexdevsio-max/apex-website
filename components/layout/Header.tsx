@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useRef, useState, useSyncExternalStore, useEffect, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { navigationItems } from "@/data/navigation";
 import type { Dictionary } from "@/lib/i18n/i18n-types";
@@ -13,117 +13,124 @@ import { onMediaChange, readStorage, writeStorage } from "@/lib/browser";
 
 type Props = {
   lang: Locale;
-  dictionary: Dictionary;
+  /** Only the navigation strings; the full dictionary used to be serialised into every page. */
+  navigation: Dictionary["navigation"];
 };
 
 const THEME_EVENT = "apex-theme-change";
+const HEADER_HEIGHT = 70;
+
+/** Read by proxy.ts so a bare URL opens in the language the visitor last chose. */
+export const LOCALE_COOKIE = "NEXT_LOCALE";
+
+// Resolves the effective theme the same way the pre-paint script in the layout does.
+function resolveStoredDark() {
+  const stored = readStorage("theme");
+  return stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function applyTheme() {
+  const dark = resolveStoredDark();
+  if (dark !== document.documentElement.classList.contains("dark")) {
+    document.documentElement.classList.toggle("dark", dark);
+  }
+}
 
 function subscribeTheme(callback: () => void) {
-  if (typeof window === "undefined") return () => {};
-
   const media = window.matchMedia("(prefers-color-scheme: dark)");
-  const syncSystemTheme = () => {
-    if (!readStorage("theme")) document.documentElement.classList.toggle("dark", media.matches);
+  // A change in another tab (storage) or in the OS setting (media) both re-resolve.
+  const sync = () => {
+    applyTheme();
     callback();
   };
   window.addEventListener(THEME_EVENT, callback);
-  window.addEventListener("storage", syncSystemTheme);
-  const stopMedia = onMediaChange(media, syncSystemTheme);
-
+  window.addEventListener("storage", sync);
+  const stopMedia = onMediaChange(media, sync);
   return () => {
     window.removeEventListener(THEME_EVENT, callback);
-    window.removeEventListener("storage", syncSystemTheme);
+    window.removeEventListener("storage", sync);
     stopMedia();
   };
 }
 
-function getDarkMode() {
-  return (
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark")
-  );
-}
+const getDarkMode = () => document.documentElement.classList.contains("dark");
 
-// Resolves the effective theme the same way the pre-paint script in the layout
-// does, so both agree on what "no stored preference" means.
-function resolveStoredDark() {
-  const stored = readStorage("theme");
-  return stored
-    ? stored === "dark"
-    : window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
+const LABELS = {
+  en: {
+    nav: "Main navigation",
+    menu: "Menu",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    toDark: "Switch to dark theme",
+    toLight: "Switch to light theme",
+    switchLang: "العربية — switch to Arabic",
+    home: "APEX — home",
+  },
+  ar: {
+    nav: "التنقل الرئيسي",
+    menu: "القائمة",
+    openMenu: "فتح القائمة",
+    closeMenu: "إغلاق القائمة",
+    toDark: "التبديل إلى الوضع الداكن",
+    toLight: "التبديل إلى الوضع الفاتح",
+    switchLang: "English — التبديل إلى الإنجليزية",
+    home: "أبيكس — الصفحة الرئيسية",
+  },
+} as const;
 
-export function Header({ lang, dictionary }: Props) {
+export function Header({ lang, navigation }: Props) {
   const pathname = usePathname() || `/${lang}`;
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const scrollSentinelRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const t = LABELS[lang];
+  const isAr = lang === "ar";
 
-  // Reading window.scrollY in a scroll handler that also sets state is the
-  // textbook forced-reflow loop: the read happens after the previous tick's
-  // setScrolled has already invalidated layout (this header animates background,
-  // backdropFilter and borderBottom), so the browser must flush a fresh layout
-  // synchronously before it can answer — once per scroll event, at scroll
-  // frequency.
-  //
-  // An IntersectionObserver watching a zero-height sentinel at the same offset
-  // reports the same crossing off the main thread and reads no geometry at all.
+  // An IntersectionObserver on a sentinel reports the scroll crossing without
+  // reading layout in a scroll handler.
   useEffect(() => {
     const sentinel = scrollSentinelRef.current;
     if (!sentinel || !("IntersectionObserver" in window)) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setScrolled(!entry.isIntersecting),
-      { threshold: 0 }
-    );
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), { threshold: 0 });
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
+  // Menu side effects: scroll lock, Escape, focus return, and closing when the
+  // viewport grows past the breakpoint (otherwise the lock outlives the menu).
   useEffect(() => {
     if (!open) return;
-    const menu = menuRef.current;
     const trigger = menuButtonRef.current;
-    const focusable = () => Array.from(menu?.querySelectorAll<HTMLElement>('a[href],button:not([disabled])') ?? []);
-    focusable()[0]?.focus();
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-      if (e.key === "Tab") {
-        const items = focusable();
-        if (items.length === 0) return;
-        const first = items[0];
-        const last = items[items.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
+    document.body.style.overflow = "hidden";
+    menuRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
     };
-    window.addEventListener("keydown", handler);
-    return () => { window.removeEventListener("keydown", handler); trigger?.focus(); };
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onBreakpoint = () => desktop.matches && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    const stopMedia = onMediaChange(desktop, onBreakpoint);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+      stopMedia();
+      trigger?.focus();
+    };
   }, [open]);
 
-  const isClient = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
+  const isClient = useSyncExternalStore(() => () => {}, () => true, () => false);
   const darkMode = useSyncExternalStore(subscribeTheme, getDarkMode, () => false);
 
-  // Switching language swaps the [lang] layout, and <html> is rendered there, so
-  // the `dark` class set on documentElement is dropped on client-side navigation.
-  // The layout's pre-paint script only runs on a full document load, so re-apply
-  // the stored preference here whenever the path changes.
+  // Switching language swaps the [lang] layout, which re-renders <html> without
+  // the `dark` class, so the stored preference is re-applied on every path change.
   useEffect(() => {
-    const dark = resolveStoredDark();
-    if (dark !== document.documentElement.classList.contains("dark")) {
-      document.documentElement.classList.toggle("dark", dark);
-      window.dispatchEvent(new Event(THEME_EVENT));
-    }
+    applyTheme();
+    window.dispatchEvent(new Event(THEME_EVENT));
   }, [pathname]);
 
   const toggleTheme = () => {
@@ -133,250 +140,169 @@ export function Header({ lang, dictionary }: Props) {
     window.dispatchEvent(new Event(THEME_EVENT));
   };
 
-  const buildUrl = (path: string) =>
-    path === "/" || path === ""
-      ? `/${lang}`
-      : `/${lang}/${path}`.replace(/\/+/g, "/");
-
-  const normalizePath = (value: string) =>
-    value.endsWith("/") && value.length > 1 ? value.slice(0, -1) : value;
+  const buildUrl = (path: string) => (path === "/" || path === "" ? `/${lang}` : `/${lang}/${path}`);
 
   const isActive = (path: string) => {
-    const full = normalizePath(buildUrl(path));
-    const current = normalizePath(pathname);
+    const full = buildUrl(path);
+    const current = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
     if (full === `/${lang}`) return current === full;
     return current === full || current.startsWith(`${full}/`);
   };
 
-  // Built from the pathname only. Reading useSearchParams() here would opt every
-  // page out of static generation just to preserve a query string, so the current
-  // search is appended at click time instead (see handleLanguageSwitch).
+  const targetLang: Locale = isAr ? "en" : "ar";
+
+  // Built from the pathname only; reading useSearchParams() would opt every page
+  // out of static generation. The query string is appended at click time.
   const switchedHref = useMemo(() => {
-    const target = lang === "ar" ? "en" : "ar";
     const segments = pathname.split("/");
-
-    if (segments.length > 1 && SUPPORTED_LOCALES.includes(segments[1] as Locale)) {
-      segments[1] = target;
-    } else {
-      segments.splice(1, 0, target);
-    }
-
+    if (segments.length > 1 && SUPPORTED_LOCALES.includes(segments[1] as Locale)) segments[1] = targetLang;
+    else segments.splice(1, 0, targetLang);
     return segments.join("/").replace(/\/+/g, "/");
-  }, [lang, pathname]);
+  }, [pathname, targetLang]);
 
   const handleLanguageSwitch = (event: MouseEvent<HTMLAnchorElement>) => {
+    document.cookie = `${LOCALE_COOKIE}=${targetLang}; path=/; max-age=31536000; samesite=lax`;
     const search = window.location.search;
     if (!search) return;
     event.preventDefault();
-    window.location.assign(`${switchedHref}${search}`);
+    router.push(`${switchedHref}${search}`);
   };
 
-  const navLinks = useMemo(
-    () =>
-      navigationItems.map((item) => ({
-        key: item.key,
-        path: item.path,
-        label:
-          dictionary.navigation[item.key as keyof typeof dictionary.navigation] ??
-          item.key,
-      })),
-    [dictionary]
-  );
-
-  const isAr = lang === "ar";
+  const links = navigationItems.map((item) => ({
+    key: item.key,
+    href: buildUrl(item.path),
+    label: navigation[item.key],
+    active: isActive(item.path),
+  }));
 
   return (
     <>
-      {/* Zero-height marker at the 56px scroll mark. It is `absolute`, so it sits
-          in the normal scrolling flow and leaves the page while the fixed header
-          above it does not — which is exactly the crossing the observer wants. */}
+      {/* Zero-height marker at the 56px scroll mark, watched by the observer above. */}
       <div
         ref={scrollSentinelRef}
         aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "56px",
-          height: "1px",
-          width: "1px",
-          pointerEvents: "none",
-        }}
+        style={{ position: "absolute", top: "56px", height: "1px", width: "1px", pointerEvents: "none" }}
       />
-    <header
-      className="fixed top-0 left-0 w-full z-50 transition-all duration-400"
-      style={{
-        background: scrolled
-          ? "color-mix(in srgb, var(--color-background) 92%, transparent)"
-          : "transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled
-          ? "1px solid var(--color-border)"
-          : "1px solid transparent",
-      }}
-    >
-      <div
-        className="max-w-7xl mx-auto px-6 flex items-center justify-between"
-        style={{ height: "70px" }}
-        dir={isAr ? "rtl" : "ltr"}
+      <header
+        className="fixed top-0 inset-x-0 z-50 transition-[background-color,border-color] duration-300"
+        style={{
+          background: scrolled || open ? "color-mix(in srgb, var(--color-background) 94%, transparent)" : "transparent",
+          borderBottom: `1px solid ${scrolled || open ? "var(--color-border)" : "transparent"}`,
+        }}
       >
-        <Link href={buildUrl("/")} className="shrink-0 flex items-center gap-2">
-          <Image
-            src="/images/Apex_logo.png"
-            alt={isAr ? "أبيكس — شركة تطوير برمجيات في الخليج" : "Apex — Software Development Company in the Gulf"}
-            width={110}
-            height={36}
-            priority
-            quality={75}
-            sizes="110px"
-            style={{
-              filter: darkMode
-                ? "drop-shadow(0 0 10px color-mix(in srgb, var(--color-primary) 55%, transparent))"
-                : undefined,
-            }}
-          />
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
-          {navLinks.map((link) => (
-            <Link
-              key={link.key}
-              href={buildUrl(link.path)}
-              className={`text-sm font-medium transition-colors duration-200 relative group ${
-                isAr ? "font-ar" : "font-en"
-              }`}
-              style={{
-                color: isActive(link.path)
-                  ? "var(--color-primary)"
-                  : "var(--color-primary-text)",
-              }}
-            >
-              {link.label}
-              <span
-                className="absolute -bottom-0.5 left-0 right-0 h-px rounded-full transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
-                style={{
-                  background: "var(--color-primary)",
-                  transform: isActive(link.path) ? "scaleX(1)" : undefined,
-                }}
-              />
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href={buildUrl("contact")}
-            className="apex-btn hidden md:inline-flex items-center px-5 py-2 rounded-full text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
-            style={{
-              background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-              boxShadow: "0 4px 18px color-mix(in srgb, var(--color-primary) 38%, transparent)",
-            }}
-          >
-            {dictionary.navigation.letsTalk}
+        {/* The blur lives on a child, not on <header>: a backdrop-filter on the
+            header makes it the containing block for fixed descendants. */}
+        {(scrolled || open) && <div aria-hidden="true" className="absolute inset-0 -z-10 backdrop-blur-xl" />}
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between" style={{ height: HEADER_HEIGHT }}>
+          <Link href={buildUrl("/")} className="shrink-0 flex items-center" aria-label={t.home}>
+            <Image src="/images/Apex_logo.png" alt="" width={110} height={41} preload sizes="110px" />
           </Link>
 
-          {isClient ? (
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 rounded-full transition-colors"
-              style={{
-                color: "var(--color-gold)",
-                background: "color-mix(in srgb, var(--color-gold) 10%, transparent)",
-              }}
-            >
-              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-          ) : (
-            <div className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5" />
-          )}
-
-          <Link
-            href={switchedHref}
-            onClick={handleLanguageSwitch}
-            className="px-4 py-3 md:px-4 md:py-3 text-xs font-bold rounded-full border transition-all min-w-[44px] min-h-[44px] text-center flex items-center justify-center"
-            style={{
-              color: "var(--color-lang-pill-text)",
-              borderColor: "var(--color-lang-pill-border)",
-              background: "var(--color-lang-pill-bg)",
-            }}
-            aria-label="Switch language"
-          >
-            {lang === "ar" ? "EN" : "عربي"}
-          </Link>
-
-          <button
-            ref={menuButtonRef}
-            className="md:hidden p-3 rounded-md transition-colors"
-            onClick={() => setOpen((value) => !value)}
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            style={{ color: "var(--color-primary-text)" }}
-          >
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </div>
-
-      {open && (
-        <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ background: "rgba(0,0,0,0.25)" }}
-          onClick={() => setOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {open && (
-        <div
-          ref={menuRef}
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label={isAr ? "قائمة التنقل" : "Navigation menu"}
-          className="md:hidden border-t"
-          style={{
-            background: "color-mix(in srgb, var(--color-background) 96%, transparent)",
-            backdropFilter: "blur(20px)",
-            borderColor: "var(--color-border)",
-          }}
-          dir={isAr ? "rtl" : "ltr"}
-        >
-          <div className="px-5 py-6 flex flex-col gap-2">
-            {navLinks.map((link) => (
+          <nav className="hidden md:flex items-center gap-7" aria-label={t.nav}>
+            {links.map((link) => (
               <Link
                 key={link.key}
-                href={buildUrl(link.path)}
-                className={`block px-4 min-h-[44px] flex items-center rounded-xl text-sm font-medium transition-colors ${
-                  isAr ? "font-ar" : "font-en"
+                href={link.href}
+                aria-current={link.active ? "page" : undefined}
+                className={`relative group text-sm font-medium transition-colors ${
+                  link.active ? "text-apex-primary" : "text-apex-text hover:text-apex-primary"
                 }`}
-                style={{
-                  color: isActive(link.path)
-                    ? "var(--color-primary)"
-                    : "var(--color-primary-text)",
-                  background: isActive(link.path)
-                    ? "color-mix(in srgb, var(--color-primary) 10%, transparent)"
-                    : "transparent",
-                }}
-                onClick={() => setOpen(false)}
               >
                 {link.label}
+                <span
+                  aria-hidden="true"
+                  className={`absolute -bottom-1 inset-x-0 h-0.5 rounded-full bg-apex-primary transition-transform duration-300 ltr:origin-left rtl:origin-right ${
+                    link.active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
               </Link>
             ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Link href={buildUrl("contact")} className="apex-btn-primary hidden md:inline-flex px-5 py-2">
+              {navigation.letsTalk}
+            </Link>
+
+            {isClient ? (
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={darkMode ? t.toLight : t.toDark}
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-apex-text hover:bg-apex-card transition-colors"
+              >
+                {darkMode ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+              </button>
+            ) : (
+              <div className="min-h-[44px] min-w-[44px]" />
+            )}
 
             <Link
-              href={buildUrl("contact")}
-              className="mt-3 px-4 min-h-[44px] flex items-center justify-center rounded-xl text-sm font-bold text-white text-center"
-              style={{
-                background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-              }}
-              onClick={() => setOpen(false)}
+              href={switchedHref}
+              onClick={handleLanguageSwitch}
+              hrefLang={targetLang}
+              lang={targetLang}
+              aria-label={t.switchLang}
+              className="min-w-[44px] min-h-[44px] px-3 flex items-center justify-center rounded-full border border-apex-border text-xs font-bold text-apex-text hover:border-apex-primary transition-colors"
             >
-              {dictionary.navigation.letsTalk}
+              {isAr ? "EN" : "عربي"}
             </Link>
+
+            <button
+              ref={menuButtonRef}
+              type="button"
+              className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md text-apex-text"
+              onClick={() => setOpen((value) => !value)}
+              aria-label={open ? t.closeMenu : t.openMenu}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+            >
+              {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+            </button>
           </div>
         </div>
+      </header>
+
+      {/* Backdrop and panel are siblings of <header>, not children. Inside it, the
+          backdrop painted above the panel, so every tap on a link landed on the
+          backdrop and only closed the menu. Both start below the header so the
+          toggle stays reachable. */}
+      {open && (
+        <>
+          <div
+            aria-hidden="true"
+            className="fixed inset-x-0 bottom-0 z-40 bg-black/30 md:hidden"
+            style={{ top: HEADER_HEIGHT }}
+            onClick={() => setOpen(false)}
+          />
+          <nav
+            ref={menuRef}
+            id="mobile-menu"
+            aria-label={t.menu}
+            className="fixed inset-x-0 z-50 overflow-y-auto border-b border-apex-border bg-apex-bg md:hidden"
+            style={{ top: HEADER_HEIGHT, maxHeight: `calc(100dvh - ${HEADER_HEIGHT}px)` }}
+          >
+            <div className="px-5 py-5 flex flex-col gap-1">
+              {links.map((link) => (
+                <Link
+                  key={link.key}
+                  href={link.href}
+                  aria-current={link.active ? "page" : undefined}
+                  className={`px-4 min-h-[48px] flex items-center rounded-xl text-base font-medium ${
+                    link.active ? "text-apex-primary bg-apex-card" : "text-apex-text"
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <Link href={buildUrl("contact")} className="apex-btn-primary mt-3 min-h-[48px]" onClick={() => setOpen(false)}>
+                {navigation.letsTalk}
+              </Link>
+            </div>
+          </nav>
+        </>
       )}
-    </header>
     </>
   );
 }

@@ -1,12 +1,12 @@
 ---
-{"slug":"maintenance-inhouse-vs-contract","title":"In-House Maintenance or a Contract?","excerpt":"What maintenance actually covers, realistic annual cost, and what any maintenance contract must include.","date":"2026-06-19","dateModified":"2026-06-19"}
+{"slug":"maintenance-inhouse-vs-contract","title":"In-House Maintenance or a Contract?","excerpt":"What maintenance actually covers, realistic annual cost, and what any maintenance contract must include.","categories":["vendor","costs"],"keywords":["website maintenance","maintenance contract","maintenance cost","in-house team","technical support"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Budget 15–20% of the original build cost every year for maintenance: $2,250–$9,000 a year for a mid-complexity app that cost $15,000–$45,000 to build, on our published rate card as of November 2026.","A maintenance contract is the cheaper choice for most companies with a single product; an in-house developer pays off when you run several products or need immediate response, and a hybrid of one internal technical employee plus a contract suits many mid-size companies.","Maintenance is not optional because the stores move the floor every year: since 31 August 2026 new Google Play apps and updates must target Android 16 (API level 36), and since 28 April 2026 App Store uploads must be built with Xcode 26.","Any maintenance contract should name its scope, response times by severity, included development hours, who monitors, backup frequency and restore tests, periodic reporting, and the handover process at termination."],"sources":[{"title":"Android Developers — Meet Google Play's target API level requirement","url":"https://developer.android.com/google/play/requirements/target-sdk"},{"title":"Apple Developer — Upcoming requirements","url":"https://developer.apple.com/news/upcoming-requirements/"},{"title":"OWASP Top 10:2025 — A03 Software Supply Chain Failures","url":"https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures"}]}
 ---
 
 # In-House Maintenance or a Maintenance Contract? The Full Cost Model
 
-Maintenance is the most overlooked line item in digital project budgets — the build is planned carefully, then months later the owner is surprised that their product needs ongoing spending nobody accounted for.
+**Budget 15–20% of the original build cost every year, and for a single product buy it as a maintenance contract rather than hiring.** On our published rate card (as of November 2026), that is $2,250–$9,000 a year for a mid-complexity app that cost $15,000–$45,000 to build. An in-house developer earns their cost when you run several products or need immediate response; a hybrid — one internal technical person plus a contract — suits many mid-size companies.
 
-**The truth: a digital product without maintenance degrades within a year and stops working within roughly two.**
+Maintenance is the most overlooked line item in digital project budgets. The build is planned carefully, then months later the owner is surprised that the product needs ongoing spending nobody accounted for — and the app stores raise their minimum requirements every year whether you budgeted for it or not.
 
 ---
 
@@ -16,23 +16,23 @@ Five different things are usually conflated under one word, and that is the sour
 
 | Type | What it is | Who pays? |
 |---|---|---|
-| **Bug fixing** | A defect in what was delivered | The provider (under warranty) |
+| **Defect fixing** | A defect in what was delivered | The provider (under warranty) |
 | **Compatibility updates** | Keeping up with iOS/Android/browser releases | You |
 | **Security updates** | Patching library vulnerabilities | You |
 | **Operational support** | Monitoring, backups, incident resolution | You |
 | **Development** | New features | You |
 
-**The decisive distinction:** a "bug fix" is free under warranty, while a "compatibility update" is paid. **Agree this distinction in writing before signing** — it is the most common source of disputes. See our [app development contract guide](/en/blog/app-development-contract).
+**The decisive distinction:** a "defect fix" is free under warranty, while a "compatibility update" is paid. **Agree this distinction in writing before signing** — it is the most common source of disputes. See our [app development contract guide](/en/blog/app-development-contract). Whoever maintains your product — your own team or an outside one such as our [mobile app](/en/services/mobile-apps) and [web development](/en/services/web-development) teams — should work to the same written split.
 
 ---
 
 ## Why is maintenance mandatory?
 
-**Operating system updates.** [iOS](https://developer.apple.com/ios/) and [Android](https://developer.android.com/) ship major releases annually. A neglected app may partially break or be removed from the store for incompatibility.
+**The app stores raise the floor every year.** Google Play's [target API level requirement](https://developer.android.com/google/play/requirements/target-sdk) means that since 31 August 2026, new apps and app updates must target Android 16 (API level 36), and existing apps must target at least Android 15 (API level 35) to remain available to new users on newer devices. On Apple's side, [since 28 April 2026](https://developer.apple.com/news/upcoming-requirements/) apps uploaded to App Store Connect must be built with Xcode 26 and an iOS 26 SDK. In practice: an app nobody has touched for a year cannot ship even a one-line bug fix until its toolchain is brought up to date.
 
-**Security vulnerabilities.** Vulnerabilities are discovered continuously in the libraries you use. A project without security updates for a year is an exposed target.
+**Security vulnerabilities.** Vulnerabilities are discovered continuously in the libraries you use. The [OWASP Top 10:2025](https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures) lists you as likely vulnerable if you do not track the versions of all your components, or do not upgrade your platform, frameworks and dependencies "in a risk-based, timely fashion".
 
-**Store requirements.** Apple and Google change policies periodically — a new release without updates may be rejected.
+**Store policy changes.** Apple and Google also revise their review policies; a new release built against old assumptions may be rejected.
 
 **Third-party service changes.** Your payment gateway or maps service may change its interface; without an update, the dependent feature breaks.
 
@@ -40,14 +40,13 @@ Five different things are usually conflated under one word, and that is the sour
 
 ## Realistic cost
 
-**The rule: 15–20% of initial development cost per year.**
+**The rule: 15–20% of initial development cost per year.** Applied to the tiers on our published rate card, as of November 2026:
 
-| Project cost | Annual maintenance |
-|---|---|
-| $10,000 | $1,500 – $2,000 |
-| $30,000 | $4,500 – $6,000 |
-| $60,000 | $9,000 – $12,000 |
-| $120,000 | $18,000 – $24,000 |
+| Build tier | Build cost (USD) | Annual maintenance (USD) | Annual maintenance (SAR / AED / QAR) |
+|---|---|---|---|
+| Simple app | $5,000 – $15,000 | $750 – $3,000 | SAR 2,800–11,500 / AED 2,800–11,000 / QAR 2,700–11,000 |
+| Mid-complexity app | $15,000 – $45,000 | $2,250 – $9,000 | SAR 8,400–34,000 / AED 8,300–33,000 / QAR 8,200–33,000 |
+| Advanced app or platform | $45,000 – $100,000 | $6,750 – $20,000 | SAR 25,500–75,000 / AED 25,000–73,500 / QAR 24,500–73,000 |
 
 **What raises the percentage:** many external integrations, a regulated sector requiring compliance, high load, or carelessly built code (technical debt is paid in maintenance).
 
@@ -64,7 +63,7 @@ Five different things are usually conflated under one word, and that is the sour
 | Range of specialisms | Limited | Broader |
 | Flexibility to scale | Difficult | Easier |
 
-**The simple calculation:** one developer's annual salary usually exceeds the cost of a maintenance contract for a mid-size project. An in-house team earns its cost **when you have several products** justifying a dedicated person, or when immediate response is critical to your business.
+**The simple calculation:** put the contract figure from the table next to the full annual cost of one developer in your market — salary, benefits, equipment and management time. For a single product of mid-size, the contract is usually the smaller number. An in-house team earns its cost **when you have several products** justifying a dedicated person, or when immediate response is critical to your business.
 
 ---
 
@@ -88,7 +87,7 @@ Ask for these explicitly — the absence of any one deserves a question:
 3. **Included monthly development hours** — and the cost beyond them.
 4. **Monitoring and alerting** — who detects the fault, you or them?
 5. **Backups and their frequency** — and when restoration was last tested.
-6. **A periodic report** — what was done and what needs attention.
+6. **A periodic report** — what was done and what needs attention, including upcoming store deadlines.
 7. **A termination process** — handing over access and documentation at the end.
 
 > **The most important item in practice: who monitors?** There is a large difference between "we fix it if you report it" and "we monitor and detect before you notice." The first means your customer may find the fault before you do.
@@ -97,24 +96,38 @@ Ask for these explicitly — the absence of any one deserves a question:
 
 ## What happens if you don't maintain?
 
-This is what actually occurs, in order:
+A typical progression for a neglected product:
 
 **Months 1–6:** everything looks fine. You feel you saved money.
 
 **Months 6–12:** scattered faults, gradual slowdown, a feature breaking after a third-party service update.
 
-**Year 2:** incompatibility with new OS releases, accumulated security vulnerabilities, and a new developer needing weeks to understand undocumented code.
+**Year 2:** a store deadline passes and you cannot ship updates until the toolchain is upgraded; security vulnerabilities accumulate; a new developer needs weeks to understand undocumented code.
 
-**Year 3:** the estimated rebuild cost approaches the original build cost.
+**Year 3:** the estimated cost of catching up can approach the cost of a rebuild.
 
 **The conclusion:** maintenance is not an extra cost but **part of the cost of ownership**. Anyone selling you a project without mentioning it has given you an incomplete offer.
+
+---
+
+## Signs your project needs urgent maintenance
+
+These indicators mean deferring has already become expensive:
+
+- **Gradual slowdown** that was not there at launch.
+- **Scattered errors** reported by users that do not reproduce consistently.
+- **A feature that suddenly stopped working** — often because an external service changed.
+- **Warnings in your hosting dashboard or store console** about outdated versions or upcoming requirements.
+- **No update in more than six months** — on its own, reason enough for a review.
+- **The person who built it has left** without a documented knowledge handover.
+
+> **A quick test:** when did you last restore a backup to check that it works? If the answer is "never", you do not have a backup — you have an assumption.
 
 ---
 
 ## Related reading
 
 - [Outsourcing or an in-house team?](/en/blog/outsourcing-vs-inhouse) — the same question before launch.
-
 - [App development contracts](/en/blog/app-development-contract) — distinguishing warranty from maintenance.
 - [API security](/en/blog/api-security-guide) — security updates are core to maintenance.
 - [App performance optimisation](/en/blog/app-performance-optimization) — gradual degradation signals neglect.
@@ -123,38 +136,36 @@ This is what actually occurs, in order:
 
 ## Frequently asked questions
 
-### What does annual maintenance cost?
+### What should I budget for maintenance each year?
 
-15–20% of initial development cost as a rule. A $30,000 project needs $4,500–$6,000 per year. The percentage rises with more integrations and compliance requirements, and rises considerably if the original code was built carelessly.
+15–20% of the initial development cost. On our rate card as of November 2026, a mid-complexity app that cost $15,000–$45,000 needs $2,250–$9,000 a year (SAR 8,400–34,000). The percentage rises with more integrations and compliance requirements, and rises considerably if the original code was built carelessly.
 
-### What is the difference between warranty and maintenance?
+### Does the warranty cover maintenance in the first months?
 
-Warranty covers fixing defects in what was delivered and is typically free for 3–6 months. Maintenance covers compatibility updates, security, and new features, and is paid. Specify explicitly which category a compatibility update for a new iOS release falls into — this is the most common source of dispute.
+No. Warranty covers fixing defects in what was delivered, free for the agreed 3–6 months. Maintenance covers compatibility updates, security, and new features, and is paid. Specify explicitly which category a compatibility update for a new iOS release falls into — this is the most common source of dispute.
 
-### Do I need maintenance for a simple brochure site?
+### Does a simple brochure site need a maintenance contract?
 
 Yes, but at a lighter level: security updates, backups, and uptime monitoring. A WordPress site needs more attention because of plugins. A modern static site needs considerably less. See our [WordPress vs Next.js comparison](/en/blog/wordpress-vs-nextjs).
 
-### What if I want to change maintenance providers?
+### What do I need in hand to switch maintenance providers?
 
-You must own the code, documentation, and access credentials from the start — then changing is possible. If you don't own them, you are locked in. Verify this in the original development contract, not when a dispute arises.
+The code, documentation, and access credentials — owned by you from the start. With those, changing is straightforward; without them, you are locked in. Verify this in the original development contract, not when a dispute arises.
 
-### Can I defer maintenance to save money?
+### Can I skip a year of maintenance to save money?
 
-You can defer it but you don't save — you move the cost into the future with interest. A project neglected for two years usually needs a partial rebuild costing several times the deferred maintenance, plus downtime losses and security risk.
+You can defer it but you don't save — you move the cost into the future with interest. A year without updates usually means a store deadline has passed, so the first fix you need also requires a toolchain upgrade, plus whatever security patches have accumulated.
 
-### Who should maintain: the original builder or another provider?
+### Should the original builder maintain the product, or another provider?
 
 Whoever built it knows the code and starts immediately — a genuine saving. But don't let that become lock-in: require code ownership and documentation in the development contract, so moving stays possible if service deteriorates.
 
 ---
 
-## Conclusion
+## Choosing your model
 
-**Maintenance is not optional** — 15–20% annually of build cost is what owning a digital product costs.
+**Maintenance is not optional** — 15–20% of the build cost each year is what owning a digital product costs, and the store deadlines arrive whether or not you planned for them.
 
-**A maintenance contract is cheaper** for most single-product companies. **An in-house team** earns its cost with multiple products or when immediate response is critical. **And the hybrid model** usually suits mid-size companies best.
+**A maintenance contract is cheaper** for most single-product companies. **An in-house team** earns its cost with multiple products or when immediate response is critical. **The hybrid model** often suits mid-size companies best. Whichever you choose, ask one question first: who monitors?
 
-**And always ask: who monitors?** — the difference between you finding the fault and your customer finding it is the difference between one provider and another.
-
-**Want an estimate for maintaining your project?** [Get in touch](/en/contact) for a free assessment covering maintenance scope and cost clearly. See [our services](/en/services).
+If you want a figure for your own product, [tell us what you run and when it was last updated](/en/contact). We will come back with a maintenance scope, the annual range for your tier, and which store deadlines are coming up for you.

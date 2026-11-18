@@ -1,17 +1,10 @@
 import { getBlogPosts } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale } from "@/lib/i18n/locale";
 import { siteUrl } from "@/lib/seo/metadata";
-import { buildBlogCards } from "@/lib/content/blog-view";
+import { getPrimaryCategory } from "@/lib/content/taxonomy";
+import { stripBodyTitle } from "@/components/content/MarkdownContent";
 
-/**
- * RSS 2.0 feed per locale, at /<lang>/blog/feed.xml.
- *
- * A feed is the cheapest discovery channel there is: aggregators, newsreaders and
- * Bing's feed crawler all poll it, so new articles get picked up without waiting
- * for the next sitemap fetch. It matters more as publishing cadence rises — at
- * several articles a week, sitemap-only discovery leaves recent work unindexed
- * for days.
- */
+/** RSS 2.0 feed per locale, at /<lang>/blog/feed.xml, with full article text. */
 export const dynamic = "force-static";
 
 export function generateStaticParams() {
@@ -34,51 +27,52 @@ function toRfc822(date: string | undefined): string | undefined {
   return Number.isNaN(parsed.getTime()) ? undefined : parsed.toUTCString();
 }
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ lang: string }> }
-) {
-  const { lang: langParam } = await params;
-  if (!isLocale(langParam)) {
-    return new Response("Not found", { status: 404 });
-  }
+/** A CDATA section cannot contain "]]>", so it is split across two sections. */
+function cdata(value: string): string {
+  return `<![CDATA[${value.replace(/]]>/g, "]]]]><![CDATA[>")}]]>`;
+}
 
-  const lang = langParam;
+export async function GET(_request: Request, { params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return new Response("Not found", { status: 404 });
+
   const isAr = lang === "ar";
-  const cards = buildBlogCards(await getBlogPosts(lang), lang);
-
-  const title = isAr ? "مدونة APEX" : "APEX Blog";
-  const description = isAr
-    ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج"
-    : "Practical guides to app and web development in the Gulf";
+  const posts = await getBlogPosts(lang);
   const feedUrl = `${siteUrl}/${lang}/blog/feed.xml`;
+  const lastBuild = toRfc822(posts.map((post) => post.dateModified ?? post.datePublished ?? "").sort().at(-1));
 
-  const items = cards
-    .map((card) => {
-      const url = `${siteUrl}/${lang}/blog/${card.slug}`;
-      const pubDate = toRfc822(card.date);
-      return [
-        "    <item>",
-        `      <title>${escapeXml(card.title)}</title>`,
-        `      <link>${escapeXml(url)}</link>`,
-        `      <guid isPermaLink="true">${escapeXml(url)}</guid>`,
-        `      <description>${escapeXml(card.excerpt)}</description>`,
-        ...(pubDate ? [`      <pubDate>${pubDate}</pubDate>`] : []),
-        "    </item>",
-      ].join("\n");
-    })
-    .join("\n");
+  const items = posts.map((post) => {
+    const url = `${siteUrl}/${lang}/blog/${post.slug}`;
+    const pubDate = toRfc822(post.datePublished);
+    const category = getPrimaryCategory(post)?.label[lang];
+    return [
+      "    <item>",
+      `      <title>${escapeXml(post.title)}</title>`,
+      `      <link>${escapeXml(url)}</link>`,
+      `      <guid isPermaLink="true">${escapeXml(url)}</guid>`,
+      `      <description>${escapeXml(post.excerpt)}</description>`,
+      // The article body as Markdown, so readers are not left with a teaser.
+      `      <content:encoded>${cdata(stripBodyTitle(post.content))}</content:encoded>`,
+      `      <dc:creator>${isAr ? "فريق APEX" : "APEX team"}</dc:creator>`,
+      ...(category ? [`      <category>${escapeXml(category)}</category>`] : []),
+      ...(pubDate ? [`      <pubDate>${pubDate}</pubDate>`] : []),
+      "    </item>",
+    ].join("\n");
+  });
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">',
     "  <channel>",
-    `    <title>${escapeXml(title)}</title>`,
+    `    <title>${escapeXml(isAr ? "مدونة APEX" : "APEX blog")}</title>`,
     `    <link>${escapeXml(`${siteUrl}/${lang}/blog`)}</link>`,
-    `    <description>${escapeXml(description)}</description>`,
+    `    <description>${escapeXml(
+      isAr ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج" : "Practical guides to app and web development in the Gulf"
+    )}</description>`,
     `    <language>${lang}</language>`,
+    ...(lastBuild ? [`    <lastBuildDate>${lastBuild}</lastBuildDate>`] : []),
     `    <atom:link href="${escapeXml(feedUrl)}" rel="self" type="application/rss+xml" />`,
-    items,
+    ...items,
     "  </channel>",
     "</rss>",
   ].join("\n");

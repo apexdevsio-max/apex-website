@@ -1,12 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createHash } from "node:crypto";
-import { contactSchema, escapeHtml, readLimitedJson, RequestBodyError, MAX_CONTACT_BODY_BYTES, type ContactData } from "@/lib/contact-contract";
+
+import {
+  contactSchema,
+  escapeHtml,
+  fieldErrorCodes,
+  readLimitedJson,
+  RequestBodyError,
+  MAX_CONTACT_BODY_BYTES,
+  type ContactData,
+  type ContactErrorCode,
+} from "@/lib/contact-contract";
+import { siteUrl } from "@/lib/seo/metadata";
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_TIMEOUT_MS = 2_000;
+const SEND_TIMEOUT_MS = 10_000;
+
+function fail(code: ContactErrorCode, status: number, extra: Record<string, unknown> = {}) {
+  return NextResponse.json({ success: false, code, ...extra }, { status });
+}
 
 // Prefer the header the edge rewrites and clients cannot forge. `x-forwarded-for`
 // is only a fallback: behind a proxy that does not sanitize it, a caller can set it
@@ -16,6 +32,15 @@ function getClientIp(request: NextRequest): string {
   if (trusted) return trusted;
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   return forwarded || "unknown";
+}
+
+/** Same-site browsers send Origin on POST; anything else is not our form. */
+function isAllowedOrigin(request: NextRequest): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true; // Non-browser clients; the other checks still apply.
+  if (origin === new URL(siteUrl).origin) return true;
+  // Preview deployments and local development post to their own host.
+  return origin === request.nextUrl.origin;
 }
 
 function checkMemoryRateLimit(ip: string): boolean {
@@ -35,12 +60,9 @@ function checkMemoryRateLimit(ip: string): boolean {
   return true;
 }
 
-// The in-memory fallback is per-instance and resets on every cold start, so on
-// serverless the 3-per-hour limit is trivially bypassed by spreading submissions
-// across instances. That is acceptable as a temporary state but must not be
-// silent: without this warning an unconfigured deployment looks identical to a
-// correctly configured one. Logged once per process rather than per request so a
-// burst of traffic cannot flood the logs.
+// The in-memory fallback is per-instance and resets on every cold start. That is
+// acceptable as a temporary state but must not be silent, so it is logged once
+// per process.
 let warnedAboutMissingRateLimitStore = false;
 
 async function checkRateLimit(ip: string): Promise<boolean> {
@@ -67,7 +89,8 @@ async function checkRateLimit(ip: string): Promise<boolean> {
       signal: AbortSignal.timeout(RATE_LIMIT_TIMEOUT_MS),
     });
     if (!response.ok) throw new Error(`Rate limit store returned ${response.status}`);
-    const result = await response.json() as Array<{ result?: number }>;
+    const result = (await response.json()) as Array<{ result?: number; error?: string }>;
+    if (result.some((entry) => entry.error)) throw new Error("Rate limit store reported an error");
     return Number(result[0]?.result ?? RATE_LIMIT_MAX + 1) <= RATE_LIMIT_MAX;
   } catch (error) {
     console.warn("Durable rate limit unavailable; using local fallback", error);
@@ -75,103 +98,99 @@ async function checkRateLimit(ip: string): Promise<boolean> {
   }
 }
 
-function buildEmailHtml(data: ContactData): string {
-  const fields = [
+function emailFields(data: ContactData) {
+  return [
     { label: "Name", value: data.name },
     { label: "Email", value: data.email },
     { label: "Phone", value: data.phone || "—" },
     { label: "Project Type", value: data.projectType },
-    { label: "Budget", value: data.budget },
+    { label: "Budget", value: data.budget ?? "unsure" },
     { label: "Description", value: data.description },
   ];
-  const rows = fields
+}
+
+function buildEmailHtml(data: ContactData): string {
+  const rows = emailFields(data)
     .map(
       (f) =>
-        `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;color:#333;white-space:nowrap;vertical-align:top">${f.label}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;color:#555">${escapeHtml(f.value)}</td></tr>`
+        `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600;color:#333;white-space:nowrap;vertical-align:top">${f.label}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;color:#555;white-space:pre-wrap">${escapeHtml(f.value)}</td></tr>`
     )
     .join("");
   return `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-      <div style="background:linear-gradient(135deg,#121212,#1a1a2e);padding:24px;text-align:center">
-        <h1 style="color:#fff;margin:0;font-size:20px">New Contact Form Submission</h1>
-      </div>
-      <table style="width:100%;border-collapse:collapse;background:#fafafa">
-        <tbody>${rows}</tbody>
-      </table>
-      <p style="text-align:center;color:#999;font-size:12px;margin-top:16px">
-        Sent via apex.sy contact form
-      </p>
+      <h1 style="font-size:20px;margin:0 0 12px">New contact form submission</h1>
+      <table style="width:100%;border-collapse:collapse;background:#fafafa"><tbody>${rows}</tbody></table>
+      <p style="color:#999;font-size:12px;margin-top:16px">Sent via the apex.sy contact form. Reply to this email to answer the sender.</p>
     </div>
   `;
 }
 
+function buildEmailText(data: ContactData): string {
+  return emailFields(data)
+    .map((f) => `${f.label}: ${f.value}`)
+    .join("\n");
+}
+
 export async function POST(request: NextRequest) {
   const contentLength = Number(request.headers.get("content-length") ?? "0");
-  if (contentLength > MAX_CONTACT_BODY_BYTES) {
-    return NextResponse.json({ success: false, error: "Request body is too large" }, { status: 413 });
-  }
-
-  const ip = getClientIp(request);
-  if (!(await checkRateLimit(ip))) {
-    return NextResponse.json(
-      { success: false, error: "Too many requests. Please try again later." },
-      { status: 429 }
-    );
-  }
+  if (contentLength > MAX_CONTACT_BODY_BYTES) return fail("too_large", 413);
+  if (!isAllowedOrigin(request)) return fail("bad_request", 403);
 
   let body: unknown;
   try {
     body = await readLimitedJson(request);
   } catch (error) {
     const failure = error instanceof RequestBodyError ? error : new RequestBodyError(400, "Invalid request body");
-    return NextResponse.json(
-      { success: false, error: failure.message },
-      { status: failure.status }
-    );
+    return fail(failure.status === 413 ? "too_large" : "bad_request", failure.status);
   }
 
+  // Validation runs before the rate limit so a visitor correcting a typo is not
+  // locked out: only submissions that would actually send count against the limit.
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) {
-    const fieldErrors = parsed.error.flatten().fieldErrors;
-    return NextResponse.json(
-      { success: false, error: "Validation failed", fieldErrors },
-      { status: 400 }
-    );
+    return fail("invalid", 400, { fieldErrors: fieldErrorCodes(parsed.error) });
   }
 
   const data = parsed.data;
+
+  // A filled honeypot gets the same answer as a real submission, so a bot learns
+  // nothing about which field tripped it.
+  if (data.website) return NextResponse.json({ success: true });
+
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM_EMAIL;
-  const recipients = (process.env.CONTACT_TO_EMAIL ?? "").split(",").map((email) => email.trim()).filter(Boolean);
+  const recipients = (process.env.CONTACT_TO_EMAIL ?? "")
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
 
   if (!apiKey || !from || recipients.length === 0) {
-    return NextResponse.json(
-      { success: false, error: "Email service not configured. Please try WhatsApp or email directly." },
-      { status: 500 }
-    );
+    console.error("[apex] Contact form is not configured: RESEND_API_KEY, CONTACT_FROM_EMAIL and CONTACT_TO_EMAIL are required.");
+    return fail("unavailable", 503);
   }
+
+  if (!(await checkRateLimit(getClientIp(request)))) return fail("rate_limited", 429);
 
   try {
     const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-      from,
-      to: recipients,
-      subject: `New Inquiry from ${data.name}`,
-      html: buildEmailHtml(data),
-    });
+    const { error } = await Promise.race([
+      resend.emails.send({
+        from,
+        to: recipients,
+        replyTo: data.email,
+        subject: `New inquiry from ${data.name}`,
+        html: buildEmailHtml(data),
+        text: buildEmailText(data),
+      }),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Resend timed out")), SEND_TIMEOUT_MS)),
+    ]);
     if (error) {
       console.error("Resend error:", error);
-      return NextResponse.json(
-        { success: false, error: "Failed to send email. Please try WhatsApp or email directly." },
-        { status: 502 }
-      );
+      return fail("send_failed", 502);
     }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Resend error:", err);
-    return NextResponse.json(
-      { success: false, error: "Failed to send email. Please try WhatsApp or email directly." },
-      { status: 500 }
-    );
+    return fail("send_failed", 502);
   }
 }

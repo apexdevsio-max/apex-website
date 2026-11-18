@@ -37,74 +37,29 @@ export function Pagination({
   const pages = pageWindow(page, totalPages);
 
   return (
-    <nav
-      className="mt-14 flex items-center justify-center gap-2 flex-wrap"
-      aria-label={isAr ? "تصفح الصفحات" : "Pagination"}
-      dir={isAr ? "rtl" : "ltr"}
-    >
+    <nav className="mt-14 flex flex-wrap items-center justify-center gap-2" aria-label={isAr ? "تصفح الصفحات" : "Pagination"}>
       {page > 1 && (
-        <Link
-          href={href(page - 1)}
-          rel="prev"
-          className="px-4 min-h-[44px] inline-flex items-center rounded-full text-sm font-bold border transition-colors"
-          style={{
-            background: "var(--color-card)",
-            borderColor: "var(--color-border)",
-            color: "var(--color-secondary-text)",
-          }}
-        >
+        <Link href={href(page - 1)} rel="prev" className="apex-chip">
           {isAr ? "السابق" : "Previous"}
         </Link>
       )}
-
       {pages.map((entry, index) =>
         entry === "gap" ? (
-          <span
-            key={`gap-${index}`}
-            className="px-2 select-none"
-            style={{ color: "var(--color-secondary-text)" }}
-            aria-hidden="true"
-          >
+          <span key={`gap-${index}`} aria-hidden="true" className="px-2 text-apex-muted">
             …
           </span>
         ) : entry === page ? (
-          <span
-            key={entry}
-            aria-current="page"
-            className="px-4 min-h-[44px] inline-flex items-center rounded-full text-sm font-bold text-white"
-            style={{
-              background: "linear-gradient(135deg,var(--color-primary),var(--color-accent))",
-            }}
-          >
+          <span key={entry} aria-current="page" className="apex-chip apex-chip-active">
             {entry}
           </span>
         ) : (
-          <Link
-            key={entry}
-            href={href(entry)}
-            className="px-4 min-h-[44px] inline-flex items-center rounded-full text-sm font-bold border transition-colors"
-            style={{
-              background: "var(--color-card)",
-              borderColor: "var(--color-border)",
-              color: "var(--color-secondary-text)",
-            }}
-          >
+          <Link key={entry} href={href(entry)} className="apex-chip" aria-label={isAr ? `صفحة ${entry}` : `Page ${entry}`}>
             {entry}
           </Link>
         )
       )}
-
       {page < totalPages && (
-        <Link
-          href={href(page + 1)}
-          rel="next"
-          className="px-4 min-h-[44px] inline-flex items-center rounded-full text-sm font-bold border transition-colors"
-          style={{
-            background: "var(--color-card)",
-            borderColor: "var(--color-border)",
-            color: "var(--color-secondary-text)",
-          }}
-        >
+        <Link href={href(page + 1)} rel="next" className="apex-chip">
           {isAr ? "التالي" : "Next"}
         </Link>
       )}

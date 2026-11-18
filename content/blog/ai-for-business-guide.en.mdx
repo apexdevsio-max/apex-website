@@ -1,14 +1,14 @@
 ---
-{"slug":"ai-for-business-guide","title":"AI for Business: What Actually Works and What It Costs","seoTitle":"AI for Business: A Practical Guide","excerpt":"Which business problems AI genuinely solves, how to evaluate a use case before building, what running costs look like, and the compliance constraints that decide architecture.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"ai-for-business-guide","title":"AI for Business: What Actually Works and What It Costs","seoTitle":"AI for Business: A Practical Guide","excerpt":"Which business problems AI genuinely solves, how to evaluate a use case before building, what it costs to run, and the compliance constraints that decide architecture.","categories":["ai"],"keywords":["AI for business","enterprise AI","AI cost","AI automation","AI use cases","AI project evaluation"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["AI is worth building for a business task only when the task is high-volume, language-heavy and can tolerate occasional error; if any one of the three is missing, conventional software is cheaper and more reliable.","As of November 2026, our published rate card puts AI/ML integration into an existing product at $10,000–$40,000+ and a full AI-powered app at $40,000–$150,000+ over 6–12 months.","AI also costs money every time it runs, and Arabic text can need several times more tokens than English (about 3 times on the GPT-4-era tokenizer measured in a 2023 study), so running costs must be estimated from real Arabic samples.","Before choosing a provider, confirm where processing happens, how long inputs are kept and whether they are used for training; Anthropic and OpenAI both state that API inputs are not used for training by default."],"sources":[{"title":"Anthropic Privacy Center: Is my data used for model training? (commercial products)","url":"https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training"},{"title":"OpenAI API docs: Data controls (your data)","url":"https://developers.openai.com/api/docs/guides/your-data"},{"title":"Anthropic docs: Reduce hallucinations","url":"https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"},{"title":"Petrov et al. (NeurIPS 2023): Language Model Tokenizers Introduce Unfairness Between Languages","url":"https://arxiv.org/abs/2305.15425"}]}
 ---
 
 # AI for Business: What Actually Works and What It Costs
 
-Most AI projects that fail did not fail technically. They were built because AI was available, not because a problem needed solving — and the resulting system worked exactly as specified while changing nothing about the business.
+**AI is worth building when a task is high-volume, language-heavy, and tolerant of occasional error — answering customer questions from your own documentation, extracting data from documents, internal knowledge search, content drafting, and routing requests. As of November 2026, adding an AI feature to an existing product runs $10,000 – $40,000+ and a full AI-powered app $40,000 – $150,000+, plus a running cost on every request that never goes to zero.**
 
-**The short answer: AI is worth building when a task is high-volume, language-heavy, and tolerant of occasional error. If any one of those three is missing, conventional software is usually cheaper, faster, and more reliable.**
+If any one of those three conditions is missing, conventional software is usually cheaper, faster, and more reliable. A system can work exactly as specified and still change nothing about the business if it was built because AI was available rather than because a problem needed solving.
 
-This guide covers how to evaluate a use case, what ongoing costs actually look like, and the constraints that shape what you can build in Gulf markets.
+This guide covers how to evaluate a use case, what the build and running costs look like, and the constraints that shape what you can build in Gulf markets. It is the same test we apply before scoping any [AI solutions](/en/services/ai-solutions) project.
 
 ---
 
@@ -23,33 +23,33 @@ AI carries a per-use cost that never goes away. Automating something that happen
 Language models are exceptional at understanding and producing unstructured text, and unremarkable at everything else. If your problem is arithmetic, scheduling, or exact lookup, a database query is more accurate and costs nothing per call.
 
 **3. Can it tolerate being occasionally wrong?**
-This is the one teams skip. Language models are probabilistic — they will sometimes produce confident, plausible, wrong output. If a single error is unacceptable and undetectable, either add human review or do not build it.
+This is the one teams skip. Language models can produce confident, plausible, wrong output — Anthropic's own documentation says the techniques that reduce [hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations) "don't eliminate them entirely". If a single error is unacceptable and undetectable, either add human review or do not build it.
 
-> **The reframe that saves projects:** ask "what happens when this is wrong?" before "how accurate is it?" A system that is 95% accurate is excellent for drafting replies and unacceptable for calculating salaries.
+> **The reframe that saves projects:** ask "what happens when this is wrong?" before "how accurate is it?" A system that is right 95 times in 100 is excellent for drafting replies and unacceptable for calculating salaries.
 
 ---
 
 ## What genuinely works
 
-Ordered by reliability of return, based on what actually holds up in production.
+These five pass the three-part test most often.
 
-**Customer service assistance.** Answering repetitive questions from your own documented knowledge. High volume, language-heavy, and errors are recoverable because a human can take over. This is the most reliable AI business case there is — see [AI chatbot costs](/en/blog/ai-chatbot-cost).
+**Customer service assistance.** Answering repetitive questions from your own documented knowledge. High volume, language-heavy, and errors are recoverable because a human can take over — see [AI chatbot costs](/en/blog/ai-chatbot-cost).
 
 **Document processing.** Extracting structured data from invoices, contracts, and forms. Replaces manual data entry, which is expensive, slow, and error-prone in its own right. Arabic documents add difficulty — see [Arabic document processing](/en/blog/arabic-ocr-document-processing).
 
-**Internal knowledge search.** Employees asking questions of company documentation, policies, and procedures. The value is time recovered, and it scales with how much documentation you have.
+**Internal knowledge search.** Employees asking questions of company documentation, policies, and procedures. The value is time recovered, and it scales with how much documentation you have — see [building an internal AI assistant](/en/blog/internal-ai-assistant).
 
-**Content drafting.** First drafts of product descriptions, summaries, and routine correspondence. The output is reviewed before use by definition, which makes the error tolerance question easy.
+**Content drafting.** First drafts of product descriptions, summaries, and routine correspondence. The output is reviewed before use by definition, which makes the error-tolerance question easy.
 
 **Classification and routing.** Sorting incoming requests by type, urgency, or department. High volume, and a misroute is cheap to correct.
 
-**What works less often than people expect:** anything requiring exact numerical reasoning, anything where the model must know facts it was not given, and anything where being wrong is invisible until it causes damage.
+**What fails the test:** anything requiring exact numerical reasoning, anything where the model must know facts it was not given, and anything where being wrong is invisible until it causes damage.
 
 ---
 
 ## Buy, configure, or build
 
-Most companies over-build. The order below is roughly cheapest to most expensive, and you should exhaust each before moving down.
+Exhaust each option before moving down the list; the order runs roughly from cheapest to most expensive.
 
 | Approach | Cost | Time | Suits |
 |---|---|---|---|
@@ -58,34 +58,39 @@ Most companies over-build. The order below is roughly cheapest to most expensive
 | **Custom build on an API** | Development + running cost | 1 – 4 months | Real differentiation or unusual integration |
 | **Fine-tuned or self-hosted model** | High | Months | Strict data constraints, very high volume |
 
-**Start at the top.** If your support tool already has an AI reply feature, use it before commissioning anything. The build only makes sense when a configured product genuinely cannot do the job.
+**Start at the top.** If your support tool already has an AI reply feature, use it before commissioning anything. A custom build only makes sense when a configured product genuinely cannot do the job.
 
-**Self-hosting deserves scepticism.** Teams reach for it to control data or cut costs, and usually find that infrastructure, expertise, and maintenance exceed the API fees they were avoiding. It becomes correct at genuinely high volume, or when data residency rules leave no alternative — see [data residency in the Gulf](/en/blog/data-residency-gulf).
+**Self-hosting deserves scepticism.** Teams reach for it to control data or cut costs, then find that infrastructure, expertise, and maintenance exceed the API fees they were avoiding. It becomes correct at genuinely high volume, or when data residency rules leave no alternative — see [data residency in the Gulf](/en/blog/data-residency-gulf).
 
 ---
 
 ## What it actually costs
 
-AI has a cost structure most software does not: **it costs money every time it runs.**
+AI has a cost structure most software does not: **it costs money every time it runs.** There are three components.
 
-**The three components:**
+**Build cost.** Engineering to integrate, design the prompts, connect your data, and handle failure cases.
 
-**Build cost** — engineering to integrate, design the prompts, connect your data, and handle failure cases. Comparable to any software feature.
+| Scope | Range (USD) | SAR | AED | QAR |
+|---|---|---|---|---|
+| AI/ML integration into an existing product | $10,000 – $40,000+ | 37,500 – 150,000+ | 36,700 – 146,900+ | 36,400 – 145,600+ |
+| AI-powered app (6 – 12 months) | $40,000 – $150,000+ | 150,000 – 562,500+ | 146,900 – 550,900+ | 145,600 – 546,000+ |
 
-**Running cost** — charged per unit of text processed, in both directions. This scales directly with usage, and it never goes to zero.
+Ranges from our published rate card, as of November 2026. Both are open-ended at the top, because data preparation and integration count vary more than in ordinary app work. Gulf currencies use the fixed dollar pegs, rounded.
 
-**Maintenance** — models are updated and deprecated, prompts drift as your business changes, and quality needs monitoring. Budget for it as you would any dependency.
+**Running cost.** Charged per unit of text processed, in both directions. It scales directly with usage and never goes to zero.
+
+**Maintenance.** Models are updated and deprecated, prompts drift as your business changes, and quality needs monitoring. Budget for it as you would any dependency.
 
 **How to estimate the running cost honestly:**
 
 1. Take a **real sample** of the work — twenty actual customer conversations, not invented examples
 2. Measure what each one consumes, including whatever context you supply
 3. Multiply by realistic monthly volume
-4. **Add 50%** for retries, failures, longer-than-expected inputs, and growth
+4. **Add a buffer of around 50%** for retries, failures, longer-than-expected inputs, and growth
 
-> **The Arabic-specific factor:** Arabic text consumes noticeably more tokens than English for the same meaning. Any estimate built on English samples will understate an Arabic workload — measure with real Arabic text from your own domain. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers the evaluation method.
+> **The Arabic-specific factor:** the same meaning can take several times more tokens in Arabic than in English. A [2023 NeurIPS study](https://arxiv.org/abs/2305.15425) found the tokenizer then used by ChatGPT and GPT-4 needed about 3 times as many tokens for Arabic text as for the same text in English. Tokenizers differ by provider and version, so any estimate built on English samples will understate an Arabic workload. [What AI costs to run](/en/blog/llm-running-costs) works through the per-token numbers.
 
-**Prices change constantly**, and any figure printed in an article ages badly. Get current rates from the provider and build your own estimate with the method above — that is the number that matters, not a published price per unit.
+**Prices change constantly**, and any per-token figure printed in an article ages badly. Get current rates from the provider and build your own estimate with the method above.
 
 ---
 
@@ -93,34 +98,32 @@ AI has a cost structure most software does not: **it costs money every time it r
 
 This decides your options, so establish it before designing anything.
 
-**Sending user data to an external model is both a cross-border transfer and a processing operation.** Both carry obligations under Gulf data protection law.
+**Sending user data to an external model is processing of personal data, and if the provider's servers are abroad it is also a cross-border transfer.** Both carry obligations under Gulf data protection law — [Saudi PDPL](/en/blog/pdpl-compliance-guide) covers the transfer rules.
 
 **Three questions to answer before choosing a provider:**
 
-1. **Where does inference run?** If personal data cannot leave the country, most consumer-tier APIs are unavailable to you.
-2. **Are inputs retained?** For how long, and who can access them?
-3. **Are inputs used for training?** Many default consumer tiers permit this. Enterprise tiers usually do not — and the difference is contractual, not technical.
+1. **Where is the request processed?** If personal data cannot leave the country, many hosted APIs are unavailable to you unless the provider offers a compliant region.
+2. **How long are inputs kept, and who can see them?** OpenAI, for example, keeps API abuse-monitoring logs for [up to 30 days by default](https://developers.openai.com/api/docs/guides/your-data), with zero retention available only by approval.
+3. **Can inputs be used to train models?** On their APIs, both [Anthropic](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training) and [OpenAI](https://developers.openai.com/api/docs/guides/your-data) state that inputs are not used for training by default. Consumer chat apps carry separate terms — check them before staff paste customer data into one.
 
-**What this rules in and out:** for ordinary commercial data, external APIs with appropriate terms are usually fine. For health data in the UAE, or regulated financial data, the residency requirement may leave regional deployment or self-hosting as the only compliant paths.
-
-[Gulf regulatory compliance](/en/blog/gulf-compliance-guide) covers the wider picture, and [Saudi PDPL](/en/blog/pdpl-compliance-guide) the specific transfer restrictions.
+**What this rules in and out:** for ordinary commercial data, external APIs with appropriate terms are usually workable. For health data in the UAE, or regulated financial data, the residency requirement may leave regional deployment or self-hosting as the only compliant paths. [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) covers the wider picture.
 
 ---
 
 ## Measuring whether it worked
 
-Most AI projects have no success criteria, which is why so many are described as "interesting" rather than "profitable."
+A project without success criteria ends up described as "interesting" rather than "profitable."
 
 **Define the baseline before you build.** How long does the task take today, how many happen, and what does that cost in salary time? Without this number, you cannot demonstrate improvement.
 
 **Pick a metric that maps to money:**
 
-- Support: percentage of conversations resolved without a human
+- Support: share of conversations resolved without a human
 - Documents: minutes of manual entry eliminated per week
 - Internal search: hours of employee time recovered
 - Content: drafts produced per week and the edit ratio
 
-**Track quality alongside volume.** A support bot resolving 60% of conversations sounds good until you learn customer satisfaction dropped. Measure both, always.
+**Track quality alongside volume.** A support bot that resolves most conversations sounds good until you learn customer satisfaction dropped. Measure both, always.
 
 **Set a kill criterion up front.** "If this does not reach X by month three, we stop." Projects without one continue indefinitely on the strength of being technically interesting.
 
@@ -130,13 +133,13 @@ Most AI projects have no success criteria, which is why so many are described as
 
 **Building before defining the problem.** "We should use AI" is a technology decision looking for a justification. Start from a costly, repetitive, language-heavy task.
 
-**Ignoring the running cost.** A pilot with fifty users looks cheap. Fifty thousand users on the same architecture can cost more than the staff it replaced.
+**Ignoring the running cost.** A pilot with fifty users looks cheap. Fifty thousand users on the same architecture can cost more than the staff time it replaced.
 
 **No human fallback.** Every AI system needs a path to a person. Without one, the failure cases become customer-facing failures.
 
 **Treating output as authoritative.** Language models produce confident, well-formed text whether or not it is correct. Design for verification, especially where the output feeds a decision.
 
-**Testing in English for an Arabic product.** Quality, token consumption, and failure modes all differ. An English evaluation tells you very little about Arabic performance.
+**Testing in English for an Arabic product.** Quality, token consumption, and failure modes all differ. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers the test.
 
 **Skipping the compliance question until launch.** Discovering a residency constraint after integration is a rebuild, not a configuration change.
 
@@ -145,14 +148,13 @@ Most AI projects have no success criteria, which is why so many are described as
 ## Related reading
 
 - [AI chatbot costs](/en/blog/ai-chatbot-cost) — the most common use case, costed in detail.
-- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) — evaluation criteria and a testing method.
+- [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) — current models and a testing method.
 - [Arabic document processing](/en/blog/arabic-ocr-document-processing) — extracting data from Arabic documents.
 - [RAG and AI knowledge bases](/en/blog/rag-knowledge-base) — making AI answer from your own documents.
 - [What AI costs to run](/en/blog/llm-running-costs) — token pricing and the levers that cut spend.
 - [AI in online stores](/en/blog/ecommerce-ai-features) — which e-commerce features lift revenue.
 - [Internal AI assistant](/en/blog/internal-ai-assistant) — answering employee questions from your documentation.
 - [AI privacy and security risks](/en/blog/ai-privacy-risks) — prompt injection, leakage, and the controls that work.
-- [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) — the rules that constrain architecture.
 - [Data residency in the Gulf](/en/blog/data-residency-gulf) — where processing may happen.
 - [Mobile app development cost](/en/blog/mobile-app-development-cost) — how AI features affect a build budget.
 
@@ -160,13 +162,13 @@ Most AI projects have no success criteria, which is why so many are described as
 
 ## Frequently asked questions
 
-### Is AI worth it for my business?
+### Which business tasks pass the three-part AI test?
 
-Apply three tests: is the task high-volume, language-heavy, and tolerant of occasional error? All three need to be true. If the task happens rarely, involves exact calculation, or cannot survive being wrong without detection, conventional software is cheaper, faster, and more reliable.
+Tasks that are high-volume, language-heavy, and tolerant of occasional error: answering customer questions from your documentation, extracting data from invoices and contracts, internal knowledge search, first drafts of routine content, and routing incoming requests. If the task happens rarely, involves exact calculation, or cannot survive an undetected error, conventional software is cheaper, faster, and more reliable.
 
-### How much does an AI feature cost to run?
+### What does it cost to add AI to an existing product?
 
-It varies with usage because AI charges per unit of text processed. Estimate it by taking a real sample of the work, measuring what each item consumes, multiplying by realistic monthly volume, and adding 50% for retries and growth. Published per-unit prices change constantly — your own measured estimate is the number that matters.
+As of November 2026, AI/ML integration into an existing product runs $10,000 – $40,000+ on our published rate card (SAR 37,500 – 150,000+), and a full AI-powered app $40,000 – $150,000+ over 6 to 12 months. On top of that comes a running cost per request: estimate it from a real sample of your work, multiplied by realistic monthly volume, plus a buffer of around 50%.
 
 ### Should we build a custom AI solution or buy one?
 
@@ -174,28 +176,24 @@ Start with existing tools. If your support platform already has an AI reply feat
 
 ### Can I use AI with customer data under Gulf regulations?
 
-Only after establishing three things: where inference runs, whether inputs are retained, and whether they are used for training. Sending personal data to an external model is both a cross-border transfer and a processing operation. Many consumer-tier terms permit training on inputs, which is incompatible with most compliance positions; enterprise tiers usually do not.
+Only after establishing three things: where inference runs, whether inputs are retained, and whether they are used for training. Sending personal data to an external model is processing, and usually a cross-border transfer as well. Anthropic and OpenAI both state that API inputs are not used for training by default, but consumer chat apps carry separate terms, and residency rules for health or financial data may rule out foreign processing entirely.
 
-### Why does Arabic AI cost more than English?
+### Can we budget an Arabic AI feature from English test data?
 
-Arabic text consumes noticeably more tokens than English for the same meaning, and cost is charged per token. Any estimate built on English samples will understate an Arabic workload. Measure with real Arabic text from your own domain rather than adjusting an English figure.
+No. The same meaning can take several times more tokens in Arabic than in English — about 3 times on the GPT-4-era tokenizer measured in a 2023 study — and tokenizers differ between providers. Measure with real Arabic text from your own domain; [What AI costs to run](/en/blog/llm-running-costs) has the per-token arithmetic.
 
 ### Should we self-host an AI model?
 
 Usually not. Teams reach for self-hosting to control data or cut costs, then find infrastructure, expertise, and maintenance exceed the API fees they were avoiding. It becomes correct at genuinely high volume, or when data residency rules leave no compliant alternative.
 
-### How do I know if our AI project succeeded?
+### What should an AI project's kill criterion look like?
 
-Define the baseline before building — how long the task takes today, how often it happens, what that costs in salary time — then pick a metric that maps to money, such as conversations resolved without a human. Track quality alongside volume, and set a kill criterion up front so the project has a defined end if it does not work.
+A number and a date agreed before the build: for example, "if the bot does not resolve a set share of conversations without a human by month three, we stop." Pair it with a baseline measured beforehand — how long the task takes today, how often it happens, what that costs in salary time — and a quality metric such as customer satisfaction, so volume gains cannot hide a drop in service.
 
 ---
 
-## Conclusion
+## Before you commission anything
 
-**The three-part test does most of the work.** High-volume, language-heavy, error-tolerant. Projects that fail one of those and get built anyway are the ones that end up described as interesting rather than profitable.
+Run the task through the three-part test, put a real number on its monthly volume, and settle where your data is allowed to be processed. Those three answers decide most AI projects before a line of code is written — and they are cheaper to get wrong on paper than in production.
 
-**Cost per use is the structural difference** from other software, and the reason pilots mislead. Estimate with real samples and real volume, in the language your users actually write.
-
-**And settle compliance before architecture.** Where inference may run is a constraint on your options, not a detail to resolve at launch.
-
-**Considering an AI project?** [Get in touch](/en/contact) for a free scoping conversation — including an honest answer if your problem is better solved without AI. See our [AI solutions](/en/services/ai-solutions).
+If you have a candidate task and want it checked against real volumes and your compliance position, [send us the details](/en/contact). Sometimes the useful answer is that the problem does not need AI at all.

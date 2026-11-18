@@ -1,186 +1,168 @@
 ---
-{"slug":"privacy-policy-guide","title":"Writing a Privacy Policy That Actually Works","seoTitle":"Privacy Policy Guide for Apps (2026)","excerpt":"What a privacy policy must contain for Gulf markets and app stores, why templates create liability, and how to write one that matches what your product really does.","date":"2026-08-14","dateModified":"2026-08-14"}
+{"slug":"privacy-policy-guide","title":"Writing a Privacy Policy That Actually Works","seoTitle":"Privacy Policy Guide for Apps (2026)","excerpt":"What a privacy policy must contain for Gulf markets and app stores, why templates create liability, and how to write one that matches what your product really does.","categories":["compliance"],"keywords":["privacy policy","privacy policy template","data map","Apple privacy labels","Google Data Safety","app compliance"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Saudi Arabia's PDPL (Article 12) requires a privacy policy available to people when their data is collected, covering the purpose, the data collected, how it is collected, stored, processed and destroyed, and the data subject's rights and how to exercise them.","SDAIA's privacy policy guideline does not name a language; it requires clear, non-misleading wording suited to the audience, which for Saudi users in practice means Arabic.","Apple requires a privacy policy URL in App Store Connect and an easily accessible link inside the app, and the policy must state what data is collected, how it is used, retention and deletion, and how users revoke consent or request deletion.","Google Play requires a privacy policy link in Play Console and inside the app, even for apps that collect no personal data, and the Data safety section must be consistent with the policy and cover SDK data collection."],"sources":[{"title":"SDAIA — Guideline for preparing and developing a privacy policy","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/ElaborationandDevelopingPrivacyPolicyGuideline"},{"title":"SDAIA — Personal Data Protection Law (Articles 12 and 13)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"},{"title":"Apple — App Review Guidelines (5.1.1 Data collection and storage)","url":"https://developer.apple.com/app-store/review/guidelines/"},{"title":"Apple — App privacy details on the App Store","url":"https://developer.apple.com/app-store/app-privacy-details/"},{"title":"Google Play — User data policy","url":"https://support.google.com/googleplay/android-developer/answer/10144311"}]}
 ---
 
 # Writing a Privacy Policy That Actually Works
 
-A privacy policy is the only compliance artefact that is simultaneously a legal document, an app store requirement, and a page real users occasionally read. Most are none of those things well — they are a template with a company name swapped in, describing data practices the product does not have.
+**A privacy policy for a Gulf app has to satisfy three readers: the regulator, Apple and Google, and every one of them asks for the same core content.** That means who you are, what data you collect and why, your lawful basis, who receives the data and where it goes, how long you keep it and how you destroy it, and how users exercise their rights. In Saudi Arabia, Article 12 of the PDPL makes that policy mandatory at the point of collection; both app stores reject apps without one.
 
-**The short answer: a copied template is worse than a short accurate policy, because it documents your own non-compliance in writing. Write it from what your product actually does, publish it in Arabic and English, and update it whenever data handling changes.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide covers what to include and how to derive it. For which law applies to you, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
+The rest of this guide is about writing that content from what your product really does, rather than from a template. For which law applies to you, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide). If you are building the product too, our [web development service](/en/services/web-development) keeps the data map and the policy in step with the code.
 
-> **This is practical guidance, not legal advice.** For regulated sectors, have a qualified local advisor review the finished policy.
+---
+
+## What the law and the stores require
+
+**Saudi PDPL.** [Article 12](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) requires the controller to adopt a privacy policy and make it available to data subjects when their data is collected. It must cover the purpose of collection, the data collected, how it is collected and stored, how it is processed and destroyed, and the data subject's rights and how to exercise them. Article 13 adds what you must tell people when you collect directly from them: the legal basis, the purpose and whether each item is mandatory or optional, your identity, who receives the data and whether it goes outside the Kingdom, the effect of not providing it, and their rights.
+
+**SDAIA's guideline.** SDAIA's [guideline for preparing a privacy policy](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/ElaborationandDevelopingPrivacyPolicyGuideline) lists the expected elements in more detail:
+
+- The entity's official name and activities
+- Contact details, an update log, and the data protection officer's details where one must be appointed
+- Categories of personal data, and whether each is mandatory or optional
+- Collection methods (direct and indirect), purposes and legal basis
+- How the data is processed, and any disclosure to other parties
+- Where data is stored, retention periods, destruction methods and security measures
+- Data subject rights and how to exercise them
+- How to complain or object, including to the competent authority
+
+**Apple.** [Guideline 5.1.1(i)](https://developer.apple.com/app-store/review/guidelines/) requires a privacy policy link in App Store Connect and an easily accessible link inside the app. The policy must identify what data the app collects, how, and every use of it; confirm that third parties receiving data give the same protection; and explain retention and deletion and how users revoke consent or request deletion.
+
+**Google Play.** The [User data policy](https://support.google.com/googleplay/android-developer/answer/10144311) requires a privacy policy link in Play Console and a link or text inside the app, **even if the app accesses no personal data**. The policy must sit at a public, active URL that is not a PDF, name the developer or the app, give a privacy contact, describe the data accessed, collected, used and shared, and explain secure handling and retention and deletion.
 
 ---
 
 ## Why templates create liability
 
-The logic seems sound: privacy policies look similar, so start from one that exists. The problem is what a policy legally is — a **statement of your actual practices**, not a statement of good intentions.
-
-**A template describes someone else's product.** It probably mentions cookies you do not set, third parties you do not use, and retention periods you do not honour. Every one of those is a written statement that does not match reality.
+A privacy policy is a **statement of your actual practices**, not a statement of good intentions. A template describes someone else's product: cookies you do not set, vendors you do not use, retention periods you do not honour. Each of those is a written statement that does not match reality.
 
 **Three concrete consequences:**
 
-1. **It documents non-compliance.** If your policy promises deletion within 30 days and your system has no deletion capability, you have supplied written evidence of the gap.
-2. **App stores check.** Both stores require the policy to match declared data collection. A mismatch between your policy, your store data disclosure, and your actual SDK behaviour is a common rejection reason.
-3. **Enterprise procurement reads it.** A policy naming a US-only provider when you are pitching in-country hosting kills credibility in a way that is hard to recover.
+1. **It documents the gap.** If your policy promises deletion within 30 days and your system cannot delete, you have written down the evidence.
+2. **The store declarations must agree with it.** Google says the Data safety section "must be consistent with the disclosures made in the app's privacy policy", and Apple makes you responsible for keeping your privacy details "accurate and up to date". A template that disagrees with your declarations puts you in breach of both.
+3. **Enterprise buyers read it.** A policy naming a US-only provider while you pitch in-country hosting undermines the pitch.
 
-**The honest test:** read your current policy and check whether each sentence is true of your product today. Most teams find several that are not.
+**The honest test:** read your current policy and check whether each sentence is true of your product today.
 
 ---
 
 ## Derive it from a data map, not a template
 
-The efficient order is backwards from what most teams do. Build the map first; the policy writes itself from it.
+Build the map first; the policy is a rendering of it.
 
-**Step 1 — List every data point you collect.** Go through your actual codebase and vendor list, not your memory. Include: registration fields, analytics identifiers, device information, location, uploaded content, support conversations, and payment data.
+**Step 1: list every data point you collect.** Work from the codebase and vendor list, not memory: registration fields, analytics identifiers, device information, location, uploads, support conversations, payment data.
 
-**Step 2 — For each, record four things:**
+**Step 2: record four things for each.**
 
 | Column | Example |
 |---|---|
 | What | Email address |
 | Why | Account authentication and service notifications |
-| Lawful basis | Contract performance |
-| Retention | Duration of account plus 30 days |
+| Lawful basis | Performing the agreement with the user |
+| Retention | Life of the account plus 30 days |
 
-**Step 3 — List every third party that receives data.** Analytics, crash reporting, push notifications, email delivery, payment processing, hosting, AI APIs. This list is always longer than expected — especially if a tag manager is involved.
+**Step 3: list every third party that receives data.** Analytics, crash reporting, push notifications, email delivery, payments, hosting, AI APIs. Apple and Google both count SDKs you embed: Apple asks you to declare "the practices of third-party partners whose code you integrate", and Google's Data safety section must cover data collected by any SDK in your app.
 
-**Step 4 — Note where each stores data.** This is what lets you make an accurate transfer statement rather than a vague one. [Data residency in the Gulf](/en/blog/data-residency-gulf) covers why this matters.
+**Step 4: note where each stores data.** That is what lets you write an accurate transfer statement, and Saudi Article 13 asks you to say whether data goes outside the Kingdom. [Data residency in the Gulf](/en/blog/data-residency-gulf) explains why location matters.
 
-The map is also what enterprise buyers ask for, and what makes your next policy update a ten-minute job instead of a rewrite.
-
----
-
-## What the policy must contain
-
-For Gulf markets and both app stores, these are non-negotiable:
-
-**Identity and contact.** Your legal entity name and a working privacy contact address. A form that goes nowhere fails this.
-
-**Categories of data collected.** Specific, not "certain information." Group them sensibly — account data, usage data, device data — but each group must be recognisable.
-
-**Purpose for each category.** Why you collect it, in plain language. "To improve our services" is not a purpose; "to diagnose crashes and prioritise bug fixes" is.
-
-**Lawful basis.** Especially where it is not consent. See [UAE data protection law](/en/blog/uae-data-protection-guide) on why defaulting to consent for everything is a design error.
-
-**Retention periods.** Actual durations, and they must be ones you can honour. "As long as necessary" is acceptable only if you then say what determines necessity.
-
-**Third parties.** Named categories at minimum. Many policies list specific vendors, which is more useful and requires updating when vendors change.
-
-**Cross-border transfers.** Whether data leaves the country, where it goes, and what safeguards apply.
-
-**User rights and how to exercise them.** Access, correction, deletion, restriction, objection, portability — and the actual mechanism, not just an assertion that rights exist.
-
-**Children.** Whether your service is directed at minors and what you do about it.
-
-**Changes.** How you notify users when the policy changes.
+The map also answers enterprise security questionnaires and turns the next policy update into a short edit.
 
 ---
 
-## Arabic and English, both authoritative
+## Clauses people get wrong
 
-Gulf markets expect a policy in Arabic. Three things teams get wrong:
+**Purpose.** "To improve our services" is not a purpose. "To diagnose crashes and prioritise bug fixes" is.
 
-**Machine translation is visible and damaging here.** A legal document reading as machine-produced undermines exactly the credibility the document exists to establish. Have a fluent speaker review it.
+**Lawful basis.** Do not default to consent for everything. The Saudi PDPL lets you process without consent in defined cases, including a legitimate interest that does not involve sensitive data, so state the basis you actually rely on. The [UAE data protection guide](/en/blog/uae-data-protection-guide) covers the bases there.
 
-**Legal terminology is not interchangeable.** Terms like "controller," "processor," "lawful basis," and "legitimate interest" have established Arabic renderings in regional regulatory usage. Inventing your own creates ambiguity in the one document where ambiguity is most costly.
+**Retention.** Give durations you can honour. "As long as necessary" only works if you then say what decides necessity.
 
-**State which version governs.** If the two versions ever diverge, the policy should say which one controls. This is a one-sentence addition that prevents a real dispute.
+**Rights.** Name the rights and the mechanism. Saudi controllers must answer requests within 30 days, extendable by up to 30 more with notice, under Article 3 of the [Implementing Regulations](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2). Apple and Google both require in-app account deletion if you offer account creation.
+
+**Children.** Say whether the service is directed at minors and what you do about it. See [children's data protection](/en/blog/childrens-data-protection).
+
+**Changes.** Say how you notify users. SDAIA's guideline expects an update log.
 
 ---
 
-## App store requirements
+## Language: clear first, then Arabic
 
-Both stores impose their own requirements on top of the law, and these are enforced automatically at review time.
+SDAIA's guideline does not require Arabic or English by name. It requires wording that is "clear, not misleading, and easy to read and understand", suited to the comprehension of all groups of data subjects, and recommends the language suited to the target audience. For an app aimed at Saudi or wider Gulf users, that points to Arabic, usually alongside English.
 
-**Apple** requires a privacy policy URL on the listing, plus privacy "nutrition label" declarations describing what you collect and whether it is linked to identity or used for tracking. **The label must match the policy and both must match actual SDK behaviour.** Apple's automated analysis inspects what your binary does.
+**Do not machine-translate it.** A legal page that reads as machine output undermines the trust it exists to build. Have a fluent reviewer check it.
 
-**Google Play** requires a policy URL and a Data Safety form covering collection, sharing, and security practices. Play also requires the policy to be reachable from within the app, not only from the store listing.
+**Use the regulator's terms.** The Saudi texts use established Arabic terms: جهة التحكم for controller, جهة المعالجة for processor, البيانات الحساسة for sensitive data. Using different words in your policy creates ambiguity.
 
-**The most common rejection cause** is a third-party SDK collecting data the developer did not know about and therefore did not declare. Advertising, analytics, and attribution SDKs are the usual culprits. Audit what your dependencies actually transmit before filling in either form.
+**Say which version governs.** If you publish two languages, add one sentence stating which prevails if they differ. That is a drafting choice, not a legal requirement, and it prevents an argument later.
 
 ---
 
 ## Keeping it accurate
 
-A policy is accurate on the day it ships and drifts from then on. Two habits keep it honest:
+**Tie policy review to adding a vendor.** A new analytics tool, crash reporter or AI API changes what the policy should say. Put "does this change the privacy policy?" on the checklist for adding a dependency. Apple lets you update your privacy details at any time without a new app build.
 
-**Tie policy review to the vendor decision.** Adding an analytics tool, a crash reporter, or an AI API changes what your policy should say. Make "does this change the privacy policy?" a line in the checklist for adding a dependency.
-
-**Version and timestamp it.** You need to prove which policy version a user consented to, which means each version needs an identifier and a date. This is also what your consent records reference — see the [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) on timestamped consent.
+**Version and date it.** Saudi Article 11(1)(d) of the Implementing Regulations asks for consent documented in a way you can verify later, which in practice means knowing which policy version a user saw. Give each version an identifier and a date; see the [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) on consent records.
 
 ---
 
 ## Checklist
 
-- [ ] Data map completed from the codebase, not from memory
-- [ ] Every sentence in the policy is true of the product today
-- [ ] Legal entity name and a working privacy contact
-- [ ] Specific data categories with a purpose for each
-- [ ] Lawful basis stated, especially where it is not consent
-- [ ] Real retention periods you can honour
-- [ ] Third parties named or clearly categorised
-- [ ] Transfer statement matching where data actually lives
-- [ ] All user rights listed with the actual mechanism
-- [ ] Arabic and English, reviewed by a fluent speaker
-- [ ] Governing-version clause
-- [ ] Apple privacy labels match the policy and the binary
-- [ ] Google Data Safety form matches the policy
-- [ ] Policy reachable from inside the app
-- [ ] Versioned and dated, referenced by consent records
+- [ ] Data map built from the codebase and vendor list
+- [ ] Every sentence true of the product today
+- [ ] Legal entity name, activities and a working privacy contact
+- [ ] DPO details, if you must appoint one
+- [ ] Data categories, mandatory or optional, with a purpose and legal basis for each
+- [ ] Recipients named or clearly categorised, including SDKs
+- [ ] Storage locations and a transfer statement that matches reality
+- [ ] Retention periods and destruction methods you can honour
+- [ ] Rights listed with the actual mechanism and response time
+- [ ] Complaint route, including the competent authority
+- [ ] Clear wording in the audience's language, reviewed by a fluent speaker
+- [ ] Policy URL in App Store Connect and Play Console, and a link inside the app
+- [ ] Apple privacy details and Google Data safety form consistent with the policy
+- [ ] Update log, version identifier and date
 
 ---
 
 ## Related reading
 
-- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide) — which law applies to you.
-- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) — consent records and user rights.
-- [UAE data protection law](/en/blog/uae-data-protection-guide) — lawful bases beyond consent.
-- [Data residency in the Gulf](/en/blog/data-residency-gulf) — accurate transfer statements.
-- [App store requirements](/en/blog/app-store-requirements) — the wider review picture.
+- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide): which law applies to you.
+- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide): consent records and user rights.
+- [UAE data protection law](/en/blog/uae-data-protection-guide): lawful bases beyond consent.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf): accurate transfer statements.
+- [App store requirements](/en/blog/app-store-requirements): the wider review picture.
 
 ---
 
 ## Frequently asked questions
 
-### Can I use a privacy policy template or generator?
+### Does a Saudi privacy policy have to be in Arabic?
 
-As a structural starting point, yes — but every clause must then be verified against what your product actually does. A template unchanged is worse than no policy, because it is a written statement of practices you do not follow, which is exactly what a regulator or enterprise buyer would use as evidence of non-compliance.
+SDAIA's guideline does not name a language. It requires clear, easy, non-misleading wording suited to the people whose data you collect, and recommends the language suited to that audience. For an app aimed at Saudi users, that means Arabic in practice; publishing English alongside it is a business choice.
 
-### Does my privacy policy need to be in Arabic?
+### What must a privacy policy contain under the Saudi PDPL?
 
-For Gulf markets, yes. Users and regulators expect it, and machine translation of a legal document is visible and undermines credibility. Have a fluent speaker review it, use the established Arabic renderings of regulatory terms, and state which language version governs if the two diverge.
+Article 12 lists the purpose of collection, the data collected, how it is collected and stored, how it is processed and destroyed, and the data subject's rights and how to exercise them. SDAIA's guideline adds your official name and activities, contact details, DPO details where required, legal basis, recipients, storage locations, retention, security measures and how to complain to the competent authority.
 
-### What happens if my policy does not match what my app collects?
+### Does an app with no accounts and no personal data need a privacy policy?
 
-App stores reject on this — Apple compares privacy labels against actual binary behaviour, and Google requires the Data Safety form to match. Beyond rejection, a mismatch is documented evidence of non-compliance if a regulator ever asks. The usual cause is a third-party SDK collecting data the developer never audited.
+Yes for Google Play, which requires a policy even for apps that access no personal or sensitive data. Apple lists the privacy policy URL as a required field in App Store Connect. And if you use analytics or crash reporting, you are probably collecting device identifiers anyway.
 
-### How often should I update my privacy policy?
+### Can the privacy policy be a PDF or sit only on the store listing?
 
-Whenever data handling changes — a new analytics tool, a new third-party service, a new data type, or a hosting move. The practical habit is making "does this change the privacy policy?" part of the checklist for adding any dependency, rather than scheduling periodic reviews that drift.
+Not on Google Play: the policy must be at a public, active, non-geofenced URL and cannot be a PDF, and there must be a link or text inside the app. Apple also requires an easily accessible link inside the app, not only in App Store Connect.
 
-### Do I need a privacy policy for a simple app with no accounts?
+### Do I have to name each third-party vendor?
 
-Almost certainly yes. If you use any analytics or crash reporting, you are collecting device identifiers, which is personal data. Both app stores require a policy URL regardless of whether your app has accounts.
+Neither SDAIA's guideline nor the store rules require vendor names; they require you to describe who receives data. Naming vendors is clearer for users and enterprise buyers, but the list then has to change whenever your vendors do. A data map makes that a quick edit.
 
-### What is the difference between a privacy policy and terms of service?
+### How fast must I answer a user's request made under the policy?
 
-A privacy policy describes how you handle personal data and is a compliance requirement. Terms of service govern the commercial relationship — acceptable use, liability, payment, termination. They serve different purposes and should be separate documents; burying privacy terms inside terms of service is one of the ways consent fails to qualify as valid.
-
-### Should I list specific vendors or just categories?
-
-Categories satisfy the minimum, but naming specific vendors is more useful to users and increasingly expected by enterprise buyers. The tradeoff is maintenance — a named list must be updated when vendors change. If you keep a data map, that update is trivial.
+Under Article 3 of the Saudi Implementing Regulations, within 30 days, extendable by up to 30 more if the request needs unusual effort and you tell the user in advance with reasons. Build the request flow so you can meet that window.
 
 ---
 
-## Conclusion
+## Next step
 
-**Write the data map first.** The policy is a rendering of the map, and teams that skip the map end up with a document nobody can verify.
-
-**Accuracy beats completeness.** A short policy that is true is more defensible than a comprehensive one describing a product you do not have.
-
-**And treat the app store forms as part of the same artefact.** Apple's labels, Google's Data Safety form, and your policy must agree with each other and with what your code actually does — a mismatch in any direction is the most common reason for rejection.
-
-**Need a policy that matches your product?** [Get in touch](/en/contact) — we build the data map alongside the product rather than after it. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).
+The policy is only as accurate as the data map behind it, and the map is easiest to build while the product is being built. If you want a policy that matches your codebase and your store declarations line for line, [send us what you have](/en/contact) and we will start from your data map.

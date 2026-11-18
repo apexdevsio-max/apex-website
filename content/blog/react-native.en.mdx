@@ -1,155 +1,155 @@
 ---
-{"slug":"react-native","title":"React Native: A Complete Guide for Android and iOS","excerpt":"A comprehensive guide to React Native — how it works, its strengths and limitations, and a practical comparison with Flutter to help you choose.","date":"2026-05-20","dateModified":"2026-08-14"}
+{"slug": "react-native", "title": "React Native: A Complete Guide for Android and iOS", "excerpt": "What React Native is, how its New Architecture works, where it is strong and weak, and what a React Native app costs, as of November 2026.", "categories": ["mobile"], "keywords": ["React Native", "JavaScript", "cross-platform", "mobile development", "React Native vs Flutter", "app development"], "date": "2026-05-21", "dateModified": "2026-11-17", "summary": ["React Native is Meta's open-source framework for building iOS and Android apps with React in JavaScript or TypeScript; at runtime each component becomes the platform's own native view.", "The New Architecture (JSI, the Fabric renderer and Turbo Native Modules) became the default in React Native 0.76 in October 2024, and since 0.82 in October 2025 it is the only architecture: the legacy bridge can no longer be switched on.", "React Native fits teams that already write React or want to share code with a React web app, and Expo's EAS Update can ship JavaScript, styling and image fixes without a new store build, though native code changes still need one.", "On our published rate card (as of November 2026) a React Native app is priced like any cross-platform build: $5,000–$15,000 for a simple app, $15,000–$45,000 for a mid-complexity app and $45,000–$100,000 for an advanced app or platform."], "sources": [{"title": "React Native blog — React Native 0.82: A New Era (October 2025)", "url": "https://reactnative.dev/blog/2025/10/08/react-native-0.82"}, {"title": "React Native blog — The New Architecture is Here (October 2024)", "url": "https://reactnative.dev/blog/2024/10/23/the-new-architecture-is-here"}, {"title": "React Native docs — Core Components and Native Components", "url": "https://reactnative.dev/docs/intro-react-native-components"}, {"title": "React Native docs — I18nManager", "url": "https://reactnative.dev/docs/i18nmanager"}, {"title": "Expo docs — EAS Update introduction", "url": "https://docs.expo.dev/eas-update/introduction/"}]}
 ---
 
-![React Native Banner](/images/blog/react-native/react-native-hero-banner.jpeg)
+![React Native banner](/images/blog/react-native/react-native-hero-banner.jpeg)
 
-# React Native: A Complete Guide to Building Android and iOS Apps with JavaScript
+**[React Native](https://reactnative.dev/) is Meta's open-source framework for building Android and iOS apps from one [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) or TypeScript codebase using React.** Unlike a web app wrapped in a shell, the components you write become the platform's own native views at runtime. Since React Native 0.82 (October 2025) every app runs on the **New Architecture** — JSI, the Fabric renderer and Turbo Native Modules — which removed the old asynchronous bridge behind most historical performance complaints.
 
-[React Native](https://reactnative.dev/) is one of the most widely used cross-platform mobile frameworks, letting teams build apps that run on **Android** and **iOS** from a single [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) codebase while keeping performance close to native.
-
-This approach cuts development cost and shortens time to market, which is why it became a default choice for startups and technology companies. If you are also weighing [Flutter](/en/blog/flutter), the comparison section below will help you decide.
-
-> "The biggest mistake we made as a company was betting too much on HTML instead of native."
->
-> — Mark Zuckerberg, Meta (2012)
-
-In 2012, Mark Zuckerberg admitted that leaning too heavily on web technology inside mobile apps had been a strategic mistake. Facebook's apps were built on [HTML5](https://developer.mozilla.org/en-US/docs/Glossary/HTML5), which produced weak performance and an unstable experience. The company later moved toward native components — the shift that paved the way for React Native.
+It is the natural choice for a team that already writes React. On our published rate card, a React Native app costs the same as any cross-platform build: **$5,000–$15,000** for a simple app up to **$45,000–$100,000** for an advanced platform, as of November 2026.
 
 ---
 
 ## What is React Native?
 
-React Native is an open-source framework from Meta built on the [React](https://react.dev/) library for user interfaces. Unlike web development, it renders native components rather than HTML.
+React Native is an open-source framework from Meta built on the [React](https://react.dev/) library. You write your interface with familiar React components, and React Native renders them with the operating system's own UI elements rather than HTML.
 
-The core idea: you write your interface in JavaScript with familiar React syntax, but what appears on screen is not a web page inside a miniature browser — it is **genuine native UI elements** provided by the operating system itself. The button you write becomes a `UIButton` on iOS and an `android.widget.Button` on Android.
+The official [Core Components documentation](https://reactnative.dev/docs/intro-react-native-components) spells out the mapping: "At runtime, React Native creates the corresponding Android and iOS views for those components."
 
-This is what separates React Native from older WebView-based hybrid apps. Those were websites disguised as apps, and users could tell immediately.
+| React Native component | Android view | iOS view |
+|---|---|---|
+| `<View>` | `ViewGroup` | `UIView` |
+| `<Text>` | `TextView` | `UITextView` |
+| `<Image>` | `ImageView` | `UIImageView` |
+| `<ScrollView>` | `ScrollView` | `UIScrollView` |
+| `<TextInput>` | `EditText` | `UITextField` |
+
+This is what separates React Native from older WebView-based hybrid apps, which were websites running inside an app shell. The difference between the categories is covered in [Native vs Hybrid Apps](/en/blog/native-vs-hybrid-app).
 
 ---
 
-![React Native Bridge](/images/blog/react-native/react-native-bridge.jpeg)
+![React Native bridge architecture](/images/blog/react-native/react-native-bridge.jpeg)
 
 ## How React Native works (the internal architecture)
 
-Understanding the internals explains both the framework's strengths and its limits.
+Your application logic — calculations, state, network calls — runs as JavaScript. The interface is drawn by native views on the platform's UI thread. What matters is how the two talk to each other.
 
-A React Native app runs on **two main threads**:
+### The old architecture: the asynchronous bridge
 
-1. **The JavaScript thread** — executes your application logic: calculations, state management, network calls.
-2. **The main (native/UI) thread** — draws the interface and receives user touches.
+In the original design, JavaScript and native code communicated over a **bridge**. As the React Native team describes it, rendering a component or calling a native function meant serialising the call and enqueuing it on the bridge, to be processed asynchronously. That caused bottlenecks with frequent updates and large objects, made 60+ FPS hard to reach, and produced bugs such as lists briefly showing empty space during fast scrolling.
 
-Between them sits a communication layer. In the older architecture this was called the **JavaScript Bridge**, passing asynchronous messages serialised as JSON. That layer was the framework's **most notorious bottleneck**: pushing large volumes of data across it — a long list during fast scrolling, for example — caused messages to queue and visible stutter to appear.
+### The New Architecture: now the only one
 
-### The new architecture (JSI and Fabric)
+The New Architecture was available as an opt-in from React Native 0.68, became the **default in 0.76 (October 2024)**, and since **[React Native 0.82](https://reactnative.dev/blog/2025/10/08/react-native-0.82) (October 2025)** is the only architecture — setting `newArchEnabled=false` on Android or `RCT_NEW_ARCH_ENABLED=0` on iOS is now ignored. React Native 0.81 was the last version that allowed the legacy architecture.
 
-Since version 0.68, Meta has been rolling out a new architecture that addresses this at the root:
+According to [The New Architecture is Here](https://reactnative.dev/blog/2024/10/23/the-new-architecture-is-here), it consists of:
 
-- **JSI (JavaScript Interface):** lets JavaScript call native functions **directly** without JSON serialisation, removing the primary bottleneck.
-- **Fabric:** a new rendering system that makes UI updates more synchronous and responsive.
-- **TurboModules:** loads native modules on demand rather than all at startup, reducing launch time.
+- **JSI (JavaScript Interface):** direct communication between JavaScript and native code, replacing the bridge. Native modules can now be called synchronously and return values that reference native objects.
+- **The new renderer (Fabric):** stores the view hierarchy in an immutable tree, so React can work on several versions of the UI at once, interrupt a low-priority update for urgent input, and read layout synchronously in `useLayoutEffect` before the user sees a frame.
+- **Turbo Native Modules:** modules are loaded lazily, only when they are actually needed, rather than all at startup.
 
-**What this means in practice:** many of the performance criticisms you will read in older articles (2019–2021) no longer hold. If you are evaluating React Native based on a four-year-old post, you are evaluating a different framework.
+**What this means in practice:** performance criticism written against the bridge-era framework describes something that no longer ships. Evaluate React Native on its current version, not on a post from before 2024.
 
-The framework also provides [Fast Refresh](https://reactnative.dev/docs/fast-refresh), which reflects your edits on a device in under a second without losing application state — one of the strongest reasons development moves quickly on it.
+Development also moves quickly thanks to [Fast Refresh](https://reactnative.dev/docs/fast-refresh): most edits are visible "within a second or two", and React local state in function components is preserved by default.
 
 ---
 
 ## Advantages of React Native
 
-- **One codebase for two platforms**, typically saving 30–40% of development time and cost.
-- **Reusable team expertise:** any React web developer can move to mobile in weeks rather than months.
-- **Shared business logic** between web and mobile (validation, data models, API calls).
-- **Enormous ecosystem:** millions of npm packages, plus mature libraries for navigation, state, and animation.
-- **Over-the-air updates:** with tools like [Expo](https://expo.dev/) you can ship a fix to users without waiting for store review — something native development cannot offer.
-- **Native code escape hatch** for any component that needs bespoke performance.
+- **One codebase for two platforms**, with platform-specific code only where you need it.
+- **Reusable team expertise:** React web developers already know the component model, hooks, state libraries and tooling.
+- **Shared business logic** between web and mobile (validation, data models, API clients).
+- **Large ecosystem:** the npm registry plus mature libraries for navigation, state and animation.
+- **Over-the-air updates:** [Expo's EAS Update](https://docs.expo.dev/eas-update/introduction/) can update an app's "non-native pieces (such as JS, styling, and images)" without a store submission. Native code, native dependencies, permission changes and SDK upgrades still need a new binary, and updates must follow App Store and Play Store guidelines.
+- **Native code escape hatch** for any component that needs bespoke performance or a platform API.
 
 ---
 
-## Limitations of React Native (honestly)
+## Limitations of React Native
 
-No framework is perfect, and these constraints are real:
-
-- **Performance in very heavy scenarios:** 3D games, live video processing, or complex 60fps graphics — native still wins.
-- **Third-party dependency:** covering some OS capabilities means relying on community packages whose maintenance can lag.
-- **App size:** several megabytes larger than a native equivalent because the JavaScript engine ships with it.
-- **Upgrade pain:** moving between major versions was historically painful, though modern upgrade tooling has improved this considerably.
-- **Delayed support for new OS features:** a new iOS capability may take weeks before a stable package exists.
+- **Very heavy graphics or media:** 3D games, live video processing or complex real-time graphics are better served by native code or a game engine.
+- **Third-party dependency:** some OS capabilities are only available through community packages, whose maintenance can lag.
+- **App size:** the JavaScript engine ships inside the app, so a minimal React Native app is larger than a bare native one.
+- **Upgrades:** moving between versions takes deliberate work — the 0.82 switch, for example, required every library you use to support the New Architecture.
+- **New OS features arrive late:** a new iOS capability may need a native module before you can use it.
+- **RTL needs attention:** right-to-left layout is governed by [`I18nManager`](https://reactnative.dev/docs/i18nmanager), whose RTL switches only apply once the app has been relaunched; the documentation also recommends keeping `forceRTL` for development and testing. Arabic-first apps should design their language switching around this — see [Arabic and RTL in React Native](/en/blog/react-native-rtl-arabic).
 
 ---
 
-## React Native vs Flutter — a practical comparison
+## React Native or Flutter?
 
-This is the real decision most teams face. There is no absolute answer, only the one that fits your context.
-
-| Criterion | React Native | Flutter |
-|---|---|---|
-| Language | JavaScript / TypeScript | Dart |
-| Rendering | Native OS components | Custom engine (Impeller/Skia) |
-| Default look | Matches each platform automatically | Consistent across both |
-| Learning curve | Easy for React teams | Requires learning Dart |
-| Graphics performance | Excellent since the new architecture | Excellent and consistent |
-| Arabic / RTL support | Good, needs manual tuning | Excellent, deeply built in |
-| Community size | Enormous (npm ecosystem) | Large and growing fast |
-| OTA updates | Available via Expo | Limited |
-
-**Choose React Native if:** you have a React web team · you want to share code between web and mobile · you need instant updates without store review · hiring is a priority (JavaScript developers are more plentiful).
-
-**Choose Flutter if:** you are starting from scratch with no legacy · you want a precisely controlled, unified visual identity · your project depends on complex Arabic RTL interfaces · you need perfectly consistent graphics performance.
-
-At APEX we use **Flutter as our default** for most Gulf business apps because of its mature Arabic support, but we choose React Native when a client has an existing React team or needs code sharing with a web platform. The decision follows your project, not our preference. See our [mobile app development services](/en/services/mobile-apps) for how we scope projects.
+React Native maps your components to native views and suits teams that already write React or want to share code with a React web app; [Flutter](/en/blog/flutter) draws its own widgets in Dart and suits fresh teams and products that need a pixel-identical design system. The full side-by-side, with a decision framework, lives in [Flutter vs React Native: Which Should You Choose?](/en/blog/flutter-vs-react-native). Framework selection is also one of the first things we settle when scoping [mobile app development](/en/services/mobile-apps) for a client.
 
 ---
 
 ## Well-known apps built with React Native
 
-| App | Scope of use |
-|---|---|
-| Facebook | Portions of the main app |
-| Instagram | Several screens within the app |
-| Discord | Nearly the entire mobile app |
-| Shopify | Merchant applications |
-| Microsoft Office | Parts of the mobile apps |
-| Pinterest | Selected screens |
+The official [React Native showcase](https://reactnative.dev/showcase) lists, among others:
 
-An important nuance: most of these companies use React Native **partially**, embedded inside a native app. That common and successful pattern is known as the brownfield approach, and it demonstrates the framework is production-ready at scale.
+| Company | Apps listed |
+|---|---|
+| Meta | Facebook, Facebook Ads Manager, Meta Horizon; Instagram on Meta Quest |
+| Microsoft | Office, Outlook, Teams, Xbox Game Pass |
+| Amazon | Amazon Shopping, Alexa, Photos |
+| Wix | Its entire suite of apps, which Wix calls "one of the largest React Native code bases in the world" |
+
+Many of these companies use React Native **alongside** native code inside an existing app — the brownfield approach — rather than for the whole product. The showcase does not say how much of each app is React Native.
+
+---
+
+## What a React Native app costs
+
+The framework does not change the price bracket; scope does. Ranges from our published rate card, as of November 2026:
+
+| Tier | Typical build time | USD |
+|---|---|---|
+| Simple app | 6–10 weeks | $5,000 – $15,000 |
+| Mid-complexity app | 3–5 months | $15,000 – $45,000 |
+| Advanced app or platform | 5–9 months | $45,000 – $100,000 |
+
+In Saudi riyals that is SAR 18,800–56,300, SAR 56,300–168,800 and SAR 168,800–375,000 respectively. The full method, with AED and QAR, is in [App Development Cost in the Gulf](/en/blog/mobile-app-development-cost-gulf).
 
 ---
 
 ## When not to use React Native
 
-Honesty here saves you months of wasted work. Avoid it if your project is:
+Avoid it if your project is:
 
 - **A game** — use Unity or Godot.
-- **Heavily media-processing** such as video editing or real-time camera effects.
-- **A simple single-platform app** — native is faster and lighter in that case.
-- **Dependent on brand-new OS features at launch** — waiting for library support will block you.
+- **Heavily media-processing**, such as video editing or real-time camera effects.
+- **A simple app for one platform only** — Swift or Kotlin alone will be lighter.
+- **Dependent on brand-new OS features at launch** — waiting for module support will block you.
 
 ---
 
 ## Frequently asked questions
 
-### Is React Native suitable for large projects?
-Yes. It runs in production products with millions of users, such as Discord and Shopify. The challenge in large projects is architectural discipline and state management, not the framework itself.
+### Is the React Native bridge still used?
 
-### Is it better than Flutter?
-There is no absolute "better". See the comparison table above: React Native wins when you have a React team; Flutter wins on visual control and Arabic support. For a full guide, read the **[complete Flutter guide](/en/blog/flutter)**.
+No. Since React Native 0.82 the New Architecture is the only architecture, and the flags that used to switch back to the legacy bridge are ignored. Some legacy APIs remain in the codebase for compatibility, and interop layers will stay for the foreseeable future, but apps run on JSI and the new renderer.
 
-### Can it be used for the web?
-Yes, via React Native Web, which allows substantial code sharing between mobile and browser. In practice it suits dashboards and internal tools better than marketing websites.
+### Which version made the New Architecture the default?
+
+React Native 0.76, released in October 2024. It had been available as an opt-in since 0.68; 0.81 was the last version that let you turn it off, and 0.82 (October 2025) removed that option.
+
+### Can I push a fix without App Store or Play Store review?
+
+Partly. With Expo's EAS Update you can ship changes to JavaScript, styling and images over the air. Changes to native code, native dependencies or permissions require a new build through the stores, and updates must still respect store guidelines.
 
 ### How much does a React Native app cost?
-Cost follows project scope, not the framework. A basic app starts around $8,000 and complex platforms can exceed $120,000. See our detailed guide: [mobile app development cost in the Gulf](/en/blog/mobile-app-development-cost-gulf).
 
-### Does it support Arabic and RTL?
-Yes, through the built-in `I18nManager` API. However, support requires more manual tuning than Flutter, particularly for mirroring graphics and animations. This matters when building for the Gulf market.
+From our published rate card, as of November 2026: $5,000–$15,000 for a simple app, $15,000–$45,000 for a mid-complexity app, and $45,000–$100,000 for an advanced app or platform. Backend scope and integrations move the figure more than the framework.
+
+### How does React Native handle Arabic right-to-left layouts?
+
+Through the `I18nManager` module, which exposes `isRTL` and lets you allow or force a right-to-left layout. Those settings persist but are applied on the next launch, so an in-app Arabic/English switch has to relaunch the app. Icons, animations and some third-party components need checking in RTL.
+
+### Can React Native code be shared with a website?
+
+Validation rules, data types and the code that calls your API carry over well to a React web app. Sharing the UI itself is possible through community projects such as React Native Web, which is best suited to app-like screens rather than marketing pages.
 
 ---
 
-## Conclusion
+## Choosing with your own constraints
 
-React Native offers a practical balance between development speed and performance, and its new architecture (JSI and Fabric) has addressed its most significant historical criticisms.
-
-It is the stronger choice when you have an existing React team, need code sharing between web and mobile, or want instant updates without waiting on app stores. If you are starting from scratch and targeting Arabic audiences with complex RTL interfaces, [Flutter](/en/blog/flutter) may suit you better.
-
-**Need help choosing the right technology for your project?** [Get in touch](/en/contact) and we will give you a straight opinion based on your requirements — even if the recommendation is not to build an app at all.
+React Native is the stronger choice when you already have React skills in-house, a React web product to share code with, or a release cadence that benefits from over-the-air JavaScript updates. If none of those describe you, the decision is genuinely open. [Tell us about your team and the app you have in mind](/en/contact), and we will recommend a framework for that situation — or tell you if a website would do the job without an app.

@@ -1,130 +1,153 @@
 ---
-{"slug":"app-performance-optimization","title":"App Performance Optimisation: A Practical Guide by Priority","seoTitle":"App Performance Optimisation Guide","excerpt":"A technical guide to optimising mobile app performance — what users actually notice, how to prioritise, and how to measure before you optimise.","date":"2026-07-30","dateModified":"2026-07-30"}
+{"slug":"app-performance-optimization","title":"App Performance Optimisation: A Practical Guide by Priority","seoTitle":"App Performance Optimisation Guide","excerpt":"A technical guide to optimising mobile app performance — what users actually notice, how to prioritise, and how to measure before you optimise.","categories":["mobile"],"keywords":["app performance","optimisation","startup time","image optimisation","battery usage"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Optimise a mobile app in this order: measure on a real mid-range device, then fix oversized images, long lists that build every item, excess network calls, heavy startup work, and finally app size.","Google Play's Android vitals treat a cold start of 5 seconds or more, a warm start of 2 seconds or more, and a hot start of 1.5 seconds or more as excessive.","At 60 Hz a Flutter app has about 16 milliseconds per frame (roughly 8 ms to build and 8 ms to render), and Flutter's documentation says performance should be measured in profile mode on a physical device, not in debug mode or an emulator.","Long lists should use lazy builders such as Flutter's ListView.builder or React Native's virtualised FlatList, so only items near the screen are built."],"sources":[{"title":"Android Developers — App startup time in Android vitals (excessive start thresholds)","url":"https://developer.android.com/google/play/vitals/launch-time"},{"title":"Android Developers — Android vitals core vitals and bad behaviour thresholds","url":"https://developer.android.com/topic/performance/vitals"},{"title":"Flutter docs — Performance best practices (lazy lists, 16 ms frame budget)","url":"https://docs.flutter.dev/perf/best-practices"},{"title":"Flutter docs — Impeller rendering engine (default renderer status)","url":"https://docs.flutter.dev/perf/impeller"},{"title":"Apple Developer — Reducing your app's launch time","url":"https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time"}]}
 ---
 
 # App Performance Optimisation: A Practical Guide by Priority
 
-Most performance work is spent in the wrong place — a developer spends a week optimising an algorithm while the real problem is an uncompressed image loading on every screen.
+**Measure first, on a real mid-range device, then fix in this order: oversized images, long lists that build every item at once, excess network calls, heavy startup work, and app size.** Google Play gives you the yardstick for the most visible metric: [Android vitals](https://developer.android.com/google/play/vitals/launch-time) treat a cold start of 5 seconds or more, a warm start of 2 seconds or more, and a hot start of 1.5 seconds or more as excessive.
 
-**The governing rule: don't optimise before you measure.** And the second rule: **optimise what users notice, not what looks technically interesting.**
+A lot of performance work goes to the wrong place. A developer spends a week optimising an algorithm while the real problem is an uncompressed image loading on every screen. So there are two rules: **don't optimise before you measure**, and **optimise what users notice, not what looks technically interesting.**
 
 ---
 
 ## What do users actually notice?
 
-In order, from most to least noticeable:
+Roughly in order of visibility:
 
-**1. Startup time.** The first impression, and the biggest driver of deletion. Users compare your app to the fastest one on their device.
+**1. Startup time.** The first impression. Apple's guidance is that an app "needs to be ready to help the user with a task as soon as possible", and on iOS the system watchdog terminates an app that takes too long to launch.
 
-**2. Touch responsiveness.** A delay after tapping reads as a malfunction. Users tap again, compounding the problem.
+**2. Touch responsiveness.** A delay after tapping reads as a malfunction. Users tap again, compounding the problem. On Android, a frozen main thread eventually becomes an ANR (app not responding), which Google Play tracks as a core vital.
 
 **3. Scroll smoothness.** Stutter in long lists is noticed immediately and reads as poor quality.
 
 **4. Data loading time.** Acceptable with a clear indicator; unacceptable when the screen is blank with no explanation.
 
-**5. Battery consumption.** Not noticed immediately, but a leading cause of deletion after a week.
+**5. Battery drain.** Not noticed immediately, but users do notice an app that empties the battery, and Android vitals tracks excessive partial wake locks as a core vital.
 
-**6. App size.** Affects the download decision itself, especially on limited connections.
+**6. App size.** Affects the decision to download in the first place, especially on limited connections.
 
-**What users don't notice:** the efficiency of an algorithm running once, or an optimisation saving a millisecond in a non-repeated operation.
+**What users don't notice:** the efficiency of an algorithm that runs once, or an optimisation that saves a millisecond in an operation that doesn't repeat.
 
 ---
 
 ## First: measure before optimising
 
-**Without measurement, you are guessing.** And guessing in performance is expensive because it consumes time with no noticeable result.
+**Without measurement, you are guessing.** And guessing is expensive here, because it uses up time without a noticeable result.
 
 **What to measure:**
 
-| Metric | What it tells you |
-|---|---|
-| Cold start time | The user's first impression |
-| Frame rate during scrolling | Experience smoothness |
-| API response time | Where the delay is — network or device |
-| Memory consumption | Risk of sudden termination |
-| App bundle size | The download barrier |
+| Metric | What it tells you | Published yardstick |
+|---|---|---|
+| Cold start time (time to initial display) | The user's first impression | Android vitals: 5 s or more is excessive |
+| Warm and hot start | Returning to the app | 2 s and 1.5 s or more are excessive |
+| Frame time while scrolling | Smoothness | About 16 ms per frame at 60 Hz in Flutter |
+| ANR and crash rate | Whether the app freezes or dies | Play bad-behaviour thresholds: 0.47% ANR, 1.09% crashes overall |
+| API response time | Where the delay is: network or device | Your own baseline |
+| Memory use | Risk of the system killing the app | Android vitals memory thresholds by device RAM tier |
+| App bundle size | The download barrier | Compare against your previous release |
 
-**Measure on real mid-range devices** — and for the standard web metrics see [Google's Core Web Vitals](https://web.dev/articles/vitals) — not your latest handset. Actual users in the market run considerably slower hardware than a developer's device, and that gap hides most problems.
+**Measure on real mid-range devices, in profile or release builds.** Flutter's documentation is explicit: [almost all performance debugging should happen on a physical device in profile mode](https://docs.flutter.dev/perf/ui-performance), because debug builds run extra checks and compile code just in time, and emulators have different performance characteristics. It also says to check performance "on the slowest device that your users might reasonably use."
+
+On Android, Google notes that memory usage and bitmap memory usage are now core vitals, and apps exceeding those thresholds may see store visibility impact starting from February 2027. That makes memory worth measuring now, not later.
+
+If you would like a team to run this measurement and fix what it finds, that is part of our [mobile app development service](/en/services/mobile-apps), both for new builds and existing apps.
 
 ---
 
-## Second: the biggest wins — in order
+## Second: the biggest wins, in order
 
-### 1. Images — the biggest win in most apps
+### 1. Images: the biggest win in most apps
 
 Images are usually the largest consumer of network and memory, and the easiest thing to optimise.
 
-- **Correct size** — don't load a 2000px image to display at 100px. Request the right size from the server.
-- **Modern formats** — WebP or AVIF instead of JPEG/PNG where possible.
-- **Lazy loading** — don't load images below the fold before reaching them.
-- **Caching** — an image loaded once shouldn't load again.
-- **A placeholder during loading** — prevents layout shift.
+- **Correct size.** Don't load a 2000px image to display at 100px. Request the right size from the server.
+- **Modern formats.** WebP or AVIF instead of JPEG/PNG where the platform supports them.
+- **Lazy loading.** Don't load images below the fold before the user reaches them.
+- **Caching.** An image loaded once shouldn't load again.
+- **A placeholder while loading**, so the layout doesn't jump.
 
 ### 2. Long lists
 
-Use optimised lists (`ListView.builder` in Flutter, `FlatList` in React Native) that build only visible items.
+Use lazy list builders that only build what is near the screen. Flutter's [performance best practices](https://docs.flutter.dev/perf/best-practices) say to use builder methods such as `ListView.builder` so "only the visible portion of the screen is built", and to avoid `Column()` or `ListView()` with a concrete list of children when most are off-screen. In React Native, [`FlatList`](https://reactnative.dev/docs/optimizing-flatlist-configuration) is virtualised the same way: it mounts items in a window around the viewport and renders more in batches as you scroll.
 
-**Don't build 1,000 items at once.** This is the most common cause of scroll stutter.
+**Don't build 1,000 items at once.** It is a very common cause of scroll stutter.
 
 ### 3. Network
 
-- **Reduce request count** — one request fetching what you need beats five.
-- **Fetch only what you need** — don't load fields you never display.
-- **Paginate results** — don't fetch 500 records to show 20.
-- **Cache** — data that doesn't change every second doesn't need fetching every time.
-- **Compress responses** — enabling compression on the server is a free win.
+- **Make fewer requests.** One request that fetches what you need beats five.
+- **Fetch only what you need.** Don't load fields you never display.
+- **Paginate.** Don't fetch 500 records to show 20.
+- **Cache.** Data that doesn't change every second doesn't need fetching every time.
+- **Compress responses.** Turning on compression at the server costs nothing.
 
 ### 4. Startup
 
-- **Defer what can be deferred** — don't initialise everything at launch.
-- **Show something immediately** — a skeleton screen beats a white one.
-- **Review third-party libraries** — some initialise heavily at startup.
+Both platforms give the same advice: do only what the first screen needs.
+
+- **Defer what can be deferred.** Apple's [launch-time guidance](https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time) says to do only the work needed for the initial display, defer network sync, and initialise things like persistent storage and location services on first use. Android's guidance says the same: initialise lazily, and load the UI with placeholder data first.
+- **Show something immediately.** A skeleton screen beats a white one.
+- **Review third-party SDKs.** Some initialise heavily at startup; analytics and marketing SDKs can usually start after the first frame.
 
 ### 5. App size
 
-- **Delete unused assets** — images, fonts, and libraries left over from earlier experiments.
-- **Subset fonts** — see our [Arabic web fonts guide](/en/blog/arabic-web-fonts) for the same principle.
-- **Review your dependencies** — a whole library for one function is wasteful.
+- **Measure it properly.** Debug builds are much larger than what users download. In Flutter, build with `--analyze-size` to see the breakdown, per the [app size documentation](https://docs.flutter.dev/perf/app-size).
+- **Use `--split-debug-info`** on Flutter release builds, which the docs say "can dramatically reduce code size".
+- **Delete unused assets**: images, fonts, and libraries left over from earlier experiments.
+- **Subset fonts.** See our [Arabic web fonts guide](/en/blog/arabic-web-fonts) for the same principle on the web.
+- **Review dependencies.** A whole library for one function is wasteful.
 
 ---
 
-## Third: perception matters more than the number
+## Flutter-specific notes
+
+Flutter draws its own UI, so a few issues are specific to it:
+
+- **Rendering engine.** Flutter's current renderer is [Impeller](https://docs.flutter.dev/perf/impeller). It is the only supported renderer on iOS and is enabled by default on Android API 29 and above; older Android versions, or devices without Vulkan support, fall back to the legacy OpenGL renderer automatically. Impeller precompiles its shaders when the engine is built, so they don't compile at runtime. Runtime shader compilation was behind many older complaints about first-run stutter, so if you are reading advice about warming up shaders, check its date.
+- **Frame budget.** At 60 Hz you have about 16 ms per frame, which Flutter's docs split into roughly 8 ms to build and 8 ms to render. The docs add that rendering faster than that still improves battery life and heat.
+- **Expensive widgets.** Avoid the `Opacity` widget in animations (use `AnimatedOpacity` or `FadeInImage`), and watch for widgets that trigger `saveLayer()`, such as `ShaderMask` and `ColorFilter`, which the docs flag as disruptive on mobile GPUs.
+
+For whether Flutter or React Native suits your project in the first place, see [Flutter vs React Native](/en/blog/flutter-vs-react-native). Performance rarely decides that choice in typical business apps.
+
+---
+
+## Third: perceived speed matters as much as the number
 
 **An app that feels fast beats a fast app that feels slow.**
 
-**Skeleton screens.** Instead of a spinner, show the shape of the incoming content. Users perceive progress rather than waiting.
+**Skeleton screens.** Instead of a spinner, show the shape of the content that's coming. Users see progress, not waiting.
 
-**Optimistic updates.** When someone taps "like", update the interface immediately and send the request in the background. If it fails, roll back and apologise — but 99% will succeed and the experience feels instant.
+**Optimistic updates.** When someone taps "like", update the interface immediately and send the request in the background. If the request fails, roll back and tell the user. Use this only for actions that almost always succeed and are cheap to undo; never for payments.
 
 **Preloading.** Load the likely next screen while the user reads the current one.
 
-**Honest progress indicators.** A randomly moving bar is worse than text saying "loading 3 of 10".
+**Honest progress indicators.** A bar that moves at random is worse than text saying "loading 3 of 10".
 
 ---
 
 ## Fourth: battery and memory
 
-**Battery** — the largest consumers: continuous location tracking, frequent background syncing, and constant heavy animation.
+**Battery.** The largest consumers are continuous location tracking, frequent background syncing, and constant heavy animation.
 
-- Use lower location accuracy when it suffices.
-- Batch syncs rather than requesting every minute.
+- Use lower location accuracy when it is enough.
+- Batch syncs instead of requesting every minute.
 - Pause animations when the screen isn't visible.
 
-**Memory** — leaks produce an app that slows with use then terminates suddenly.
+**Memory.** Leaks produce an app that slows down with use and then gets killed by the system.
 
 - Cancel subscriptions and listeners when screens close.
-- Don't retain references to closed screens.
-- Watch image size in memory, not just on disk.
+- Don't keep references to closed screens.
+- Watch the size of decoded images in memory, not just on disk; Android now tracks bitmap memory as its own core vital.
 
 ---
 
-## Fifth: when to stop?
+## Fifth: when to stop
 
 Optimisation has diminishing returns. **Stop when:**
 
-- Metrics are within an acceptable range on mid-range devices.
+- Startup and frame times sit inside the published yardsticks on your slowest target device.
+- Crash and ANR rates are well under Play's thresholds.
 - Users have stopped complaining about slowness.
-- The time invested in optimising is worth more than the gain.
+- The next improvement would cost more time than it is worth.
 
 **Don't optimise what nobody measures and nobody notices.** That time could have built a feature.
 
@@ -132,63 +155,63 @@ Optimisation has diminishing returns. **Stop when:**
 
 ## A quick priority checklist
 
-Go through it in order — the first item that finds a problem is where you start:
+Go through it in order. The first item that turns up a problem is where you start:
 
-1. [ ] Are images loaded larger than displayed?
-2. [ ] Do long lists build every item at once?
-3. [ ] Does the app fetch more data than it displays?
-4. [ ] Does startup initialise things that could be deferred?
-5. [ ] Is there a white screen with no indicator during loading?
-6. [ ] Are subscriptions cancelled when screens close?
-7. [ ] Is location tracking running more than necessary?
-8. [ ] Does the app bundle contain unused assets?
+1. [ ] Are you measuring in a profile or release build, on a real mid-range device?
+2. [ ] Are images loaded larger than they are displayed?
+3. [ ] Do long lists build every item at once?
+4. [ ] Does the app fetch more data than it displays?
+5. [ ] Does startup initialise things that could wait until after the first frame?
+6. [ ] Is there a white screen with no indicator during loading?
+7. [ ] Are subscriptions cancelled when screens close?
+8. [ ] Is location tracking running more than necessary?
+9. [ ] Does the app bundle contain unused assets?
 
 ---
 
 ## Related reading
 
-- [Arabic web fonts](/en/blog/arabic-web-fonts) — the same principle on the web.
-- [Mobile app testing](/en/blog/mobile-app-testing) — measuring on real devices.
-- [Native or hybrid?](/en/blog/native-vs-hybrid-app) — execution decides more than technology.
+- [Mobile app testing](/en/blog/mobile-app-testing): real devices, beta tracks and crash thresholds.
+- [The complete Flutter guide](/en/blog/flutter): the framework, its costs and its limits.
+- [Native or hybrid?](/en/blog/native-vs-hybrid-app): execution decides more than technology.
+- [Website speed optimisation](/en/blog/website-speed-optimization): the same discipline for the web.
 
 ---
 
 ## Frequently asked questions
 
-### Where do I start with a slow app?
+### Where should I start with a slow app?
 
-With measurement rather than code. Run profiling tools on a mid-range device and identify where time actually goes. In most apps you'll find images, network, and long lists consuming the majority — those three usually resolve 80% of problems.
+With measurement, not code. Run a profile build on a mid-range device and find where the time actually goes. In most business apps the first suspects are images, network calls and long lists, so check those before touching algorithms.
 
-### Is optimisation worth the cost?
+### How fast should an app open?
 
-It depends on commercial impact. A slow commercial app loses customers at every step, so optimisation is a direct investment. An internal app for twenty employees tolerates more. Measure impact rather than the technical number alone.
+Google Play's Android vitals flag a cold start of 5 seconds or more, a warm start of 2 seconds or more, and a hot start of 1.5 seconds or more as excessive. Treat those as the outer limit; the apps your users open every day are the real comparison. Showing a skeleton screen within that time matters as much as the full load.
 
-### How do I test performance on weak devices?
+### Is performance work worth the cost for an internal app?
 
-Acquire a mid-range device for testing — don't rely on an emulator or your latest handset. Many problems appear only on slower hardware, which is what a large share of your audience actually uses.
+Less often than for a consumer app. A slow commercial app loses customers at each step, so optimisation pays directly; an internal tool for twenty employees tolerates more. Measure the business impact, not only the technical number.
 
-### Are native apps faster than cross-platform?
+### Are native apps faster than cross-platform ones?
 
-In typical business apps the difference is minimal and users don't notice it. It shows in complex graphics and media processing. **An optimised cross-platform app beats a carelessly built native one** — execution decides more than the technology. See our [native vs hybrid comparison](/en/blog/native-vs-hybrid-app).
+In typical business apps the difference is small and users rarely notice it. It shows up in complex graphics and media processing. **A well-optimised cross-platform app beats a carelessly built native one**, because execution matters more than the technology. See our [native vs hybrid comparison](/en/blog/native-vs-hybrid-app).
 
-### What is an acceptable startup time?
+### Is Flutter still janky on first run?
 
-Less is always better, and the real benchmark is the apps your audience uses daily — those are what they compare you to. More important than the number is showing something immediately (a skeleton screen) rather than a white one, because perception is affected by that more than by milliseconds.
+Much less than older articles suggest. Flutter's current renderer, Impeller, is the only renderer on iOS and the default on Android API 29 and above, and it precompiles its shaders at build time instead of compiling them while the app runs. If an app still stutters, profile it on a device in profile mode; the cause is usually list building, oversized images, or expensive widgets such as `Opacity` in animations.
 
 ### Should I optimise before or after launch?
 
-Fix the obvious problems before launch (oversized images, unoptimised lists, white screens). Defer fine-grained optimisation until you have real usage data — you may discover the screen you optimised is visited by 3% of users.
+Fix the obvious problems before launch: oversized images, lists that build everything, white screens. Leave fine-grained optimisation until you have real usage data, because you may find the screen you were about to optimise is one that few users ever open.
 
 ---
 
-## Conclusion
+## The order that works
 
-**Measure first on real mid-range devices** — optimising without measuring is expensive guesswork.
+1. **Measure** in a profile or release build on a real mid-range device.
+2. **Fix images, lists and network** before anything else.
+3. **Trim startup** to what the first screen needs.
+4. **Work on perceived speed**: skeleton screens and optimistic updates for safe actions.
+5. **Stop** once you are inside the published thresholds and users stop noticing.
 
-**Start with images, lists, and network** — those three resolve most performance problems.
-
-**Optimise perception, not just numbers** — skeleton screens and optimistic updates change the experience more than milliseconds.
-
-**And stop at diminishing returns** — time spent on an optimisation nobody notices could have built a feature.
-
-**Is your app slow and you want a diagnosis?** [Get in touch](/en/contact) — we start with measurement rather than assumption. See our [mobile app development services](/en/services/mobile-apps).
+If your app is slow and you'd like a diagnosis based on measurements, [send us the details](/en/contact). We'll tell you which of these steps your app needs first.

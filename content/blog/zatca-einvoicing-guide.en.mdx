@@ -1,28 +1,45 @@
 ---
-{"slug":"zatca-einvoicing-guide","title":"ZATCA E-Invoicing for Online Stores: What Fatoora Actually Requires","seoTitle":"ZATCA E-Invoicing (Fatoora) for Stores","excerpt":"What Phase Two integration means for a Saudi online store, what it costs to implement, and which platforms handle it for you.","date":"2026-09-10","dateModified":"2026-09-10"}
+{"slug":"zatca-einvoicing-guide","title":"ZATCA E-Invoicing for Online Stores: What Fatoora Actually Requires","seoTitle":"ZATCA E-Invoicing (Fatoora) for Stores","excerpt":"What Phase Two integration means for a Saudi online store, what it costs to implement, and which platforms handle it for you.","categories":["compliance","web-ecommerce"],"keywords":["ZATCA e-invoicing","Fatoora","Phase Two integration","Saudi VAT invoice","e-invoicing store"],"date":"2026-09-10","dateModified":"2026-11-17","summary":["ZATCA's Phase Two (Integration) of e-invoicing has applied in waves since 1 January 2023, starting with taxpayers whose 2021 VAT-subject revenue exceeded SAR 3 billion.","Wave 24 covered taxpayers with VAT-subject revenue above SAR 375,000 in 2022, 2023 or 2024 and had to integrate by 30 June 2026; Wave 25, announced on 24 July 2026, lowers the threshold to SAR 187,500 in any year from 2022 to 2025, with an integration date of 1 February 2027.","Standard (B2B) tax invoices must be cleared by ZATCA before they are shared with the buyer, while simplified (B2C) invoices, the usual case for an online store, must be reported to ZATCA within 24 hours of being generated.","ZATCA notifies each wave at least six months before its integration date, and its directory of solution providers is a non-binding guide rather than a certification."],"sources":[{"title":"ZATCA: Criteria for selecting taxpayers in Wave 25 of the Integration Phase (24 July 2026)","url":"https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx"},{"title":"ZATCA: Criteria set for taxpayers in Wave 24 of E-invoicing (26 September 2025)","url":"https://zatca.gov.sa/en/Pages/news-1426.aspx"},{"title":"ZATCA: E-Invoicing Implementation Resolution (controls, requirements and technical specifications)","url":"https://zatca.gov.sa/en/E-Invoicing/Introduction/LawsAndRegulations/Documents/E-Invoicing%20Implementation%20Resolution_EN.pdf"},{"title":"ZATCA: Phase Two (Integration) starts 1 January 2023 for the first wave (24 June 2022)","url":"https://zatca.gov.sa/en/MediaCenter/News/Pages/E-Invoicing-Phase-2-ntegration.aspx"},{"title":"ZATCA: E-Invoicing Solution Providers Directory","url":"https://zatca.gov.sa/en/E-Invoicing/SolutionProviders/Pages/SolutionProvidersDirectory.aspx"}]}
 ---
 
 # ZATCA E-Invoicing for Online Stores: What Fatoora Actually Requires
 
-If you sell online in Saudi Arabia and are registered for VAT, electronic invoicing is not optional. The Zakat, Tax and Customs Authority requires invoices to be generated, signed, and — in the current phase — transmitted to the authority's platform.
+If your Saudi store's VAT-subject revenue exceeded **SAR 187,500** in any year from 2022 to 2025, ZATCA's Phase Two rules reach you by **1 February 2027** at the latest: that is the Wave 25 integration date ZATCA [announced on 24 July 2026](https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx). From then on, every simplified (consumer) invoice your store issues must carry a cryptographic stamp and be **reported to ZATCA's Fatoora platform within 24 hours**, and every standard (business) invoice must be **cleared by ZATCA before the buyer receives it**.
 
-Most store owners meet this requirement without understanding it, because their platform handles it. That works until it does not: you move to a custom store, you add a second sales channel, or an auditor asks a question nobody can answer.
+Most store owners meet this without understanding it, because their platform handles it. That works until you move to a custom store, add a second sales channel, or an auditor asks a question nobody can answer. This guide sets out the dated facts, what implementing them involves, and where the work sits.
 
-This guide explains what the requirement actually is, what implementing it involves, and where the cost sits.
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-> **A note on scope.** Tax rules change, and thresholds and enrolment waves are announced on a rolling basis. Everything here is general orientation, not tax advice — verify current requirements against [ZATCA's own site](https://zatca.gov.sa/) and confirm your specific obligations with a qualified Saudi tax advisor before acting.
+Tax rules change and ZATCA announces new waves on a rolling basis, so check your own notification and confirm your obligations with a qualified Saudi tax advisor.
 
 ---
 
-## The two phases, briefly
+## The two phases, with dates
 
-**Phase One (Generation)** required businesses to stop issuing handwritten or free-form invoices and produce structured electronic ones instead, with specific mandatory fields and a QR code on simplified invoices.
+**Phase One (Generation)** has applied since **4 December 2021**. Businesses had to stop issuing handwritten or free-form invoices and produce structured electronic ones with mandatory fields, plus a QR code on simplified invoices. This comes from ZATCA's [E-Invoicing Implementation Resolution](https://zatca.gov.sa/en/E-Invoicing/Introduction/LawsAndRegulations/Documents/E-Invoicing%20Implementation%20Resolution_EN.pdf). ZATCA's English text notes that the Arabic version is the official one.
 
-**Phase Two (Integration)** goes further: invoices must be produced in a prescribed XML format, carry a cryptographic stamp, and be exchanged with ZATCA's platform. Standard invoices (business-to-business) require clearance before they are issued; simplified invoices (business-to-consumer) are reported after issuance.
+**Phase Two (Integration)** has applied in waves since **1 January 2023**. Invoices must be produced in ZATCA's XML format, carry a cryptographic stamp, and be exchanged with the Fatoora platform through ZATCA's APIs. The same resolution sets two different models:
 
-For an online store selling to consumers, simplified invoices are the usual case — generated at the moment of sale, carrying a QR code, and reported to ZATCA within the required window.
+| Invoice type | Typical buyer | Model | When |
+|---|---|---|---|
+| Standard tax invoice (and its notes) | Another business (B2B) | **Clearance**: ZATCA validates the invoice and applies its stamp | Before the invoice is shared with the buyer |
+| Simplified tax invoice (and its notes) | A consumer (B2C) | **Reporting**: you stamp and issue, then send to ZATCA | Within **24 hours** of generation |
 
-Phase Two has been rolled out in waves by taxpayer size, with each wave notified in advance. **Which wave you fall into, and by when, is something to confirm directly** rather than infer from an article.
+A store that sells to consumers mostly issues simplified invoices, so the 24-hour reporting window is the one that shapes your system design.
+
+---
+
+## The integration waves
+
+ZATCA picks each wave by VAT-subject revenue and notifies the taxpayers it targets **at least six months before** their integration date. These are the waves at either end of the rollout, from ZATCA's own announcements:
+
+| Wave | Revenue threshold (VAT-subject) | Revenue years counted | Integration date | Announced |
+|---|---|---|---|---|
+| 1 | Above SAR 3 billion | 2021 | From 1 January 2023 | [24 June 2022](https://zatca.gov.sa/en/MediaCenter/News/Pages/E-Invoicing-Phase-2-ntegration.aspx) |
+| 24 | Above SAR 375,000 | 2022, 2023 or 2024 | By 30 June 2026 | [26 September 2025](https://zatca.gov.sa/en/Pages/news-1426.aspx) |
+| 25 | Above SAR 187,500 | 2022, 2023, 2024 or 2025 | 1 February 2027 | [24 July 2026](https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx) |
+
+Waves 2 to 23 fall between these points; your own ZATCA notification gives the date that binds you. If your revenue was above SAR 375,000 in 2022–2024, your integration date has already passed. If it only crossed SAR 187,500, start now: certificate onboarding and testing against Fatoora have to be finished before February 2027, not started then.
 
 ---
 
@@ -30,55 +47,59 @@ Phase Two has been rolled out in waves by taxpayer size, with each wave notified
 
 Your store needs to:
 
-1. **Generate a compliant invoice** for every sale, in the required XML structure with all mandatory fields
-2. **Apply a cryptographic stamp** using a certificate obtained from ZATCA
+1. **Generate a compliant invoice** for every sale, in ZATCA's XML structure with all mandatory fields
+2. **Apply a cryptographic stamp** using a certificate issued through ZATCA's onboarding
 3. **Produce a QR code** encoding the required invoice data
-4. **Transmit to ZATCA** — reporting for simplified invoices, clearance for standard ones
-5. **Store invoices** in compliant form for the required retention period
-6. **Handle failures** — what happens when transmission fails and the customer is waiting
+4. **Exchange with Fatoora**: report simplified invoices within 24 hours, clear standard invoices before sending them
+5. **Keep a tamper-resistant invoice counter** that cannot be reset, as the resolution requires
+6. **Store invoices** under the VAT record-keeping rules
+7. **Handle failures**: what happens when the API call fails and the customer is waiting
 
-Item six is the one that separates a working implementation from a demo. Network calls fail. ZATCA's platform has maintenance windows. Your checkout cannot hang because an external service is slow, and it cannot silently skip the invoice either. Queuing and retry logic is a real part of the work.
+Item seven separates a working implementation from a demo. Network calls fail and external platforms have maintenance windows. Checkout cannot hang because Fatoora is slow, and it cannot skip the invoice either. Because simplified invoices are reported *after* issue, you can issue the invoice at once and report it from a queue that retries until it succeeds, as long as it does so inside the 24-hour window. Standard invoices are harder, because clearance has to finish before the invoice is valid to share.
+
+This is integration work on the store's server side, the same kind of build our [web development team](/en/services/web-development) does for custom stores.
 
 ---
 
-## What it costs
+## Where the cost sits
 
-| Your setup | What is involved | Cost |
+Our published rate card has no separate line for e-invoicing, because it is not a standalone product. It is part of the store build:
+
+| Your setup | What is involved | Where the cost sits |
 |---|---|---|
-| Salla, Zid | Built in — enable and configure | Included in subscription |
-| Shopify | Requires a compliance app or middleware | $300 – $1,500 setup + subscription |
-| WooCommerce | Plugin, or custom integration | $800 – $4,000 |
-| Custom store | Full integration | $1,500 – $5,000 |
-| Custom + ERP | Integration on both sides | $5,000 – $15,000 |
+| Hosted Saudi platform (Salla, Zid) | Linking through the platform or an app in its app store | Your platform plan and any app fee; check which applies |
+| Shopify or WooCommerce | A third-party compliance app, plugin or middleware | The vendor's setup and subscription fees |
+| Custom store | Direct integration or a solution provider's API | Inside the build: an **e-commerce app** is **$20,000 – $65,000 (SAR 75,000 – 243,800)** over 4–7 months, and a **custom web application** is **$25,000 – $80,000 (SAR 93,800 – 300,000)** |
+| Custom store + ERP | Integration on both sides | The ERP side is scoped separately with the ERP vendor |
 
-This aligns with the figures in our [Saudi e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi), where e-invoicing appears as one line in the wider budget.
+Ranges from our published rate card, as of November 2026. For where e-invoicing sits in a full Saudi store budget, see the [Saudi e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi), [Salla or Zid?](/en/blog/salla-vs-zid) and [Shopify or a Custom Store?](/en/blog/shopify-vs-custom-store).
 
-**The reason local platforms win here.** Salla and Zid handle Phase Two natively because they were built for this market and this requirement. International platforms handle it through third-party apps, which works but adds a dependency and a recurring fee. It is one of the strongest practical arguments for a local platform, covered further in [Salla or Zid?](/en/blog/salla-vs-zid) and [Shopify or a Custom Store?](/en/blog/shopify-vs-custom-store).
+If you are on a hosted platform, ask it two things in writing: is Phase Two linking included in your plan or sold as an app, and does it cover credit notes and every channel you sell through?
 
 ---
 
-## Certified solution providers
+## Solution providers: what ZATCA's list does and does not mean
 
-ZATCA maintains a list of solution providers whose products have been assessed against the requirements. Using one is not mandatory, but it shifts a meaningful part of the compliance burden — and the risk of getting the format wrong — onto a vendor whose product has already been through the process.
+ZATCA publishes a [Solution Providers Directory](https://zatca.gov.sa/en/E-Invoicing/SolutionProviders/Pages/SolutionProvidersDirectory.aspx) of vendors that passed its qualification process. ZATCA states plainly that the list is a non-binding guide, that it **is not an approval** of those solutions, and that a taxpayer whose solution meets the requirements is compliant even if the vendor is not listed.
 
-For a custom store, the practical choice is between:
+For a custom store, the choice is between:
 
-- **Integrating directly** with ZATCA's APIs — more control, more work, and you own the correctness
-- **Using a certified provider's API** — less work, a recurring fee, and someone else tracks specification changes
+- **Integrating directly** with ZATCA's APIs: more control and more work, and you own correctness and every specification update
+- **Using a solution provider's API**: less build work, a recurring fee, and someone else tracks specification changes
 
-For most stores the second is the better trade. The specification is not static, and keeping up with it is an ongoing commitment rather than a one-time build.
+For most stores the second is the better trade, because the specification keeps changing and keeping up with it never ends.
 
 ---
 
 ## Questions to ask any vendor
 
-If someone is quoting you for e-invoicing implementation, these five answers tell you whether they have done it before:
+If someone is quoting you for e-invoicing, these five answers show whether they have done it before:
 
-1. **Are you integrating directly with ZATCA or through a certified provider?** Both are valid; the answer should be deliberate rather than vague.
-2. **How do you handle transmission failure at checkout?** If there is no queue-and-retry answer, they have not run this in production.
-3. **Who holds the cryptographic certificate, and how is it renewed?** Certificates expire. An expired certificate stops invoicing entirely.
-4. **How are refunds and credit notes handled?** They have their own document requirements and are frequently forgotten in a first implementation.
-5. **What happens when the specification changes?** Is that covered by a maintenance arrangement, or billed as new work each time?
+1. **Are you integrating directly with ZATCA or through a solution provider?** Both are valid; the answer should be deliberate.
+2. **How do you meet the 24-hour reporting window when Fatoora is unreachable?** Listen for queue, retry and alerting, not "it just sends".
+3. **Who holds the cryptographic certificate, and how is it renewed?** An expired certificate stops stamping, so it stops invoicing.
+4. **How are refunds and credit notes handled?** The resolution applies the same clearance and reporting rules to the notes linked to each invoice.
+5. **What happens when the specification changes?** Is that covered by maintenance, or billed as new work each time?
 
 The fourth question catches more incomplete implementations than any other.
 
@@ -86,61 +107,57 @@ The fourth question catches more incomplete implementations than any other.
 
 ## Common mistakes
 
-**Assuming the platform covers everything.** Hosted platforms handle the standard flow. If you sell through an additional channel — a mobile app, a marketplace, in-person at an event — confirm those are covered too, or you have a gap.
+**Assuming the platform covers everything.** Hosted platforms handle the standard checkout. If you also sell through a mobile app, a marketplace, or in person at an event, confirm those are covered too.
 
-**Forgetting credit notes.** Refunds and cancellations require their own compliant documents. A store that issues invoices correctly and handles refunds informally is only half compliant.
+**Forgetting credit notes.** Refunds and cancellations need their own compliant electronic notes. A store that issues invoices correctly and handles refunds informally is only half compliant.
 
-**Not monitoring failures.** If transmissions start failing, you need to know within hours rather than at the end of the quarter. Whatever you build, build an alert with it.
+**Not monitoring the reporting queue.** A queue that silently stops draining becomes a breach of the 24-hour window. Alert on queue age, not just on errors.
 
-**Treating it as a launch task.** E-invoicing is not something you complete once. Certificates renew, specifications evolve, and enrolment obligations change. It belongs in your ongoing maintenance, not just your build budget — see [In-House Maintenance or a Contract?](/en/blog/maintenance-inhouse-vs-contract).
+**Treating it as a launch task.** Certificates renew, specifications change, and new waves arrive. ZATCA's [published e-invoicing violations](https://zatca.gov.sa/en/MediaCenter/News/Pages/E-invoicing-Violations-Fines.aspx) from November 2021 already set fines of SAR 5,000 for not issuing e-invoices and SAR 10,000 for deleting or amending them after issue. Budget it as maintenance, see [In-House Maintenance or a Contract?](/en/blog/maintenance-inhouse-vs-contract).
 
 ---
 
 ## Read also
 
-- [E-Commerce Store Cost in Saudi Arabia](/en/blog/ecommerce-development-cost-saudi) — where e-invoicing sits in the wider budget
-- [Salla or Zid?](/en/blog/salla-vs-zid) — platforms with native compliance
-- [Shopify or a Custom Store?](/en/blog/shopify-vs-custom-store) — the compliance trade-off
-- [PDPL Compliance Guide](/en/blog/pdpl-compliance-guide) — the data protection obligations alongside this
-- [Payment Gateways in the Gulf](/en/blog/gulf-payment-gateways) — Mada and local payment requirements
-- [In-House Maintenance or a Contract?](/en/blog/maintenance-inhouse-vs-contract) — keeping compliance current
+- [Gulf compliance guide](/en/blog/gulf-compliance-guide): how e-invoicing sits next to data protection and sector rules
+- [E-Commerce Store Cost in Saudi Arabia](/en/blog/ecommerce-development-cost-saudi): where e-invoicing sits in the wider budget
+- [Salla or Zid?](/en/blog/salla-vs-zid): choosing a hosted Saudi platform
+- [Shopify or a Custom Store?](/en/blog/shopify-vs-custom-store): the compliance trade-off
+- [PDPL Compliance Guide](/en/blog/pdpl-compliance-guide): the data protection obligations alongside this
+- [Payment Gateways in the Gulf](/en/blog/gulf-payment-gateways): Mada and local payment requirements
 
 ---
 
 ## Frequently asked questions
 
-### Does my online store need ZATCA e-invoicing?
+### Which Phase Two wave is my store in?
 
-If you are registered for VAT in Saudi Arabia, electronic invoicing applies to you. Phase Two integration has been rolled out in waves by taxpayer size — confirm which wave applies to you directly with ZATCA or your tax advisor rather than assuming.
+ZATCA selects waves by VAT-subject revenue and notifies the taxpayers it targets at least six months ahead. If your revenue exceeded SAR 375,000 in 2022, 2023 or 2024, Wave 24's deadline of 30 June 2026 has passed. If it exceeded SAR 187,500 in any year from 2022 to 2025, Wave 25's integration date is 1 February 2027. Check your own ZATCA notification for the date that binds you.
 
-### What is the difference between Phase One and Phase Two?
+### How long do I have to report a simplified invoice to ZATCA?
 
-Phase One required structured electronic invoices with mandatory fields and a QR code on simplified invoices. Phase Two adds a prescribed XML format, a cryptographic stamp, and exchange with ZATCA's platform — clearance for standard invoices, reporting for simplified ones.
+No more than 24 hours from when the invoice is generated, under ZATCA's E-Invoicing Implementation Resolution. Standard (B2B) invoices work differently: ZATCA must clear them before you share them with the buyer.
 
-### Do Salla and Zid handle this automatically?
+### Is a vendor on ZATCA's solution provider list certified?
 
-Yes, both handle Phase Two natively as part of the platform, which is one of the main practical reasons Saudi stores choose a local platform. You still need to complete the configuration and enrolment steps on your side.
+No. ZATCA describes the directory as a non-binding guide, says listing is not an approval of the solution, and accepts any solution that meets the requirements, listed or not.
 
-### How much does it cost to implement on a custom store?
+### What does e-invoicing add to the cost of a custom Saudi store?
 
-$1,500 to $5,000 for a direct integration, more if an ERP is involved on the other side. Using a ZATCA-certified solution provider's API typically reduces build cost in exchange for a recurring fee.
-
-### What happens if transmission to ZATCA fails during checkout?
-
-Your implementation must queue the invoice and retry rather than either blocking the customer or silently skipping it. If a vendor cannot describe their retry behaviour, they have not run this in production.
+There is no separate rate-card line. It is part of the build: an e-commerce app is $20,000 – $65,000 (SAR 75,000 – 243,800) and a custom web application is $25,000 – $80,000 (SAR 93,800 – 300,000), from our published rate card as of November 2026. Using a solution provider's API reduces build work in exchange for a recurring fee.
 
 ### Do refunds need e-invoices too?
 
-Yes — credit notes have their own document requirements. This is the single most commonly missed part of a first implementation, so confirm explicitly that refunds and cancellations are covered.
+Yes. Credit and debit notes follow the same clearance or reporting model as the invoice they relate to, and they are the part most often missed in a first implementation.
 
-### Is this the same in the UAE?
+### Does a Saudi implementation cover the UAE?
 
-No. The UAE has its own e-invoicing programme on its own timeline, and the technical requirements differ. Do not assume a Saudi implementation satisfies UAE obligations — verify each separately.
+No. The UAE runs a separate programme under its Ministry of Finance, built around accredited service providers. In [May 2026](https://mof.gov.ae/en/news/ministry-of-finance-announces-targeted-amendments-to-einvoicing-system-decisions/) the ministry confirmed that businesses with annual revenue above AED 50 million must fully implement it by 1 January 2027. Treat each country as a separate integration.
 
 ---
 
-## Conclusion
+## Before you commission the work
 
-ZATCA e-invoicing is a solved problem if you are on Salla or Zid, a manageable integration if you are on a custom store, and an ongoing obligation either way. The build is rarely the difficult part; the parts that get missed are credit notes, transmission failures, and certificate renewal.
+If you are on Salla or Zid, the work is mostly configuration plus the two written questions above. On a custom store it is a real integration, and the parts that get missed are credit notes, the reporting queue, and certificate renewal. With Wave 25's date set for 1 February 2027, stores that only just crossed SAR 187,500 have less than three months left.
 
-Before commissioning work, confirm your enrolment obligations directly with ZATCA or a qualified tax advisor, and ask any vendor the five questions above. The one about refunds will tell you the most.
+If you want a second opinion on a quote or a plan for a custom store, [tell us about your setup](/en/contact) and we will say whether direct integration or a solution provider fits it better.

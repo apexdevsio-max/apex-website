@@ -1,169 +1,187 @@
 ---
-{"slug":"fintech-sama-compliance","title":"Fintech in Saudi Arabia: The SAMA Framework","excerpt":"Building a fintech product in Saudi Arabia — the regulatory sandbox, open banking licensing, and technical requirements.","date":"2026-07-08","dateModified":"2026-07-08"}
+{"slug":"fintech-sama-compliance","title":"Fintech in Saudi Arabia: The SAMA Framework","excerpt":"Building a fintech product in Saudi Arabia — the regulatory sandbox, open banking licensing, and technical requirements.","categories":["compliance"],"keywords":["fintech Saudi","SAMA","open banking","regulatory sandbox","payment licensing"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["A Saudi fintech that holds or moves customers' money, initiates payments, reads bank account data or offers Buy Now Pay Later needs authorisation from the Saudi Central Bank (SAMA), while securities-related products such as equity crowdfunding or robo-advice go through the Capital Market Authority's FinTech Lab instead.","SAMA licenses payment companies in four categories (Micro and Major Electronic Money Institution, Micro and Major Payment Institution) through an in-principle approval followed by a licence, and aims to give its decision within 90 calendar days of confirming an application is complete.","SAMA's Regulatory Sandbox is always open, aims to answer an initial application within 60 business days, and runs live tests for 6 to 12 months; SAMA announced on 26 March 2026 that it had started licensing fintechs to provide open banking services.","SAMA-supervised entities must meet the SAMA Cyber Security Framework at maturity level 3 or higher, on top of the Personal Data Protection Law."],"sources":[{"title":"SAMA Rulebook: Guidelines to Apply for Payment Service Providers License","url":"https://rulebook.sama.gov.sa/en/node/10951"},{"title":"SAMA Rulebook: SAMA Regulatory Sandbox Framework","url":"https://rulebook.sama.gov.sa/en/entiresection/1368"},{"title":"SAMA: SAMA Commences Licensing of Fintech Companies to Provide Open Banking Services (26 March 2026)","url":"https://www.sama.gov.sa/en-US/MediaCenter/News/pages/news-1135.aspx"},{"title":"SAMA Rulebook: Cyber Security Framework","url":"https://rulebook.sama.gov.sa/en/cyber-security-framework-2"},{"title":"Capital Market Authority: FinTech Lab","url":"https://cma.gov.sa/en/Market/fintech/Pages/default.aspx"}]}
 ---
 
 # Fintech in Saudi Arabia: The Central Bank Framework for Developers
 
-Saudi Arabia's fintech sector is among the fastest-growing and most heavily regulated at once. The **[Saudi Central Bank (SAMA)](https://www.sama.gov.sa/)** is the supervising authority, and any product touching payments or banking data falls within its scope.
+If your product holds customers' money, moves it for merchants, initiates payments, reads bank account data or offers Buy Now Pay Later, it needs authorisation from the **Saudi Central Bank (SAMA)** before launch. If it deals in securities instead, such as equity crowdfunding or robo-advice, the **Capital Market Authority (CMA)** is your regulator, through its FinTech Lab. The timelines are published: SAMA aims to decide a complete payment licence application within **90 calendar days**, and its Regulatory Sandbox runs live tests for **6 to 12 months**.
 
-This guide explains the regulatory path and what it means for the technical build.
+This guide maps those routes and explains what each means for the technical build.
 
-> **SAMA licensing sits on top of data protection law, not instead of it.** For the underlying obligations that apply regardless of sector, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-> **Important note:** financial regulatory frameworks evolve quickly, and 2026 saw substantial developments (see below). **Consult a specialist legal advisor and engage the regulator directly** before any financial or technical commitment.
+SAMA authorisation sits on top of data protection law, not in place of it. For the obligations that apply in every sector, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide). Confirm your regulatory status with a specialist advisor and with the regulator before you commit budget.
 
 ---
 
-## First: is your product regulated?
+## First: which regulator, which route?
 
-This is the first question, and its answer determines everything that follows.
+| What your product does | Regulator | Route |
+|---|---|---|
+| Shows general financial information, or budgets from manual entry | Usually none | Confirm with an advisor that no activity below applies |
+| Holds stored value (e-wallet) | SAMA | Electronic Money Institution licence (Micro or Major) |
+| Accepts or moves payments for others without issuing e-money | SAMA | Payment Institution licence (Micro or Major) |
+| Reads bank account data or initiates payments from a bank account | SAMA | Open banking licensing |
+| Buy Now Pay Later | SAMA | BNPL company licence |
+| A new model SAMA's current rules do not cover | SAMA | Regulatory Sandbox |
+| Securities activity (equity crowdfunding, robo-advice) | CMA | FinTech Experimental Permit through the FinTech Lab |
 
-| Activity | Likely regulatory status |
+**The practical rule:** if your product touches other people's money or banking data, assume it is regulated until an advisor confirms otherwise.
+
+The licence decides the architecture: what you may store, which providers you must use, and which controls are audited. That is why the regulatory track should start alongside design, and why our [mobile app team](/en/services/mobile-apps) asks the licensing question before quoting a fintech build.
+
+---
+
+## Payment services: the four SAMA licences
+
+SAMA's [Guidelines to Apply for Payment Service Providers License](https://rulebook.sama.gov.sa/en/node/10951) set out four licence types:
+
+- **Micro Electronic Money Institution** (e-wallet)
+- **Major Electronic Money Institution** (e-wallet)
+- **Micro Payment Institution**
+- **Major Payment Institution**
+
+The process has two stages. **In-principle approval** comes first and lets you complete pre-licensing steps such as commercial registration with the Ministry of Commerce. The **licensing stage** follows, and you can start the activity only after it. SAMA states it will notify its decision in writing **within 90 calendar days** of telling you the application is complete, and will give a revised estimate if it needs longer.
+
+If you do not want to hold a licence, the common alternative is to integrate with a SAMA-licensed payment provider that handles the regulated side while you build the product layer. Verifying that the provider is licensed is your responsibility. See our [Gulf payment gateways guide](/en/blog/gulf-payment-gateways).
+
+---
+
+## Buy Now Pay Later
+
+SAMA's [Rules for Regulating BNPL Companies](https://rulebook.sama.gov.sa/en/rules-regulating-buy-now-pay-later-bnpl-companies-0), issued on 17 December 2023 under the Finance Companies Control Law, define a BNPL company as a **joint stock company** licensed by SAMA. The minimum capital is **SAR 5,000,000**, and a licence is valid for **five years**, with renewal requested at least three months before expiry. A BNPL feature is therefore a company structure decision, not a checkout widget.
+
+---
+
+## The Regulatory Sandbox
+
+SAMA's [Regulatory Sandbox Framework](https://rulebook.sama.gov.sa/en/entiresection/1368) is a live testing environment with real customers, for business models or technologies that SAMA's existing rules do not yet cover. What the framework says:
+
+- **Always open.** There are no cohorts or deadlines, so you can apply at any time.
+- **Initial response:** SAMA aims to respond to an initial application within **60 business days**.
+- **Testing period:** a minimum of **6 months** and a maximum of **12 months** from the Letter of Acceptance.
+- **Who can apply:** SAMA-licensed firms; unlicensed local fintechs, either through a Letter of Acceptance or by partnering with a licensed firm; and international fintechs, directly or through a licensed partner.
+- **Three exits:** apply for a full licence once SAMA issues the relevant rules; wind down with a final report and customer safeguards; or continue without SAMA permission if SAMA confirms no oversight is needed.
+
+The sandbox is not an exemption. Its scope list includes the [Cyber Security Framework](https://rulebook.sama.gov.sa/en/cyber-security-framework-2), so plan reporting and security from the first sprint.
+
+---
+
+## Open banking
+
+SAMA [issued its Open Banking Framework](https://www.sama.gov.sa/en-us/mediacenter/news/pages/news-794.aspx) in 2022. The first version covers **Account Information Services (AIS)**, which read a customer's account data with consent, and the second covers **Payment Initiation Services (PIS)**, which start a payment from the customer's bank account. The [Open Banking Lab](https://openbanking.sama.gov.sa/index-en.html) gives banks and fintechs a sandbox that simulates bank APIs, with conformance suites to test and certify an implementation.
+
+On **26 March 2026**, SAMA [announced that it had started licensing fintech companies to provide open banking services](https://www.sama.gov.sa/en-US/MediaCenter/News/pages/news-1135.aspx), after the sandbox phase was completed. For a developer this means: if your product reads bank data or initiates payments, there is now a licensing route designed for it, and you should plan to pass the Lab's conformance testing rather than build against a bank's API directly.
+
+---
+
+## Securities products: the CMA's FinTech Lab
+
+SAMA does not regulate everything. The [CMA's FinTech Lab](https://cma.gov.sa/en/Market/fintech/Pages/default.aspx), launched in 2018, lets firms test financial products and services **related to securities activities** under a FinTech Experimental Permit. Applications are accepted all year and reviewed under the CMA's Financial Technology Experimental Permit Instructions. The CMA has granted these permits for equity crowdfunding platforms ([Mekyal, July 2020](https://cma.gov.sa/en/MediaCenter/NEWS/Pages/CMA_N_2756.aspx)) and robo-advisory services ([Sarwa, January 2021](https://cma.gov.sa/en/MediaCenter/NEWS/Pages/CMA_N_2840.aspx)). Debt-based and lending products are a different matter, so confirm which regulator applies before you assume the CMA route. If a product mixes payments and investment, expect to talk to both regulators.
+
+---
+
+## Technical requirements
+
+**Cyber security.** SAMA's [Cyber Security Framework](https://rulebook.sama.gov.sa/en/cyber-security-framework-2) (circular 381000091275, 24 May 2017, in force) has four domains: leadership and governance; risk management and compliance; operations and technology; and third-party security. Member organisations must operate at **maturity level 3 ("structured and formalised") or higher**. In practice that means written, approved and evidenced controls, not good intentions.
+
+**Operational resilience.** Tested backups, a continuity plan and monitoring. "Tested" means restored, not just configured.
+
+**Regulatory reporting.** Design your system to produce regulator reports automatically. Pulling them by hand every period is a permanent operating cost.
+
+**Data protection.** The [Personal Data Protection Law](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) applies alongside SAMA's rules. Note what it actually says: financial data is not in the law's list of *sensitive* data. **Credit data** (financing applications, credit history, ability to repay) is its own defined category, and Article 24 requires explicit consent before it is collected, repurposed or disclosed. Article 29 restricts transfers outside the Kingdom to listed purposes and conditions. See our [PDPL compliance guide](/en/blog/pdpl-compliance-guide).
+
+**Card data.** Do not store it. Let a licensed gateway tokenise it, which keeps the heaviest card-security obligations with the provider.
+
+---
+
+## Timeline and budget
+
+| Item | What the rules say |
 |---|---|
-| Displaying general financial information | Usually out of scope |
-| Personal budgeting tool with manual entry | Usually out of scope |
-| **Accepting payments on behalf of merchants** | **In scope — licence required** |
-| **Accessing bank account data** | **In scope — open banking** |
-| **Initiating payments** | **In scope — open banking** |
-| Lending or financing | Subject to dedicated frameworks |
-| Digital wallet | In scope |
+| Payment licence decision | Within 90 calendar days of SAMA confirming the application is complete |
+| Sandbox initial response | Within 60 business days (SAMA's target) |
+| Sandbox testing | 6 to 12 months |
+| BNPL licence | Valid 5 years; minimum capital SAR 5,000,000 |
+| Cyber security | Maturity level 3 or higher, continuously, not once |
 
-**The practical rule:** if your product **touches other people's money or banking data**, assume it is regulated until proven otherwise — not the reverse.
+None of the frameworks publishes an end-to-end figure from first application to launch, and none counts the time you spend preparing a complete file. Run the regulatory track in parallel with design, not after the build.
 
----
-
-## Second: the regulatory sandbox
-
-SAMA operates a **regulatory sandbox** allowing fintech companies to test products before full market launch.
-
-**What it means for the product:**
-- Genuine testing with users within a limited, supervised scope.
-- **Substantive supervisory requirements during testing** — ongoing reporting obligations, cyber security safeguards, and operational resilience standards.
-- A structured path from testing to full licensing.
-
-**The sandbox is not an exemption from requirements** — it is a managed path toward meeting them progressively. Plan for reporting and security requirements from day one, not at application time.
+**Engineering budget.** On our rate card, a fintech product usually sits in the **advanced app or platform** tier: **$45,000 – $100,000 (SAR 168,800 – 375,000)**, over 5–9 months. **In-app payments** through a licensed provider add **$3,000 – $7,000 (SAR 11,300 – 26,300)**, and each additional local payment gateway **$1,500 – $5,000 (SAR 5,600 – 18,800)**. Ranges from our published rate card, as of November 2026. Licence fees, capital requirements and legal fees are separate and not included.
 
 ---
 
-## Third: open banking — the 2026 development
+## Common mistakes
 
-**In March 2026, SAMA commenced licensing fintech companies to provide open banking services**, following successful completion of the sandbox phase.
+**1. Building first and asking about regulation later.** You may find your business model needs a licence, a capital level or a company structure you cannot reach in your current form.
 
-This is a substantial transition: from testing inside the sandbox to a **fully licensed and supervised regime**.
+**2. Assuming "just an interface" exempts you.** If your product touches money or banking data, the rules reach you whatever your technical layer.
 
-**The framework covers two main activities:**
+**3. Picking the wrong regulator.** An equity crowdfunding or robo-advice product that only talks to SAMA has started in the wrong place.
 
-**1. Account Information Services (AIS)** — accessing a customer's account data across multiple banks and presenting it in one place.
+**4. Ignoring reporting in the design.** Manual compliance reports every period are a cost that good design avoids.
 
-**2. Payment Initiation Services (PIS)** — initiating a payment directly from a customer's bank account.
+**5. Relying on an unlicensed payment provider.** Check the licence yourself.
 
-**What this means for a developer:** if your product does either, **it is a licensed activity** — you need a SAMA licence and must demonstrate adherence to the established framework. This is no longer a grey area.
-
----
-
-## Fourth: technical requirements
-
-**Cyber security.** SAMA imposes cyber security controls on supervised entities. This is not an optional line item but an operating condition.
-
-**Operational resilience.** The system's ability to continue and recover — tested backups, a continuity plan, and effective monitoring.
-
-**Periodic reporting.** Ongoing reporting obligations to the regulator. **Design your system to produce these reports automatically** — extracting them manually each time is a permanent operational burden.
-
-**Data protection.** Financial data is sensitive, and the Personal Data Protection Law applies alongside SAMA requirements. See our [PDPL compliance guide](/en/blog/pdpl-compliance-guide).
-
-**Licensed payment service providers.** If you accept payments, work exclusively with a SAMA-licensed provider. See our [Gulf payment gateways guide](/en/blog/gulf-payment-gateways).
-
----
-
-## Fifth: what this means for timeline and budget
-
-| Item | Impact |
-|---|---|
-| Determining regulatory status | **The first step — before any code** |
-| Sandbox / licensing | Months, with documentation requirements |
-| Cyber security controls | A separate budgeted development line |
-| Reporting architecture | Design it from the start |
-| Legal review | Practically mandatory |
-| Security auditing | Recurring rather than one-off |
-
-**The conclusion:** a fintech project is not a technical project on a technical timeline. **The regulatory cycle is often longer than the development cycle** — start it in parallel with design.
-
----
-
-## Sixth: common mistakes
-
-**1. Building first and asking about regulation later.** The most expensive mistake in this sector. You may discover your business model needs a licence you cannot obtain in your current form.
-
-**2. Assuming "just an interface" exempts you.** If your product touches money or banking data, supervision reaches you whatever your technical layer.
-
-**3. Ignoring reporting in the design.** Manually extracting compliance reports every month is a permanent burden avoidable with correct design.
-
-**4. Relying on an unlicensed payment provider.** Verifying your provider's licence is your responsibility.
-
-**5. Storing card data in your system.** Don't. Let the licensed gateway handle it — storing it puts you under heavy security requirements needlessly.
+**6. Storing card data.** Don't.
 
 ---
 
 ## Pre-start checklist
 
-- [ ] Your product's regulatory status determined precisely with a specialist advisor.
-- [ ] Knowing whether your activity needs a licence or goes through the sandbox.
-- [ ] A documented rather than improvised cyber security plan.
-- [ ] Architecture that produces compliance reports automatically.
-- [ ] A continuity plan and **genuinely tested** backups.
-- [ ] A SAMA-licensed payment service provider.
+- [ ] Regulator and route confirmed with a specialist advisor (SAMA licence, SAMA sandbox, or CMA FinTech Lab).
+- [ ] Licence category identified, including capital and company-structure requirements.
+- [ ] Cyber security controls documented to SAMA's maturity level 3.
+- [ ] Architecture that produces regulator reports automatically.
+- [ ] A continuity plan and restored-from-backup tests.
+- [ ] A SAMA-licensed payment provider, licence verified.
 - [ ] No card data stored in your system.
-- [ ] Compliance with the Personal Data Protection Law.
-- [ ] Data residency reviewed — including backups and logs.
-- [ ] Encryption in transit and at rest.
-- [ ] Access controls and audit logging for every sensitive operation.
+- [ ] PDPL obligations mapped, including explicit consent for credit data.
+- [ ] Data residency reviewed, including backups and logs.
+- [ ] Encryption in transit and at rest, access control, and audit logs for every sensitive operation.
 
 ---
 
 ## Related reading
 
-- [Gulf payment gateways](/en/blog/gulf-payment-gateways) — SAMA-licensed providers.
-- [API security](/en/blog/api-security-guide) — the technical implementation of security controls.
-- [PDPL compliance](/en/blog/pdpl-compliance-guide) — applies alongside SAMA requirements.
+- [Gulf compliance guide](/en/blog/gulf-compliance-guide): the data protection layer under every sector rule.
+- [Gulf payment gateways](/en/blog/gulf-payment-gateways): working with licensed providers.
+- [API security](/en/blog/api-security-guide): implementing the technical controls.
+- [PDPL compliance](/en/blog/pdpl-compliance-guide): applies alongside SAMA's requirements.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf): where financial data can live.
 
 ---
 
 ## Frequently asked questions
 
-### Does a personal budgeting app need a licence?
+### Does a budgeting app that connects to bank accounts need a SAMA licence?
 
-If the user enters data manually and the app doesn't connect to bank accounts, it is usually out of scope. But the moment it connects to bank accounts to fetch data, it enters **account information services** — a licensed activity. Determine this before building.
+Manual-entry budgeting is usually out of scope. Once the app reads account data from banks, it is providing account information services under SAMA's Open Banking Framework, and SAMA began licensing fintechs for open banking on 26 March 2026. Settle this before you build the bank connection.
 
-### What is the difference between the sandbox and a full licence?
+### How long does SAMA take to decide a payment licence?
 
-The sandbox is a managed path for testing a product at limited scope under supervision, with substantive reporting and security requirements. A full licence permits complete commercial operation. The usual path runs through the former to reach the latter.
+SAMA's guidelines say it will notify its decision within 90 calendar days of confirming the application is complete, after an in-principle approval stage. The time to prepare a complete file is on top of that and depends on you.
 
-### Can I build a payments app without a licence?
+### Do I go to SAMA or the CMA?
 
-If you accept payments on behalf of merchants, that is a licensed activity. The common alternative for unlicensed companies is **integrating with a licensed payment service provider** that handles the regulated side while you build the product layer on top.
+Payments, e-wallets, open banking, BNPL and other banking activity go to SAMA. Products related to securities, such as equity crowdfunding and robo-advice, go to the CMA, whose FinTech Lab issues experimental permits all year.
 
-### How long does the regulatory cycle take?
+### Can an unlicensed startup enter SAMA's sandbox?
 
-It varies by activity and how complete your file is, but the realistic expectation is months — often longer than the development cycle. Start it in parallel with design rather than after the build is complete.
+Yes. The framework lets unlicensed local fintechs enter with a Letter of Acceptance or through a partnership with a licensed firm, and international fintechs can apply directly or through a licensed partner. Testing then lasts 6 to 12 months.
 
-### Can I host outside Saudi Arabia?
+### Is financial data "sensitive data" under the PDPL?
 
-This needs careful verification. Financial data is sensitive, the Personal Data Protection Law restricts transfers outside the Kingdom, and additional requirements may apply depending on your activity. See our [hosting comparison guide](/en/blog/hosting-comparison) and verify with your advisor before choosing an architecture.
+Not in the law's definition. Sensitive data covers origin, beliefs, security and criminal data, biometric, genetic and health data, and unknown parentage. Credit data is a separate category with its own rule: explicit consent before collection, repurposing or disclosure (Article 24).
 
-### What about using AI in a financial product?
+### Can a Saudi fintech host its data outside the Kingdom?
 
-It carries additional considerations — particularly where it affects credit or financial decisions. And passing financial data to an external model is a data transfer subject to restrictions. Consult the regulator before building.
+That is a question for your advisor and, for a licensed entity, for SAMA, before you choose an architecture. The PDPL allows transfers abroad only for listed purposes and under conditions (Article 29), and your licence or SAMA's outsourcing expectations may add more. See [data residency in the Gulf](/en/blog/data-residency-gulf) and the [hosting comparison](/en/blog/hosting-comparison).
 
 ---
 
-## Conclusion
+## Where to start
 
-**Determine your regulatory status before writing a line of code** — the most expensive mistake in this sector is building first and asking later.
+Settle three things before any code: which regulator, which licence or permit, and what that licence requires of your architecture. The published numbers (90 days for a payment licence decision, 6 to 12 months in the sandbox, SAR 5 million capital for BNPL) are enough to plan around, but only once the route is clear.
 
-**Open banking is now a licensed activity** following the March 2026 start of licensing — no longer a grey area.
-
-**Design reporting and security architecture from the start** — adding them later is costly and a permanent operational burden.
-
-**And never store card data in your system** — let the licensed provider handle it.
-
-**Building a fintech product?** [Get in touch](/en/contact) — we start with the regulatory side before the technical one. See [our services](/en/services).
+If you are at that point, [send us the product outline](/en/contact). We will map the regulated parts against the build and tell you which questions to put to your advisor first.

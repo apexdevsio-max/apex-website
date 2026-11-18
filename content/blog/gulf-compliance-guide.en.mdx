@@ -1,36 +1,30 @@
 ---
-{"slug":"gulf-compliance-guide","title":"Regulatory Compliance for Apps in the Gulf: The Complete Guide","seoTitle":"Gulf App Compliance Guide (2026)","excerpt":"Which Gulf regulations apply to your app, what they cost, and when to involve a lawyer — Saudi PDPL, UAE PDPL, Qatar, data residency, and sector rules compared.","date":"2026-08-21","dateModified":"2026-08-21"}
+{"slug":"gulf-compliance-guide","title":"Regulatory Compliance for Apps in the Gulf: The Complete Guide","seoTitle":"Gulf App Compliance Guide (2026)","excerpt":"Which Gulf regulations apply to your app, what they cost, and when to involve a lawyer — Saudi PDPL, UAE PDPL, Qatar, data residency, and sector rules compared.","categories":["compliance"],"keywords":["Gulf compliance","Saudi PDPL","UAE PDPL","data residency","app regulations Gulf","DIFC ADGM data protection"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["An app that processes personal data of people in Saudi Arabia falls under the Saudi Personal Data Protection Law even if the company is abroad, and the UAE's Federal Decree-Law 45 of 2021 likewise covers processing inside or outside the UAE.","Breach deadlines differ: Saudi Arabia requires notifying SDAIA within 72 hours, Qatar's regulator expects notice within 72 hours where a breach could cause damage, and ADGM requires notice within 72 hours where feasible, while DIFC requires notice as soon as practicable.","Cross-border transfers are allowed in all three countries but on different terms: Saudi Arabia requires adequacy or safeguards such as standard contractual clauses, Qatar's law forbids controllers from restricting cross-border data flows unless the processing breaches the law or risks serious damage, and DHA in Dubai prohibits storing health data outside the UAE without its approval.","Maximum fines are SAR 5 million per violation in Saudi Arabia (doubled for repeats) and QAR 5 million in Qatar, and DIFC and ADGM free-zone companies follow their own data protection laws rather than only the federal UAE law."],"sources":[{"title":"SDAIA: Personal Data Protection Law (full text)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"},{"title":"SDAIA: Implementing Regulation of the Personal Data Protection Law","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2"},{"title":"UAE Government portal: Data protection laws","url":"https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws"},{"title":"Qatar NCSA: Law No. 13 of 2016 on Protecting Personal Data Privacy (English text)","url":"https://ncsa.gov.qa/shared/document_library/94787172324409/33000/8821/1.0~735ebb9c-e29e-4acb-a7ed-96449884a20b?mimetype=application%2Fpdf&filename=Law+No.+%2813%29+of+2016+on+Protecting+Personal+Data+Privacy.pdf"},{"title":"Qatar NCGAA: Personal Data Breach Notifications, Guidelines for Regulated Entities v2.0","url":"https://ncsa.gov.qa/shared/document_library/94787172324409/33000/8870/1.0~740b1248-e3a9-40e1-b66e-589091cc182a?mimetype=application%2Fpdf&filename=Personal+Data+Breach+Notifications+-+Guideline+for+Regulated+Entities+%284%29.pdf"}]}
 ---
 
 # Regulatory Compliance for Apps in the Gulf: The Complete Guide
 
-Most teams discover their compliance obligations at the worst possible moment: during procurement review for an enterprise deal, or after an incident. By then the choices that mattered — where data is stored, how consent was collected, whether deletion actually deletes — are already baked into a shipped product.
+**If your app processes personal data of people in Saudi Arabia, the UAE or Qatar, at least one data protection law applies to you, and in Saudi Arabia and the UAE that is true wherever your company is registered.** The three main laws are Saudi Arabia's Personal Data Protection Law (enforced by SDAIA), the UAE's Federal Decree-Law 45 of 2021 (with separate regimes in DIFC and ADGM), and Qatar's Law No. 13 of 2016. Sector rules for health, finance and government stack on top of them, not instead of them.
 
-**The short answer: if you process personal data of users in Saudi Arabia, the UAE, or Qatar, at least one data protection law applies to you regardless of where your company is registered. Sector rules (health, finance, government) stack on top of that, not instead of it.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide is the map: which regimes apply, what they share, where they diverge, and what compliance actually costs. Each country and sector has a dedicated guide linked from here.
-
-> **This is technical and planning guidance for developers and product owners. It is not legal advice.** Regulations and their enforcement change. For anything regulated — health, finance, government, or children's data — engage a qualified local advisor before launch.
+This is the map: which regime applies, where they agree, where they differ, and what to ask a lawyer. Each country and sector has its own detailed guide linked from here.
 
 ---
 
 ## Does any of this apply to you?
 
-Work through these in order. The first "yes" means compliance is in scope.
+Work through these in order. The first "yes" brings compliance into scope.
 
-**1. Do you have users physically in a Gulf country?**
-Not customers who pay you — users whose data you process. If yes, that country's data protection law likely applies **regardless of where your company or servers are located**. Extraterritorial reach is the norm in modern data protection law, not the exception.
+**1. Do you have users in a Gulf country?** Saudi Arabia's law covers processing by an entity outside the Kingdom of data about people residing there (Article 2 of the [PDPL](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL)). The UAE government portal describes the federal law as covering processing ["inside or outside the country"](https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws). Qatar's scope article defines coverage by how data is processed and does not address foreign companies directly; ask counsel how it applies to you.
 
-**2. Do you collect anything that identifies a person?**
-Name, email, phone, location, device identifier, IP address, or any combination enabling identification. Teams routinely underestimate this — an analytics SDK collecting device IDs is processing personal data.
+**2. Do you collect anything that identifies a person?** Name, email, phone, location, device identifier, or any combination that identifies someone. An analytics SDK collecting device IDs is processing personal data.
 
-**3. Is any of it sensitive?**
-Health, financial, biometric, religious affiliation, or data about minors. Sensitive data carries stricter requirements everywhere in the region, and the gap between "ordinary" and "sensitive" obligations is large.
+**3. Is any of it sensitive or "special"?** The lists differ by country. Saudi Arabia's covers health, genetic and biometric data, among others, but not financial data. Qatar's "special nature" list includes children's and health data. Sensitive data carries stricter rules everywhere.
 
-**4. Are you in a licensed sector?**
-Health, finance, education, and government work carry sector-specific licensing **in addition to** data protection law. This is the step most often missed: PDPL compliance does not satisfy a health authority's licensing requirement.
+**4. Are you in a licensed sector?** Health, finance and government work carry sector licensing **in addition to** data protection law. Complying with a data protection law does not satisfy a health authority or a central bank.
 
-If you answered yes to 1 and 2, keep reading. If you also answered yes to 3 or 4, you need a local advisor, not just this guide.
+If you answered yes to 1 and 2, keep reading. If you also answered yes to 3 or 4, you need a local adviser, not just this guide.
 
 ---
 
@@ -38,195 +32,166 @@ If you answered yes to 1 and 2, keep reading. If you also answered yes to 3 or 4
 
 | | **Saudi Arabia** | **UAE (federal)** | **Qatar** |
 |---|---|---|---|
-| Main law | PDPL | Federal Decree-Law 45/2021 | Law No. 13 of 2016 |
-| Supervisory body | SDAIA | UAE Data Office | Ministry (CDPPD) |
-| Extraterritorial | Yes | Yes | Yes |
-| Consent-centred | Strongly | Yes, with other bases | Yes |
-| Breach notification | 72 hours | Required | Required |
-| Transfer restrictions | Significant | Conditional | Conditional |
-| Free-zone carve-outs | — | **DIFC and ADGM have their own laws** | **QFC has its own regime** |
+| Main law | Personal Data Protection Law | Federal Decree-Law 45 of 2021, in force 2 January 2022 | Law No. 13 of 2016 |
+| Regulator | SDAIA | UAE Data Office | National Cyber Governance and Assurance Affairs (NCSA) |
+| Reaches companies abroad | Yes (Article 2) | Covers processing inside or outside the UAE | Not addressed in the scope article; ask counsel |
+| Bases other than consent | Yes, including legitimate interest for non-sensitive data (Article 6) | Yes, exceptions such as public interest and legal procedures | Yes, a "lawful purpose" of the controller (Article 4) |
+| Breach notice to regulator | Within 72 hours of awareness (Implementing Regulation, Art. 24) | No hour count we could verify; ask counsel | Within 72 hours where the breach could cause damage (NCGAA guideline) |
+| Transfers abroad | Adequacy list, contractual clauses, binding rules or certificates | Law sets transfer requirements; confirm the conditions with counsel | Controllers may not restrict cross-border flows except where processing breaches the law or risks serious damage (Article 15) |
+| Maximum fine | SAR 5 million, doubled for repeats (Article 36) | Not verified in a primary source | QAR 5 million (Article 24) |
+| Separate free-zone regimes | — | **DIFC and ADGM** | **QFC** |
 
-**Three practical takeaways from that table:**
+Sources for each row: the Saudi [law](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) and [Implementing Regulation](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2); the [UAE government portal](https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws); Qatar's [Law No. 13 of 2016](https://ncsa.gov.qa/shared/document_library/94787172324409/33000/8821/1.0~735ebb9c-e29e-4acb-a7ed-96449884a20b?mimetype=application%2Fpdf&filename=Law+No.+%2813%29+of+2016+on+Protecting+Personal+Data+Privacy.pdf) as published by NCSA and its [breach notification guideline](https://ncsa.gov.qa/shared/document_library/94787172324409/33000/8870/1.0~740b1248-e3a9-40e1-b66e-589091cc182a?mimetype=application%2Fpdf&filename=Personal+Data+Breach+Notifications+-+Guideline+for+Regulated+Entities+%284%29.pdf) (version 2.0, September 2022).
 
-**The free zones are separate legal regimes, not variations.** A company in DIFC or ADGM follows that zone's data protection law, which is closer to European GDPR than to the UAE federal law. The same applies to the Qatar Financial Centre. Getting this wrong means complying with the wrong statute entirely — and it is a common error because "we're in Dubai" does not tell you which law governs you.
+**Three takeaways:**
 
-**Saudi Arabia is the strictest on transfers.** If your architecture assumes data can move freely to a US or European region, Saudi is where that assumption breaks first.
+**The free zones are separate legal regimes.** A company incorporated in DIFC follows the [DIFC Data Protection Law](https://www.difc.com/business/registrars-and-commissioners/commissioner-of-data-protection/faqs-glossary), with its own Commissioner. ADGM has its own [Data Protection Regulations 2021](https://www.adgm.com/operating-in-adgm/office-of-data-protection/data-breach-notifications) and Office of Data Protection, and the Qatar Financial Centre has its own [Data Protection Regulations and Data Protection Office](https://www.qfc.qa/en/operating-with-qfc/data-protection). "We're in Dubai" does not tell you which law governs you; your trade licence does.
 
-**UAE federal implementation has been in flux.** The law took effect in January 2022, but reporting on the status and content of its executive regulations has been inconsistent — some sources describe them as issued, others as still pending. **Verify the current position with a UAE advisor rather than relying on any secondary source, including this one.** Build to the law's principles in the meantime; they are unlikely to loosen.
+**Saudi Arabia has the most detailed transfer rules, Qatar the most transfer-friendly text.** Saudi transfers need a route under SDAIA's transfer regulation, and a risk assessment for sensitive or continuous transfers. Qatar's Article 15 starts from the opposite direction: it stops controllers from restricting cross-border flows unless the processing breaches the law or may cause serious damage.
+
+**The UAE federal picture has gaps we could not close from primary sources.** We could not verify a published breach deadline or fine schedule for the federal law as of November 2026. Ask a UAE adviser: have the Executive Regulations been issued, and do they set a notification period and fines? Until you have an answer, build to the tightest deadline you face elsewhere. Our [UAE data protection guide](/en/blog/uae-data-protection-guide) covers the detail.
+
+If you want these requirements built into your product rather than bolted on later, our [mobile app development service](/en/services/mobile-apps) covers consent, data-rights and logging features as part of the build.
 
 ---
 
 ## What all three require
 
-Beneath the differences, the operational requirements converge. Build these and you are most of the way toward compliance in all three jurisdictions:
+Beneath the differences, the engineering converges. Build these and you have the foundation in every jurisdiction:
 
-**Lawful basis for processing.** Usually consent, and consent must be specific, informed, freely given, and withdrawable. Pre-ticked boxes and blanket consent buried in terms of service do not qualify anywhere in the region.
+- **A lawful basis per processing activity.** Consent where it is the basis: specific, unticked, withdrawable and logged. Saudi Arabia and Qatar both let users withdraw consent at any time.
+- **Data subject rights in the product.** Access, a copy, correction and deletion appear in both the Saudi law (Article 4) and Qatar's (Articles 5 and 6). Saudi Arabia sets a 30-day response time.
+- **Breach detection and a written procedure.** You cannot report within 72 hours a breach you discover in two months.
+- **Purpose limitation and retention.** Keep data only as long as its purpose lasts. Saudi Article 18 and Qatar Article 10 both say so.
+- **Security appropriate to the data.** Encryption, access control and audit logging that are actually implemented.
+- **A privacy notice that matches reality.** Qatar's Article 9 requires telling individuals who you are and why you process their data before processing starts; Saudi Arabia requires a privacy policy before collection (Article 12).
 
-**Data subject rights.** Access, correction, deletion, and information about processing. Build a "my data" page — handling these manually does not scale past a handful of requests, and the response deadlines are real.
-
-**Breach notification.** You cannot report within 72 hours a breach you discover in two months. This is a monitoring requirement disguised as a paperwork requirement.
-
-**Purpose limitation and retention.** Collect what you need for a stated purpose, keep it only as long as that purpose lasts. "We might want it later" is not a purpose.
-
-**Security appropriate to the risk.** Encryption in transit and at rest, access control, and audit logging. Nothing exotic — but it must actually be implemented, not intended.
-
-**A privacy policy that matches reality.** In Arabic and English. A policy copied from a foreign template that describes practices you do not follow is worse than a short accurate one, because it documents your own non-compliance.
-
-For the full technical implementation of these, [the Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) is the most detailed — and because the requirements overlap heavily, most of it transfers to the other jurisdictions.
+For the implementation detail, the [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) is the most complete, and most of it carries over.
 
 ---
 
-## Data residency — the constraint that shapes architecture
+## Data residency: the constraint that shapes architecture
 
-This is the requirement that cannot be retrofitted cheaply, which is why it belongs in your first architecture conversation rather than your last.
+Residency cannot be retrofitted cheaply, which is why it belongs in the first architecture conversation.
 
-**Saudi Arabia** restricts transferring personal data outside the Kingdom and requires specific safeguards when transfers do occur. Regulated sectors face tighter constraints.
+- **Saudi Arabia:** transfers are allowed through an adequacy list, standard contractual clauses, binding common rules or an accreditation certificate, with a mandatory risk assessment for sensitive data or continuous, large-scale transfers ([transfer regulation](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/RegulationonPersonalDataTransferOutsidetheKingdom), Articles 4 and 7).
+- **UAE health data:** Dubai Health Authority's [telehealth standard](https://dha.gov.ae/uploads/012023/Standards%20for%20Telehealth%20Services2023158613.pdf) (issue 4, effective 26 November 2025) prohibits storing, developing or transferring health data outside the UAE unless DHA approves (section 8.2.5(d)). That is an architectural constraint, not a contract clause.
+- **Qatar:** the general law favours cross-border flows (Article 15), but "special nature" data, including health and children's data, needs permission from the regulator before processing (Article 16).
 
-**The UAE** permits transfers to jurisdictions with adequate protection, or under approved contractual safeguards. **Health data is the exception**: UAE health data carries an in-country storage requirement, which is an architectural constraint rather than a contractual one. [The UAE health apps guide](/en/blog/health-apps-uae-compliance) covers this in detail.
-
-**Qatar** allows transfers subject to conditions and safeguards.
-
-> **The mistake that catches almost everyone:** confirming your primary database is in-region and stopping there. Backups replicate across regions by default in most managed services. Logs contain personal data and often ship to a third-party service abroad. Analytics, error tracking, push notification providers, and AI APIs all move data. **Each is a transfer.**
-
-Ask any provider three specific questions: where is the primary data, where are the backups, and where are the logs. "We have a region in your country" answers only the first. [The hosting comparison guide](/en/blog/hosting-comparison) covers which regional providers actually resolve this.
+The usual failure is checking the primary database and stopping there. Backups, logs, crash reporting, analytics and AI APIs are all transfers. The [data residency guide](/en/blog/data-residency-gulf) walks through each one, and the [hosting comparison](/en/blog/hosting-comparison) lists which cloud regions are live in each country.
 
 ---
 
 ## Sector rules stack on top
 
-Data protection law is the floor, not the ceiling. If you are in a licensed sector, you have two compliance tracks running in parallel.
+Data protection law is the floor. A licensed sector runs a second compliance track in parallel.
 
-| Sector | Additional requirement | Guide |
+| Sector | What to check | Guide |
 |---|---|---|
-| **Fintech (Saudi)** | SAMA licensing, sandbox entry, open banking rules | [Fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) |
-| **Health (UAE)** | DHA/DoH licensing, in-country data, HIE integration | [Health apps in the UAE](/en/blog/health-apps-uae-compliance) |
-| **Health (Saudi)** | MOH and SFDA requirements for medical apps | [Clinic booking app costs](/en/blog/clinic-booking-app-cost) |
-| **Education / minors** | Guardian consent, stricter data handling | [Educational app costs](/en/blog/educational-app-cost) |
-| **Payments** | Gateway certification, PCI-DSS obligations | [Gulf payment gateways](/en/blog/gulf-payment-gateways) |
-| **Government** | Procurement rules, documentation, often in-country hosting | [Software company in Qatar](/en/blog/software-company-qatar) |
+| **Fintech (Saudi)** | SAMA licensing and sandbox, or the CMA FinTech Lab for securities products | [Fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) |
+| **Health (UAE)** | DHA telehealth standard in Dubai; DoH in Abu Dhabi; federal ICT-in-health law | [Health apps in the UAE](/en/blog/health-apps-uae-compliance) |
+| **E-invoicing (Saudi)** | ZATCA Phase 2 integration waves | [ZATCA e-invoicing](/en/blog/zatca-einvoicing-guide) |
+| **Children** | Guardian consent and verification | [Children's data protection](/en/blog/childrens-data-protection) |
+| **Payments** | Gateway onboarding and card-data obligations | [Gulf payment gateways](/en/blog/gulf-payment-gateways) |
 
-**The sequencing error that costs the most:** building the product, then seeking the licence. In licensed sectors the licence often constrains the architecture — what you may store, where, and who may access it. Licensing timelines also run in months, not weeks. Find out what applies **before** the architecture is settled.
-
----
-
-## Minors, AI, and the two emerging problem areas
-
-**Children's data** requires verifiable guardian consent across the region — not a checkbox asserting the user is over 18. If your product plausibly reaches under-18 users, this is a design requirement, and an education product reaches them by definition.
-
-**AI processing** is where most current architectures quietly violate transfer rules. Sending user data to an external language model is both a transfer and a processing operation. Before wiring up any AI provider, establish: where does the inference run, is input retained, and is it used for training? Many default consumer-tier API terms permit training on inputs, which is incompatible with most compliance postures. [Choosing an AI model for Arabic](/en/blog/choosing-ai-model-arabic) covers the evaluation criteria.
+**The sequencing error that costs most:** building the product, then seeking the licence. In licensed sectors the licence can dictate what you store, where, and who may access it. Find out what applies **before** the architecture is settled.
 
 ---
 
-## What compliance actually costs
+## Minors and AI: two areas to design for early
 
-Budgeting for compliance is difficult because the guidance is usually either "hire lawyers" or silence. Here are realistic ranges for the engineering work, assuming it is built in from the start.
+**Children's data.** Saudi Arabia handles minors through legal capacity: the guardian consents, and you must take reasonable steps to verify the guardianship (Implementing Regulation, Article 13). Qatar's Article 17 requires websites addressed to children to obtain explicit guardian consent and to delete a child's data on the guardian's request. An "I am over 18" checkbox satisfies neither.
 
-| Work | Effort | Indicative cost |
-|---|---|---|
-| Consent management (granular, logged, withdrawable) | 3 – 6 days | $1,500 – $4,000 |
-| Data subject rights page (view/export/delete) | 5 – 10 days | $2,500 – $6,000 |
-| Audit logging and breach detection | 4 – 8 days | $2,000 – $5,000 |
-| Data mapping and retention policy | 2 – 4 days | $1,000 – $2,500 |
-| Privacy policy (bilingual, product-specific) | — | $500 – $2,000 |
-| Regional hosting migration | 3 – 10 days | $1,500 – $8,000 |
-| Legal review (non-regulated sector) | — | $2,000 – $8,000 |
-| Sector licensing (health/fintech) | Months | Highly variable — advisor territory |
-
-**Built in from the start: roughly 5–12% of project cost for a non-regulated product.**
-
-**Retrofitted after launch: three to five times that.** Adding deletion to a system that never modelled it, or moving hosting after integrations are live, is structural work rather than feature work. This is the strongest financial argument for handling it early, and it is why the item usually cut from a first-phase budget is the one that should not be.
-
-Regulated sectors are a different category entirely — licensing dominates the timeline and the cost, and the engineering is the smaller half.
+**AI processing.** Sending user data to an external model is processing and, when the provider is abroad, a transfer. Before wiring up a provider, establish where inference runs, whether inputs are retained and whether they are used for training. [AI privacy risks](/en/blog/ai-privacy-risks) compares what the major providers state in their own terms.
 
 ---
 
-## Where compliance work actually fails
+## What compliance work costs
 
-Six failures account for most of what goes wrong, and none of them are exotic:
+Compliance engineering is billed as time. Ranges from our published rate card, as of November 2026: regional or local agency rates run $50–100 per hour (about SAR 200–400, AED 200–400, QAR 200–400). The work items below are our engineering estimates of effort, not regulatory figures:
 
-1. **Production data in development environments.** A copy of the real database on a developer's laptop, months after anyone remembers it exists. This is the most common finding in any honest audit.
-2. **Deletion that hides rather than deletes.** A `deleted_at` flag is not deletion, and the data usually survives in backups and logs regardless.
-3. **Unmapped third parties.** Analytics, crash reporting, and push notifications processing user data with no one having assessed them.
-4. **No consent records.** You must prove *when* a user consented and *to what version* of your policy. Without a timestamped record, you cannot.
-5. **A privacy policy describing someone else's product.** Copied from a template, documenting practices you do not follow.
-6. **Assuming the vendor is accountable.** You are the controller; your development agency is a processor. Regulatory accountability stays with you, and "our developer configured it" is not a defence.
+| Work | Typical effort |
+|---|---|
+| Consent management (granular, logged, withdrawable) | 3–6 days |
+| Data rights page (view, export, correct, delete) | 5–10 days |
+| Audit logging and breach detection | 4–8 days |
+| Data map and retention policy | 2–4 days |
+| Moving hosting to an in-region provider | 3–10 days |
+
+Legal review is separate and priced by your adviser. In regulated sectors, licensing usually dominates both cost and timeline. The cheapest version of all of this is the one designed in before launch, because adding deletion or moving hosting after integrations are live is structural work.
+
+---
+
+## Where compliance work usually fails
+
+1. **Production data in development environments,** long after anyone remembers the copy exists.
+2. **Deletion that hides rather than deletes,** with the data surviving in backups and logs.
+3. **Unmapped third parties:** analytics, crash reporting and push notifications nobody assessed.
+4. **No consent records.** Without a timestamp and policy version, you cannot prove consent.
+5. **A privacy policy describing someone else's product.**
+6. **Assuming the vendor is accountable.** You are the controller; your agency is a processor.
 
 ---
 
 ## A pre-launch checklist
 
-- [ ] Identified which jurisdiction(s) apply — including whether a free zone regime governs you
+- [ ] Identified which jurisdiction applies, including any free-zone regime
 - [ ] Mapped every category of personal data collected, and why
-- [ ] Confirmed where primary data, **backups**, and **logs** are stored
-- [ ] Reviewed every third-party service for data transfer
-- [ ] Granular, logged, withdrawable consent implemented
-- [ ] Data subject rights available in-product
-- [ ] Deletion genuinely removes data, including from backups and logs
-- [ ] Bilingual privacy policy reflecting actual practice
-- [ ] Written breach response procedure with named owners
-- [ ] Monitoring capable of detecting a breach within the notification window
+- [ ] Confirmed where primary data, **backups** and **logs** are stored
+- [ ] Reviewed every third-party service as a possible transfer
+- [ ] A documented lawful basis per processing activity
+- [ ] Data subject rights available in the product
+- [ ] Deletion that reaches backups and logs
+- [ ] A privacy policy that reflects actual practice, in language your users understand
+- [ ] A written breach procedure with named owners, built for a 72-hour deadline
 - [ ] No production data in development or test environments
-- [ ] Data processing agreement with every vendor
-- [ ] Sector licensing identified **before** architecture was settled
-- [ ] Legal review completed for regulated sectors
+- [ ] A data processing agreement with every vendor
+- [ ] Sector licensing identified **before** the architecture was settled
 
 ---
 
 ## Related reading
 
-- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide) — the most detailed technical implementation.
-- [UAE data protection law](/en/blog/uae-data-protection-guide) — lawful bases, the six user rights, and DIFC versus federal.
-- [Data residency in the Gulf](/en/blog/data-residency-gulf) — where data must live, and the five places residency breaks.
-- [Privacy policy guide](/en/blog/privacy-policy-guide) — writing one that matches your product.
-- [Children's data protection](/en/blog/childrens-data-protection) — verifiable guardian consent.
-- [Digital identity integration](/en/blog/digital-identity-integration) — Nafath, UAE Pass, and verified identity.
-- [App store requirements](/en/blog/app-store-requirements) — the review rules that stack on top.
-- [Fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) — SAMA licensing and the sandbox.
-- [Health apps in the UAE](/en/blog/health-apps-uae-compliance) — DHA licensing and residency.
-- [Hosting comparison](/en/blog/hosting-comparison) — regional providers and where data actually lives.
-- [Software company in Qatar](/en/blog/software-company-qatar) — the two Qatari regimes.
-- [API security](/en/blog/api-security-guide) — securing what you are obliged to protect.
+- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide): the most detailed implementation.
+- [UAE data protection law](/en/blog/uae-data-protection-guide): federal law versus DIFC and ADGM.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf): the five places residency breaks.
+- [Privacy policy guide](/en/blog/privacy-policy-guide): writing one that matches your product.
+- [Digital identity integration](/en/blog/digital-identity-integration): UAE PASS and verified identity.
+- [App store requirements](/en/blog/app-store-requirements): the review rules on top.
+- [API security](/en/blog/api-security-guide): protecting what you are obliged to protect.
 
 ---
 
 ## Frequently asked questions
 
-### Does Saudi PDPL apply if my company is not in Saudi Arabia?
+### Which Gulf data protection law applies to a company registered outside the Gulf?
 
-Yes. The law applies to processing personal data of individuals inside the Kingdom regardless of where your company or servers are located. Company registration elsewhere does not exempt you if you have Saudi users.
+The law of the country where your users are. Saudi Arabia's PDPL expressly covers processing by entities outside the Kingdom of data about people residing there, and the UAE federal law covers processing inside or outside the UAE. For Qatar, ask counsel, because its scope article does not address foreign companies directly.
 
-### Do I need to store data inside the Gulf?
+### Do Saudi Arabia, the UAE and Qatar all require breach notification within 72 hours?
 
-It depends on the country and the data. Saudi Arabia places significant restrictions on transferring personal data outside the Kingdom. UAE health data carries an in-country storage requirement. For ordinary commercial data in the UAE and Qatar, transfers are permitted subject to safeguards. Verify your specific case before choosing hosting, because changing it later is expensive.
+Not uniformly. Saudi Arabia requires notifying SDAIA within 72 hours of becoming aware. Qatar's regulator expects notice within 72 hours where the breach could cause damage. ADGM requires 72 hours where feasible, and DIFC requires notice as soon as practicable. For the UAE federal law we could not verify a fixed deadline, so ask a UAE adviser.
 
-### Is DIFC or ADGM the same as UAE federal law?
+### Is DIFC or ADGM data protection the same as UAE federal law?
 
-No, and this is a frequent and costly error. DIFC and ADGM each have their own data protection laws, closer in structure to European GDPR than to the UAE federal law. The Qatar Financial Centre likewise has a separate regime. Which law governs you depends on where your entity is established, not simply which emirate you operate in.
+No. DIFC has its own Data Protection Law with a Commissioner, and ADGM has its own Data Protection Regulations 2021 with an Office of Data Protection. Which regime governs you depends on where your entity is incorporated, so check your trade licence before you design anything.
 
-### How much does compliance cost?
+### Can I host Gulf user data in Europe or the US?
 
-For a non-regulated product with compliance built in from the start, roughly 5 to 12 percent of project cost — commonly $8,000 to $25,000 of engineering plus legal review. Retrofitting after launch typically costs three to five times more. Regulated sectors such as health and fintech are a separate category where licensing dominates both cost and timeline.
+Often yes, on conditions. Saudi Arabia requires a route under SDAIA's transfer regulation, such as an adequacy listing or standard contractual clauses. Qatar's law stops controllers from restricting cross-border flows unless the processing breaches the law or risks serious damage. UAE health data is the hard exception: DHA prohibits storing it outside the UAE without approval.
 
-### Who is responsible if my developer causes a breach — me or them?
+### Who answers to the regulator if my development agency causes a breach?
 
-You. You are the data controller and your development agency is a processor. You can impose contractual obligations on a vendor, but you cannot transfer your own accountability to the regulator. Put a data processing agreement in place and require breach notification to you within 24 hours, since your own reporting window is 72.
+You do. You are the controller and your agency is a processor. Put a data processing agreement in place and require the vendor to notify you within 24 hours of a suspected breach, so your own 72-hour window is not used up.
 
-### Can I use ChatGPT or another AI API with user data?
+### When do I need a lawyer rather than this guide?
 
-Only after checking three things: where inference runs, whether inputs are retained, and whether they are used for training. Sending personal data to an external model is both a cross-border transfer and a processing operation. Many default consumer API terms permit training on inputs, which is incompatible with most compliance positions — enterprise tiers usually do not.
-
-### When do I need a lawyer rather than a guide like this one?
-
-If you are in health, finance, government, or handling children's data, engage a qualified local advisor before you finalise architecture. For an ordinary commercial product, this guide plus a legal review of your privacy policy and data processing agreements is usually proportionate.
+Before you finalise architecture if you are in health, finance or government, handle children's data, or operate from a free zone. For an ordinary commercial product, this guide plus a legal review of your privacy policy and processing agreements is usually proportionate.
 
 ---
 
-## Conclusion
+## Where to start
 
-**Compliance in the Gulf is not one requirement but a stack:** a data protection law determined by your users' location and your entity's jurisdiction, plus sector rules if you are licensed, plus transfer restrictions that shape architecture.
+Start with jurisdiction, then sector, then architecture, in that order. The expensive mistakes are all sequencing mistakes: choosing hosting before checking residency, building before licensing, launching before mapping what you collect. If you serve several Gulf markets, build once to the strictest rule that applies to you rather than maintaining three versions.
 
-**The expensive mistakes are all sequencing mistakes** — choosing hosting before checking residency, building before licensing, launching before mapping what you collect. Every one of them is cheap to avoid and costly to correct.
-
-**And the strictest requirement wins.** If you serve users across the Gulf, build to the tightest standard that applies rather than maintaining three architectures. In practice that usually means designing to Saudi transfer rules and UAE health residency, and the rest follows.
-
-**Not sure which regime applies to your product?** [Get in touch](/en/contact) for a free scoping conversation — including a straight answer about when you need a lawyer rather than a developer. See our [web development](/en/services/web-development) and [mobile app services](/en/services/mobile-apps).
+If you would like help working out which of these regimes applies to your product, and where the engineering ends and the legal advice begins, [send us a short description of the product and its users](/en/contact). We will tell you which of the guides above matter for you and what to raise with your lawyer.

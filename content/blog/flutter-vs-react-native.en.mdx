@@ -1,33 +1,32 @@
 ---
-{"slug":"flutter-vs-react-native","title":"Flutter vs React Native: Which Should You Choose? (2026)","seoTitle":"Flutter vs React Native (2026)","excerpt":"A practical comparison of Flutter and React Native across performance, team skills, ecosystem, and long-term cost — and how to pick for your project.","date":"2026-07-03","dateModified":"2026-07-03"}
+{"slug":"flutter-vs-react-native","title":"Flutter vs React Native: Which Should You Choose? (2026)","seoTitle":"Flutter vs React Native (2026)","excerpt":"A practical comparison of Flutter and React Native across performance, team skills, ecosystem, and long-term cost — and how to pick for your project.","categories":["mobile"],"keywords":["Flutter vs React Native","cross-platform comparison","mobile frameworks","RTL support","framework choice"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Choose React Native if your team already writes React or you need to share code with a React web app; choose Flutter if you are starting fresh, need a pixel-identical design on both platforms, or are building an Arabic-first app.","Both are mature in November 2026: Flutter draws its own UI with the Impeller engine (default on iOS and Android API 29+ since Flutter 3.27), while React Native renders the platform's native views and has run only on its New Architecture since version 0.82 in October 2025.","For Arabic right-to-left layouts, Flutter sets text direction for the whole widget tree from the app's locale, whereas React Native's I18nManager RTL settings take effect only after the app restarts.","Neither framework changes the price bracket: on our rate card both are quoted at $5,000–$15,000 for a simple app, $15,000–$45,000 for a mid-complexity app and $45,000–$100,000 for an advanced app or platform, as of November 2026."],"sources":[{"title":"Flutter docs — Impeller rendering engine","url":"https://docs.flutter.dev/perf/impeller"},{"title":"React Native blog — React Native 0.82: A New Era","url":"https://reactnative.dev/blog/2025/10/08/react-native-0.82"},{"title":"Flutter docs — Internationalizing Flutter apps","url":"https://docs.flutter.dev/ui/internationalization"},{"title":"React Native docs — I18nManager","url":"https://reactnative.dev/docs/i18nmanager"},{"title":"Stack Overflow Developer Survey 2025 — Technology","url":"https://survey.stackoverflow.co/2025/technology"}]}
 ---
 
 # Flutter vs React Native: Which Should You Choose? (2026)
 
-This decision comes up on nearly every app project, and it is usually answered with bias — every team recommends what it already knows. The truth is that **both are mature and run in production at scale**, and the right choice depends on your context rather than any absolute technical superiority.
+**Choose React Native if you have an existing React team or need to share code with a React web app. Choose Flutter if you are starting fresh, want a pixel-identical design on both platforms, or are building an Arabic-first app with complex right-to-left interfaces.** If none of those apply, either will do the job — pick the one your implementing team knows best.
 
-**The short answer: choose React Native if you have an existing React team or need code sharing with web. Choose Flutter if you are starting fresh or building complex Arabic RTL interfaces.**
+Both frameworks are mature and both run large production apps. The differences that should decide it are team skills, web code sharing, RTL depth and how you want to ship updates — not raw speed. Neither changes the budget bracket: the tiers on our rate card are the same for both, and if you want the choice made against your actual requirements, that is part of how we scope [mobile app projects](/en/services/mobile-apps).
 
-This guide breaks down the differences that actually matter and gives you a decision framework rather than an opinion.
-
-> **Deeper guides available:** this article compares the two. For each framework in depth, see the [complete Flutter guide](/en/blog/flutter) and the [React Native guide](/en/blog/react-native).
+> **Deeper guides:** this article compares the two. For each framework on its own, see the [complete Flutter guide](/en/blog/flutter) and the [React Native guide](/en/blog/react-native).
 
 ---
 
-## The reference table
+## The reference table (November 2026)
 
 | Criterion | Flutter | React Native |
 |---|---|---|
 | Language | [Dart](https://dart.dev/) | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) / TypeScript |
 | Maintained by | Google | Meta |
-| Rendering | Custom engine (Impeller) | Native OS components |
-| Default appearance | Consistent across both platforms | Matches each platform automatically |
-| **Arabic RTL support** | **Excellent, deeply built in** | Good, needs manual tuning |
-| Code sharing with web | Limited in practice | Possible via React Native Web |
-| Over-the-air updates | Limited | Available via Expo |
-| App size | Slightly larger | Slightly smaller |
-| Developer availability in region | Good and growing | Wider (more JS developers) |
-| Learning curve | Requires learning Dart | Easy for React teams |
+| Rendering | Draws its own widgets with Impeller (default on iOS and Android API 29+) | Creates the platform's native views (New Architecture, Fabric renderer) |
+| Default appearance | Identical on both platforms | Follows each platform's native controls |
+| Arabic RTL | Direction set for the whole widget tree from the locale | `I18nManager`; changes apply after an app restart |
+| Code sharing with web | Flutter web suits app-like tools, not content sites | Logic shares with React web apps; UI via React Native Web |
+| Over-the-air code updates | No first-party option; third-party services exist | JavaScript, styling and images via Expo EAS Update |
+| Developer pool (global) | Dart: 5.9% of developers | JavaScript: 66% of developers |
+| Learning curve | New language for most teams | Immediate for React teams |
+
+Developer-pool figures are from the [Stack Overflow 2025 Developer Survey](https://survey.stackoverflow.co/2025/technology) (all respondents, worldwide).
 
 ---
 
@@ -35,41 +34,45 @@ This guide breaks down the differences that actually matter and gives you a deci
 
 ### 1. Rendering — the fundamental difference
 
-**Flutter draws every pixel itself.** It does not use system buttons; it draws its own via a rendering engine. The result: **complete visual control** and an identical appearance on both platforms, but the app may not resemble the rest of the system's apps.
+**Flutter draws every pixel itself.** It has its own implementation of every control and paints them with its bundled engine. Per the [Impeller documentation](https://docs.flutter.dev/perf/impeller), Impeller is the only renderer on iOS and the default on Android API 29+, falling back to OpenGL on older or non-Vulkan devices. The result: **complete visual control** and an identical appearance on both platforms, at the cost of not automatically picking up the OS's own look.
 
-**React Native uses real system components.** The button you write becomes an actual native button. The result: **automatically authentic appearance** that follows OS updates, but less visual control.
+**React Native uses the platform's own views.** A `<View>` becomes a `UIView` on iOS and a `ViewGroup` on Android. The result: an app that **follows each platform's native controls** and OS updates, with less pixel-level control.
 
-**Which do you want?** If you have a strict visual identity to apply precisely — Flutter. If you want an app that resembles the rest of the user's device — React Native.
+**Which do you want?** A strict visual identity applied identically everywhere — Flutter. An app that feels like the rest of the user's phone — React Native.
 
-### 2. Arabic support — the biggest differentiator in our market
+### 2. Arabic support — the most consequential factor in Gulf projects
 
-This point is overlooked in most global comparisons, and it is **the most consequential factor in Gulf projects**.
+Global comparisons tend to skip this; for Arabic-first products it often decides the matter.
 
-**Flutter** provides deeply built-in RTL support: switching direction mirrors layout, padding, and animations automatically, Arabic font handling is smooth, and behavior is consistent across platforms because the engine is one.
+**Flutter:** once `flutter_localizations` is configured, the [widgets localisation delegate "defines the default text direction"](https://docs.flutter.dev/ui/internationalization) from the locale, and Material and Cupertino widgets adapt to left-to-right or right-to-left layout. Because Flutter draws everything itself, the mirrored layout behaves the same on both platforms.
 
-**React Native** supports RTL through the `I18nManager` API, but requires more manual tuning — particularly for mirroring graphics, animations, and third-party libraries. Some third-party packages do not account for RTL at all.
+**React Native:** RTL is controlled through [`I18nManager`](https://reactnative.dev/docs/i18nmanager). `allowRTL` and `forceRTL` take effect only on the next app start, and the docs advise against forcing RTL in production because of that restart. Third-party components also need checking, since not all of them handle RTL.
 
-**In practice:** if your app is fully Arabic with complex interfaces, Flutter saves you weeks of tuning. If Arabic support is simple (text and lists), the difference matters less.
+**In practice:** for a fully Arabic app with complex screens and in-app language switching, Flutter needs less RTL-specific work. If Arabic support is limited to text and simple lists, the difference is small. The technical details are in [Arabic and RTL Support in Flutter](/en/blog/flutter-rtl-arabic-guide) and [React Native RTL and Arabic](/en/blog/react-native-rtl-arabic).
 
 ### 3. Hiring and continuity
 
-This is a commercial rather than technical consideration, and it is often neglected.
+This is a commercial consideration, and it is often neglected.
 
-**JavaScript is more widespread** — there are far more JavaScript developers in the region than Dart developers, meaning easier hiring and replacement. But **Dart is easier to learn** for anyone who knows Java or C#, and an experienced developer's transition takes weeks rather than months.
+**JavaScript is far more widespread.** In Stack Overflow's 2025 survey, 66% of respondents used JavaScript against 5.9% for Dart. That is a global figure, but it means a bigger pool for hiring and replacing developers. Dart's syntax will be familiar to Java, C# and TypeScript developers, so retraining an experienced developer is realistic — but it is still retraining.
 
-**The decisive question:** who will maintain this app in two years? If the answer is "an internal team we'll hire later", hiring pool size is a real consideration.
+**The decisive question:** who will maintain this app in two years? If the answer is "an internal team we will hire later", hiring-pool size is a real consideration.
 
 ### 4. Code sharing with web
 
-**React Native clearly wins here** via React Native Web and sharing business logic with a React-based web app. If you are building a platform with both web and mobile, this is a genuine saving.
+**React Native wins here.** Business logic, types and API clients share directly with a React web app, and React Native Web can share some UI. If you are building a platform with both web and mobile, this is a genuine saving.
 
-**Flutter** offers Flutter Web, but in practice it suits dashboards and internal tools better than marketing sites that depend on search ranking.
+**Flutter** offers Flutter web, but its own [web documentation](https://docs.flutter.dev/platform-integration/web) says text-rich, static content such as blog articles is better served by the web's document model. It suits dashboards and internal tools rather than marketing sites that depend on search ranking.
 
 ### 5. Over-the-air updates
 
-**React Native wins** — via Expo you can ship a fix to users without waiting for store review. For an app updated weekly, this is a significant operational advantage.
+**React Native wins.** [Expo's EAS Update](https://docs.expo.dev/eas-update/introduction/) ships JavaScript, styling and image changes without a store submission; native code changes still need a new build, and updates must follow store guidelines.
 
-**Flutter** offers narrower options here.
+**Flutter** has no first-party equivalent: release builds are compiled to machine code, so code changes normally go through the stores. Third-party services such as [Shorebird](https://docs.shorebird.dev/) add code push for Flutter.
+
+### 6. Performance
+
+Both frameworks have removed their best-known bottlenecks. Impeller precompiles its shaders at engine-build time "so they don't compile at runtime", and React Native's New Architecture replaced the asynchronous bridge with direct JSI calls and has been the only architecture since [0.82](https://reactnative.dev/blog/2025/10/08/react-native-0.82). Neither project publishes a head-to-head benchmark. For a typical business app, profile your heaviest screen on a mid-range Android device with each — do not decide on 2019-era articles.
 
 ---
 
@@ -78,78 +81,66 @@ This is a commercial rather than technical consideration, and it is often neglec
 Answer in order and stop at the first decisive answer:
 
 **1. Do you have an existing React team?**
-Yes → **React Native**. Saving months of learning outweighs any technical difference.
+Yes → **React Native**. Months of retraining outweigh any technical difference.
 
-**2. Do you need code sharing with a web platform?**
+**2. Do you need code sharing with a React web platform?**
 Yes → **React Native**.
 
-**3. Is your app Arabic with complex RTL interfaces?**
-Yes → **Flutter**. Its built-in support saves weeks.
+**3. Is your app Arabic-first with complex RTL interfaces or in-app language switching?**
+Yes → **Flutter**.
 
-**4. Do you need a precisely controlled, unified visual identity?**
-Yes → **Flutter**. No → either works; choose based on developer availability.
+**4. Do you need a precisely controlled, identical visual identity on both platforms?**
+Yes → **Flutter**. No → either works; choose based on who will build and maintain it.
 
-**If you reach the end with no decisive answer**, the choice does not matter much — and that is a legitimate outcome. Pick whichever your implementing team knows.
+**If you reach the end with no decisive answer**, the choice does not matter much — and that is a legitimate outcome.
 
 ---
 
 ## When to choose neither
 
-Honesty here saves you months:
-
 - **A game** → Unity or Godot.
 - **Heavy media processing** (video editing, real-time camera effects) → native development.
-- **A simple single-platform app** → native is faster and lighter.
-- **You don't need an app at all** → a responsive website suffices in many cases. See our [website design cost guide](/en/blog/website-design-cost).
+- **A simple single-platform app** → native is lighter. See [Native vs Hybrid Apps](/en/blog/native-vs-hybrid-app).
+- **You don't need an app at all** → a responsive website may be enough. See [Mobile App or Responsive Website (PWA)?](/en/blog/app-vs-pwa).
 
 ---
 
-## Where APEX stands
+## What we recommend
 
-We use **Flutter as our default** for most Gulf business apps — primarily because of its mature Arabic RTL support, which is a large part of our project mix.
+For a new Gulf business app with no existing team constraint, we start from Flutter, mainly for its RTL behaviour — our one shipped app, [Tafawwoq](/en/portfolio/tafawwoq-educational-app), is a fully Arabic Flutter app. We switch to React Native when a client already has React developers, shares a codebase with a React web product, or needs over-the-air JavaScript updates.
 
-But we **choose React Native** when a client has an existing React team, needs code sharing with a web platform, or wants instant updates without waiting on stores.
-
-The decision follows your project, not our preference — and that is what we recommend when evaluating any provider: **anyone recommending one technology for every case is selling what they know, not what you need.**
+That is a starting point, not a rule. A provider that recommends one framework for every project is telling you about its own skills, not your needs.
 
 ---
 
 ## Frequently asked questions
 
-### Which performs faster?
+### Which renders faster, Impeller or React Native's Fabric?
 
-The practical difference is minimal in typical business apps. Flutter edges ahead slightly on complex graphics and animations thanks to its own rendering engine. React Native narrowed the gap considerably with its new architecture (JSI and Fabric). Any performance criticism based on 2019–2021 articles no longer holds.
+There is no official benchmark comparing them, and for typical business apps both are fast enough. Flutter's Impeller precompiles shaders so they don't compile at runtime; React Native's New Architecture renders through Fabric with direct JSI calls instead of the old bridge. Profile your own heaviest screen on target devices.
 
-### Which is cheaper?
+### Does choosing Flutter or React Native change the budget?
 
-Cost is comparable — both cover two platforms for 30–40% more than a single platform. The real difference comes from **your team's expertise**: building with a technology your team knows is always cheaper than a "theoretically better" one they must learn. See our [Gulf app development cost guide](/en/blog/mobile-app-development-cost-gulf).
+No. On our rate card, both are quoted in the same tiers as of November 2026: $5,000–$15,000 for a simple app, $15,000–$45,000 for a mid-complexity app, and $45,000–$100,000 for an advanced app or platform. What changes cost is your team's existing skills — building in a framework they know is cheaper. See the [Gulf app development cost guide](/en/blog/mobile-app-development-cost-gulf).
 
-### Which is better for Arabic language support?
+### Which handles in-app switching between Arabic and English better?
 
-Flutter, by a noticeable margin. RTL support is deeply built in and mirrors layout, padding, and animations automatically. React Native supports RTL through `I18nManager` but needs more manual tuning, and some third-party libraries ignore RTL. For an Arabic app with complex interfaces, Flutter saves weeks of work.
+Flutter. Its text direction follows the locale, so switching the locale re-lays out the widget tree. In React Native, `I18nManager.allowRTL` and `forceRTL` take effect only after the app restarts, so in-app language switching needs a restart flow.
 
-### Can I switch from one to the other later?
+### Can I switch from one framework to the other later?
 
-Not practically — switching means rewriting the interfaces entirely. What can be reused is designs, the backend, and business logic if it is separated out. So choose carefully upfront, and build your business logic in the backend rather than the app wherever possible.
+Not cheaply — switching means rewriting the interfaces. Designs, the backend, and business logic kept outside the UI can be reused. Keep business rules on the server or in a separate layer wherever possible.
 
 ### Which is easier to hire for in Saudi Arabia and the Gulf?
 
-React Native, because JavaScript developers are more numerous. But the gap is narrowing — Flutter is growing quickly in the region, and an experienced developer moves between the two in weeks. If long-term continuity is a priority, ask your provider about their knowledge-handover plan rather than about the technology alone.
+React Native, because the JavaScript pool is far larger — 66% of developers in Stack Overflow's 2025 survey used JavaScript, against 5.9% for Dart. If long-term continuity matters, ask your provider for a documented handover plan, not just a framework name.
 
 ### Could Google or Meta stop supporting their framework?
 
-Both are used internally in major products at those companies, and both are open source with large communities. The risk exists theoretically in any technology but is low for both. The bigger practical risk is not the framework stopping but **your dependence on unmaintained third-party libraries**.
+Both companies use their framework in their own products — Google Pay and Google Classroom on Flutter, Facebook and Ads Manager on React Native — and both are open source with large communities. The bigger practical risk is depending on unmaintained third-party packages, whichever framework you choose.
 
 ---
 
-## Conclusion
+## Making the call
 
-There is no absolute "better" between Flutter and React Native — there is **better for your case**.
-
-**Existing React team or need for web code sharing** → React Native.
-**Starting fresh or complex Arabic RTL interfaces** → Flutter.
-**Neither applies** → the decision matters little; pick what your implementer knows.
-
-And be wary of a provider that recommends one technology for every project — that tells you about their capabilities, not your needs.
-
-**Want an honest opinion for your specific project?** [Get in touch](/en/contact) for a free scope assessment — including a recommendation not to build an app if a website would serve you. See our [mobile app development services](/en/services/mobile-apps).
+If one of the four questions above gave you a clear answer, you have your framework. If they did not, the deciding factor is the team that will build and maintain the app. [Describe your project and team to us](/en/contact) and we will give you a recommendation with the reasoning written down, so you can test it against other providers' advice.

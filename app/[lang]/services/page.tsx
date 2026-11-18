@@ -1,41 +1,21 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 
 import { getDictionary } from "@/lib/i18n/i18n";
 import { getServices } from "@/lib/content/content-loader";
 import { isLocale, toLocale } from "@/lib/i18n/locale";
 import { buildPageMeta } from "@/lib/seo/metadata";
 import {
-  JsonLd,
   buildOrganizationSchema,
   buildServiceCollectionSchema,
   buildBreadcrumbSchema,
   buildFaqSchema,
 } from "@/lib/seo/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { siteUrl } from "@/lib/seo/metadata";
 
-const ServicesGrid = dynamic(
-  () => import("@/components/sections/ServicesGrid").then((m) => m.ServicesGrid),
-  {
-    ssr: true,
-    loading: () => (
-      <div className="min-h-screen pt-28 pb-24 px-6" style={{ background: "var(--color-background)" }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="h-4 w-24 mx-auto mb-4 rounded-full animate-pulse" style={{ background: "var(--color-border)" }} />
-            <div className="h-10 w-48 mx-auto rounded animate-pulse" style={{ background: "var(--color-border)" }} />
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="rounded-2xl h-64 animate-pulse" style={{ background: "var(--color-border)" }} />
-            ))}
-          </div>
-        </div>
-      </div>
-    ),
-  },
-);
+import { ServicesSection } from "@/components/sections/ServicesSection";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -45,12 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMeta(toLocale(lang), {
     title: isAr ? "خدماتنا — تطوير الويب والتطبيقات" : "Services — Web and App Development",
     description: isAr
-      ? "نقدم حلولاً رقمية متكاملة: تطوير ويب، تطبيقات موبايل، ذكاء اصطناعي، تصميم UI/UX، متاجر إلكترونية، وصناعة محتوى."
-      : "We offer integrated digital solutions: web development, mobile apps, AI, UI/UX design, e-commerce, and content creation.",
+      ? "تطوير المواقع والمتاجر، وتطبيقات الجوال، وحلول الذكاء الاصطناعي، وإنتاج المحتوى المرئي لعملاء في السعودية والإمارات وقطر."
+      : "Web and e-commerce development, mobile apps, AI solutions and video content for clients in Saudi Arabia, the UAE and Qatar.",
     path: `/${lang}/services`,
-    keywords: isAr
-      ? ["خدمات برمجية", "تطوير ويب", "تطبيقات موبايل", "ذكاء اصطناعي", "متاجر إلكترونية", "تصميم UI UX"]
-      : ["software services", "web development", "mobile apps", "AI solutions", "e-commerce", "UI UX design"],
   });
 }
 
@@ -133,39 +110,29 @@ export default async function ServicesPage({ params }: Props) {
       <JsonLd schema={buildServiceCollectionSchema(mdxItems, lang)} />
       <JsonLd schema={buildFaqSchema(faq)} />
 
-      <ServicesGrid
-        lang={lang}
-        dictionary={dictionary}
-        mdxItems={mdxItems}
-      />
+      <div className="px-6 pt-10 md:pt-16">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader
+            as="h1"
+            title={isAr ? "خدماتنا" : "Our services"}
+            subtitle={
+              isAr
+                ? "أربع خدمات نقدّمها لعملاء في السعودية والإمارات وقطر. لكل خدمة صفحة تشرح ما تشمله، وكيف نعمل، وكم تكلّف تقريباً."
+                : "Four services we provide to clients in Saudi Arabia, the UAE and Qatar. Each page explains what is included, how we work and roughly what it costs."
+            }
+          />
+        </div>
+      </div>
+      <ServicesSection lang={lang} copy={{ ...dictionary.services, title: "", subtitle: "", badge: "" }} services={mdxItems} headingLevel="h2" />
 
-      <section
-        className="px-6 pb-24"
-        style={{ background: "var(--color-background)" }}
-      >
-        <div className="max-w-3xl mx-auto">
-          <h2
-            className={`font-bold mb-8 ${isAr ? "font-ar" : "font-en"}`}
-            style={{ fontSize: "24px", color: "var(--color-primary-text)" }}
-          >
-            {isAr ? "أسئلة شائعة عن خدماتنا" : "Frequently Asked Questions"}
-          </h2>
-
+      <section className="px-6 pb-24">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="apex-section-title mb-8">{isAr ? "أسئلة شائعة عن خدماتنا" : "Frequently asked questions"}</h2>
           {faq.map((item) => (
-            <div key={item.question} className="mb-7">
-              <h3
-                className={`font-bold mb-2 ${isAr ? "font-ar" : "font-en"}`}
-                style={{ fontSize: "17px", color: "var(--color-primary-text)" }}
-              >
-                {item.question}
-              </h3>
-              <p
-                className={`leading-relaxed ${isAr ? "font-ar" : "font-en"}`}
-                style={{ fontSize: "15px", color: "var(--color-secondary-text)" }}
-              >
-                {item.answer}
-              </p>
-            </div>
+            <details key={item.question} className="apex-faq">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
           ))}
         </div>
       </section>

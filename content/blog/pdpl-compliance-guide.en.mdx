@@ -1,242 +1,246 @@
 ---
-{"slug":"pdpl-compliance-guide","title":"A Developer's Guide to Saudi PDPL Compliance","excerpt":"Implementing Saudi PDPL in your product — consent, user rights, 72-hour breach notification, and transfer restrictions.","date":"2026-06-09","dateModified":"2026-08-21"}
+{"slug":"pdpl-compliance-guide","title":"A Developer's Guide to Saudi PDPL Compliance","excerpt":"Implementing Saudi PDPL in your product — consent, user rights, 72-hour breach notification, and transfer restrictions.","categories":["compliance"],"keywords":["PDPL compliance","Saudi data protection","SDAIA","consent","breach notification"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Saudi Arabia's Personal Data Protection Law applies to any organisation that processes personal data of people residing in the Kingdom, including organisations based abroad, and SDAIA has enforced it since the grace period ended on 14 September 2024.","Consent is the default basis, but Article 6 of the law also allows processing without consent to serve the data subject's interest, under another law or a prior agreement, for public-entity security purposes, or for the controller's legitimate interest when the data is not sensitive.","Sensitive data under the law means racial or ethnic origin, religious, intellectual or political belief, security and criminal data, biometric data that identifies a person, genetic data, health data, and data indicating that a person's parents are unknown.","A controller must notify SDAIA within 72 hours of becoming aware of a breach that may harm the data or the data subject, and general violations carry a warning or a fine of up to SAR 5 million, which can be doubled for repeat offences."],"sources":[{"title":"SDAIA: Personal Data Protection Law (full text)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"},{"title":"SDAIA: Implementing Regulation of the Personal Data Protection Law","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2"},{"title":"SDAIA: Regulation on Personal Data Transfer Outside the Kingdom","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/RegulationonPersonalDataTransferOutsidetheKingdom"},{"title":"SDAIA: PDPL Guide for Controllers and Processors","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP"},{"title":"Saudi Press Agency: PDPL committees issued 48 violation decisions in 2025 (16 January 2026)","url":"https://spa.gov.sa/en/N2489505"}]}
 ---
 
 # A Developer's Guide to Saudi PDPL Compliance
 
-The Personal Data Protection Law (PDPL) is no longer a preparatory phase — **the compliance grace period ended in September 2024, and enforcement has been active since**, supervised by the [Saudi Data and AI Authority (SDAIA)](https://sdaia.gov.sa/).
+**If your product processes personal data of people residing in Saudi Arabia, the Personal Data Protection Law (PDPL) applies to you, wherever your company or servers are.** The law took effect on 14 September 2023, controllers had until 14 September 2024 to comply, and the Saudi Data and AI Authority (SDAIA) has enforced it since. In practice, compliance means building six things: purpose-specific consent or another documented lawful basis, a data-rights mechanism, a 72-hour breach procedure, controlled transfers abroad, a privacy policy, and security that matches the data.
 
-This guide is aimed at developers and digital product owners: what actually needs to change in your product.
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-> **Working across more than one Gulf market?** This guide covers Saudi Arabia in depth. For how the Saudi, UAE, and Qatari regimes compare — and which one governs you — start with the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
-
-> **Important note:** this is technical guidance, not legal advice. The law and its implementing regulations evolve, and requirements vary by sector and data type. **Consult a qualified legal advisor before relying on any interpretation here.**
+This guide is for developers and product owners: what the law and its Implementing Regulation actually say, and what each requirement means in code. If you serve more than one Gulf market, start with the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide), which compares the Saudi, UAE and Qatari regimes.
 
 ---
 
 ## Who does it apply to?
 
-The law applies to processing personal data of individuals inside the Kingdom — **regardless of where your company or servers are located**. If you have Saudi users, it concerns you.
+Article 2 of the [PDPL](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) covers processing of personal data in the Kingdom, including processing by an entity outside the Kingdom of personal data relating to individuals residing in the Kingdom. SDAIA's [guide for controllers and processors](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP) confirms that such processing is covered even when it happens outside Saudi jurisdiction.
 
-**Personal data** is broader than many assume: name, email, phone, geolocation, device identifier, IP address, and any data enabling identification of a person.
+**Personal data** is broader than many teams assume: name, email, phone number, location, device identifiers and any data that, alone or combined, identifies a person. SDAIA's guide notes that fully anonymised data is no longer personal data, but pseudonymised (coded) data still is.
 
-**Sensitive data** carries stricter requirements: health data, financial data, biometric data, and data relating to minors.
+**Sensitive data** has a closed definition in Article 1 of the law. It covers:
+
+- racial or ethnic origin
+- religious, intellectual or political belief
+- security and criminal data
+- biometric data that identifies a person
+- genetic data
+- health data
+- data indicating that one or both of a person's parents are unknown
+
+Two categories teams often file under "sensitive" are not on that list. **Credit data** is defined separately in the law and has its own rules. **Data about minors** is not a sensitive category either; the rules for minors come through legal capacity and guardianship (see Special cases below).
 
 ---
 
-## 1. Consent — the lawful basis for processing
+## 1. Lawful basis: consent, and the other bases
 
-Consent is the default basis for processing data. But not any consent suffices.
+Article 5 makes consent the default: personal data may not be processed, or its purpose changed, without the data subject's consent, except where the law provides otherwise. Consent can be withdrawn at any time.
 
-**What does not count as valid consent:**
-- **Pre-ticked checkboxes** — not acceptable.
-- **Consent buried in terms of service** — not explicit consent to processing.
-- **Blanket consent to everything** — you need granularity by purpose.
-- **Conditioning the service on unnecessary consent** — forcing users to accept marketing to use the service.
+**Article 6 lists the cases where consent is not required:**
 
-**What to build into the product:**
+1. Processing serves an actual interest of the data subject and contacting them is impossible or difficult.
+2. Processing is required by another law or to perform a prior agreement the data subject is party to (in product terms: delivering the service the user signed up for).
+3. The controller is a public entity and the processing is needed for security or judicial purposes.
+4. Processing is necessary for the controller's legitimate interest, provided it does not prejudice the data subject's rights and interests and **the data is not sensitive**.
+
+Legitimate interest comes with paperwork. Article 16 of the [Implementing Regulation](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2) requires a documented assessment before you rely on it, balancing your interest against the data subject's rights and reasonable expectations.
+
+**What to build where consent is the basis:**
 
 ```
 □ A separate checkbox per purpose (service / marketing / analytics)
 □ Not pre-ticked
-□ Clear text explaining the purpose in plain language
+□ Plain-language text explaining each purpose
 □ Withdrawal as easy as granting
-□ Timestamped consent record (when, and against which policy version)
+□ A timestamped record: when, and against which policy version
 ```
 
-**That last item is always overlooked:** you must be able to prove **when** a user consented **and to what**. Record the timestamp and policy version with every consent.
+**Marketing has its own article.** Article 25 requires the recipient's consent before you send promotional material to their email or postal address, and every message must offer a clear way to opt out. Article 26 allows processing for marketing only for non-sensitive data collected directly from a data subject who consented.
 
-**For marketing specifically:** explicit, separate opt-in consent is required. Marketing messages without consent are a clear violation.
+**Document a basis per processing activity.** "Consent for everything" is simpler to build, but if a user withdraws consent you did not need, you are left unable to perform something you were entitled to do anyway.
+
+We build these consent and data-rights flows into the web platforms and apps we deliver; see our [web development service](/en/services/web-development) for how that fits into a project.
 
 ---
 
-## 2. User rights — what your product must provide
+## 2. User rights: what your product must provide
 
-The law grants data subjects rights, and you must provide a mechanism to exercise them:
+Article 4 of the law gives data subjects five rights, and Article 3 of the Implementing Regulation sets the clock: **respond within 30 days**, extendable by up to another 30 days if the request needs unusual effort or several arrive at once, provided you tell the data subject in advance and give reasons.
 
-| Right | What to build |
+| Right (Article 4) | What to build |
 |---|---|
-| **Access** | Display the data stored about them |
-| **Correction** | Edit their data |
-| **Deletion** | Delete their account and data |
-| **Information** | Know how their data is processed |
-| **Portability** | Export their data in a readable format |
+| **To be informed** of the legal basis and purpose of collection | Clear notices at the point of collection |
+| **Access** to the data you hold | A "my data" page |
+| **A copy** in a clear, readable format | An export function |
+| **Correction**, completion or updating | Editable profile fields and a correction request path |
+| **Destruction** of data no longer needed | Real deletion, subject to Article 18 |
 
-**Building these into the product is far cheaper than handling them manually** on every request. A simple "my data" page solves most of it.
+**Building these into the product is far cheaper than handling them by hand** on every request.
 
-**A note on deletion:** "delete account" must genuinely delete rather than hide. And watch backups and logs — data removed from the database but remaining in logs has not been deleted.
+**Deletion must delete.** Article 18 requires destroying data without delay once the purpose of collection ends, unless another law requires longer retention or the data relates to a pending court case. A `deleted_at` flag is not destruction, and data removed from the database but still sitting in logs and analytics exports has not been destroyed.
 
 ---
 
 ## 3. Breach notification within 72 hours
 
-When a breach occurs that may harm data subjects, **SDAIA must be notified within 72 hours** of becoming aware of it.
+Article 20 of the law requires the controller to notify SDAIA when it learns of a leak, damage or unlawful access to personal data. Article 24 of the [Implementing Regulation](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2) sets the deadline: **within 72 hours of becoming aware of the incident**, where it may harm the data or the data subject. If you do not have every detail within 72 hours, you send what you have and provide the rest as soon as possible, with reasons for the delay. Affected data subjects must be told without undue delay, in plain and clear language, when the breach may cause them harm.
 
 **What this means technically:**
 
-- **You need monitoring that detects the breach at all.** You cannot notify within 72 hours about a breach you discover two months later.
-- **You need sufficient logging** to determine what leaked, when, and who was affected.
-- **You need a written procedure** — who is notified internally? Who decides? Who contacts the authority?
+- **Monitoring that detects a breach at all.** You cannot report within 72 hours a breach you discover two months later.
+- **Logging detailed enough** to establish what leaked, when, and whose data.
+- **A written procedure:** who is told internally, who decides, who contacts SDAIA.
 
-**Write that procedure before you need it.** A breach is not the moment to improvise process.
+Write the procedure before you need it.
 
 ---
 
 ## 4. Transferring data outside the Kingdom
 
-The law places **restrictions on transferring personal data outside Saudi Arabia**, requiring specific safeguards when transferring.
+Transfers are permitted, but conditionally. Article 29 of the law requires that a transfer does not prejudice national security or the Kingdom's vital interests, that the destination offers adequate protection, and that it is limited to the minimum data needed.
 
-**What this means for a developer:**
+SDAIA's [Regulation on Personal Data Transfer Outside the Kingdom](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/RegulationonPersonalDataTransferOutsidetheKingdom) turns that into routes:
 
-- **Hosting** — where is your database actually stored? See our [hosting comparison guide](/en/blog/hosting-comparison).
-- **Third-party services** — analytics, notifications, email, AI providers; each may move data outside the Kingdom.
-- **Backups** — many default configurations replicate data to other regions for resilience. That is a transfer.
-- **Logs** — they may contain personal data and be stored in an external service.
+- **Adequacy:** SDAIA publishes a list of countries and organisations with adequate protection and reviews it every four years (Article 3).
+- **Appropriate safeguards** where there is no adequacy: standard contractual clauses, binding common rules, or an accreditation certificate (Article 4(1)).
+- **Limited exemptions**, such as transfers that directly deliver a service to the data subject or occasional limited transfers, most of which do not apply to sensitive data (Article 4(2)).
+- **A risk assessment** is mandatory when you rely on an exemption, and when you transfer sensitive data or transfer continuously or at scale (Article 7).
 
-> **A consistently overlooked point:** verifying your primary data location isn't enough. **Backups, logs, and integrations** transfer data too, and many default configurations distribute them geographically without you noticing.
+**What this means for a developer:** most SaaS products transfer continuously, and many vendors sit abroad. Every one of these is a transfer:
+
+- **Hosting:** where the primary database actually lives.
+- **Backups:** many managed services replicate to another region by default.
+- **Logs and error tracking:** they usually contain personal data and often ship abroad.
+- **Third-party services:** analytics, notifications, email, AI providers.
+
+The [data residency guide](/en/blog/data-residency-gulf) walks through each of these; the [hosting comparison](/en/blog/hosting-comparison) lists which providers have live Saudi regions.
 
 ---
 
 ## 5. Development and testing environments
 
-**Using real Saudi user data in a development or testing environment is treated as a violation.**
-
-This is an extremely common practice — a copy of the production database on a developer's machine or a staging server — and it is a clear breach.
+Neither the law nor the Implementing Regulation has a rule written specifically for test environments. That does not make a copy of production on a developer laptop safe. It is still processing of personal data, so the Article 19 duty to protect it with organisational, administrative and technical measures applies, as do the Regulation's data-minimisation rules. A forgotten database copy is also exactly the kind of incident that triggers the 72-hour clock.
 
 **The alternative:**
 - **Generated data** for testing.
-- **Anonymisation** if you need realistic data structure.
-- **Masking sensitive fields** whenever copying any production data.
+- **Anonymisation** when you need realistic structure. Fully anonymised data falls outside the definition of personal data.
+- **Masking** of identifying fields whenever any production data has to be copied.
+
+> **Question for your lawyer:** if you must reproduce a production bug with real records, which measures (access logging, time-limited access, a written purpose) does counsel expect you to document?
 
 ---
 
 ## 6. Privacy policy
 
-**It must be published in Arabic and English**, and include:
+Article 12 requires every controller to adopt a privacy policy and make it available to data subjects before collecting their data. Article 13 lists what you must tell people at collection: the legal basis, the purpose, who is collecting, who will receive the data and whether it leaves the Kingdom, the consequences of not providing it, and their rights.
 
-- Categories of data collected.
-- The purpose for each category.
-- Retention periods.
-- Data subject rights and how to exercise them.
-- A privacy contact point.
-- Whether data is transferred outside the Kingdom and the safeguards applied.
+**On language:** SDAIA's [privacy policy guideline](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/ElaborationandDevelopingPrivacyPolicyGuideline) does not name Arabic or English. It requires clear, non-misleading language that is easy to read and suited to the people whose data you process. For a product serving Saudi users that points to Arabic; adding English is a business choice for your audience, not a rule we could find in SDAIA's texts.
 
-**A policy copied from a foreign template is insufficient** — it must reflect what your product actually does. A policy describing practices you don't follow is worse than none.
+A policy copied from a foreign template is insufficient. It must describe what your product actually does, including every third-party service. Our [privacy policy guide](/en/blog/privacy-policy-guide) covers the content section by section.
 
 ---
 
 ## 7. Special cases
 
-**Minors.** Data from those under the age of majority requires **guardian consent**, which means a guardianship verification mechanism rather than a checkbox. See our [educational apps guide](/en/blog/educational-app-cost).
+**Minors and others without full legal capacity.** Article 13 of the Implementing Regulation lets the legal guardian give consent and exercise rights on the data subject's behalf. You must take reasonable steps to verify the guardianship, the guardian's consent must not harm the data subject's interests, and the data subject must be able to exercise their own rights once they gain full capacity. A checkbox saying "I am over 18" verifies none of this. The [children's data guide](/en/blog/childrens-data-protection) covers verification methods.
 
-**Health data.** Sensitive by nature, with additional requirements from health authorities. See our [clinic apps guide](/en/blog/clinic-booking-app-cost).
+**Health data.** Health data is sensitive. Article 23 of the law limits access to the fewest staff needed, and sector rules from health authorities apply on top. See our [clinic booking app guide](/en/blog/clinic-booking-app-cost).
 
-**Artificial intelligence.** Passing user data to an external language model is both a transfer and processing. Verify the provider's policy on using inputs for training. See our [AI model selection guide](/en/blog/choosing-ai-model-arabic).
+**Data protection officer.** Article 32 of the Implementing Regulation requires a DPO if you are a public entity processing at large scale, if your core activities involve regular and systematic monitoring of individuals, or if your core activities involve processing sensitive data. The DPO can be an employee or an external contractor.
+
+**Artificial intelligence.** Sending user data to an external language model is processing and, if the provider is abroad, a transfer. Check whether the provider retains inputs or trains on them. See [AI privacy risks](/en/blog/ai-privacy-risks).
 
 ---
 
 ## Technical checklist
 
-- [ ] Separate consent per purpose, not pre-ticked, withdrawable.
-- [ ] Timestamped consent records with policy version.
-- [ ] A page letting users view, correct, export, and delete their data.
-- [ ] Deletion covers backups and logs.
-- [ ] Privacy policy in Arabic and English reflecting reality.
-- [ ] Documented knowledge of where data is stored — including backups and logs.
-- [ ] Every third-party service reviewed for data transfer.
-- [ ] Development environments contain no real production data.
-- [ ] Data encrypted in transit and at rest.
-- [ ] Access controls — who on your team can see what.
+- [ ] A documented lawful basis for each processing activity.
+- [ ] Separate, unticked, withdrawable consent where consent is the basis.
+- [ ] Timestamped consent records with the policy version.
+- [ ] A legitimate-interest assessment on file wherever you rely on it.
+- [ ] A page letting users view, export, correct and delete their data, with a 30-day response process.
+- [ ] Deletion that covers backups, logs and analytics exports.
+- [ ] A privacy policy in clear language for your audience that matches reality.
+- [ ] A data map: where primary data, backups and logs live.
+- [ ] Every third-party service reviewed as a possible transfer, with its route under the transfer regulation.
+- [ ] No real production data in development environments.
+- [ ] Encryption in transit and at rest, and access control by role.
 - [ ] Monitoring that detects breaches, and a written 72-hour notification procedure.
-- [ ] A retention policy — don't keep data without a purpose.
+- [ ] A record of processing activities, kept while processing continues and for five years after it ends (Implementing Regulation, Article 33).
 
 ---
 
-## Who is accountable — you or your developer?
+## Who is accountable: you or your developer?
 
-This question surfaces after an incident, which is the worst time to discover the answer.
+The law distinguishes the **controller**, which decides why and how personal data is processed, from the **processor**, which handles it on the controller's behalf. In a typical project **you are the controller and your development agency is a processor**, so regulatory accountability sits with you. You can put obligations on a vendor by contract, but not your own accountability to SDAIA.
 
-Data protection law distinguishes the **controller** — the entity deciding why and how personal data is processed — from the **processor**, which handles data on the controller's instructions. In a typical project, **you are the controller and your development agency is a processor**.
+**Before signing:**
 
-**The practical consequence:** regulatory accountability sits with you. "Our developer configured it that way" is not a defence. You can contract obligations onto a vendor, but you cannot contract away your own accountability to the regulator.
-
-**What this means before signing:**
-
-- Put a **data processing agreement** in place — what the vendor may do with data, security obligations, and what happens at contract end.
-- Require **notification to you within 24 hours** of any suspected breach. You have a 72-hour window overall; a vendor sitting on the news for two days consumes it.
-- Establish **deletion obligations** — real production data on a developer's laptop after handover is a live exposure.
-- Map **sub-processors.** Your vendor's chosen analytics, hosting, and error-tracking services are processing your users' data too, and they inherit the same requirements.
-
-> **The most common real-world failure** is not an attack. It is a copy of the production database sitting in a developer's local environment or a test server, long after anyone remembers it exists. Section 5 above covers why production data does not belong in development environments.
+- Put a **data processing agreement** in place: what the vendor may do with data, its security obligations, and what happens at contract end.
+- Require **notice to you within 24 hours** of any suspected breach. Your own window to SDAIA is 72 hours, and a vendor that sits on the news for two days uses it up.
+- Set **deletion obligations**, so no production data stays on a developer's machine after handover.
+- Map **sub-processors**: the analytics, hosting and error-tracking services your vendor picks process your users' data too.
 
 ---
 
 ## What non-compliance costs
 
-Compliance work competes for budget against features, so it is worth being specific about the downside.
+The penalties are in the law itself:
 
-**Regulatory penalties.** SDAIA is the supervisory authority, and the law provides for warnings, fines, and — for the most serious violations, particularly unlawful disclosure of sensitive data — criminal liability. Penalty ceilings and enforcement practice change over time; verify current figures with a qualified local advisor rather than relying on any figure quoted in an article, including this one.
+| Violation | Maximum penalty | Article |
+|---|---|---|
+| Disclosing or publishing sensitive data unlawfully, with intent to harm the data subject or for personal gain | Up to 2 years' imprisonment and/or a fine of up to SAR 3 million; the court may double the fine for a repeat offence | 35 |
+| Any other violation of the law or its regulations by a private entity | A warning or a fine of up to SAR 5 million, doubled for a repeat violation | 36 |
 
-**The costs that arrive first.** In practice, most organisations feel these before any fine:
+Article 36 penalties are decided by committees formed by SDAIA, and the penalised party can appeal to the competent court.
 
-- **Rework.** Retrofitting consent flows, deletion capability, and audit logging into a shipped product costs several times what building them in would have.
-- **Lost enterprise deals.** Government and large corporate buyers increasingly require compliance evidence during procurement. Failing that check removes you from the process silently.
-- **App store removal.** Both stores enforce their own privacy requirements, and a listing can be pulled over a non-compliant privacy policy or undeclared data collection.
-- **Reputational damage.** Breach notification is a legal duty, meaning your users learn about the incident by design.
+**Enforcement is not theoretical.** On 16 January 2026 the [Saudi Press Agency reported](https://spa.gov.sa/en/N2489505) that SDAIA's committees had issued 48 decisions in 2025 confirming violations and imposing penalties under Article 36.
 
-**The proportionate approach:** the requirements scale with sensitivity. A brochure site collecting a contact form is not in the same position as a health app. Match the effort to the data — but do the mapping first, because plenty of teams discover they hold more personal data than they assumed.
+**The costs that usually arrive first** are less dramatic: rework when consent, deletion and audit logging have to be retrofitted into a shipped product; enterprise and government buyers asking for compliance evidence during procurement; and app store reviews that check your privacy disclosures (see [app store requirements](/en/blog/app-store-requirements)). And because notifying affected users is a legal duty, a breach also brings damage to your reputation.
 
-> **This guide is written for developers and product owners planning compliance work. It is not legal advice.** For regulated sectors — health, finance, government — engage a qualified Saudi data protection advisor before launch, not after.
+**Scale the effort to the data.** A brochure site with a contact form is not in the same position as a health app. Do the data mapping first, because many teams find they hold more personal data than they assumed.
 
 ---
 
 ## Related reading
 
-- [API security](/en/blog/api-security-guide) — the technical implementation of these controls.
-- [Hosting and data residency](/en/blog/hosting-comparison) — where your data actually lives.
-- [Fintech and SAMA](/en/blog/fintech-sama-compliance) — if your product is financial.
-- [Health apps in the UAE](/en/blog/health-apps-uae-compliance) — for comparison with the UAE framework.
+- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide): Saudi Arabia compared with the UAE and Qatar.
+- [API security](/en/blog/api-security-guide): the technical controls behind Article 19.
+- [Data residency in the Gulf](/en/blog/data-residency-gulf): where transfers hide.
+- [Fintech and SAMA](/en/blog/fintech-sama-compliance): if your product is financial.
 
 ---
 
 ## Frequently asked questions
 
-### Does the law apply to a company outside Saudi Arabia?
+### Does the PDPL apply to a company with no office in Saudi Arabia?
 
-Yes, if you process data of individuals inside the Kingdom. Your company's or servers' location doesn't exempt you — the criterion is who you serve.
+Yes. Article 2 covers processing by an entity outside the Kingdom of personal data of individuals residing in the Kingdom. If you have users living in Saudi Arabia, your company's location does not exempt you.
 
-### What does baseline compliance cost?
+### Is financial or children's data "sensitive data" under the PDPL?
 
-For a mid-size product: $2,000–$6,000 for technical implementation (consent mechanisms, rights page, transfer review, encryption) plus legal review cost. The figure is far lower when accounted for at design time, and far higher when added after launch.
+No. The law's sensitive list covers racial or ethnic origin, belief, security and criminal data, biometric data that identifies a person, genetic data, health data and data indicating unknown parentage. Credit data is a separately defined category with its own rules, and minors are handled through legal capacity and guardian consent.
 
-### What is the penalty for non-compliance?
+### Can I process data without consent under the PDPL?
 
-The law provides for administrative penalties that can reach substantial amounts, with stricter penalties for intentional disclosure of sensitive data. More importantly, the authority has issued actual decisions against violators — enforcement is not theoretical.
+Yes, in the cases Article 6 lists: to serve the data subject's interest when they cannot be reached, under another law or a prior agreement with the data subject, for a public entity's security or judicial needs, or for your legitimate interest when the data is not sensitive. Legitimate interest requires a documented assessment under Article 16 of the Implementing Regulation.
 
-### Do I need to appoint a data protection officer?
+### What are the maximum PDPL penalties?
 
-It depends on your activity and processing scale. Some cases require it explicitly. Even where not mandatory, designating an internal owner is sound practice — and you must at minimum provide a privacy contact point.
+Up to SAR 5 million per violation under Article 36, doubled for repeat violations, and for unlawful disclosure of sensitive data with intent to harm or for gain, up to 2 years' imprisonment and a fine of up to SAR 3 million under Article 35. SDAIA's committees issued 48 penalty decisions in 2025.
 
-### Can I use Google Analytics?
+### How fast must I answer a user's access or deletion request?
 
-It needs review: what data is sent? Where is it processed? Did you obtain separate analytics consent? Many tools are used with default settings that collect more than necessary. Review the settings and obtain explicit consent.
+Within 30 days, under Article 3 of the Implementing Regulation. You may extend by up to another 30 days if the request needs unusual effort or several arrive together, but you must tell the user in advance and explain why.
 
-### What about data collected before enforcement?
+### What does baseline PDPL engineering cost?
 
-This point needs specific legal advice for your situation. In practice, many organisations re-request consent on compliant terms and delete anything they have no legitimate purpose to retain.
+It is billed as engineering time. Ranges from our published rate card, as of November 2026: regional agency rates run $50–100 per hour (about SAR 200–400). How many hours depends on how many processing activities, vendors and data stores you have, which is why the data map comes first.
 
 ---
 
-## Conclusion
+## Before you build
 
-**The law has been actively enforced since September 2024** — it is not a preparatory phase.
+The law rewards decisions made early: which lawful basis each feature relies on, where each store and vendor sits, and how deletion reaches backups and logs. Changing those after launch is structural work.
 
-**Build into your product:** separate withdrawable consent, a user rights page, and a timestamped consent record.
-
-**Verify where your data actually lives** — including backups, logs, and third-party services, not the database alone.
-
-**And never use real production data in development environments** — a common and clear violation.
-
-**And consult a legal advisor** — this technical guide is no substitute.
-
-**Building a product that processes Saudi data?** [Get in touch](/en/contact) — we account for these requirements at design time rather than after launch. See [our services](/en/services).
+If you are planning a product for Saudi users and want those decisions made at design time, [tell us what you are building](/en/contact) and we will map the data flows with you before any code is written. For anything in a regulated sector, bring your legal adviser into that conversation too.

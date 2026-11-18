@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { getBlogPosts } from "@/lib/content/content-loader";
 import { isLocale, type Locale } from "@/lib/i18n/locale";
 import { buildPageMeta, siteUrl } from "@/lib/seo/metadata";
-import { JsonLd, buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { BlogGrid } from "@/components/sections/BlogGrid";
 import { buildBlogCards, filterByCategory } from "@/lib/content/blog-view";
 import { getCategoryBySlug, paginate, type Category } from "@/lib/content/taxonomy";
@@ -31,7 +32,7 @@ export function buildCategoryMetadata({
 
   // Paginated pages stay indexable for the reason given in app/[lang]/blog/listing.ts.
   return buildPageMeta(lang, {
-    title: `${category.label[lang]}${suffix}`,
+    title: `${category.label[lang]} — ${isAr ? "أدلة عملية" : "Guides"}${suffix}`,
     description: category.description[lang],
     path,
   });
@@ -54,7 +55,8 @@ export async function CategoryListing({
   const isAr = lang === "ar";
 
   const posts = await getBlogPosts(lang);
-  const cards = filterByCategory(buildBlogCards(posts, lang), category.key);
+  const cards = filterByCategory(buildBlogCards(posts), category.key);
+  const pillarPost = posts.find((post) => post.slug === category.pillar);
   const { items, page, totalPages } = paginate(cards, requestedPage);
 
   if (page !== requestedPage) notFound();
@@ -77,17 +79,17 @@ export async function CategoryListing({
   return (
     <>
       <JsonLd schema={buildBreadcrumbSchema(breadcrumbItems)} />
-      <JsonLd schema={buildCategoryCollectionSchema({ lang, category, items, basePath })} />
+      <JsonLd schema={buildCategoryCollectionSchema({ lang, category, items, basePath, page })} />
       <BlogGrid
         lang={lang}
         posts={items}
         page={page}
         totalPages={totalPages}
         basePath={basePath}
-        activeCategory={category.key}
-        eyebrow={isAr ? "المدونة" : "Blog"}
+        category={category}
         heading={category.label[lang]}
         intro={category.description[lang]}
+        pillar={pillarPost ? { slug: pillarPost.slug, title: pillarPost.title } : undefined}
       />
     </>
   );
@@ -104,23 +106,24 @@ function buildCategoryCollectionSchema({
   category,
   items,
   basePath,
+  page,
 }: {
   lang: Locale;
   category: Category;
   items: Array<{ slug: string; title: string; excerpt: string }>;
   basePath: string;
+  page: number;
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: category.label[lang],
     description: category.description[lang],
-    url: `${siteUrl}${basePath}`,
+    url: page > 1 ? `${siteUrl}${basePath}/page/${page}` : `${siteUrl}${basePath}`,
     inLanguage: lang === "ar" ? "ar" : "en",
     isPartOf: {
       "@type": "Blog",
-      name: lang === "ar" ? "مدونة APEX" : "APEX Blog",
-      url: `${siteUrl}/${lang}/blog`,
+      "@id": `${siteUrl}/${lang}/blog#blog`,
     },
     mainEntity: {
       "@type": "ItemList",

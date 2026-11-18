@@ -1,18 +1,46 @@
 ---
-{"slug":"choosing-ai-model-arabic","title":"Choosing an AI Model for an Arabic Assistant: Decision Criteria","seoTitle":"Choosing an AI Model for Arabic","excerpt":"Selecting a language model for an Arabic product — evaluation criteria and a testing method that outlasts model releases.","date":"2026-07-22","dateModified":"2026-07-22"}
+{"slug":"choosing-ai-model-arabic","title":"Choosing an AI Model for an Arabic Assistant: Decision Criteria","seoTitle":"Choosing an AI Model for Arabic","excerpt":"Selecting a language model for an Arabic product — evaluation criteria and a testing method that outlasts model releases.","categories":["ai"],"keywords":["choosing an AI model","Arabic language model","AI assistant","model evaluation","data privacy"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["As of November 2026, the hosted models with documented Arabic support are Anthropic's Claude, OpenAI's GPT models and Google's Gemini, and the open-weight options built for Arabic are Jais 2, Falcon-H1-Arabic and SDAIA's ALLaM, with Meta's Llama 4 listing Arabic among its 12 official languages.","Anthropic is the only one of the three hosted providers that publishes a per-language Arabic score for its current models: Claude Opus 5.5 scores 99.3% and Claude Haiku 5.5 96.6% of their English Global-MMLU scores.","For a hosted Arabic assistant, shortlist a mid-tier model from Anthropic, OpenAI and Google; if data must stay on your own servers, shortlist Jais 2 (Apache 2.0) and Falcon-H1-Arabic.","Choose between the shortlisted models by running 30–50 real conversations in your customers' dialect through each one and scoring accuracy, Arabic quality, grounding, cost and latency."],"sources":[{"title":"Anthropic docs: Multilingual support (Global-MMLU scores by language)","url":"https://platform.claude.com/docs/en/build-with-claude/multilingual-support"},{"title":"OpenAI: Update to GPT-5 System Card: GPT-5.2 (December 2025), multilingual MMLU table","url":"https://cdn.openai.com/pdf/3a4153c8-c748-4b71-8e31-aecbde944f8d/oai_5_2_system-card.pdf"},{"title":"Google Cloud Vertex AI docs: Gemini models and supported languages","url":"https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/models"},{"title":"Meta: Llama 4 model card (supported languages)","url":"https://github.com/meta-llama/llama-models/blob/main/models/llama4/MODEL_CARD.md"},{"title":"TII on Hugging Face: Introducing Falcon-H1-Arabic","url":"https://huggingface.co/blog/tiiuae/falcon-h1-arabic"}]}
 ---
 
 # Choosing an AI Model for an Arabic Assistant: Decision Criteria
 
-Most comparisons between language models date within months — a "model A versus B" piece is published, then a new release flips the result. So **this guide does not recommend a specific model**. It gives you evaluation and testing criteria that stay valid however the names change.
+**As of November 2026, the best-documented choices for an Arabic assistant are the hosted frontier models — Anthropic's Claude, OpenAI's GPT models, and Google's Gemini — and, when data must stay on your own servers, the Arabic-first open models Jais 2 and Falcon-H1-Arabic. Of the hosted providers, only Anthropic publishes an Arabic score for its current models: Claude Opus 5.5 reaches 99.3% of its English score on a multilingual benchmark.**
 
-**The short answer: there is no absolute "best" model. Test the candidates on your own data and decide by results rather than published comparisons.**
+**The verdict:** shortlist one mid-tier hosted model from each of the three providers (or the two open models if you must self-host), then run 30–50 of your own customer conversations through each and pick on the results. Published scores tell you a model handles Arabic; only your own test tells you it handles *your* customers' Arabic.
+
+Model names change every few months, so the table below is dated and the testing method after it is the part that lasts. If you would rather have the evaluation run for you, it is part of our [AI solutions](/en/services/ai-solutions) work.
 
 ---
 
-## First: a decision that comes before choosing a model
+## What each provider documents about Arabic (November 2026)
 
-Before asking which model, ask: **do you need a language model at all?**
+Only what the provider's own model page or documentation says. Benchmarks differ between rows, so do not compare numbers across providers.
+
+| Models | What is publicly documented about Arabic | How you run it |
+|---|---|---|
+| **Claude** Fable 5.2, Opus 5.5, Sonnet 5.5, Haiku 5.5 (Anthropic) | Global-MMLU zero-shot score in Arabic of 99.6%, 99.3%, 98.3% and 96.6% of the same model's English score ([Anthropic docs](https://platform.claude.com/docs/en/build-with-claude/multilingual-support)) | Hosted API; also offered through Amazon Bedrock, Google Cloud and Microsoft Foundry |
+| **GPT** 6.2 Astra, 6.2 Sol, 6.1 Terra, 6 Luna (OpenAI) | The [models page](https://developers.openai.com/api/docs/models) says all latest models are multilingual but gives no Arabic score. The [GPT-5.2 system card](https://cdn.openai.com/pdf/3a4153c8-c748-4b71-8e31-aecbde944f8d/oai_5_2_system-card.pdf) (December 2025) reported 0.901 for gpt-5.2-thinking on professionally translated Arabic MMLU | Hosted API |
+| **Gemini** 4 Argon, 3.8 Flash and others (Google) | Arabic (`ar`) is on the list of languages that "all Gemini models can understand" in the [Vertex AI documentation](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/models); no Arabic score given | Hosted (Vertex AI, Gemini API) |
+| **Llama 4** Scout and Maverick (Meta, April 2025) | Arabic is one of 12 officially supported languages ([model card](https://github.com/meta-llama/llama-models/blob/main/models/llama4/MODEL_CARD.md)) | Open weights, Llama 4 Community License |
+| **Jais 2** 70B Chat (MBZUAI, Inception, Cerebras) | Trained on Arabic and English; the [model card](https://huggingface.co/inceptionai/Jais-2-70B-Chat) says it captures Modern Standard Arabic, regional dialects and Arabic–English code-switching; 8,192-token context | Open weights, Apache 2.0 |
+| **Falcon-H1-Arabic** 3B, 7B, 34B (TII, January 2026) | Training data covers Egyptian, Levantine, Gulf and Maghrebi dialects; context up to 256K tokens; TII reports leading Open Arabic LLM Leaderboard scores at every size — the developer's own claim ([TII](https://huggingface.co/blog/tiiuae/falcon-h1-arabic)) | Open weights |
+| **ALLaM** 7B Instruct preview (SDAIA) | Arabic and English, trained from scratch; 4,096-token context ([model card](https://huggingface.co/ALLaM-AI/ALLaM-7B-Instruct-preview)) | Open weights, Apache-2.0 |
+
+**How to read this.** Anthropic's own note says to use its table to compare languages within one model, not to rank models. What it does show is that the smallest tier gives up the most in Arabic: Haiku 5.5 sits at 96.6% of its English score against 99.3% for Opus 5.5. None of the hosted providers publishes a Gulf-dialect score — dialect is exactly what your own test has to cover.
+
+---
+
+## How to choose: three routes
+
+**Route 1 — a hosted assistant on ordinary commercial data (most projects).** Shortlist a mid-tier model from each provider — for example Claude Sonnet 5.5, GPT-6.2 Sol, and Gemini 3.8 Flash — plus one smaller, cheaper tier to see whether it is good enough. Run the test below and pick the cheapest model that passes.
+
+**Route 2 — data that must stay on your own infrastructure.** Shortlist the Arabic-first open models: Jais 2 (Apache 2.0, explicitly covers dialects and code-switching) and Falcon-H1-Arabic (several sizes, long context). Add Llama 4 if you want a general-purpose model with official Arabic support. Budget for GPU hosting and the people to run it — [AI for business](/en/blog/ai-for-business-guide) explains why self-hosting usually costs more than teams expect.
+
+**Route 3 — you are not sure you need a model.** Check the table in the next section first. Many Arabic customer-service needs are met without one.
+
+---
+
+## First: do you need a language model at all?
 
 | Your need | The right solution |
 |---|---|
@@ -21,7 +49,7 @@ Before asking which model, ask: **do you need a language model at all?**
 | Searching your documents | Text search + a model for phrasing |
 | Understanding free-form phrasing and answering from it | **A language model** |
 
-See our [chatbot cost guide](/en/blog/ai-chatbot-cost) — many cases are solved by a rule-based bot at a tenth of the cost.
+See our [chatbot cost guide](/en/blog/ai-chatbot-cost) — many cases are solved by a rule-based bot for far less.
 
 ---
 
@@ -29,7 +57,7 @@ See our [chatbot cost guide](/en/blog/ai-chatbot-cost) — many cases are solved
 
 ### 1. Arabic quality — and dialect specifically
 
-This is the most important criterion in our market, and the one global comparisons overlook.
+Published scores come from Modern Standard Arabic benchmarks. Your customers may not write in it.
 
 **Test specifically:**
 - Formally written Modern Standard Arabic.
@@ -38,66 +66,66 @@ This is the most important criterion in our market, and the one global compariso
 - Mixing Arabic and English within one sentence.
 - Common spelling variations (hamza forms, taa marbuta).
 
-**Modern models handle this well generally, but with variation.** Don't assume — test with examples from your real customer conversations.
+Anthropic's documentation also advises submitting text in its native script rather than transliteration for best results — a hint that Arabizi is where you should expect weaker answers from any model.
 
 ### 2. Context window size
 
-The context window is how much text a model can "read" in a single request. It matters if you pass long documents or extended conversation history.
+The context window is how much text a model can read in a single request. It ranges widely — 4,096 tokens for ALLaM 7B, 8,192 for Jais 2, up to 256K for the larger Falcon-H1-Arabic models.
 
-**In practice:** most customer service applications don't need enormous windows — if you're passing an entire document on every request, the problem is in the design rather than the model. Use a search step that extracts only the relevant passages.
+**In practice:** most customer service applications do not need enormous windows. If you pass an entire document on every request, the problem is in the design rather than the model — use a retrieval step that extracts only the relevant passages, as described in [RAG and AI knowledge bases](/en/blog/rag-knowledge-base).
 
 ### 3. Cost per conversation
 
-Prices are calculated per million "tokens" (text units), and vary between providers and versions while changing continuously.
+Hosted models charge per million tokens, and prices vary between providers and versions while changing continuously.
 
 **Calculate like this:**
-`conversation cost ≈ (input tokens + output tokens) × model price`
+`conversation cost ≈ input tokens × input price + output tokens × output price`
 
-**An important point for Arabic:** Arabic text consumes more tokens than English for the same meaning. Don't rely on estimates based on English text — **measure with real Arabic text from your domain**.
+**An important point for Arabic:** tokenizers differ, and Arabic can take several times more tokens than English for the same meaning. Two models at the same headline price can cost different amounts for the same Arabic conversation. [What AI costs to run](/en/blog/llm-running-costs) has the arithmetic.
 
-**A practical test:** take 20 real conversations from your logs, run them through the candidate models, and calculate actual cost. That figure is more accurate than any theoretical estimate.
+**A practical test:** take 20 real conversations from your logs, run them through each candidate, and calculate actual cost. That figure beats any theoretical estimate.
 
 ### 4. Response latency
 
 In a live conversation, the difference between two seconds and six is a genuine experience difference.
 
-**Smaller models are faster, cheaper, and less capable.** Many applications run on a small model with sufficient quality — don't pay for capability you don't need.
+**Smaller models are faster, cheaper, and less capable.** Many applications run well on a smaller tier — but check its Arabic specifically, since that is where small tiers lose most.
 
-**A useful common pattern:** a small fast model for common questions, escalating to a stronger one for complexity.
+**A useful pattern:** a small fast model for common questions, escalating to a stronger one when the question is complex.
 
 ### 5. Privacy and data residency
 
 **This may settle the decision before any technical criterion.**
 
-If your assistant processes Saudi customer data, the Personal Data Protection Law applies — including restrictions on transferring data outside the Kingdom.
+If your assistant processes Saudi customer data, the Personal Data Protection Law applies, including its rules on transferring data outside the Kingdom — see [PDPL compliance](/en/blog/pdpl-compliance-guide).
 
-**Ask every provider** (and review their published privacy documentation, such as [Anthropic's Trust Center](https://trust.anthropic.com/))**:**
-- Where is data processed geographically?
-- Are our inputs used to train models? (The answer should be no, or disableable.)
-- What is the data retention period?
-- Is a regional data region available?
+**Ask every provider:**
+- In which country or cloud region are our requests processed?
+- Are our inputs used to train models? Anthropic's [privacy center](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training) and OpenAI's [data controls](https://developers.openai.com/api/docs/guides/your-data) both state that API inputs are not used for training by default.
+- How long are logs kept?
+- Can we run it in a regional data centre, or self-host it?
 
 **Do not pass sensitive personal data to any model before verifying these points** with your legal advisor.
 
 ### 6. Stability and version changes
 
-Models are updated and retired. Ask about version policy: can you pin a specific version? How much notice before one is discontinued?
+Models are updated and retired. Ask whether you can pin a specific version and how much notice you get before one is discontinued.
 
-**A design rule:** build your system so **the model can be swapped by changing one setting**, not by rewriting. This protects you from price and capability changes, and lets you test alternatives easily.
+**A design rule:** build your system so **the model can be swapped by changing one setting**, not by rewriting. This protects you from price and capability changes, and makes it cheap to re-run the test when a new model ships.
 
 ---
 
 ## How to test for yourself
 
-This is the most important section — because it stays valid however the models change.
+This is the section that stays valid however the model names change.
 
-**1. Gather 30–50 real cases** from your customer conversations, covering easy, hard, and ambiguous.
+**1. Gather 30–50 real cases** from your customer conversations, covering easy, hard, and ambiguous — in the dialects your customers actually use.
 
 **2. Write the correct answer for each** — this is your evaluation reference.
 
-**3. Run them through every candidate model** with exactly the same instructions (prompt).
+**3. Run them through every candidate model** with exactly the same instructions (prompt), stating the response language explicitly in the system prompt.
 
-**4. Score on three criteria:** accuracy (is the information correct?), linguistic quality (is the Arabic sound and in the right dialect?), and grounding (did it stick to your sources or invent?).
+**4. Score on three criteria:** accuracy (is the information correct?), linguistic quality (is the Arabic sound and in the right register?), and grounding (did it stick to your sources or invent?).
 
 **5. Measure actual cost and latency** for each model on the same sample.
 
@@ -107,7 +135,7 @@ This is the most important section — because it stays valid however the models
 
 ## Reducing cost without reducing quality
 
-- **Shorten the system prompt.** It is sent with every request, so each extra word is paid thousands of times.
+- **Shorten the system prompt.** It is sent with every request, so each extra word is paid for thousands of times.
 - **Pass only relevant excerpts**, not entire documents.
 - **Cache answers to repeated questions** — no need to call the model for the same question a hundred times.
 - **Use a smaller model for simple tasks** and escalate only when needed.
@@ -118,35 +146,39 @@ This is the most important section — because it stays valid however the models
 ## Related reading
 
 - [AI for business](/en/blog/ai-for-business-guide) — the decision that comes before choosing a model.
+- [What AI costs to run](/en/blog/llm-running-costs) — token pricing and why Arabic costs more.
+- [RAG and AI knowledge bases](/en/blog/rag-knowledge-base) — grounding answers in your own documents.
 - [Arabic document processing](/en/blog/arabic-ocr-document-processing) — models applied to Arabic documents.
-
 - [AI chatbot cost](/en/blog/ai-chatbot-cost) — upfront and operational cost in detail.
-- [PDPL compliance](/en/blog/pdpl-compliance-guide) — before passing any data to an external model.
 - [API security](/en/blog/api-security-guide) — never put model keys in the app.
 
 ---
 
 ## Frequently asked questions
 
-### Which model is best for Arabic?
+### What is the best AI model for Arabic in 2026?
 
-There is no fixed answer — models evolve quickly and any specific recommendation dates within months. The sounder approach is to test candidates on **data from your domain and your audience's dialect** using the methodology above. Modern models are generally good at Arabic; differences show up in dialects and specialised terminology.
+There is no single winner, but there is a clear shortlist. For a hosted assistant, test a mid-tier model from Anthropic (Claude Sonnet 5.5), OpenAI (GPT-6.2 Sol) and Google (Gemini 3.8 Flash); Anthropic publishes Arabic scores of 96.6–99.6% of English across its current models. If you must self-host, test Jais 2 and Falcon-H1-Arabic. Pick the one that scores best on 30–50 of your own conversations.
 
-### What does running an AI assistant cost monthly?
+### Is there a Saudi or Emirati Arabic language model?
 
-It depends on conversation volume, length, and the model used. See our [chatbot cost guide](/en/blog/ai-chatbot-cost) for the line items. The rule: calculate with a real sample of your conversations rather than a theoretical estimate — and Arabic text consumes more tokens than English.
+Yes. SDAIA's National Center for AI publishes ALLaM-7B-Instruct-preview, an Arabic–English model with open weights. From the UAE, MBZUAI, Inception and Cerebras publish Jais 2 (70B, Apache 2.0), and TII publishes Falcon-H1-Arabic in 3B, 7B and 34B sizes. All three can be self-hosted, which matters when data must stay in the country.
 
-### Is my data safe with model providers?
+### Do the big hosted models understand Gulf dialect?
 
-It varies by provider and plan. Ask explicitly about processing location, use of data in training, and retention period. Do not pass sensitive personal data before verifying compliance with the Personal Data Protection Law with your legal advisor.
+None of Anthropic, OpenAI or Google publishes a Gulf-dialect score; their Arabic figures come from Modern Standard Arabic benchmarks. Jais 2 and Falcon-H1-Arabic explicitly cite dialect data in their documentation. Either way, include Gulf-dialect and Arabizi messages from your own logs in the test set — that is the only reliable answer.
+
+### Will my data be used to train the model?
+
+On the API, Anthropic and OpenAI both state that inputs are not used for training by default. Consumer chat apps carry different terms, and processing location and log retention still need checking against the Personal Data Protection Law with your legal advisor before sensitive data is sent.
 
 ### What if the model gives wrong information?
 
-This is the primary risk. Three practices reduce it: **restricting the model to answer only from your approved content**, setting a confidence threshold below which it hands off to a human, and periodically reviewing conversation logs. Human handoff is a necessity, not an optional extra.
+This is the primary risk. Three practices reduce it: **restricting the model to answer only from your approved content**, setting a confidence threshold below which it hands off to a human, and reviewing conversation logs regularly. Human handoff is a necessity, not an optional extra.
 
 ### Can I switch models later?
 
-Yes if you design for it — make the model a swappable setting rather than something embedded in code. You will usually need to retune the prompt and retest, but the architecture holds. This is the single most important design decision in the project.
+Yes, if you design for it — make the model a swappable setting rather than something embedded in code. You will usually need to retune the prompt and retest, but the architecture holds. With new models shipping every few months, this is the most important design decision in the project.
 
 ### Do I need a custom model trained on my data?
 
@@ -154,14 +186,8 @@ Rarely. Most cases are solved by a general model plus search over your documents
 
 ---
 
-## Conclusion
+## Where to start this week
 
-**Don't pick a model based on a published comparison** — models change faster than articles.
+Pull 30 real conversations from your support logs, keep the dialect and the typos, and write the answer you would want for each. With that set in hand, comparing Claude, GPT, Gemini or an open Arabic model takes days rather than a procurement cycle — and the result is still valid when the next model ships, because you simply run it again.
 
-**Test on your data:** 30–50 real cases, in your audience's dialect, with identical instructions, scored on accuracy, language, and grounding.
-
-**Verify privacy and data residency first** if you process Saudi customer data.
-
-**And design the system so the model is swappable** — that protects you from every change to come.
-
-**Want help evaluating the options for your case?** [Get in touch](/en/contact) for a free assessment — including a straight opinion if a simple rule-based bot would serve you. See our [AI solutions services](/en/services/ai-solutions).
+If you want a second opinion on the shortlist, or the test run against your own data, [talk to us](/en/contact) — including if the honest answer is that a rule-based bot covers your case.

@@ -11,7 +11,7 @@ import { onMediaChange } from "@/lib/browser";
  * effects are desktop-only by design, and this is the single source of truth
  * for that decision so the JS guard and the CSS never disagree.
  */
-export const DESKTOP_QUERY = "(min-width: 768px)";
+const DESKTOP_QUERY = "(min-width: 768px)";
 
 function subscribe(callback: () => void) {
   if (typeof window === "undefined") return () => {};

@@ -1,14 +1,14 @@
 ---
-{"slug":"internal-ai-assistant","title":"Building an Internal AI Assistant for Your Team","seoTitle":"Internal AI Assistant for Companies","excerpt":"An AI assistant over your own policies and documentation — what it takes, why permissions are the hard part, and how to avoid building something nobody uses.","date":"2026-08-22","dateModified":"2026-08-22"}
+{"slug":"internal-ai-assistant","title":"Building an Internal AI Assistant for Your Team","seoTitle":"Internal AI Assistant for Companies","excerpt":"An AI assistant over your own policies and documentation — what it takes, why permissions are the hard part, and how to avoid building something nobody uses.","categories":["ai"],"keywords":["internal AI assistant","internal knowledge search","access permissions","HR automation","company documentation","employee onboarding"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["An internal AI assistant answers employees' questions from the company's own policies and documentation, retrieving the relevant passages and citing the source document for every answer.","The hard part is permissions: documents a user is not allowed to see must be filtered out at retrieval, before the model sees them, because instructions in the prompt can be bypassed.","As of November 2026, an internal assistant added to existing tools falls in the AI/ML integration tier of our rate card at $10,000–$40,000+ (SAR 37,500–150,000+).","Internal assistants are usually abandoned for non-technical reasons — outdated or contradictory documents, a separate login, and early wrong answers — so launch with open, current content inside the tools staff already use."],"sources":[{"title":"Microsoft Learn: Data, Privacy, and Security for Microsoft 365 Copilot (permission-trimmed grounding)","url":"https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy"},{"title":"OWASP GenAI Security Project: LLM02:2025 Sensitive Information Disclosure","url":"https://genai.owasp.org/llmrisk/llm022025-sensitive-information-disclosure/"},{"title":"Anthropic Privacy Center: Is my data used for model training? (commercial products)","url":"https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training"},{"title":"OpenAI API docs: Data controls (your data)","url":"https://developers.openai.com/api/docs/guides/your-data"}]}
 ---
 
 # Building an Internal AI Assistant for Your Team
 
-Employees spend a measurable part of every week looking for information that already exists somewhere in the company — a policy, a procedure, last quarter's numbers, how to file an expense claim. An internal assistant that answers those questions from your own documentation is one of the clearest AI cases there is.
+**An internal AI assistant answers employees' questions — leave policy, expense procedures, approval limits, how a system works — from your own documentation, with a citation to the source for every answer. As of November 2026, adding one to the tools your team already uses falls in the AI/ML integration tier of our rate card: $10,000 – $40,000+ (SAR 37,500 – 150,000+).**
 
-**The short answer: the retrieval and the model are the easy parts. Permissions and content quality are what decide whether the thing gets used or quietly abandoned — and both are usually underestimated.**
+**The model and the retrieval are the easy parts. Permissions and content quality decide whether it gets used or quietly abandoned.** A document a junior employee may not see has to be excluded before the model ever reads it, and an assistant over outdated policies gives outdated answers with confidence.
 
-This guide covers what to build, what breaks, and how to avoid the most common outcome: a system that works and nobody opens.
+This guide covers what to build, what breaks, and how to avoid a system that works and nobody opens. If you are weighing it against other AI projects, our [AI solutions](/en/services/ai-solutions) page sets out how we scope them.
 
 ---
 
@@ -27,17 +27,17 @@ An internal assistant pays back when the same questions are asked repeatedly and
 - Decisions requiring judgement or authority
 - Domains where your documentation is thin — the assistant cannot answer from documents you never wrote
 
-> **The uncomfortable diagnostic:** if your answer to "where is that documented?" is usually "ask Sara," you do not have a retrieval problem. You have a documentation problem, and an AI assistant will surface that rather than solve it.
+> **The uncomfortable diagnostic:** if your answer to "where is that documented?" is usually "ask Sara," you do not have a retrieval problem. You have a documentation problem, and an AI assistant will surface it rather than solve it.
 
 ---
 
 ## Permissions are the hard part
 
-This is what separates an internal assistant from a public chatbot, and it is where most projects underestimate the work.
+This is what separates an internal assistant from a public chatbot.
 
 **The failure that ends projects:** a junior employee asks about compensation policy and the assistant helpfully retrieves a document containing the entire salary band table. The system worked exactly as designed, and you now have an HR incident.
 
-**Filter at retrieval, never at generation.** The correct architecture excludes documents the user cannot see *before* the model ever sees them. Instructing the model to "only discuss what this user is authorised for" is not a permission system — it is a suggestion to a probabilistic system, and it will fail.
+**Filter at retrieval, never at generation.** The correct architecture excludes documents the user cannot see *before* the model ever sees them. Instructing the model to "only discuss what this user is authorised for" is not a permission system: OWASP's guidance on [sensitive information disclosure](https://genai.owasp.org/llmrisk/llm022025-sensitive-information-disclosure/) warns that system-prompt restrictions "may not always be honored and could be bypassed via prompt injection." Microsoft builds its own workplace assistant the same way — Microsoft 365 Copilot's [documentation](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy) states that it "only surfaces organizational data to which individual users have at least view permissions."
 
 **What this requires:**
 
@@ -50,21 +50,21 @@ This is what separates an internal assistant from a public chatbot, and it is wh
 
 ---
 
-## Content quality decides quality
+## Content quality decides answer quality
 
-An assistant is a mirror of your documentation. This surprises teams who expected the model to compensate.
+An assistant is a mirror of your documentation, and the model cannot compensate for what the documents get wrong.
 
 **What breaks answers:**
 
-**Outdated documents.** The 2023 leave policy and the 2026 one both sit in the index, and retrieval cannot tell which is current. **Archive superseded documents rather than leaving them** — this single act of housekeeping improves answers more than most technical tuning.
+**Outdated documents.** The 2023 leave policy and the 2026 one both sit in the index, and retrieval cannot tell which is current. **Archive superseded documents rather than leaving them** — this housekeeping often improves answers more than technical tuning.
 
-**Contradictory sources.** Two documents state different approval limits. The assistant confidently picks one. Now you have an authoritative-sounding wrong answer with a citation.
+**Contradictory sources.** Two documents state different approval limits. The assistant confidently picks one, and you have an authoritative-sounding wrong answer with a citation.
 
 **Undocumented knowledge.** The assistant cannot retrieve what was never written down.
 
-**Mixed languages.** An Arabic question against English-only documentation retrieves poorly. Either maintain both languages or expect cross-language retrieval to underperform — see [Arabic search](/en/blog/arabic-search-guide) for why normalisation matters here too.
+**Mixed languages.** An Arabic question against English-only documentation depends on cross-language retrieval, which varies by embedding model. Either maintain key documents in both languages or test cross-language retrieval on your own content before relying on it — see [Arabic search](/en/blog/arabic-search-guide) for why normalisation matters here too.
 
-**The preparation that pays off:** before building, audit what you have. Which documents are current, which are superseded, which contradict each other, and what is missing entirely. Most teams find this audit valuable regardless of whether they proceed with the assistant.
+**The preparation that pays off:** before building, audit what you have — which documents are current, which are superseded, which contradict each other, and what is missing entirely. The audit is useful whether or not you go on to build the assistant.
 
 ---
 
@@ -78,36 +78,32 @@ The technical shape is [RAG](/en/blog/rag-knowledge-base) with an authorisation 
 
 **3. Filter retrieval by user.** The hard constraint described above.
 
-**4. Answer with citations.** Always show which document and section. Users need to verify, and you need it to debug — an answer without a source is unusable in an internal context where the stakes are procedural.
+**4. Answer with citations.** Always show which document and section. Users need to verify, and you need it to debug — an answer without a source is unusable where the stakes are procedural.
 
 **5. Handle "I don't know" properly.** Test that it actually says so rather than inventing. An assistant that fabricates a leave policy is worse than no assistant.
 
-**6. Meet people where they work.** An assistant inside the tool your team already uses gets used. One behind a separate login does not — this is the single most common cause of low adoption.
+**6. Meet people where they work.** An assistant inside the chat or intranet tool your team already uses gets opened; one behind a separate login competes with simply asking a colleague, and usually loses.
 
 ---
 
 ## Cost
 
-| Item | Indicative cost |
-|---|---|
-| Source connectors and ingestion | $5,000 – $15,000 |
-| Permission model and filtering | $6,000 – $18,000 |
-| Retrieval and answer generation | $5,000 – $12,000 |
-| Integration into existing tools | $4,000 – $12,000 |
-| Evaluation and tuning | $3,000 – $8,000 |
-| **Build total** | **$23,000 – $65,000** |
+| Scope | Range (USD) | SAR | AED | QAR |
+|---|---|---|---|---|
+| Internal assistant added to existing tools (AI/ML integration) | $10,000 – $40,000+ | 37,500 – 150,000+ | 36,700 – 146,900+ | 36,400 – 145,600+ |
+| Standalone AI-powered internal app (6 – 12 months) | $40,000 – $150,000+ | 150,000 – 562,500+ | 146,900 – 550,900+ | 145,600 – 546,000+ |
 
-**Permissions are frequently the largest line**, which surprises people who budgeted for "a chatbot over our documents."
+Ranges from our published rate card, as of November 2026; both are open-ended at the top. Within the integration range, the cost is driven by five pieces of work: source connectors and ingestion, the permission model and retrieval filtering, retrieval and answer generation, integration into your existing tools, and evaluation. **Budget for the permission model explicitly** — it is the part a "chatbot over our documents" estimate tends to leave out.
 
-**Running cost** is per query and modest at internal volumes — a few hundred employees generate far fewer queries than a customer-facing product. [What AI costs to run](/en/blog/llm-running-costs) covers estimating it.
+**Running cost** is per query and modest at internal volumes, since a few hundred employees generate far fewer queries than a customer-facing product. [What AI costs to run](/en/blog/llm-running-costs) covers estimating it.
 
-**Justify it against time recovered.** If fifty employees each lose thirty minutes weekly searching for information, that is 25 hours weekly. Value that at loaded salary cost and compare against build plus two years of running cost.
+**Justify it against time recovered.** If fifty employees each lose thirty minutes a week searching for information, that is 25 hours weekly. Value that at loaded salary cost and compare it against the build plus two years of running cost.
 
 ---
 
 ## Why these get abandoned
 
-Most internal assistants that fail are technically fine. They fail for these reasons, in order:
+The reasons are mostly not technical:
 
 **Nobody knew it existed.** Internal tools need launch communication, not just deployment.
 
@@ -127,9 +123,9 @@ Most internal assistants that fail are technically fine. They fail for these rea
 
 **Internal data is still personal data.** Employee records, performance documents, and salary information all carry obligations under Gulf data protection law.
 
-**Three questions before choosing a provider:** where does inference run, are inputs retained, and are they used for training. Sending HR documents to a service that trains on inputs is a straightforward violation of most compliance positions.
+**Before choosing a provider, find out which country processes the requests, how long prompts and logs are kept, and whether your documents can end up in its training data.** On the API, [Anthropic](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training) and [OpenAI](https://developers.openai.com/api/docs/guides/your-data) both state that inputs are not used for training by default; OpenAI keeps abuse-monitoring logs for up to 30 days unless you are approved for zero retention. Staff pasting HR documents into a consumer chat app is a different matter, governed by that app's own terms.
 
-**Access logging serves double duty** — it is good security practice and it is the evidence trail if anyone asks who accessed what. See [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) and [data residency](/en/blog/data-residency-gulf).
+**Access logging serves double duty** — it is good security practice, and it is the evidence trail if anyone asks who accessed what. See [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) and [data residency](/en/blog/data-residency-gulf).
 
 ---
 
@@ -138,49 +134,45 @@ Most internal assistants that fail are technically fine. They fail for these rea
 - [RAG and AI knowledge bases](/en/blog/rag-knowledge-base) — the retrieval architecture underneath.
 - [AI for business](/en/blog/ai-for-business-guide) — evaluating the use case first.
 - [What AI costs to run](/en/blog/llm-running-costs) — ongoing cost.
+- [AI privacy and security risks](/en/blog/ai-privacy-risks) — prompt injection and leakage controls.
 - [Arabic search](/en/blog/arabic-search-guide) — retrieval quality for Arabic content.
-- [Gulf regulatory compliance](/en/blog/gulf-compliance-guide) — handling internal personal data.
 
 ---
 
 ## Frequently asked questions
 
-### What is an internal AI assistant?
+### Which questions should an internal AI assistant answer first?
 
-A system that answers employee questions from your own documentation — policies, procedures, technical docs — rather than from general knowledge. It uses retrieval to find relevant passages in your material and a model to answer from them, with citations back to the source.
+The repetitive ones with stable written answers: HR policy (leave, benefits, expenses), onboarding questions, internal procedures such as approval chains and purchasing rules, and technical runbooks. Avoid anything that needs live system data or a judgement call, and anything your documentation does not actually cover.
 
 ### How do I stop an internal assistant leaking confidential documents?
 
-Filter at retrieval, never at generation. Documents the user cannot access must be excluded before the model ever sees them, using access metadata on every chunk and a hard permission constraint on the query. Instructing the model to withhold information is a suggestion to a probabilistic system, not a permission control, and it will fail.
+Filter at retrieval, never at generation. Documents the user cannot access must be excluded before the model sees them, using access metadata on every chunk and a hard permission constraint on the query. OWASP warns that instructions in the system prompt can be bypassed by prompt injection, so telling the model to withhold information is not a permission control.
 
 ### Why do internal AI assistants get abandoned?
 
-Rarely for technical reasons. The common causes are that nobody knew it existed, it lived behind a separate login instead of inside the tools people already use, it gave confident wrong answers early and lost trust, or the underlying documentation was never fixed. Track repeat usage rather than total queries.
+Rarely for technical reasons. Nobody knew it existed, it lived behind a separate login instead of inside the tools people already use, it gave confident wrong answers early and lost trust, or the underlying documentation was never fixed. Track repeat usage in week three, not total queries.
 
 ### What does an internal AI assistant cost?
 
-Roughly $23,000 to $65,000 to build, covering source connectors, the permission model, retrieval and generation, integration into existing tools, and evaluation. Permissions are often the largest line item, which surprises teams who budgeted for a simple chatbot over documents. Running cost is modest at internal volumes.
+As of November 2026, an assistant added to your existing tools sits in the AI/ML integration tier of our rate card: $10,000 – $40,000+ (SAR 37,500 – 150,000+). A standalone internal AI app is $40,000 – $150,000+. Source connectors, the permission model, retrieval, tool integration, and evaluation decide where you land; running cost is modest at internal volumes.
 
 ### Will it work if our documentation is poor?
 
-No — an assistant is a mirror of your documentation. If the answer to "where is that documented?" is usually "ask a colleague," you have a documentation problem that AI will surface rather than solve. Audit what is current, superseded, contradictory, or missing before building; most teams find that audit valuable regardless.
+No — an assistant is a mirror of your documentation. If the answer to "where is that documented?" is usually "ask a colleague," you have a documentation problem that AI will surface rather than solve. Audit what is current, superseded, contradictory, or missing before building.
 
 ### Can it answer in Arabic from English documents?
 
-Cross-language retrieval underperforms noticeably. An Arabic question against English-only documentation will retrieve poorly, because the question and the content do not match in vector space as well as same-language pairs do. Either maintain documentation in both languages or expect reduced quality for the other language.
+Sometimes, but do not assume it. An Arabic question against English-only documents relies on cross-language retrieval, and quality depends on the embedding model. Test it with real Arabic questions against your English documents; for the documents people consult most, maintaining an Arabic version is the reliable fix.
 
 ### Is it safe to send company documents to an external AI provider?
 
-Only after establishing where inference runs, whether inputs are retained, and whether they are used for training. Internal documents contain personal data — employee records, performance information — which carries obligations under Gulf data protection law. Many default consumer tiers train on inputs, which is incompatible with most compliance positions.
+It can be, once you know which country processes the requests, how long the provider keeps prompts and logs, and whether your data can be used for training. Anthropic and OpenAI state that API inputs are not used for training by default. Internal documents contain personal data — employee records, performance information — so residency rules under Gulf data protection law still apply.
 
 ---
 
-## Conclusion
+## Before you build
 
-**Permissions are the project, not a detail.** Filter at retrieval with hard constraints, start with genuinely open content, and add restricted material only once filtering is proven.
+Pick the twenty questions your HR and operations teams answer most often, find the document that answers each one, and check that it is current and does not contradict another. If that exercise goes smoothly, an assistant will work; if it does not, you have found the real project.
 
-**Your documentation is the ceiling on quality.** Archive superseded documents and resolve contradictions before building — that housekeeping improves answers more than most technical tuning.
-
-**And put it where people already work.** The most common cause of abandonment is not accuracy; it is a separate login that loses to asking a colleague.
-
-**Considering an internal assistant?** [Get in touch](/en/contact) — we will tell you honestly whether your documentation is ready. See our [AI solutions](/en/services/ai-solutions).
+When you are ready to talk permissions, sources, and where the assistant should live, [get in touch](/en/contact) — and we will tell you plainly if the documentation needs work first.

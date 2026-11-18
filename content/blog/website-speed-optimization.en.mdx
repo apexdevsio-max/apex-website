@@ -1,28 +1,26 @@
 ---
-{"slug":"website-speed-optimization","title":"Website Speed: A Practical Guide to Core Web Vitals","seoTitle":"Website Speed and Core Web Vitals in 2026","excerpt":"What LCP, INP, and CLS actually measure, the fixes that move them in order of impact, and how much speed work costs.","date":"2026-09-10","dateModified":"2026-09-10"}
+{"slug":"website-speed-optimization","title":"Website Speed: A Practical Guide to Core Web Vitals","seoTitle":"Website Speed and Core Web Vitals in 2026","excerpt":"What LCP, INP, and CLS actually measure, the fixes that move them in order of impact, and how much speed work costs.","categories":["web-ecommerce"],"keywords":["website speed optimization","Core Web Vitals","LCP","INP","CLS","page speed"],"date":"2026-09-10","dateModified":"2026-11-17","summary":["A page passes Google's Core Web Vitals when, at the 75th percentile of real visits, Largest Contentful Paint is 2.5 seconds or less, Interaction to Next Paint is 200 milliseconds or less and Cumulative Layout Shift is 0.1 or less.","Fix speed in this order: images first, then fonts, then third-party scripts, then hosting and caching, and only then the JavaScript bundle, because the first three usually bring a site to a passing score without a rebuild.","Judge the result by field data in Search Console's Core Web Vitals report, which comes from real Chrome users over a rolling 28-day window, not by a one-off Lighthouse lab score.","A rebuild is justified only when the platform itself is the limit; on our published rate card a mid-size company website costs $8,000–$25,000 and a custom web application $25,000–$80,000 as of November 2026."],"sources":[{"title":"web.dev: Web Vitals (metric definitions and thresholds)","url":"https://web.dev/articles/vitals"},{"title":"Google Search Central: Understanding page experience in Google Search results","url":"https://developers.google.com/search/docs/appearance/page-experience"},{"title":"Search Console Help: Core Web Vitals report","url":"https://support.google.com/webmasters/answer/9205520"},{"title":"Google for Developers: An image format for the Web (WebP)","url":"https://developers.google.com/speed/webp"}]}
 ---
 
 # Website Speed: A Practical Guide to Core Web Vitals
 
-Most advice about website speed is a list of techniques with no indication of which ones matter for your site. You end up with a compressed logo and a site that still takes six seconds to become useful.
+**A page passes Core Web Vitals when, for 75% of real visits, the main content appears within 2.5 seconds (LCP), the page responds to a tap within 200 milliseconds (INP) and the layout shifts by no more than 0.1 (CLS).** Most sites get there by fixing images, fonts and third-party scripts, in that order, without a rebuild.
 
-This guide is ordered differently: by what typically produces the largest improvement, so you can stop when the numbers are good enough rather than working through a checklist to the end.
+This guide is ordered by what usually produces the largest improvement, so you can stop when the numbers pass instead of working through a checklist to the end.
 
 ---
 
 ## The three metrics that count
 
-Google measures three things, and they correspond to three distinct user experiences.
-
-| Metric | What it measures | Target |
+| Metric | What it measures | "Good" threshold |
 |---|---|---|
-| **LCP** — Largest Contentful Paint | How long until the main content appears | Under 2.5s |
-| **INP** — Interaction to Next Paint | How quickly the page responds when tapped | Under 200ms |
-| **CLS** — Cumulative Layout Shift | How much the page jumps while loading | Under 0.1 |
+| **LCP** — Largest Contentful Paint | How long until the main content appears | 2.5 s or less |
+| **INP** — Interaction to Next Paint | How quickly the page responds to a tap or click | 200 ms or less |
+| **CLS** — Cumulative Layout Shift | How much the page jumps while loading | 0.1 or less |
 
-The current definitions and thresholds are published at [Google's Core Web Vitals](https://web.dev/articles/vitals), which is worth checking directly since the metrics have changed over time — INP replaced an earlier responsiveness metric in 2024.
+The definitions and thresholds are published on [web.dev](https://web.dev/articles/vitals), which recommends measuring them at the **75th percentile** of page loads, separately for mobile and desktop. The set changes over time: INP replaced First Input Delay as the responsiveness metric in 2024.
 
-**A caveat worth stating plainly:** speed is a ranking factor, but a modest one. A fast page with weak content will not outrank a slow page that answers the question better. Speed matters most for conversion — visitors leaving before the page loads — and as a tiebreaker between pages of similar quality. Fix it because it costs you customers, not because you expect it to transform your rankings.
+**How much speed matters for ranking.** Google [states](https://developers.google.com/search/docs/appearance/page-experience) that "Core Web Vitals are used by our ranking systems", but also that "Google Search always seeks to show the most relevant content, even if the page experience is sub-par." A fast page with weak content will not beat a slower page that answers the question better. Fix speed because slow pages lose visitors before they read anything, and treat any ranking benefit as a bonus.
 
 ---
 
@@ -30,13 +28,11 @@ The current definitions and thresholds are published at [Google's Core Web Vital
 
 Two kinds of data, and confusing them wastes effort.
 
-**Lab data** — PageSpeed Insights, Lighthouse — runs a simulated load on a simulated device. Useful for diagnosis, because it tells you exactly what is slow. Not a measure of what your visitors experience.
+**Lab data** — PageSpeed Insights' Lighthouse section, or Lighthouse in Chrome DevTools — runs a simulated load on a simulated device. Use it to diagnose, because it tells you exactly which file or script is slow.
 
-**Field data** — the Core Web Vitals report in Search Console — is collected from real visits on real devices. This is what Google uses, and it is what you should judge yourself by.
+**Field data** — the [Core Web Vitals report in Search Console](https://support.google.com/webmasters/answer/9205520) — comes from the Chrome UX Report, collected from real users visiting your URLs, over a rolling 28-day window. That is what Google uses, and it is what to judge yourself by.
 
-The gap between them is often large. A site scoring 95 in Lighthouse can fail its field metrics because real users are on older phones and slower networks than the simulation assumes. **Start with field data**, then use lab tools to find the cause.
-
-If your site is new or low-traffic, field data may be unavailable. In that case lab data is what you have — just treat it as indicative rather than authoritative.
+The two often disagree. A site can score well in Lighthouse and still fail in the field because real visitors use older phones and slower networks than the simulation assumes. **Start with field data**, then use lab tools to find the cause. On a new or low-traffic site there may be no field data yet; then lab data is what you have, as an indication rather than a verdict.
 
 ---
 
@@ -44,134 +40,114 @@ If your site is new or low-traffic, field data may be unavailable. In that case 
 
 ### 1. Images
 
-On most sites this is the largest single win, and it is usually the cheapest.
+On most sites this is the largest single win and the least effort.
 
-The common failures are the same everywhere: a 3MB photograph displayed at 400 pixels wide, images in JPEG when WebP would be half the size, and everything loading at once whether or not the visitor scrolls that far.
+The usual failures: a multi-megabyte photograph displayed 400 pixels wide, JPEGs where a modern format would be much smaller, and everything loading at once whether the visitor scrolls that far or not. Google's own figures put [WebP lossy images at 25–34% smaller](https://developers.google.com/speed/webp) than comparable JPEGs at the same quality.
 
-What to do:
-
-- Serve images at the size they are displayed, not the size they were uploaded
-- Use WebP or AVIF, with a fallback for anything that needs it
-- Lazy-load anything below the fold — but **never** the main image, since that is usually your LCP element
-- Set explicit width and height so the browser reserves space (this fixes CLS as well)
-
-Cost: $500 to $2,500 depending on how many images and whether your platform automates it.
+- Serve images at the size they are displayed, not the size they were uploaded.
+- Use WebP or AVIF, with a fallback where needed.
+- Lazy-load anything below the fold — but **never** the main image, which is usually your LCP element.
+- Set explicit width and height so the browser reserves space; this fixes CLS too.
 
 ### 2. Fonts
 
-Fonts are the most common cause of two problems at once: text invisible while loading, and layout shifting when the real font arrives.
+Fonts cause two problems at once: text invisible while loading, and layout shifting when the real font arrives.
 
-- Use `font-display: swap` so text renders immediately in a fallback
-- Preload the font used in your heading and first paragraph
-- Subset the file to the characters you actually use — this matters disproportionately for Arabic, where full font files are large
-- Limit yourself to two families and the weights you genuinely need
+- Use `font-display: swap` so text renders immediately in a fallback font.
+- Preload the font used in your heading and first paragraph.
+- Subset the file to the characters you use — this matters most for Arabic, whose full font files carry many contextual letter forms.
+- Limit yourself to two families and the weights you genuinely use.
 
-Arabic sites have a specific issue here worth reading separately: [Arabic Web Fonts](/en/blog/arabic-web-fonts) covers subsetting and fallback stacks in detail.
-
-Cost: $300 to $1,200.
+[Arabic web fonts](/en/blog/arabic-web-fonts) covers subsetting and fallback stacks for Arabic in detail.
 
 ### 3. Third-party scripts
 
-This is where sites accumulate weight nobody chose deliberately. An analytics tag, a chat widget, a heatmap tool, two advertising pixels, and a cookie banner — each added by someone, none reviewed since.
+This is where sites accumulate weight nobody chose deliberately: an analytics tag, a chat widget, a heatmap tool, two advertising pixels and a cookie banner, each added by someone and none reviewed since.
 
-Third-party scripts are the leading cause of poor INP, because they execute on the main thread and block the page from responding to taps.
+Third-party scripts are a common cause of poor INP, because they run on the main thread and delay the page's response to taps.
 
-- Audit what is actually loading; you will find things nobody remembers adding
-- Remove anything not currently used by anyone
-- Load what remains with `async` or `defer`
-- Delay non-essential scripts until after the page is interactive
-
-Cost: $500 to $2,000, and frequently the single biggest INP improvement available.
+- Audit what actually loads; you will find things nobody remembers adding.
+- Remove anything nobody uses.
+- Load the rest with `async` or `defer`.
+- Delay non-essential scripts until the page is interactive.
 
 ### 4. Hosting and delivery
 
-Where your server is matters. A visitor in Riyadh loading from a server in Frankfurt pays a physical latency penalty on every request.
+Distance adds latency to every request: a visitor in Riyadh loading from a server in Frankfurt waits for each round trip.
 
-- A CDN puts static assets close to your users
-- Server response time under 200ms is a reasonable target
-- Caching means repeat visits do not re-download everything
+- A CDN puts static files close to your users.
+- Caching means repeat visits do not re-download everything.
+- Watch server response time (Time to First Byte) in the lab report; a slow server delays everything after it.
 
-Our [hosting comparison](/en/blog/hosting-comparison) covers regional providers and what to look for.
-
-Cost: often just configuration, or $30 to $200 monthly for better hosting.
+Our [hosting comparison](/en/blog/hosting-comparison) covers providers and what to look for.
 
 ### 5. JavaScript
 
-The heaviest fix, and the one to reach for after the others.
-
-If your site ships a large JavaScript bundle, splitting it so each page loads only what it needs is real work. Worth doing when your framework makes it straightforward, and worth questioning whether you needed the framework at all if the site is largely static content.
-
-Cost: $2,000 to $10,000, and the reason it is last is that the first four items often make it unnecessary.
+The heaviest fix, and the one to reach for last. If the site ships one large JavaScript bundle, splitting it so each page loads only what it needs is real engineering work. It is worth doing when your framework makes it straightforward — and worth asking whether a largely static site needed a heavy client-side framework at all. Our [web development service](/en/services/web-development) builds sites that send server-rendered HTML first and only the JavaScript each page needs.
 
 ---
 
-## What this costs overall
+## What the work involves
 
-| Scope | Cost | Typical outcome |
+| Scope | Effort | Typical outcome |
 |---|---|---|
-| Quick wins (images, fonts, scripts) | $1,000 – $3,500 | Most sites reach passing scores |
-| Thorough optimisation | $3,500 – $9,000 | Comfortable margins, harder cases resolved |
-| Architectural rebuild | $10,000+ | When the platform itself is the constraint |
+| Quick wins (images, fonts, scripts) | Low — configuration and asset work | Most sites reach passing scores |
+| Thorough optimisation (adds hosting, caching, bundle splitting) | Medium — engineering on the existing platform | Comfortable margins; harder pages resolved |
+| Rebuild on a different platform | High — a new website project | When the platform itself is the limit |
 
-Most sites do not need the third row. If you are being quoted for a rebuild to fix speed, ask what the first two rows would achieve first — and see [Redesigning a Website](/en/blog/website-redesign-guide) for when a rebuild is genuinely warranted.
+Most sites never need the third row. If you are being quoted a rebuild to fix speed, ask what the first two rows would achieve first. When a rebuild is warranted, our published rate card puts a mid-size company website at **$8,000–$25,000** (about SAR 30,000–94,000) and a custom web application at **$25,000–$80,000** (about SAR 94,000–300,000), as of November 2026. Keeping a site fast afterwards is part of normal maintenance, which the same rate card budgets at **15–20% of the build cost per year**. [Redesigning a website](/en/blog/website-redesign-guide) covers when a rebuild genuinely pays.
 
 ---
 
 ## Speed in the Gulf specifically
 
-Two factors that generic advice misses:
+**Network conditions vary more than averages suggest.** Fast urban 5G coexists with much slower connections. A site tested only on good hardware over good networks will fail part of its real audience, so test with network and CPU throttling switched on.
 
-**Network conditions vary more than the averages suggest.** Urban 5G coexists with much slower connections, and a site tested only on good hardware over good networks will fail a real portion of visitors. Test with throttling enabled.
+**Arabic fonts are heavy.** Because Arabic letters take different shapes by position, a full Arabic font file is usually much larger than a Latin one. Subsetting is a requirement here, not a refinement.
 
-**Arabic fonts are heavy.** A full Arabic font file is substantially larger than a Latin one because of the character set and the shaping variants. Subsetting is not an optimisation here — it is a requirement. See [Arabic Web Fonts](/en/blog/arabic-web-fonts).
+**Server location matters for Gulf visitors.** If most of your audience is in the Gulf, serve static files from a CDN with nearby edge locations and choose a hosting region close to them; see the [hosting comparison](/en/blog/hosting-comparison).
 
 ---
 
 ## Read also
 
-- [Hosting Comparison](/en/blog/hosting-comparison) — regional hosting and delivery
-- [Arabic Web Fonts](/en/blog/arabic-web-fonts) — subsetting and fallbacks
+- [Hosting comparison](/en/blog/hosting-comparison) — regional hosting and delivery
+- [Arabic web fonts](/en/blog/arabic-web-fonts) — subsetting and fallbacks
 - [WordPress or Next.js?](/en/blog/wordpress-vs-nextjs) — when the platform is the bottleneck
-- [Redesigning a Website](/en/blog/website-redesign-guide) — when speed work is not enough
-- [App Performance Optimisation](/en/blog/app-performance-optimization) — the mobile app equivalent
-- [SEO or GEO?](/en/blog/seo-vs-geo) — how search visibility is changing
+- [Redesigning a website](/en/blog/website-redesign-guide) — when speed work is not enough
+- [App performance optimisation](/en/blog/app-performance-optimization) — the mobile app equivalent
+- [SEO vs GEO](/en/blog/seo-vs-geo) — how search visibility is changing
 
 ---
 
 ## Frequently asked questions
 
-### What are Core Web Vitals?
+### What LCP, INP and CLS values count as "good"?
 
-Three metrics Google uses to assess page experience: LCP (how long until the main content appears, target under 2.5 seconds), INP (how quickly the page responds to interaction, target under 200 milliseconds), and CLS (how much the layout shifts while loading, target under 0.1).
+LCP of 2.5 seconds or less, INP of 200 milliseconds or less and CLS of 0.1 or less, measured at the 75th percentile of page loads on mobile and desktop separately. A page passes only when all three are in the good range.
 
-### Does site speed affect search rankings?
+### Will a faster site rank higher on Google?
 
-Yes, but modestly. It is one signal among many, and better content on a slower page will usually still outrank thin content on a fast one. Speed matters most for conversion — visitors who leave before the page loads — and as a differentiator between otherwise similar pages.
+Possibly, but modestly. Google says Core Web Vitals are used by its ranking systems, and also that it shows the most relevant content even when page experience is sub-par. Speed matters most for keeping the visitors you already have.
 
-### How much does speed optimisation cost?
+### Why does my PageSpeed Insights score disagree with Search Console?
 
-Quick wins on images, fonts, and third-party scripts cost $1,000 to $3,500 and are enough for most sites to pass. Thorough optimisation runs $3,500 to $9,000. A rebuild is only warranted when the platform itself is the constraint.
+PageSpeed Insights shows a lab test from one simulated load, while Search Console shows field data from real Chrome users over the last 28 days. Use the lab test to diagnose and the field data to judge.
 
-### Why does PageSpeed Insights disagree with what I see?
+### Which fix usually gives the biggest improvement first?
 
-Because it reports two different things: lab data from a simulated load, and field data from real visitors. Lab data is for diagnosis; field data is what Google actually uses. Judge yourself by the field data in Search Console.
-
-### What is the single biggest speed win?
-
-On most sites, images — serving them at display size in a modern format, with lazy loading below the fold. It is usually both the largest improvement and the cheapest to implement.
+Images: serving them at display size, in WebP or AVIF, with lazy loading below the fold but never on the main image. It is usually both the largest improvement and the least effort.
 
 ### Do Arabic sites have particular speed problems?
 
-Yes. Arabic font files are considerably larger than Latin ones, so subsetting to the characters you use is essential rather than optional. See [Arabic Web Fonts](/en/blog/arabic-web-fonts) for how to do it without breaking rendering.
+Yes. Arabic font files are usually much larger than Latin ones, so subsetting to the characters you use is essential. See [Arabic web fonts](/en/blog/arabic-web-fonts) for how to do it without breaking letter joining.
 
-### How long does it take to see results?
+### How long after a fix will Search Console show the improvement?
 
-Field data in Search Console reflects a rolling window of real visits, so improvements take several weeks to appear fully. Lab scores change immediately, which is why they are useful for verifying a fix even though they are not the measure that counts.
+The report uses a rolling 28-day window of real visits, so expect a full 28 days before a fix is fully reflected and validated. Lab scores change immediately, which makes them useful for checking a fix before the field data catches up.
 
 ---
 
-## Conclusion
+## Before you spend on a rebuild
 
-Website speed work has a clear order of return: images, fonts, third-party scripts, hosting, and only then JavaScript. Most sites reach passing Core Web Vitals with the first three, for a fraction of what a rebuild costs.
-
-Start by looking at your field data in Search Console rather than a lab score, fix in that order, and stop when the numbers pass. Speed is worth having because visitors leave slow sites — but it is not worth an unlimited budget, and the last few points are always the most expensive.
+Open the Core Web Vitals report in Search Console, note which metric fails on which page group, and work through images, fonts and scripts first. If the numbers still fail after that, the platform may be the constraint — and that is the point to compare a rebuild against continued optimisation. If you want us to read your Search Console report and tell you which of the two you are facing, [send us the URL](/en/contact).

@@ -1,12 +1,12 @@
 ---
-{"slug":"freelancer-vs-agency","title":"Freelancer or Development Agency? A Total Cost Comparison","seoTitle":"Freelancer or Agency? Cost Comparison","excerpt":"An honest comparison of independent developers and development agencies — real cost, hidden risks, and a third model that combines the advantages of both.","date":"2026-07-01","dateModified":"2026-07-01"}
+{"slug":"freelancer-vs-agency","title":"Freelancer or Development Agency? A Total Cost Comparison","seoTitle":"Freelancer or Agency? Cost Comparison","excerpt":"An honest comparison of independent developers and development agencies — real cost, hidden risks, and a third model that combines the advantages of both.","categories":["vendor"],"keywords":["freelancer vs agency","independent developer","development company","development cost"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["An independent freelancer typically charges $15–40 an hour and a regional or local development agency $50–100 an hour (rate card, as of November 2026), so the same hours cost roughly 2.5 to 3.3 times as much at an agency.","Choose a freelancer for small, well-scoped work such as a landing page, a prototype or a single fix, and an agency when the product is core to your revenue or needs design, development and testing together.","Over three years, with maintenance at 15–20% of the build cost per year, the freelancer stays cheaper unless the work has to be rebuilt, and one rebuild erases the whole saving.","With either option, protect yourself the same way: code pushed weekly to a repository you own, store developer accounts registered to your own company, and payments tied to deliverables with 20% held back."],"sources":[{"title":"GitHub Docs: Transferring a repository","url":"https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository"},{"title":"Apple Developer Program: Enrollment (individual vs organisation, seller name)","url":"https://developer.apple.com/programs/enroll/"},{"title":"Google Play Console Help: Choose a developer account type","url":"https://support.google.com/googleplay/android-developer/answer/13634885"},{"title":"Google Play Console Help: Transfer apps to a different developer account","url":"https://support.google.com/googleplay/android-developer/answer/6230247"}]}
 ---
 
 # Freelancer or Development Agency? A Total Cost Comparison
 
-The price difference between an independent developer and an agency can reach three times — which makes the question entirely legitimate. But comparing hourly rates alone is misleading, because it ignores what happens after delivery.
+**An independent freelancer charges $15–40 an hour; a regional or local development agency charges $50–100 an hour (our published rate card, as of November 2026).** For the same hours, the agency costs roughly 2.5 to 3.3 times as much. Choose a freelancer for small, well-scoped work, and an agency when the project is core to your business.
 
-**The short answer: a freelancer is excellent for small, well-scoped projects. An agency earns its premium when the project is core to your business.**
+Comparing hourly rates alone is still misleading, because it ignores what happens after delivery. The rest of this guide prices that in.
 
 ---
 
@@ -14,14 +14,17 @@ The price difference between an independent developer and an agency can reach th
 
 | Criterion | Freelancer | Development agency |
 |---|---|---|
-| Hourly rate | $15 – $40 | $35 – $100 |
-| Total cost | 40–60% lower | Higher |
+| Hourly rate (as of November 2026) | $15 – $40 | $50 – $100 |
+| Hourly rate in SAR (3.75 peg) | SAR 56 – 150 | SAR 188 – 375 |
+| Cost of the same hours | Roughly 30–40% of the agency's | Baseline |
 | **Continuity risk** | **High — one person** | Low — a team |
 | Available specialisms | Usually one | Design + development + testing |
 | Project management | You manage it | A dedicated manager |
 | Contractual commitment | Varies | Usually formal |
 | Post-launch support | Not guaranteed | Contracted |
 | Speed on small projects | Faster | Slower (process overhead) |
+
+The rates are the two hourly bands from our published rate card; the "30–40%" row is simple arithmetic on them ($15 against $50, $40 against $100). If you are weighing a team for a full app, our [mobile app development service](/en/services/mobile-apps) page shows what an agency engagement covers; for a website, see [web development](/en/services/web-development).
 
 ---
 
@@ -34,32 +37,31 @@ This is the fundamental difference, not price.
 **An agency is a team.** One person's absence doesn't halt the project, knowledge is distributed, and the contract obliges delivery.
 
 **How do you reduce this risk with a freelancer?**
-- Require code delivery to a repository **you own** (on [GitHub](https://github.com/) or equivalent), weekly rather than at the end.
+- Require code delivery to a repository **you own**, weekly rather than at the end. On GitHub, a repository created under your organisation stays yours; one created under the developer's account has to be [transferred](https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository) to you, which moves its issues, pull requests and history with it.
 - Ask for basic documentation as part of delivery, not as an extra.
-- Register the domain and store accounts **in your name** from day one.
+- Register the domain and store accounts **in your company's name** from day one. Apple shows the account holder's name [as the seller on the App Store](https://developer.apple.com/programs/enroll/), and Google Play requires an [organisation account](https://support.google.com/googleplay/android-developer/answer/13634885) for some categories such as financial and health apps.
 - Pay in instalments tied to deliverables, holding back 20% for the final one.
 
-These four conditions convert most freelancer risk into containable risk. See our [app development contract guide](/en/blog/app-development-contract) for the detail.
+These four conditions convert most freelancer risk into containable risk. See our [app development contract guide](/en/blog/app-development-contract) for the clauses.
 
 ---
 
 ## Total cost over three years
 
-The gap narrows considerably once you count what comes after delivery:
+The gap narrows once you count what comes after delivery. Take a scope of **400 hours** and price it from the rate card, with maintenance at the rate card's 15–20% of the build cost per year:
 
-| Line item | Freelancer | Agency |
+| Line item | Freelancer ($15–40/hr) | Agency ($50–100/hr) |
 |---|---|---|
-| Initial build | $15,000 | $35,000 |
-| Post-launch fixes | $3,000 | Included (warranty) |
-| Annual maintenance × 3 | $9,000 | $15,000 |
-| **Probability of rebuild** | 40% × $15,000 = $6,000 | 10% × $35,000 = $3,500 |
-| **Expected total** | **$33,000** | **$53,500** |
+| Initial build (400 hours) | $6,000 – $16,000 | $20,000 – $40,000 |
+| Maintenance, 3 years at 15–20% a year | $2,700 – $9,600 | $9,000 – $24,000 |
+| **Three-year total** | **$8,700 – $25,600** | **$29,000 – $64,000** |
+| If the build must be redone by an agency | add $20,000 – $40,000 | — |
 
-*Indicative estimates based on Apex project experience in this market as of 2026. Actual cost depends on scope, integrations, and the level of customisation your project requires.*
+*Ranges from our published rate card, as of November 2026. The 400 hours is an illustration; your own scope sets the hours.*
 
-*The percentages above are illustrative rather than statistical — use them as a thinking framework and adjust for your own experience and the provider's reputation.*
+**The result: the freelancer remains cheaper** — unless the work has to be rebuilt. One rebuild puts the freelancer path at $28,700–65,600, the same as or more than hiring the agency in the first place. So the real question isn't money but **how likely a rebuild is, and who carries that risk**: with a freelancer, you; with an agency, they do (in theory, and to the extent the contract binds them).
 
-**The result: the freelancer remains cheaper** even after accounting for risk. The real difference isn't money but **who carries the risk** — with a freelancer, you; with an agency, they do (in theory, and to the extent the contract binds them).
+The table also assumes both deliver the same work in the same hours. A freelancer working alone may take longer on a multi-disciplinary project, which narrows the gap further.
 
 ---
 
@@ -85,12 +87,12 @@ The gap narrows considerably once you count what comes after delivery:
 
 Often overlooked and usually the best fit for mid-size projects: **a small firm (5–15 staff) or a remote regional team**.
 
-- **Price:** $25–$60 per hour — between the two.
-- **Provides team continuity** without large-agency margins.
+- **Price:** it sits in the same $50–100 an hour agency band (as of November 2026) — you are not paying freelancer rates, but you are not funding a large agency's management layers either.
+- **Provides team continuity:** design, development and testing in one place, so one person's absence doesn't stop the work.
 - **More flexible** than large organisations in dealing and revising.
 - **The drawback:** quality varies more widely — checking the portfolio and references matters even more here.
 
-**This model covers most Gulf business projects** with agency-level quality at closer-to-freelancer cost. See our [guide to choosing a development company](/en/blog/app-development-company-riyadh) for evaluation criteria.
+If the team works remotely, ask about time-zone overlap and how often you will see working software. Our [guide to hiring a development team in the Gulf](/en/blog/gulf-app-development-guide) covers what to check with a remote regional team.
 
 ---
 
@@ -98,7 +100,7 @@ Often overlooked and usually the best fit for mid-size projects: **a small firm 
 
 **"Who will actually write the code?"**
 
-With a freelancer: do they execute it themselves or distribute it to others? Many "independents" are intermediaries redistributing work.
+With a freelancer: do they execute it themselves or pass it to others? Some "independents" are intermediaries redistributing work.
 
 With an agency: is the team employed or contracted? Outsourcing isn't a flaw, but **concealing it means you pay an extra margin without knowing**.
 
@@ -106,53 +108,70 @@ A straight answer to this question reveals more than any presentation.
 
 ---
 
+## How to evaluate either one
+
+The same standards apply to both — don't lower the bar for a freelancer because they cost less:
+
+**1. Published, verifiable work.** Links that actually work, not images in a profile. Open the project and use it yourself.
+
+**2. References you can speak to.** Ask one decisive question: was the project delivered on time, and how did they handle the delay if there was one?
+
+**3. Clarity in scoping.** Anyone who gives you a price before understanding your requirements in detail is guessing — and guesses turn into disputes later.
+
+**4. Disciplined communication during the proposal stage.** If they are slow to reply before the contract, they won't improve after it.
+
+**5. Willingness to say "no".** Someone who agrees to every request without discussing whether it is worth doing is selling you hours, not solutions.
+
+> **A shared warning sign:** refusing to provide a written contract. Freelancer or agency, an agreement made only in chat messages leaves everything open to interpretation when a dispute arises.
+
+---
+
 ## Related reading
 
 - [How to choose a development company](/en/blog/choosing-development-company) — the full evaluation framework.
 - [Outsourcing or an in-house team?](/en/blog/outsourcing-vs-inhouse) — the ongoing model, not just this project.
-
 - [App development contracts](/en/blog/app-development-contract) — the clauses that protect you with either.
 - [In-house maintenance or a contract?](/en/blog/maintenance-inhouse-vs-contract) — who maintains after delivery.
-- [Choosing an app development company](/en/blog/app-development-company-riyadh) — the ten evaluation criteria.
+- [Hiring a development team in Saudi Arabia, the UAE or Qatar](/en/blog/gulf-app-development-guide) — local currency, data law and remote teams.
 
 ---
 
 ## Frequently asked questions
 
-### What is the actual price difference?
+### How much more does an agency charge per hour than a freelancer?
 
-A freelancer is typically 40–60% cheaper on build cost. But calculate total cost over three years including maintenance and rebuild probability — the gap narrows while still favouring the freelancer in most cases. The real decision concerns risk tolerance, not money alone.
+On our rate card (as of November 2026), a freelancer charges $15–40 an hour and a regional or local agency $50–100, so the same hours cost roughly 2.5 to 3.3 times as much at an agency. Over three years, including maintenance at 15–20% of the build per year, the freelancer usually stays cheaper unless the work has to be rebuilt.
 
 ### How do I protect myself when working with a freelancer?
 
-Four conditions: weekly code delivery to a repository you own, basic documentation within the delivery, domain and store accounts registered in your name from the start, and payments tied to deliverables with 20% held back. These convert most risks into containable ones.
+Four conditions: weekly code delivery to a repository you own, basic documentation within the delivery, domain and store accounts registered in your company's name from the start, and payments tied to deliverables with 20% held back. These convert most risks into containable ones.
 
 ### What if the freelancer disappears mid-project?
 
-If you applied the conditions above, you own the code completed to date and another developer can finish it. If you didn't, you may lose everything and start over. That probability is what you should price into your decision.
+If you applied the conditions above, you own the code completed to date and another developer can finish it. If you didn't, you may lose everything and start over. That probability is what you should price into your decision — a single rebuild costs as much as the agency would have.
 
 ### Does an agency guarantee higher quality?
 
 Not automatically. A bad agency is worse than an excellent freelancer. What an agency guarantees is **continuity and contractual accountability**, not quality itself. Check the portfolio and references in both cases by the same standards.
 
-### Can I start with a freelancer and move to an agency?
+### Can I start with a freelancer and move to an agency later?
 
-Yes, and it's a common, sensible path: a prototype with a freelancer to test the idea, then an agency to build the production version. The condition is owning the code and documentation from the first stage — otherwise moving means rebuilding.
+Yes, and it's a common, sensible path: a prototype with a freelancer to test the idea, then an agency to build the production version. The condition is owning the code, the store accounts and the documentation from the first stage — otherwise moving means rebuilding.
 
-### What is the biggest mistake in this decision?
+### Is it a mistake to hire the cheapest freelancer for a revenue-critical app?
 
-Choosing the cheapest option for a project critical to your business. If the site or app going down stops your revenue, saving $15,000 on the build doesn't compensate for a week of downtime with nobody to fix it.
+Usually, yes. If the site or app going down stops your revenue, the saving on the build doesn't compensate for a week of downtime with nobody to fix it. For revenue-critical work, continuity is what you are buying.
 
 ---
 
-## Conclusion
+## The decision in four lines
 
-**A freelancer** for small, well-scoped projects and prototypes — 40–60% cheaper, provided you apply the four conditions that protect you.
+**A freelancer** for small, well-scoped projects and prototypes — $15–40 an hour, provided you apply the four conditions that protect you.
 
-**An agency** when the project is core to your business or multi-disciplinary — you pay for continuity and accountability, not for code alone.
+**An agency** when the project is core to your business or multi-disciplinary — $50–100 an hour, paying for continuity and accountability, not for code alone.
 
-**A small regional team** is usually the best fit for mid-size projects — agency quality at closer-to-freelancer cost.
+**A small regional team** inside that agency band is usually the best fit for mid-size projects.
 
 **And ask both the same question:** who will actually write the code?
 
-**Want an honest assessment of your project?** [Get in touch](/en/contact) for a free scope assessment — and we'll tell you plainly if your project suits a freelancer better. See [our previous work](/en/portfolio).
+We are a small remote team ourselves, so weigh our view accordingly. If you [send us your scope](/en/contact), we will tell you plainly whether it is a freelancer-sized job — and if it is, we will say so rather than quote for it.

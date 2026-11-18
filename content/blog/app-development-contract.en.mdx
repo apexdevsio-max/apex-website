@@ -1,12 +1,14 @@
 ---
-{"slug":"app-development-contract","title":"App Development Contracts: Clauses That Protect You","excerpt":"Code ownership, payment schedules, acceptance criteria, and the contract wording to reject before you sign.","date":"2026-08-03","dateModified":"2026-08-21"}
+{"slug":"app-development-contract","title":"App Development Contracts: Clauses That Protect You","excerpt":"Code ownership, payment schedules, acceptance criteria, and the contract wording to reject before you sign.","categories":["vendor"],"keywords":["app development contract","source code ownership","contract clauses","payment schedule","acceptance criteria"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["The four clauses an app development contract cannot do without are full ownership of the source code, database, store accounts and domain on final payment; a detailed scope annex with an explicit out-of-scope list; payments tied to deliverables; and written, measurable acceptance criteria.","Hold back at least 20% of the fee until final acceptance, and pay no more than 20–30% at signing.","Put the App Store and Google Play developer accounts and the code repository in your own name from day one, because an app transfer must be started by the current account holder and Apple's transfer does not move the code itself.","Separate warranty from maintenance in writing: defects and security flaws in delivered code are fixed free during a 3–6 month warranty, while updates for new OS releases and new features are paid maintenance."],"sources":[{"title":"Apple — Overview of app transfer (App Store Connect Help)","url":"https://developer.apple.com/help/app-store-connect/transfer-an-app/overview-of-app-transfer"},{"title":"Google Play Console Help — Transfer apps to a different developer account","url":"https://support.google.com/googleplay/android-developer/answer/6230247"},{"title":"GitHub Docs — Transferring a repository","url":"https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository"},{"title":"SDAIA — Personal Data Protection Law (full text)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"}]}
 ---
 
 # App Development Contracts: The Clauses That Protect You (2026 Guide)
 
-Most failed app projects do not fail technically. They fail **at the point of disagreement**: a late delivery, a feature the client says was agreed and the provider says was out of scope, or a refusal to hand over code when moving to another provider.
+**Four clauses protect you most, in this order: full ownership of the code, database, store accounts and domain on final payment; a detailed scope annex with an explicit "out of scope" list; payments tied to deliverables with at least 20% held back; and written acceptance criteria.** After those come the change policy, the warranty, delay remedies, and the exit clauses that govern what happens when things go wrong.
 
-A good contract does not prevent disagreement, but it **decides who bears its consequences**. This guide explains the clauses that protect you, the wording to reject, and their order of importance.
+Most failed app projects do not fail technically. They fail **at the point of disagreement**: a late delivery, a feature the client says was agreed and the provider says was out of scope, or a refusal to hand over code when moving to another provider. A good contract does not prevent disagreement, but it **decides who bears its consequences**.
+
+The same checklist applies whoever builds your app — a freelancer, a local firm, or a remote team such as ours offering [mobile app development](/en/services/mobile-apps).
 
 > **Note:** this is general guidance, not legal advice. Have your contract reviewed by a qualified lawyer before signing, particularly for large or cross-border projects.
 
@@ -20,7 +22,9 @@ A good contract does not prevent disagreement, but it **decides who bears its co
 
 **Wording to reject:** "the provider grants the client a licence to use the software." A licence is not ownership. It means you rent your app and cannot modify it or move it to another provider without permission.
 
-**Also require:** delivery of the code to a repository you own — [GitHub](https://github.com/) or equivalent — (not the provider's account), plus deployment documentation and access credentials for external services.
+**Also require:** the code pushed to a repository you own from the first week — not the provider's account — plus deployment documentation and access credentials for external services. Moving a repository later needs the current owner's cooperation: [GitHub only lets a user with administrator access transfer a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository).
+
+**Store accounts work the same way.** If the app is published under the provider's developer account, getting it back requires them to start a transfer: on the App Store, [the current Account Holder initiates the transfer and the receiving Account Holder accepts it](https://developer.apple.com/help/app-store-connect/transfer-an-app/overview-of-app-transfer), and Apple states that the transferor is responsible for handing over the actual code and build assets separately. [Google Play transfers](https://support.google.com/googleplay/android-developer/answer/6230247) are likewise requested by the original account owner. Opening the developer accounts in your company's name from the start avoids depending on that goodwill.
 
 ### 2. A detailed scope of work
 
@@ -66,7 +70,7 @@ Every project sees change requests. The contract must define:
 
 The contract must distinguish between:
 
-- **Bug fixing** — defects in what was delivered, which should be **free during the warranty period** (3–6 months is typical).
+- **Defect fixing** — defects in what was delivered, which should be **free during the warranty period**. Ask for 3–6 months.
 - **Maintenance and development** — new features or compatibility updates, which are paid.
 
 Ask explicitly: does updating the app for a new iOS release fall under warranty or maintenance? The answer varies by provider, and agreeing upfront is cheaper than negotiating later.
@@ -84,7 +88,7 @@ What happens if delivery is late? A balanced contract includes:
 
 ## Third: commonly overlooked clauses that cost a lot
 
-**Confidentiality and data protection.** The provider's obligation to keep your data and your users' data confidential, comply with the applicable data protection law, and delete their copies after the project ends.
+**Confidentiality and data protection.** The provider's obligation to keep your data and your users' data confidential, comply with the applicable data protection law, and delete their copies after the project ends. In Saudi Arabia this is not optional for you either: Article 8 of the [Personal Data Protection Law](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) requires a controller to choose a processor that provides the necessary safeguards and to verify its compliance — and a developer with access to production data is acting as your processor.
 
 **Third-party dependencies.** Which external services the app relies on, who owns those accounts, and who bears their fees. Discovering that a critical service account is in the provider's name after the relationship ends is a real problem.
 
@@ -104,7 +108,7 @@ What happens if delivery is late? A balanced contract includes:
 | 100% payment upfront | You lose all leverage |
 | Scope as a general paragraph | Every later dispute resolves against you |
 | "Delivery within a reasonable period" | "Reasonable" has no enforceable meaning |
-| Domain registered in the provider's name | Deferred leverage against you |
+| Domain or store accounts in the provider's name | Deferred leverage against you |
 | No termination clause | You are stuck in a failing relationship |
 | Unlimited liability on you | Open-ended risk with no cap |
 
@@ -113,7 +117,7 @@ What happens if delivery is late? A balanced contract includes:
 ## A quick pre-signing checklist
 
 1. ✅ Code, database, and store accounts are **entirely mine** on completion of payment.
-2. ✅ Domain registered **in my name**, not the provider's.
+2. ✅ Domain and developer accounts registered **in my name**, not the provider's.
 3. ✅ Detailed scope annex, including an "out of scope" list.
 4. ✅ Payments tied to deliverables, with 20% held to the end.
 5. ✅ Written, measurable acceptance criteria.
@@ -131,11 +135,11 @@ Most contract guides describe the ideal project. The clauses that matter most ar
 
 **If the vendor misses the deadline.** A delivery date with no consequence attached is a preference, not a term. Define what happens: a penalty, a fee reduction, or a right to terminate after a defined grace period. Equally, be fair about delays *you* cause — a well-drafted clause pauses the clock when the client is late approving, which is the most common source of slippage.
 
-**If quality is unacceptable.** "The work must be professional" is unenforceable because it is unmeasurable. Define acceptance criteria instead: the app runs on named OS versions, passes an agreed test list, and loads within a stated time. Acceptance testing should have a defined window — typically 14 days — after which delivery is deemed accepted.
+**If quality is unacceptable.** "The work must be professional" is unenforceable because it is unmeasurable. Define acceptance criteria instead: the app runs on named OS versions, passes an agreed test list, and loads within a stated time. Acceptance testing should have a defined window — 14 days is workable — after which delivery is deemed accepted.
 
 **If you want to stop.** A termination clause protects both parties. It should state notice period, payment for work completed to date, and — critically — that you receive all work product regardless of the reason for termination. A contract permitting the vendor to withhold completed work on exit is one to refuse outright.
 
-**If the vendor disappears.** This is the scenario nobody plans for and it happens. Your protection is structural rather than legal: require code to be pushed to *your* repository from day one, not delivered at the end. If the code lives only on the vendor's machines, a contract is a claim to something you cannot access.
+**If the vendor disappears.** This is the scenario nobody plans for. Your protection is structural rather than legal: require code to be pushed to *your* repository from day one, not delivered at the end. If the code lives only on the vendor's machines, a contract is a claim to something you cannot access.
 
 **If there is a dispute.** Specify governing law and jurisdiction. For cross-border work — a Gulf client with a vendor elsewhere — this determines whether enforcement is realistic or theoretical. Arbitration is often faster than courts for technical disputes, but agree the venue in advance.
 
@@ -145,7 +149,7 @@ Most contract guides describe the ideal project. The clauses that matter most ar
 
 These are routinely conflated, and the confusion produces genuine disputes after launch.
 
-**Warranty** covers defects in work already paid for: something specified but not functioning correctly. It should be free, typically for 3 to 6 months, and it is not a favour — it is the vendor delivering what was contracted.
+**Warranty** covers defects in work already paid for: something specified but not functioning correctly. It should be free, for 3 to 6 months, and it is not a favour — it is the vendor delivering what was contracted.
 
 **Maintenance** covers new work: OS compatibility updates, new features, content changes, and ongoing monitoring. It is a separate paid engagement.
 
@@ -171,43 +175,44 @@ For how to structure the ongoing side, see [In-House Maintenance or a Contract?]
 - [Freelancer or agency?](/en/blog/freelancer-vs-agency) — the four conditions that protect you.
 - [In-house maintenance or a contract?](/en/blog/maintenance-inhouse-vs-contract) — what a maintenance contract must include.
 - [MVP or full product?](/en/blog/mvp-vs-full-product) — freezing scope before you start.
+- [Hiring a development team for the Gulf](/en/blog/gulf-app-development-guide) — cross-border engagements with Saudi, UAE and Qatari clients.
 
 ---
 
 ## Frequently asked questions
 
-### Who owns the code after the project ends?
+### Who should own the source code when the app is delivered?
 
 You should own it entirely — source code, database, store accounts, and domain — transferring on completion of payment. Beware "licence to use" wording, which is not ownership and means you cannot modify your app or move it to another provider without permission.
 
-### How much should I pay upfront?
+### What share of an app development fee should be paid at signing?
 
 Between 20% and 30% at signing, with the remainder tied to verifiable deliverables. Hold back at least 20% for the final instalment after final acceptance. Paying in full upfront removes all your leverage if delivery slips or quality disappoints.
 
-### What is the difference between warranty and maintenance?
+### Is an update for a new iOS release covered by the warranty?
 
-Warranty covers fixing defects in what was delivered and is typically free for 3–6 months. Maintenance covers new features and compatibility updates for new OS releases, and is paid. Specify explicitly which category a compatibility update for a new iOS release falls into.
+Usually not. Warranty covers fixing defects in what was delivered and should be free for 3–6 months. Maintenance covers new features and compatibility updates for new OS releases, and is paid. Because providers differ, name the iOS-update case explicitly in the contract.
 
-### What if delivery is late?
+### What should a late-delivery clause say?
 
-A balanced contract specifies a phased timeline with dates, early notification when delay is anticipated, and compensation for substantial unjustified delay — with relief for the provider if the delay stems from your own lateness in supplying content or approvals. Avoid "within a reasonable period", which has no enforceable meaning.
+A phased timeline with dates, early notification when delay is anticipated, and compensation for substantial unjustified delay — with relief for the provider if the delay stems from your own lateness in supplying content or approvals. Avoid "within a reasonable period", which has no enforceable meaning.
 
-### Do I need a lawyer to review the contract?
+### When is a lawyer's review of the contract worth paying for?
 
 For small projects, the checklist above covers most risks. For projects in the tens of thousands, cross-border engagements, or those handling sensitive data — yes, and review cost is trivial compared to the cost of a later dispute.
 
-### What is the most dangerous commonly overlooked clause?
+### Why do store accounts in the provider's name matter so much?
 
-Registering the domain and store accounts in the provider's name. It looks like an administrative detail, but it practically means you cannot move to another provider or even access your published app without their consent. Verify this **before** signing, not after.
+Because getting the app back depends on them. On both the App Store and Google Play, the current account owner has to start the transfer, and Apple's transfer does not include the code. It looks like an administrative detail, but it means you cannot move to another provider without their consent. Verify this **before** signing, not after.
 
 ---
 
-## Conclusion
+## The three clauses you never concede
 
 A good contract does not signal distrust. It means both parties agreed the rules before they needed them.
 
-**The three clauses you never concede:** full ownership of code and domain · a detailed scope including "out of scope" · payments tied to deliverables with 20% held back.
+**Full ownership of code, accounts and domain · a detailed scope including "out of scope" · payments tied to deliverables with 20% held back.**
 
-A provider who hesitates specifically on those three is telling you something important about how they work — listen to it.
+A provider who hesitates specifically on those three is telling you something important about how they work — listen to it. If you are weighing several providers, our [guide to choosing a development company](/en/blog/choosing-development-company) covers the questions to ask before you reach the contract stage.
 
-**Want a partner who starts with a clear scope and a fair contract?** [Get in touch](/en/contact) for a free, no-obligation scope assessment. See our [mobile app development services](/en/services/mobile-apps) and our [guide to choosing a development company](/en/blog/app-development-company-riyadh).
+Have a draft contract or a provider's template in front of you? [Send it to us](/en/contact) and we will point out where ownership, scope or payment terms leave you exposed — as a second opinion, not legal advice.

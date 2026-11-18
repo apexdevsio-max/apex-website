@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { getBlogPosts } from "@/lib/content/content-loader";
 import { SUPPORTED_LOCALES, isLocale, toLocale } from "@/lib/i18n/locale";
 import { siteUrl } from "@/lib/seo/metadata";
-import { JsonLd, buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { buildBreadcrumbSchema } from "@/lib/seo/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { BlogGrid } from "@/components/sections/BlogGrid";
 import { buildBlogCards } from "@/lib/content/blog-view";
 import { paginate, parsePageParam } from "@/lib/content/taxonomy";
@@ -53,8 +54,7 @@ export default async function BlogIndexPage({ params }: Props) {
 
   const lang = langParam;
   const isAr = lang === "ar";
-  const posts = await getBlogPosts(lang);
-  const cards = buildBlogCards(posts, lang);
+  const cards = buildBlogCards(await getBlogPosts(lang));
   const { items, page, totalPages } = paginate(cards, parsed);
 
   // A page number past the end would otherwise render an empty grid at a live
@@ -80,7 +80,6 @@ export default async function BlogIndexPage({ params }: Props) {
         page={page}
         totalPages={totalPages}
         basePath={`/${lang}/blog`}
-        eyebrow={copy.eyebrow}
         heading={copy.heading}
         intro={copy.intro}
       />

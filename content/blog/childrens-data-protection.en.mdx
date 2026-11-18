@@ -1,98 +1,102 @@
 ---
-{"slug":"childrens-data-protection","title":"Children's Data in Apps: Guardian Consent and What It Requires","seoTitle":"Children's Data Protection in Apps","excerpt":"Verifiable guardian consent, age assurance that actually works, and the store rules for apps reaching under-18 users — plus what this means for education products.","date":"2026-08-17","dateModified":"2026-08-17"}
+{"slug":"childrens-data-protection","title":"Children's Data in Apps: Guardian Consent and What It Requires","seoTitle":"Children's Data Protection in Apps","excerpt":"Verifiable guardian consent, age assurance that actually works, and the store rules for apps reaching under-18 users — plus what this means for education products.","categories":["compliance"],"keywords":["children's data protection","parental consent","age assurance","kids apps","parental gate","COPPA Gulf"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Under Saudi Arabia's PDPL Implementing Regulations, consent must come from a person with full legal capacity, and for anyone without it the legal guardian consents after the controller takes appropriate steps to verify the guardianship (Articles 11 and 13).","The Saudi regulations set no numeric age for consent; they rely on legal capacity, so confirm the age you will treat as a minor with a lawyer rather than assuming 13 or 18.","Apple's Kids Category bars links out, purchases and other distractions unless behind a parental gate, and bars sending personally identifiable or device information to third parties; Apple states that a parental gate is not the same as parental consent.","Google Play's Families policy requires a target-audience declaration, only Families Self-Certified Ads SDKs for ads to children or users of unknown age, and no transmission of identifiers such as the Android advertising ID from apps that solely target children."],"sources":[{"title":"SDAIA — Implementing Regulations of the Personal Data Protection Law","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2"},{"title":"SDAIA — Personal Data Protection Law","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"},{"title":"Apple — App Review Guidelines (1.3 Kids Category, 5.1.4 Kids)","url":"https://developer.apple.com/app-store/review/guidelines/"},{"title":"Google Play — Families policy","url":"https://support.google.com/googleplay/android-developer/answer/9893335"}]}
 ---
 
 # Children's Data in Apps: Guardian Consent and What It Requires
 
-Most teams building education, gaming, or family products treat children's data as a checkbox: add an age field, and move on. That approach satisfies nothing — not the law, not the app stores, and not a parent who asks what you know about their child.
+**If minors use your app, you need consent from their legal guardian, and you need a way to check that the person consenting really is the guardian.** In Saudi Arabia that rule is written down: the PDPL Implementing Regulations require consent from a person with full legal capacity, and for anyone without it the guardian consents only after you take "appropriate steps to verify" the guardianship. Apple and Google add their own rules for apps aimed at children, and those apply in every market.
 
-**The short answer: if under-18 users plausibly reach your product, you need verifiable guardian consent — not a self-declared birth date. And the obligation attaches to whether children actually use it, not to whether you intended them to.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide covers what that means in practice across Gulf markets. For the wider regulatory picture, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide).
+This guide covers what those rules mean for the product: who counts as a minor, how to verify a guardian, what to stop collecting, and what the app stores check. For the wider regulatory picture, see the [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide). If you are planning an education or family app, our [mobile app development service](/en/services/mobile-apps) builds these flows into the first version rather than bolting them on.
 
-> **This is practical guidance, not legal advice.** Children's data is among the most strictly treated categories in every jurisdiction. Engage a qualified local advisor before launching a product aimed at minors.
+---
+
+## What the Saudi rules actually say
+
+The [Implementing Regulations of the PDPL](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2) do not use the word "child". They work through legal capacity:
+
+- **Article 11(1)(c):** consent must come from a person with full legal capacity.
+- **Article 11(1)(d):** consent must be documented in a way that can be verified later.
+- **Article 13(1):** the legal guardian acts in the data subject's interest, including exercising their rights and consenting to processing.
+- **Article 13(2):** before relying on a guardian's consent, you must take appropriate steps to verify the guardianship.
+- **Article 13(3):** the guardian's consent must not harm the data subject's interests, and you must let the data subject exercise their own rights once they reach full capacity.
+- **Article 4(7):** if you know a data subject lacks full capacity, the information you give must be in suitable language.
+
+Two things follow. First, **the regulations set no numeric age.** The cut-off is legal capacity, so the age you treat as "minor" is a question for your lawyer, not a number to copy from another market. Second, **a child's data is not automatically "sensitive data"** under the [PDPL](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL). The law's sensitive categories are things like health, genetic and biometric data. An education app that also records health or biometric data carries both sets of obligations.
+
+**Other Gulf markets.** We could not load the official text of the UAE federal data protection law, so this article does not state its rules on minors. **Ask your advisor:** at what age does the UAE federal law, or the DIFC or ADGM regime if it governs you, require a guardian's consent, and what verification does it expect?
 
 ---
 
 ## Does this apply to you?
 
-The threshold is lower than teams assume. It is not "is this a kids' app" — it is whether minors realistically use it.
+It is not only "is this a kids' app". The store rules turn on what you actually do:
 
-**Clearly in scope:** education platforms, children's games, family products, tutoring services, school management systems, and anything marketed to parents for their children.
+- Apple's guideline 5.1.4 covers apps in the Kids Category **and** apps that collect, transmit or can share personal information "from a minor".
+- Google Play's Families policy covers apps whose declared target audience includes children, with extra rules for "mixed audience" apps that may reach children or users of unknown age.
 
-**Often in scope without intending to be:** general social features, user-generated content platforms, and consumer apps with no meaningful age barrier. If your analytics show under-18 users, the obligation exists regardless of your intent.
+**Clearly in scope:** education platforms, children's games, family products, tutoring, school management systems, and anything sold to parents for their children.
 
-**The test regulators and stores apply** is whether the service is *directed to* children or whether you have *actual knowledge* that children use it. Both routes trigger the requirements, and "we didn't mean to" is not a defence once your own data shows the users are there.
+**Often in scope without intending to be:** social features, user-generated content, and consumer apps with no meaningful age barrier. If your analytics show under-18 users, plan as if the rules apply.
 
 ---
 
-## Guardian consent is not an age checkbox
+## Verifying the guardian, not just the age
 
-Across Gulf data protection regimes, processing a minor's personal data requires the consent of a parent or guardian. The operative word is **verifiable**.
-
-**What does not qualify:**
-- A checkbox asserting "I am over 18"
-- A self-entered date of birth with no verification
-- A tick labelled "my parent agrees"
-- Consent from the child themselves, in any form
-
-**Verification methods that are actually used:**
+Saudi Article 13(2) asks for "appropriate steps" to verify guardianship, without listing methods. The table below is an engineering view of the options, not a list the regulator has approved.
 
 | Method | Strength | Friction |
 |---|---|---|
-| Payment instrument verification (small charge, refunded) | Strong | Moderate |
-| Government or national digital identity | Strongest | Low where available |
-| Signed consent form with ID | Strong | High |
-| Guardian email confirmation with follow-up step | Moderate | Low |
+| Government digital identity of the parent | Strong where available | Low |
+| Payment instrument check (small charge, refunded) | Moderate: proves an adult card holder, not guardianship | Moderate |
+| Signed consent form with ID document | Strong | High |
+| Guardian email confirmation with a follow-up step | Weak to moderate | Low |
 | Video or call verification | Strong | Very high |
 
-**In the Gulf, national digital identity is the practical answer.** Where a parent can authenticate through a government identity service, you get strong verification with low friction — which is otherwise a difficult tradeoff. See [digital identity integration](/en/blog/digital-identity-integration) for what that involves.
+**What does not verify anything:** an "I am over 18" checkbox, a self-entered birth date, a "my parent agrees" tick, or consent given by the child.
 
-**The design principle:** verification strength should be proportionate to the sensitivity of what you collect. A reading app storing progress needs less than a platform with messaging between users.
+**National digital identity is the practical answer in the Gulf.** A parent who authenticates through a government identity service gives you a strong check with little friction. See [digital identity integration](/en/blog/digital-identity-integration) for what connecting to those services involves.
+
+**Proportion the check to the risk.** A reading app that stores progress needs less than a platform with messaging between users. Whatever you choose, keep the record Article 11(1)(d) asks for: who consented, when, for which version of your notice, and how you verified them.
 
 ---
 
 ## Age assurance in practice
 
-Before you can ask for guardian consent, you need to know a user is a minor — and this is genuinely difficult.
+Before you can ask for a guardian, you need to know the user is a minor.
 
-**Self-declaration is weak but standard.** Children learn to enter a false birth year within about one attempt. It is still the baseline, and it is what stores expect at minimum.
+**Self-declaration is weak but standard.** It is the usual baseline, but on its own it verifies nothing, so pair it with the guardian step for anything beyond the most basic features.
 
-**Neutral age screens perform better.** Asking "what is your date of birth?" without first showing that a certain answer unlocks more produces more honest answers than "are you over 18?". Do not display the consequence before collecting the answer.
+**Ask neutrally.** "What is your date of birth?" without showing what each answer unlocks gets more honest answers than "Are you over 18?".
 
-**Do not let users retry freely.** If someone enters an under-18 date and immediately gets a form again, they will enter a different one. Persist the first answer.
+**Do not allow free retries.** If a user enters an under-age date and immediately sees the form again, they will try another date. Persist the first answer.
 
-**Behavioural signals exist but carry their own risk.** Inferring age from usage patterns means profiling children to determine whether you may process children's data — which is circular, and regulators are sceptical of it.
-
-**The honest position:** perfect age assurance does not exist. What matters is that you made a reasonable, documented effort proportionate to the risk, and that you act on what you do learn.
+**Be wary of behavioural age estimation.** Inferring age from usage means profiling children to decide whether you may process children's data. That is circular, and it adds processing you then have to justify.
 
 ---
 
-## Data minimisation matters more here
+## Collect less
 
-The strongest position with children's data is having less of it.
+**Every field is a liability.** A learning app does not need a phone number.
 
-**Collect nothing you do not need.** Every field is a liability multiplied by the sensitivity of the subject. A learning app does not need a phone number.
+**No behavioural advertising.** Google Play bars interest-based advertising and remarketing to children and users of unknown age. Apple says apps in the Kids Category and apps intended primarily for kids should not include third-party advertising, with narrow exceptions for contextual ads. Decide your monetisation model before you build; see [educational app costs](/en/blog/educational-app-cost).
 
-**No behavioural advertising to children.** Both stores prohibit it in child-directed apps, and it is regulated separately in most jurisdictions. This affects your monetisation model, so decide early — see [educational app costs](/en/blog/educational-app-cost).
+**Restrict third-party SDKs.** Apple's Kids Category bars sending personally identifiable or device information to third parties, and allows third-party analytics only in limited cases that collect nothing identifying. Google Play bars apps that solely target children from transmitting identifiers such as the Android advertising ID, IMEI or MAC address.
 
-**Restrict third-party SDKs severely.** Analytics and advertising SDKs designed for general audiences frequently collect identifiers unsuitable for child-directed apps. Both stores maintain families-specific requirements limiting which SDKs may be used.
+**Think hard about messaging and user-generated content.** Any feature that lets children talk to others brings safety duties well beyond data protection. If you do not need it, leave it out.
 
-**Be careful with user-generated content and messaging.** Any feature letting children communicate raises safety obligations well beyond data protection. If you do not need it, do not build it.
-
-**Retention should be shorter.** Keeping a child's data after they stop using the service is difficult to justify, and the justification bar is higher than for adults.
+**Keep less for less time.** Holding a child's data after they stop using the service is hard to justify.
 
 ---
 
 ## App store family requirements
 
-Both stores run separate programmes for child-directed apps with requirements exceeding the general rules.
+**[Apple's Kids Category (guideline 1.3)](https://developer.apple.com/app-store/review/guidelines/)** bars links out of the app, purchasing opportunities and other distractions unless they sit behind a parental gate. Apps in the category may not send personally identifiable information or device information to third parties. Guideline 5.1.4 adds that any app collecting personal information from a minor must have a privacy policy and comply with children's privacy laws. Apple also notes that **a parental gate is generally not the same as parental consent** under those laws, so you need both.
 
-**Apple's Kids Category** requires no third-party analytics or advertising without meeting specific conditions, a parental gate before external links or purchases, and no collection of personally identifiable information from children.
+**[Google Play's Families policy](https://support.google.com/googleplay/android-developer/answer/9893335)** requires you to declare your target audience before publishing, to disclose any personal and sensitive information collected from children (including through SDKs), and to use only Families Self-Certified Ads SDKs for ads shown to children or users of unknown age. Google does not fix an age for "children"; it tells developers to check local law with counsel.
 
-**Google Play's Families programme** requires compliance with its Families policy, use of approved SDKs only, and correct target-age declaration. Misdeclaring your target age is treated seriously.
-
-**The parental gate** is a specific pattern: before any child can reach an external link, a purchase, or social features, they must pass a check a young child cannot — typically arithmetic or an instruction requiring reading fluency. Not a simple button.
+**The parental gate** is a check a young child cannot pass, placed before external links, purchases or social features. A plain "Are you a parent?" button is not one.
 
 For the wider submission picture, see [app store requirements](/en/blog/app-store-requirements).
 
@@ -102,68 +106,59 @@ For the wider submission picture, see [app store requirements](/en/blog/app-stor
 
 - [ ] Neutral age screen that does not reveal the consequence first
 - [ ] First age answer persisted, not freely retryable
-- [ ] Verifiable guardian consent flow proportionate to data sensitivity
-- [ ] Guardian consent records: who consented, when, and how verified
+- [ ] Guardian consent flow with a verification step proportionate to the data
+- [ ] Consent records: who consented, when, to which notice version, how verified
 - [ ] Separate, reduced data collection path for minor accounts
-- [ ] Behavioural advertising disabled for under-18 accounts
-- [ ] Third-party SDKs audited against store family requirements
-- [ ] Parental gate before external links, purchases, and social features
-- [ ] Guardian-accessible view of what you hold about the child
-- [ ] Guardian-initiated deletion that genuinely deletes
-- [ ] Shorter retention for minor accounts
-- [ ] Privacy policy section specifically covering children
+- [ ] No interest-based advertising for minors or users of unknown age
+- [ ] Third-party SDKs audited against Apple's Kids Category and Google's Families rules
+- [ ] Parental gate before external links, purchases and social features
+- [ ] Guardian view of what you hold about the child
+- [ ] Guardian-initiated deletion that actually deletes
+- [ ] A way for the user to take over their own rights at full legal capacity
+- [ ] Privacy policy section that covers children specifically
 - [ ] Correct target-age declaration in both stores
 
 ---
 
 ## Related reading
 
-- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide) — which regime applies to you.
-- [Educational app costs](/en/blog/educational-app-cost) — where these requirements hit the budget.
-- [Digital identity integration](/en/blog/digital-identity-integration) — strong guardian verification with low friction.
-- [Privacy policy guide](/en/blog/privacy-policy-guide) — the children's section.
-- [App store requirements](/en/blog/app-store-requirements) — family programme rules.
+- [Gulf regulatory compliance guide](/en/blog/gulf-compliance-guide): which regime applies to you.
+- [Saudi PDPL developer guide](/en/blog/pdpl-compliance-guide): consent records and data subject rights.
+- [Educational app costs](/en/blog/educational-app-cost): where these requirements land in the budget.
+- [Digital identity integration](/en/blog/digital-identity-integration): guardian verification with low friction.
+- [Privacy policy guide](/en/blog/privacy-policy-guide): the children's section.
+- [App store requirements](/en/blog/app-store-requirements): the family programme rules.
 
 ---
 
 ## Frequently asked questions
 
-### Do I need parental consent if my app is not aimed at children?
+### Does the Saudi PDPL say at what age a child can consent?
 
-If children actually use it, yes. The obligation attaches either to services directed at children or to having actual knowledge that children use the service. If your analytics show under-18 users, intent does not exempt you — and both regulators and app stores apply that standard.
+No. The Implementing Regulations require consent from a person with full legal capacity (Article 11) and let the legal guardian consent for someone without it (Article 13), but they set no numeric age. Agree the age you will apply with a lawyer.
 
-### Is an "I am over 18" checkbox enough?
+### Is a child's personal data "sensitive data" under the Saudi PDPL?
 
-No. Every Gulf data protection regime requires verifiable guardian consent for minors, and a self-declared checkbox verifies nothing. Acceptable methods include payment instrument verification, government digital identity, signed consent with identification, or a multi-step guardian email confirmation.
+Not as a category. The PDPL's sensitive data covers items such as racial or ethnic origin, religious or political belief, security and criminal data, biometric, genetic and health data. Children's data gets its protection through the guardian rules instead. If your app records a child's health or biometric data, the sensitive-data rules apply to that data as well.
 
-### How do I verify a parent's identity without excessive friction?
+### Is a parental gate enough to count as parental consent?
 
-National digital identity services are the practical answer in Gulf markets, since they give strong verification with low friction. Where unavailable, a small refunded payment verification or a multi-step guardian email confirmation is common. Match verification strength to how sensitive the data actually is.
+No. Apple's guideline 5.1.4 says the parental gate in the Kids Category "is generally not the same as" securing parental consent under children's privacy laws. The gate stops a child reaching links and purchases; consent is a separate, recorded step by a verified guardian.
 
-### Can I show ads in a children's app?
+### Which SDKs can a children's app use?
 
-Not behavioural or personalised advertising. Both stores prohibit it in child-directed apps and it is separately regulated in most jurisdictions. Contextual, non-tracking advertising may be permitted under the family programme rules, but it changes your monetisation model, so decide before building.
+On Google Play, ads to children or users of unknown age must come from Families Self-Certified Ads SDKs, and apps that solely target children must not send identifiers such as the Android advertising ID. On Apple, Kids Category apps should not include third-party analytics or advertising, except in limited cases that collect no identifying data. Audit what each SDK sends before you submit.
 
-### What is a parental gate?
+### How do I verify that the person consenting is the child's guardian?
 
-A check placed before external links, purchases, or social features that a young child cannot pass — typically arithmetic or an instruction requiring reading fluency. A simple "are you a parent?" button does not qualify. Both stores require it in child-directed apps.
+The Saudi regulations ask for "appropriate steps" without naming methods. A parent's government digital identity gives the strongest check with low friction where it is available; signed forms and video checks are strong but slow. A refunded card charge proves an adult card holder, not guardianship, so treat it as supporting evidence.
 
-### What age counts as a minor?
+### What changes when the child reaches full legal capacity?
 
-It varies by jurisdiction and is tied to the local age of majority, which is commonly 18 in Gulf countries. Some regimes set a lower threshold for certain online consent purposes. Confirm the applicable age with a local advisor rather than assuming a figure from another market.
-
-### How does this affect an education product's cost?
-
-Expect meaningful additions: the guardian consent flow, a separate minor-account data path, guardian access and deletion tooling, and SDK restrictions that may rule out your default analytics stack. Budgeting for this from the start is considerably cheaper than retrofitting, since minor-account handling touches the data model itself.
+Under Article 13(3)(b) of the Saudi Implementing Regulations, you must let the data subject exercise their own rights once they have full capacity. Build a way to hand the account and its consent choices over from the guardian to the user.
 
 ---
 
-## Conclusion
+## Start with the data model
 
-**The threshold is whether children use your product, not whether you aimed it at them.** Check your analytics before concluding this does not apply.
-
-**Verifiable means verified.** A birth-date field and a checkbox satisfy no regulator and no store, and national digital identity is the one method that gives strength without punishing friction.
-
-**And minimisation is your strongest protection.** Every field you do not collect from a child is a risk you do not carry — which makes "do we actually need this?" the most valuable question in the design review.
-
-**Building for education or families?** [Get in touch](/en/contact) — these requirements shape the data model, so they belong in the first architecture conversation. See our [mobile app development services](/en/services/mobile-apps).
+Guardian consent, age screens, SDK limits and hand-over at full capacity all live in the data model, which is why they are cheap on day one and expensive later. If you are building for children or families and want the consent flow and minor-account path designed before the first screen is drawn, [tell us about the product](/en/contact).

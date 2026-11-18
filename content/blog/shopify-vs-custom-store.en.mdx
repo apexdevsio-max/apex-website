@@ -1,149 +1,154 @@
 ---
-{"slug":"shopify-vs-custom-store","title":"Shopify vs a Custom Store: The Real Three-Year Calculation","seoTitle":"Shopify vs a Custom Store: 3-Year Cost","excerpt":"Hosted platforms versus custom stores — three-year total cost, the tipping point, and Salla and Zid for Saudi Arabia.","date":"2026-07-07","dateModified":"2026-07-07"}
+{"slug":"shopify-vs-custom-store","title":"Shopify vs a Custom Store: The Real Three-Year Calculation","seoTitle":"Shopify vs a Custom Store: 3-Year Cost","excerpt":"Hosted platforms versus custom stores — three-year total cost, the tipping point, and Salla and Zid for Saudi Arabia.","categories":["web-ecommerce"],"keywords":["Shopify vs custom store","Salla","Zid","ecommerce TCO","hosted platform"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Start on a hosted platform (Shopify, Salla or Zid) unless you already need a checkout, pricing model or ERP integration the platform cannot support; a custom store costs $20,000–$65,000 (about SAR 75,000–244,000) to build as of November 2026.","Over three years a custom store at the bottom of that range costs about $29,000–$32,000 once 15–20% annual maintenance is added, so it rarely wins on price alone.","Shopify Payments is not offered in Saudi Arabia or Qatar, so stores there pay Shopify's third-party transaction fee on every sale: 2% on Basic, 1% on Grow, 0.6% on Advanced and 0.2% on Plus.","At 2% that fee alone reaches the three-year cost of a bottom-of-range custom store at roughly $500,000 a year in sales; at 1% it takes roughly $1,000,000 a year."],"sources":[{"title":"Shopify — Pricing plans and third-party transaction fees","url":"https://www.shopify.com/pricing"},{"title":"Shopify Help Center — Shopify Payments supported countries","url":"https://help.shopify.com/en/manual/payments/shopify-payments/supported-countries"},{"title":"Zid — Pricing plans","url":"https://zid.sa/en/pricing/"},{"title":"ZATCA — What is e-invoicing (FATOORAH)","url":"https://zatca.gov.sa/en/E-Invoicing/Introduction/Pages/What-is-e-invoicing.aspx"}]}
 ---
 
 # Shopify vs a Custom Store: The Real Three-Year Calculation
 
-Most comparisons on this subject are written by someone selling one of the two options, so they arrive at a predetermined conclusion. This guide compares with numbers across three years — and ends with a conclusion a development agency might not enjoy.
+**Start on a hosted platform — Shopify, Salla or Zid — unless you already need something it cannot do: a non-standard checkout, negotiated or wholesale pricing, or a deep ERP integration.** A custom store costs $20,000–$65,000 (about SAR 75,000–244,000) to build as of November 2026, and over three years it rarely wins on price alone. It wins when the platform starts blocking how you sell, or when per-sale fees grow larger than a build you would own.
 
-**The short answer: a hosted platform is genuinely cheaper up to a certain sales volume. The tipping point is something you should calculate, not guess.**
+This guide is the decision framework. The full line-by-line three-year cost table for Saudi stores lives in our [e-commerce store cost guide for Saudi Arabia](/en/blog/ecommerce-development-cost-saudi); here we only use its totals.
 
 ---
 
 ## The two options in one sentence each
 
-**Hosted platform ([Shopify](https://www.shopify.com/), [Salla](https://salla.sa/), [Zid](https://zid.sa/)):** you rent a pre-built store. You start selling within days at low upfront cost, in exchange for a permanent monthly subscription and sometimes a percentage of sales.
+**Hosted platform ([Shopify](https://www.shopify.com/pricing), [Salla](https://salla.com/en-sa/plans), [Zid](https://zid.sa/en/pricing/)):** you rent a pre-built store, start selling within days, and pay a permanent subscription plus, on some platforms and plans, a fee on every sale.
 
-**Custom store:** you own the platform entirely. Much higher upfront cost, no platform subscription and no sales commission, but you carry responsibility for maintenance, hosting, and development.
+**Custom store:** you own the platform outright. A much higher upfront cost and 15–20% of the build cost every year for maintenance, but no platform subscription, no platform fee on sales, and no ceiling on what the checkout can do.
+
+If your answer is "custom", our [web development team](/en/services/web-development) builds stores on that model; if it is "hosted", the rest of this guide still tells you when to revisit the decision.
 
 ---
 
-## The three-year calculation
+## The decision in four questions
 
-This is the heart of the decision. The figures below assume a mid-size store with $50,000 in annual sales:
+Work through these in order. The first "yes" settles it.
 
-| Line item | Hosted platform | Custom store |
+**1. Does your sales model break the platform?**
+Subscriptions with complex rules, negotiated B2B prices per customer, quote-based ordering, or a checkout step the platform will not let you add. If yes → custom store, or at least a semi-custom open-source build. No amount of saved subscription fees compensates for a checkout that cannot take the order.
+
+**2. Do you need two-way, real-time integration with an ERP or warehouse system?**
+Stock, pricing and orders flowing both ways every few minutes, not a nightly export. If the platform's API and app store cannot carry it reliably → custom. If an existing connector covers it → stay hosted.
+
+**3. Do per-sale fees exceed what a build would cost you over three years?**
+This is the only cost line that grows with your success. Work it out with the formula below. If the fees are higher → custom earns its cost.
+
+**4. Have you proved the product sells?**
+If not → hosted, without exception. Building an expensive custom store before you have real sales data is the most common way to lose a year.
+
+---
+
+## The three-year calculation, in one formula
+
+A custom store's three-year cost is the build plus three years of maintenance:
+
+`custom 3-year cost = build cost × (1 + 3 × 15–20%)`
+
+At the bottom of our rate card ($20,000 build), that is **about $29,000–$32,000** (SAR 108,800–120,000) over three years. Our [Saudi e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi) sets this beside a hosted store's subscriptions line by line.
+
+A hosted store's cost that grows with sales is the platform's fee on each transaction:
+
+`hosted 3-year fees = annual sales × platform fee % × 3`
+
+Card and mada processing fees from the payment provider apply to both kinds of store, so leave them out of the comparison — they cancel.
+
+### Why Shopify's fee matters in Saudi Arabia
+
+[Shopify Payments](https://help.shopify.com/en/manual/payments/shopify-payments/supported-countries) is available in the UAE but **not in Saudi Arabia or Qatar**. Stores there must use a third-party payment provider, and Shopify's [pricing page](https://www.shopify.com/pricing) charges a transaction fee on every sale made that way:
+
+| Shopify plan | Third-party transaction fee | Annual sales at which three years of fees ≈ $29,000–$32,000 |
 |---|---|---|
-| Upfront cost | $5,000 | $25,000 |
-| Platform subscription (3 years) | $5,400 | $0 |
-| Hosting and maintenance (3 years) | Included | $7,500 |
-| Platform commission on sales* | $4,500 | $0 |
-| Paid apps and extensions | $2,700 | $1,500 |
-| **Three-year total** | **$17,600** | **$34,000** |
+| Basic | 2% | about $500,000 (SAR 1,875,000) |
+| Grow | 1% | about $1,000,000 (SAR 3,750,000) |
+| Advanced | 0.6% | about $1,700,000 (SAR 6,375,000) |
+| Plus | 0.2% | about $5,000,000 (SAR 18,750,000) |
 
-*\* Assuming a 3% platform commission. Rates vary by plan and payment gateway.*
+Below those volumes the fee alone does not justify a custom build. Above them, a store you own starts to pay for itself — before counting the control it gives you. Moving up a Shopify plan to cut the fee is the cheaper first step; compare that plan's subscription against the fee it saves.
 
-**The verdict at this volume: the hosted platform is roughly $16,400 cheaper.** That is a genuine result, not a courtesy.
+Salla and Zid price mainly by subscription. Zid's published plans run from free to SAR 299 a month, so at those prices the subscription will rarely be the reason to leave; questions 1 and 2 will be.
 
 ---
 
-## The tipping point: when does the maths flip?
-
-The decisive variable is **the platform's commission on your sales** — because it is the only line item that grows with your success while everything else stays roughly fixed.
-
-| Annual sales | Platform commission (3%) over 3 years | Verdict |
-|---|---|---|
-| $50,000 | $4,500 | Hosted clearly cheaper |
-| $150,000 | $13,500 | Approximate break-even |
-| $500,000 | $45,000 | Custom clearly cheaper |
-| $1,000,000 | $90,000 | Custom cheaper by a wide margin |
-
-**The practical rule:** once your sales pass roughly **$150,000 annually**, platform commission alone exceeds the cost of building a store you own. Below that figure, a hosted platform is a commercially correct decision — not a compromise.
-
-> **Calculate your own number:** `annual platform commission = projected sales × applicable rate`. Compare it against build cost spread over three years plus annual maintenance. If the commission is higher, building earns its cost.
-
----
-
-## What the table doesn't show
-
-Numbers alone don't settle the decision. These are real factors with no direct figure:
+## What the calculation does not show
 
 **In favour of a hosted platform:**
 - **Speed** — you sell within days rather than months. In a competitive market, a three-month delay is a real cost.
-- **Reliability** — the infrastructure is tested across thousands of stores; yours won't collapse in peak season.
-- **Automatic security updates** — you don't need a team watching them.
-- **Built-in local compliance** — Salla and Zid support Fatoora (ZATCA), Mada, Tabby, and Tamara out of the box.
+- **Shared infrastructure** — hosting, security patches and checkout uptime are the platform's job, not yours.
+- **Local fit (Salla and Zid)** — Arabic built in, local payment methods such as mada, and support in Saudi business hours.
 
 **In favour of a custom store:**
-- **Ownership** — nobody can raise prices or change terms on you.
-- **Performance** — an optimised store is faster, which drives both conversion and search ranking.
-- **Flexibility** — an unconventional sales model (complex subscriptions, negotiated pricing, wholesale) may be unsupported by platforms.
+- **Ownership** — nobody can raise prices or change the terms on you.
+- **Performance** — a store carrying only what you need can be faster, which affects conversion and search; insist on measurable Core Web Vitals targets.
+- **Flexibility** — unconventional models (complex subscriptions, negotiated pricing, wholesale) are possible.
 - **Deep integration** — connecting to an existing ERP or accounting system is far easier.
 
 ---
 
 ## Salla and Zid vs Shopify — for the Saudi market
 
-A comparison within the hosted category, which matters more than hosted-vs-custom for most people starting out:
-
 | Criterion | Salla / Zid | Shopify |
 |---|---|---|
-| Arabic RTL support | Complete and native | Needs compatible themes |
-| Fatoora (ZATCA) compliance | Built in | Needs middleware |
-| Mada · Tabby · Tamara | Ready integration | Needs intermediary gateways |
-| Support | In Arabic, local hours | Global, usually English |
-| App ecosystem | Smaller | Enormous |
-| Selling outside the region | Limited | Excellent |
+| Arabic and right-to-left layout | Built in | Depends on the theme; test it in Arabic before buying |
+| Payments in Saudi Arabia | Local methods such as mada through the platform | Third-party provider required; 0.2–2% Shopify fee per sale on top |
+| E-invoicing ([FATOORAH](https://zatca.gov.sa/en/E-Invoicing/Introduction/Pages/What-is-e-invoicing.aspx)) | Invoice features in the platform (on Zid, from the Growth plan) | Through apps; confirm the app meets your ZATCA phase |
+| Support | Arabic, Saudi business hours | Global, mostly English |
+| Selling outside the region | Limited | Strong |
 
-**The conclusion:** if you sell primarily inside Saudi Arabia and the Gulf, local platforms mean less friction. If you target global markets, Shopify is stronger. See our [Saudi e-commerce cost guide](/en/blog/ecommerce-development-cost-saudi) for pricing detail.
+**The verdict:** if you sell mainly inside Saudi Arabia, a local platform means less friction and no per-sale platform fee to model. If you target buyers abroad, Shopify is stronger — and in the UAE, where Shopify Payments is available, the third-party fee question disappears. To choose between the two local platforms, see [Salla or Zid?](/en/blog/salla-vs-zid).
 
 ---
 
-## An overlooked third option: WooCommerce
+## The middle path: an open-source store
 
-Between the two extremes sits a middle path: **an open-source foundation you build on**.
+Between renting and building from scratch sits **WooCommerce or another open-source store your team shapes**.
 
-- **Upfront cost:** $15,000 – $40,000 — higher than hosted, lower than fully custom.
-- **No platform subscription and no sales commission.**
-- **Wide flexibility** through thousands of extensions.
-- **The drawback:** it needs regular technical maintenance and security updates, and slows down as plugins accumulate.
+- **Cost on our rate card:** priced as a mid-size company website ($8,000–$25,000, SAR 30,000–93,800) plus $1,500–$5,000 (SAR 5,600–18,800) for each local payment gateway, as of November 2026.
+- **No platform subscription and no platform fee on sales.**
+- **The drawback:** you own the maintenance and security updates, and performance degrades as plugins accumulate.
 
-It suits anyone who has outgrown a hosted platform but doesn't need a full build from scratch.
+It suits a store that has outgrown a hosted platform's checkout but does not need a fully custom build.
 
 ---
 
 ## Related reading
 
-- [Gulf payment gateways](/en/blog/gulf-payment-gateways) — the biggest factor in checkout completion.
-- [Saudi e-commerce cost](/en/blog/ecommerce-development-cost-saudi) — pricing and requirements in detail.
+- [E-commerce store cost in Saudi Arabia](/en/blog/ecommerce-development-cost-saudi) — the full three-year cost table.
+- [Salla or Zid?](/en/blog/salla-vs-zid) — choosing between the two Saudi platforms.
+- [Gulf payment gateways](/en/blog/gulf-payment-gateways) — what each payment method costs to add.
 - [Hosting](/en/blog/hosting-comparison) — if you choose a custom build.
 
 ---
 
 ## Frequently asked questions
 
-### When should I move from a hosted platform to a custom store?
+### What signs show my store has outgrown Shopify, Salla or Zid?
 
-The clearest indicator is numerical: once annual sales pass roughly $150,000, platform commission alone exceeds the cost of building a store you own. The second indicator is functional: finding yourself working around platform limitations to execute a basic sales operation in your business model.
+Three signs: you are building workarounds to take a normal order in your business model; your ERP or warehouse needs real-time, two-way sync the platform's API cannot carry; or three years of per-sale platform fees now exceed the cost of a store you would own. Any one is enough to start scoping a custom build.
 
-### Do I lose my data and customers when migrating?
+### Do I lose my products, customers and rankings when I leave a hosted platform?
 
-Not if you plan for it. Products, customers, and orders are exportable from most platforms. What is hard to move is **links and search ranking** — so plan 301 redirects from every old URL to its new counterpart, or you lose the ranking you earned.
+Products, customers and orders can be exported from most platforms. What is hard to move is **URLs and search ranking** — map a 301 redirect from every old product and category URL to its new one before you switch, or you lose the ranking you earned.
 
-### Is a custom store genuinely faster?
+### Will a custom store be faster than my Shopify store?
 
-Usually yes, because it carries only what you need without generic layers. But the difference depends on execution quality — a poorly built custom store can be slower than an optimised hosted platform. Ask for a commitment to measurable Core Web Vitals standards rather than promises.
+Usually, because it carries only what you need. But a poorly built custom store can be slower than a well-tuned hosted one. Make measurable Core Web Vitals targets part of the contract rather than accepting promises.
 
-### What does running a custom store cost annually?
+### What does a custom store cost to run each year after launch?
 
-Between $2,000 and $6,000 per year for hosting, maintenance, and security updates, plus payment gateway commission (2.5–3% per transaction). Add the cost of any new development you request later — a custom store doesn't evolve automatically the way platforms do.
+Plan on 15–20% of the build cost a year for maintenance and security updates — $3,000–$13,000 (SAR 11,300–48,800) for a $20,000–$65,000 store, as of November 2026 — plus hosting and your payment provider's processing fees. New features you request later are extra.
 
-### Can I start hosted and build later?
+### Is it smarter to launch on Shopify and rebuild custom later?
 
-Yes, and this is the most rational path for most projects. You test the market with minimal risk, build a customer base and real sales data, then build your custom store with clear requirements grounded in actual experience rather than assumptions.
+For most projects, yes. You test the market cheaply, collect real sales data, and then write the custom store's requirements from evidence rather than assumptions.
 
-### What is the biggest mistake store owners make?
+### Does Shopify charge extra for a store based in Saudi Arabia?
 
-Building an expensive custom store before verifying the product sells at all. Build cost isn't the largest loss in that case — it's the months that could have been spent actually testing the market.
+Not as a surcharge, but Shopify Payments is not available in Saudi Arabia, so you must use a third-party provider and Shopify adds its third-party transaction fee — 2% on Basic, 1% on Grow, 0.6% on Advanced, 0.2% on Plus — on top of that provider's own processing fee.
 
 ---
 
-## Conclusion
+## The bottom line
 
-**Under $150,000 in annual sales:** a hosted platform is clearly cheaper — a commercially correct decision, not a compromise.
+A hosted platform is the right first store for almost everyone. Move to a custom store when your sales model, your integrations or your per-sale fees force the issue — and use the formula above, not a feeling, to tell which.
 
-**Above that:** start by calculating annual platform commission. If it exceeds build cost spread over three years, a custom store earns its place.
-
-**In every case:** don't build a custom store before proving your product sells. The smarter path is usually to start hosted and migrate when your numbers demand it.
-
-**Want the tipping point calculated for your store?** [Get in touch](/en/contact) and we'll work it out with your actual figures — including a recommendation to stay on your current platform if that is cheaper. See our [web development services](/en/services/web-development).
+**Want the tipping point worked out with your own sales figures?** [Send us your numbers](/en/contact) and we will run the comparison — including a recommendation to stay on your current platform if that is cheaper.

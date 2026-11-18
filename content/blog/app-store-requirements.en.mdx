@@ -1,133 +1,125 @@
 ---
-{"slug":"app-store-requirements","title":"App Store Rejections: Why Apps Get Rejected and How to Avoid It","seoTitle":"App Store Rejection Reasons and Fixes","excerpt":"The rejection reasons that actually cost time on Apple and Google — privacy declarations, account deletion, payment rules — plus Gulf-specific requirements and realistic review timelines.","date":"2026-08-15","dateModified":"2026-08-15"}
+{"slug":"app-store-requirements","title":"App Store Rejections: Why Apps Get Rejected and How to Avoid It","seoTitle":"App Store Rejection Reasons and Fixes","excerpt":"The rejection reasons that cost time on Apple and Google — privacy declarations, account deletion, payment rules — plus Gulf requirements and real review timelines.","categories":["compliance","mobile"],"keywords":["app store rejection","App Store review","Google Play requirements","account deletion requirement","app submission","privacy labels"],"date":"2026-08-22","dateModified":"2026-11-17","summary":["Apple says App Review typically handles at least 50% of submissions in under 24 hours and 90% in under 48 hours, while Google Play says some reviews take up to 7 days or longer.","A Google Play personal developer account created after 13 November 2023 must run a closed test with at least 12 testers opted in for 14 consecutive days before it can publish to production.","Both stores require in-app account deletion when an app allows account creation, and Google Play additionally requires a web link where users can request deletion.","Subscriptions that unlock digital content must use Apple in-app purchase (guideline 3.1.1) and Google Play Billing, while physical goods and real-world services must use other payment methods."],"sources":[{"title":"Apple: App Review Guidelines","url":"https://developer.apple.com/app-store/review/guidelines/"},{"title":"Apple: App Review (review times, appeals)","url":"https://developer.apple.com/distribute/app-review/"},{"title":"Google Play Console Help: App testing requirements for new personal developer accounts","url":"https://support.google.com/googleplay/android-developer/answer/14151465"},{"title":"Google Play Console Help: Understanding Google Play's app account deletion requirements","url":"https://support.google.com/googleplay/android-developer/answer/13327111"},{"title":"Google Play Console Help: Provide information for Google Play's Data safety section","url":"https://support.google.com/googleplay/android-developer/answer/10787469"}]}
 ---
 
 # App Store Rejections: Why Apps Get Rejected and How to Avoid It
 
-Store review is the one project milestone entirely outside your control, and it is routinely left out of the schedule. A first submission rejected twice can add two to three weeks to a launch that was otherwise on time.
+**Apple reviews at least half of submissions in under 24 hours and 90% in under 48 hours, according to its [App Review page](https://developer.apple.com/distribute/app-review/). Google Play says some reviews take [up to seven days or longer](https://support.google.com/googleplay/android-developer/answer/9859751), and a new personal Play account must first run a 14-day closed test with 12 testers.** The rejections that cost the most time come from a short list: privacy declarations that do not match the app, missing in-app account deletion, payment rules, and reviewers who cannot get past the login screen.
 
-**The short answer: budget one to two weeks for first review. Most rejections are avoidable and come from a small set of causes — privacy declarations that do not match the binary, missing account deletion, payment rules, and incomplete review information.**
+> Written from an engineering perspective, not legal advice. Current as of November 2026.
 
-This guide covers what actually gets apps rejected and the Gulf-specific requirements that catch regional launches.
+This guide covers what the store rules actually say, and the regional points that catch Gulf launches. If you are planning a [mobile app](/en/services/mobile-apps), put the timings below into the schedule from day one.
 
 ---
 
 ## Realistic timelines
 
-| Stage | Typical duration |
+| Stage | What the store says |
 |---|---|
-| Apple first review | 24 – 48 hours |
-| Apple resubmission after rejection | 24 – 48 hours |
-| Google first review (new account) | Up to several days |
-| Google subsequent reviews | Hours to 2 days |
-| **Budget for first launch** | **1 – 2 weeks including one rejection** |
+| Apple review | At least 50% of submissions in under 24 hours, 90% in under 48 hours ([Apple](https://developer.apple.com/distribute/app-review/)) |
+| Google Play review | Some apps get extended review of up to 7 days, longer in exceptional cases ([Google](https://support.google.com/googleplay/android-developer/answer/9859751)) |
+| New Google Play personal account | Closed test with at least 12 testers opted in for 14 consecutive days before production ([Google](https://support.google.com/googleplay/android-developer/answer/14151465)) |
 
-**Plan for at least one rejection on a first submission.** It is the normal case, not a failure. Teams that schedule zero review buffer are the ones that miss launch dates.
+**How we plan it:** for Apple, allow a week for a first submission including one rejection and fix. For Google, if the app is published from a personal account created after 13 November 2023, the closed test alone is at least 14 days — so recruit the 12 testers while the app is still in development. Testers who leave and rejoin restart their 14-day count. Google states this rule for personal accounts; a company launching a product should normally publish from an organisation account anyway, so set that up early.
 
-**New Google Play developer accounts face additional requirements**, including a closed testing period with a minimum number of testers before production access for personal accounts. Check the current rules when you create the account, not when you are ready to ship — this requirement has stranded launches.
+Apple also allows an **expedited review** request for a critical bug fix or an app tied to a dated event you are directly associated with.
 
 ---
 
 ## The rejections that actually happen
 
-### 1. Privacy declarations that do not match the binary
+### 1. Privacy declarations that do not match the app
 
-The most common technical rejection. Apple's privacy labels and Google's Data Safety form must match what your app actually does — and automated analysis inspects your binary.
+Apple's guideline 2.3 asks that all metadata, "including privacy information", accurately reflects the app. Google is blunter: the developer is "alone" responsible for complete and accurate [Data safety](https://support.google.com/googleplay/android-developer/answer/10787469) declarations, and these must include data collected "through any third-party libraries or SDKs". Apps that do not correct a discrepancy face blocked updates or removal.
 
-**Why it happens:** a third-party SDK collects data the developer never audited. Advertising, analytics, and attribution SDKs are the usual sources.
+**Why it happens:** an advertising, analytics or attribution SDK collects data the team never audited.
 
-**The fix:** audit what every dependency transmits before filling in either form. Your [privacy policy](/en/blog/privacy-policy-guide) must agree with both.
+**The fix:** list what every dependency transmits before filling in either form, and make your [privacy policy](/en/blog/privacy-policy-guide) say the same thing. Apple's guideline 5.1.1(i) also requires a privacy policy link both in App Store Connect and inside the app.
 
 ### 2. Missing account deletion
 
-Both stores require that an app allowing account creation also allows account deletion **from within the app**. A support email address does not satisfy this.
+- **Apple, guideline 5.1.1(v):** "If your app supports account creation, you must also offer account deletion within the app."
+- **Google Play:** an in-app path to delete the account and associated data **and** a [web link](https://support.google.com/googleplay/android-developer/answer/13327111) where users can request deletion, declared in the Data safety form.
 
-This catches a lot of apps because deletion is genuinely more work than it looks — it must actually delete, including from backups and logs, which is also what data protection law requires.
+A support email address satisfies neither. Deletion is also more work than it looks: the backend has to remove or anonymise the data, not just hide the account. Saudi Arabia's [PDPL](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL) gives users the right to ask for destruction of data that is no longer needed (Article 4) and requires destruction once the purpose ends (Article 18). How that applies to backups is a good question for your lawyer; the engineering answer is a documented backup expiry period.
 
 ### 3. Payment rules
 
-Digital goods and services consumed inside the app generally must use the platform's in-app purchase system. Physical goods and real-world services use external payment.
+- **Apple 3.1.1:** unlocking features or content — subscriptions, premium content, a full version — must use in-app purchase.
+- **Apple 3.1.3(e):** physical goods or services "consumed outside of the app" must use other payment methods, such as Apple Pay or card entry.
+- **Google Play:** [Play Billing](https://support.google.com/googleplay/android-developer/answer/9858738) is required for in-app digital goods and services, and must not be used for physical goods and services such as transport or food delivery. Google runs alternative-billing programmes in eligible countries; check whether yours is one before designing around them.
 
-**Where teams get caught:** a subscription unlocking in-app content routed through an external payment gateway. Both stores treat this as a violation. The boundary between "digital content" and "real-world service" is where most disputes arise — if you are unsure, ask before building the flow, not after.
+**Where teams get caught:** a subscription that unlocks in-app lessons or content, routed through a card gateway. An Arabic education app such as [Tafawwoq](/en/portfolio/tafawwoq-educational-app), which combines video lessons with subscription management, is exactly the kind of product where 3.1.1 has to be designed in from the start. If you are unsure which side of the line you are on, settle it before building the payment flow.
 
-### 4. Incomplete review information
+### 4. Reviewers cannot get in
 
-Reviewers must be able to use your app fully. Rejections follow from:
+Apple's guideline 2.1(a) asks for demo account details "(and turn on your back-end service!)" if the app has a login; Google's [Prepare your app for review](https://support.google.com/googleplay/android-developer/answer/9859455) page asks for sign-in details for restricted areas. Rejections follow from:
 
 - No demo account for a login-gated app
-- Demo credentials that stopped working
-- Features requiring hardware or a backend the reviewer cannot access
-- No explanation of region-locked functionality
+- Demo credentials that expired or were deleted
+- An OTP sent to a local phone number the reviewer cannot receive
+- Features that need hardware or a region the reviewer does not have
 
-**The fix is administrative:** provide working demo credentials, and verify they still work on the day you submit.
+**The fix:** a working demo account, checked on the day you submit, and written instructions for anything unusual. If legal or security rules prevent a demo account, Apple allows a built-in demo mode with prior approval.
 
 ### 5. Broken links and placeholder content
 
-Privacy policy URLs returning 404, support pages that do not exist, and "Lorem ipsum" left in a settings screen. Trivially avoidable and genuinely common.
+Privacy policy URLs returning 404, support pages that do not exist, "Lorem ipsum" in a settings screen. Trivial to avoid, and covered by Apple's completeness rule (2.1).
 
-### 6. Insufficient functionality
+### 6. Not enough "app"
 
-Apps that are a thin wrapper around a website, or that duplicate functionality already available without adding value, get rejected as not providing enough app-like utility. If your app is essentially your website in a shell, see [mobile app or responsive website](/en/blog/app-vs-pwa) — the store may be telling you something true.
+Apple's guideline 4.2 says an app should go beyond "a repackaged website". If your app is essentially your site in a shell, read [mobile app or responsive website](/en/blog/app-vs-pwa) — the reviewer may be telling you something true.
 
-### 7. Permissions without justification
+### 7. Permissions without a clear reason
 
-Requesting location, contacts, camera, or microphone access without a clear in-app reason. Each permission needs a usage description string explaining **why**, and the reason must be evident from the app's actual behaviour.
+Apple 5.1.1(ii) requires purpose strings that "clearly and completely describe your use of the data". Ask for location, contacts, camera or microphone only where the reason is visible in the app's behaviour.
 
 ---
 
-## Gulf-specific requirements
+## Gulf launch points
 
-Regional launches carry considerations that global guides omit.
+**Local law applies, not just the guidelines.** Apple's section 5 says apps "must comply with all legal requirements in any location where you make them available", and that it is your responsibility to know them. For data protection in Saudi Arabia, the UAE and Qatar, start with the [Gulf compliance guide](/en/blog/gulf-compliance-guide).
 
-**Content standards are stricter.** Content acceptable elsewhere may not be in Gulf markets. This affects apps with user-generated content, dating features, or anything touching alcohol, gambling, or religious material. Regional app store fronts apply local standards.
+**Regulated sectors need the right account.** Apple 5.1.1(ix) says apps in highly regulated fields — banking and financial services, healthcare, gambling, air travel, crypto exchanges — should be submitted by the legal entity that provides the service, not an individual developer. Google Play requires a [Financial features declaration](https://support.google.com/googleplay/android-developer/answer/9876821) for any app with financial features and may ask for licence documents. See [fintech in Saudi Arabia](/en/blog/fintech-sama-compliance) and [health apps in the UAE](/en/blog/health-apps-uae-compliance) for the local licences.
 
-**Arabic listing metadata.** Not strictly required, but a listing in English only performs poorly in Arabic-speaking markets and looks unserious. Localise the title, description, keywords, and screenshots. This is store optimisation as much as compliance — see the [Arabic localisation guide](/en/blog/arabic-localization-guide).
+**Arabic listing and right-to-left screenshots.** No store rule requires an Arabic listing, but guideline 2.3 does require screenshots that reflect the app's core experience — so if the app is Arabic-first, show it in Arabic. Localise the title, description, keywords and screenshots; see the [Arabic localisation guide](/en/blog/arabic-localization-guide).
 
-**RTL screenshots.** If your app supports Arabic, submit Arabic screenshots showing the RTL layout. Reviewers checking an Arabic listing against LTR-only screenshots notice.
-
-**Payment integration.** Local gateways like Mada must still respect platform payment rules for digital goods. Physical goods and real-world services are fine — see [Gulf payment gateways](/en/blog/gulf-payment-gateways).
-
-**Health and finance apps face additional scrutiny**, and both stores may request evidence of licensing. Have your regulatory documentation ready at submission rather than scrambling after a rejection. See [health apps in the UAE](/en/blog/health-apps-uae-compliance) and [fintech in Saudi Arabia](/en/blog/fintech-sama-compliance).
+**Local payment methods still follow store rules.** A card gateway that supports mada is fine for physical goods and real-world services, not for unlocking digital content — see [Gulf payment gateways](/en/blog/gulf-payment-gateways).
 
 ---
 
 ## A pre-submission checklist
 
 **Accounts and access**
-- [ ] Working demo account with credentials in review notes
-- [ ] Credentials verified on submission day
-- [ ] Any special access or hardware requirements explained
+- [ ] Working demo account, details in the review notes
+- [ ] Credentials re-checked on submission day; OTP bypass or demo mode for reviewers
+- [ ] Google Play: organisation account, or the 12-tester, 14-day closed test completed
 
 **Privacy**
-- [ ] Every SDK audited for what it actually transmits
-- [ ] Apple privacy labels match the binary
-- [ ] Google Data Safety form matches the binary
-- [ ] Privacy policy URL live and matching both
-- [ ] Policy reachable from inside the app
+- [ ] Every SDK audited for what it transmits
+- [ ] Apple privacy details and Google Data safety form match the app
+- [ ] Privacy policy URL live, linked in the store listing and inside the app
 
 **Functionality**
-- [ ] Account deletion available in-app, and it genuinely deletes
-- [ ] No placeholder content or dead links anywhere
-- [ ] Every permission has a clear usage description
-- [ ] Payment method correct for what you are selling
+- [ ] In-app account deletion that deletes; Google web deletion link live
+- [ ] No placeholder content or dead links
+- [ ] Every permission has a clear purpose string
+- [ ] Payment method correct for what you sell (3.1.1 / 3.1.3(e) / Play Billing)
 
 **Regional**
-- [ ] Arabic listing metadata and screenshots
-- [ ] RTL screenshots if Arabic is supported
-- [ ] Content reviewed against regional standards
-- [ ] Licensing documentation ready for regulated sectors
+- [ ] Arabic listing metadata and Arabic screenshots if the app is Arabic-first
+- [ ] Submitted by the licensed legal entity for regulated services
+- [ ] Financial features declaration completed on Google Play, if relevant
 
 ---
 
 ## When you are rejected
 
-**Read the actual reason.** Rejection notices cite a specific guideline. The cited guideline is the thing to fix — not what you assume the reviewer meant.
+**Read the cited guideline.** Fix what it names, not what you assume the reviewer meant.
 
-**You can reply.** Both stores allow a response, and if you believe the rejection is mistaken, explaining clearly with specifics often resolves it faster than resubmitting blind. This is genuinely useful when a reviewer has misunderstood a feature.
+**You can reply.** Apple lets you correspond with App Review in App Store Connect before resubmitting, and you can appeal to the **App Review Board** if you believe your app was misunderstood — one appeal per rejected submission, with specific reasons. Google Play's [enforcement emails](https://support.google.com/googleplay/android-developer/answer/9899234) include instructions on how to appeal.
 
-**Fix and resubmit promptly.** Turnaround is usually fast. The cost of rejection is mostly the round trip, so a same-day fix keeps the delay to a day or two rather than a week.
-
-**Do not stack changes.** Fix what was cited and resubmit. Bundling unrelated improvements into a rejection fix adds new surface area for a second rejection.
+**Fix and resubmit promptly,** and do not bundle unrelated changes into the fix: new code is new surface for a second rejection.
 
 ---
 
@@ -135,50 +127,42 @@ Regional launches carry considerations that global guides omit.
 
 - [Privacy policy guide](/en/blog/privacy-policy-guide) — the document both stores check.
 - [Arabic localisation guide](/en/blog/arabic-localization-guide) — listing and screenshot localisation.
-- [Mobile app or responsive website](/en/blog/app-vs-pwa) — when a store is right that you do not need an app.
+- [Mobile app or responsive website](/en/blog/app-vs-pwa) — when the store is right that you do not need an app.
 - [Mobile app testing](/en/blog/mobile-app-testing) — catching problems before review does.
-- [Mobile app development cost](/en/blog/mobile-app-development-cost) — where review time sits in a timeline.
+- [Mobile app development cost](/en/blog/mobile-app-development-cost) — where review time sits in a budget and timeline.
 
 ---
 
 ## Frequently asked questions
 
-### How long does app store review take?
+### How long does Apple App Review take in 2026?
 
-Apple typically reviews within 24 to 48 hours, and Google usually within hours to a couple of days, though new developer accounts can take longer. Budget one to two weeks for a first launch, since at least one rejection on a first submission is normal rather than exceptional.
+Apple says App Review typically handles at least 50% of submissions in under 24 hours and 90% in under 48 hours. Incomplete submissions take longer or fail. Plan about a week for a first submission so one rejection and fix does not move your launch date.
 
-### Why do apps get rejected most often?
+### What is the 12-tester rule on Google Play?
 
-Privacy declarations that do not match what the binary actually does, missing in-app account deletion, payment rule violations for digital goods, and incomplete reviewer access such as a broken demo account. The privacy mismatch is usually caused by a third-party SDK the developer never audited.
+Personal developer accounts created after 13 November 2023 must run a closed test with at least 12 testers who stay opted in for 14 consecutive days before applying for production access. A tester who leaves and rejoins restarts the count. Google states the rule for personal accounts, so a company should normally publish from an organisation account.
 
-### Do I need account deletion inside my app?
+### Is a support email enough for account deletion?
 
-Yes, if your app allows account creation. Both stores require deletion to be available from within the app — a support email does not satisfy it. The deletion must also genuinely remove data, including from backups and logs, which data protection law requires anyway.
+No. Apple guideline 5.1.1(v) requires account deletion inside the app if the app supports account creation. Google Play requires an in-app deletion path and a web link where users can request deletion of the account and associated data.
 
-### Can I use my own payment gateway instead of in-app purchase?
+### Can a Gulf subscription app take payment through mada or a card gateway?
 
-For physical goods and real-world services, yes. For digital content and services consumed inside the app, both stores generally require their in-app purchase systems. The boundary is where most disputes happen — confirm your case before building the flow rather than after a rejection.
+Only for physical goods or real-world services. Subscriptions or purchases that unlock digital content inside the app must use Apple in-app purchase under guideline 3.1.1 and Google Play Billing, unless you qualify for one of Google's alternative-billing programmes in an eligible country.
 
-### Do I need Arabic screenshots for Gulf markets?
+### Who should submit a fintech or health app to the App Store?
 
-Not strictly required, but strongly advisable. An English-only listing performs poorly in Arabic-speaking markets, and if your app supports Arabic, submitting only LTR screenshots is something reviewers notice. Localised listing metadata is also store optimisation, not just presentation.
+The licensed legal entity that provides the service. Apple guideline 5.1.1(ix) says apps in highly regulated fields such as banking, financial services and healthcare should not be submitted by an individual developer. On Google Play, apps with financial features must also complete the Financial features declaration.
 
-### What should I do if my app is rejected?
+### Can I appeal an App Store rejection?
 
-Read the specific guideline cited, fix exactly that, and resubmit promptly. If you believe the rejection is mistaken, both stores allow a reply — explaining clearly often resolves misunderstandings faster than resubmitting. Avoid bundling unrelated changes into the fix, since that creates new rejection surface.
-
-### Are there extra requirements for health or finance apps?
-
-Yes. Both stores apply additional scrutiny and may request evidence of licensing for regulated functionality. Have your regulatory documentation ready at submission. In the Gulf this stacks on top of local licensing requirements, which are a separate and usually longer process.
+Yes. You can reply to App Review in App Store Connect, or file one appeal per rejected submission with the App Review Board, giving specific reasons why the app complies. Google Play includes appeal instructions in its enforcement emails.
 
 ---
 
-## Conclusion
+## Ship it on the first or second try
 
-**Budget for review time and at least one rejection.** It is the normal path, and the teams that miss launch dates are the ones who scheduled zero buffer.
+Most rejections are predictable and checkable before you press submit: a privacy form that matches the app, deletion that works, the right payment path, and a reviewer who can log in. Add the Google closed-test window and Arabic store assets to the plan early, and store review stops being the thing that moves your launch date.
 
-**Most rejections trace to a handful of causes** — privacy declarations that do not match the binary, missing account deletion, payment rules, and reviewer access. All four are checkable before you submit.
-
-**And for Gulf launches, localise the listing properly.** Arabic metadata and RTL screenshots are cheap, and an English-only listing quietly costs you installs in your target market.
-
-**Launching in the Gulf?** [Get in touch](/en/contact) — we handle submission and the regional requirements that come with it. See our [mobile app development services](/en/services/mobile-apps).
+If you are preparing a Gulf launch and want a second pair of eyes on the build and the submission, [talk to our team](/en/contact) before you upload the first binary.

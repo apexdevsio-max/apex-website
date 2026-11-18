@@ -1,12 +1,12 @@
 ---
-{"slug":"mvp-vs-full-product","title":"MVP or Full Product? Where to Start and Why","excerpt":"Most digital products fail from building complete before verifying demand. How to scope an MVP and what to measure.","date":"2026-06-14","dateModified":"2026-06-14"}
+{"slug":"mvp-vs-full-product","title":"MVP or Full Product? Where to Start and Why","excerpt":"Most digital products fail from building complete before verifying demand. How to scope an MVP and what to measure.","categories":["vendor"],"keywords":["MVP","minimum viable product","full product","market validation","project scope"],"date":"2026-08-15","dateModified":"2026-11-17","summary":["Start with an MVP unless you already have proven demand, a product that cannot launch partially, or a legacy system to replace like for like.","On our published rate card as of November 2026, an MVP-sized simple app costs $5,000–$15,000 and takes 6–10 weeks, while a mid-complexity app costs $15,000–$45,000 over 3–5 months and an advanced platform $45,000–$100,000 over 5–9 months.","Scope an MVP with three questions: what single problem it solves, what the shortest path to solving it is, and which features break that path if removed.","An MVP must still be a finished, working product: Apple sends demos and betas to TestFlight rather than the App Store, and new personal Google Play accounts must run a closed test with at least 12 testers for 14 days before going to production."],"sources":[{"title":"Apple — App Store Review Guidelines (2.1 App Completeness, 2.2 Beta Testing, 4.2 Minimum Functionality)","url":"https://developer.apple.com/app-store/review/guidelines/"},{"title":"Google Play Console Help — App testing requirements for new personal developer accounts","url":"https://support.google.com/googleplay/android-developer/answer/14151465"},{"title":"SDAIA — Personal Data Protection Law (full text)","url":"https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL"}]}
 ---
 
 # MVP or Full Product? Where to Start and Why
 
-This decision determines whether you spend your budget on a product people want or on your assumptions about what they want.
+**Start with an MVP in most cases — not to save money, but to learn before you spend it.** On our published rate card (as of November 2026), an MVP-sized simple app costs $5,000–$15,000 and takes 6–10 weeks, while a full mid-complexity product costs $15,000–$45,000 and takes 3–5 months. Build the full product directly only when demand is already proven, the product cannot work in part, or you are replacing an internal system like for like.
 
-**The short answer: start with an MVP in most cases — not to save money, but to learn before you spend it.**
+This decision determines whether you spend your budget on a product people want or on your assumptions about what they want.
 
 ---
 
@@ -26,26 +26,27 @@ A **minimum viable product (MVP)** is **the smallest version that solves the cor
 
 ---
 
-## Why does building the full product fail?
+## Why does building the full product first go wrong?
 
 The reason isn't technical but epistemic: **you don't know what users want until they use something**.
 
-Multiple analyses of the digital product sector indicate that **the vast majority of features are rarely or never used**, and that the leading cause of product failure is building what nobody needs — not poor technical execution.
+Every feature you build before launch is a bet placed without evidence. Some of those bets will be wrong — you just don't know which ones until real users arrive. If you build twenty features first, the budget for the wrong ones is already spent. Worse than the wasted money is the **time**: months that could have been spent learning from real users.
 
-**What this means practically:** if you build twenty features before launch, most of your budget went to features that won't be used. And worse than the wasted money is the **time** — months that could have been spent learning from real users.
-
-> **A necessary caveat:** these are general sector patterns, not laws. Your project may be an exception — but the safe assumption is to verify before spending, not the reverse.
+An MVP turns that around. You launch the part you are most sure of, watch what people actually do, and let that decide where the rest of the budget goes.
 
 ---
 
 ## The difference in cost and timeline
 
-| Approach | Relative cost | Timeline | What you get |
-|---|---|---|---|
-| MVP | 30 – 50% | 6 – 12 weeks | A working product + real data |
-| Full product | 100% | 6 – 18 months | A comprehensive product + untested assumptions |
+| Approach | Rate-card tier | Cost (USD) | Timeline | What you get |
+|---|---|---|---|---|
+| MVP | Simple app | $5,000 – $15,000 | 6 – 10 weeks | A working product + real usage data |
+| Full product | Mid-complexity app | $15,000 – $45,000 | 3 – 5 months | A broader product + untested assumptions |
+| Full product | Advanced app or platform | $45,000 – $100,000 | 5 – 9 months | A comprehensive product + untested assumptions |
 
-**The real difference isn't the saving**, but that an MVP gives you **information** the full product does not: what do people actually use?
+Ranges from our published rate card, as of November 2026. In local currency the MVP tier is SAR 19,000–56,500, AED 18,500–55,000 or QAR 18,000–54,500. For a web-first MVP, a landing page or small site that tests demand costs $1,500–$5,000.
+
+**The real difference isn't the saving**, but that an MVP gives you **information** the full product does not: what do people actually use? If you want help drawing that line for a [mobile app](/en/services/mobile-apps) or a [web product](/en/services/web-development), that scoping conversation is where we start.
 
 ---
 
@@ -77,7 +78,16 @@ Those are your core features. Everything else — however obvious it seems — w
 
 **Security.** A vulnerability in an MVP is a real vulnerability with real users and real data. Never defer security.
 
-**Regulatory compliance.** If you process personal data in Saudi Arabia, the Personal Data Protection Law — overseen by the [Saudi Data and AI Authority (SDAIA)](https://sdaia.gov.sa/) — applies to an MVP exactly as it does to a full product.
+**Regulatory compliance.** If you process personal data in Saudi Arabia, the [Personal Data Protection Law](https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL), overseen by the Saudi Data and AI Authority (SDAIA), applies to any processing of personal data in the Kingdom — an MVP exactly as much as a full product.
+
+---
+
+## An MVP still has to pass the app stores
+
+"Minimum" does not mean "unfinished" to Apple or Google, and both stores set rules that shape an MVP launch:
+
+- **Apple wants a final version.** [App Store Review Guideline 2.1](https://developer.apple.com/app-store/review/guidelines/) says submissions "should be final versions" with placeholder content removed, and guideline 2.2 says demos, betas and trial versions "don't belong on the App Store – use TestFlight instead". Guideline 4.2 adds that an app needs features and UI that "elevate it beyond a repackaged website". A narrow scope is fine; a half-built one gets rejected.
+- **Google wants a closed test first.** [New personal Google Play developer accounts](https://support.google.com/googleplay/android-developer/answer/14151465) created after 13 November 2023 must run a closed test with at least 12 testers who stay opted in for 14 consecutive days before applying for production access. Put those two weeks into your launch plan — and use them, because they are your first real usage data.
 
 ---
 
@@ -107,50 +117,59 @@ Building an MVP without measuring wastes its entire benefit.
 
 ---
 
+## Common mistakes when applying the MVP approach
+
+**Treating it as a low-quality version.** An MVP is narrow in scope, not low in quality. Users forgive missing features; they do not forgive slowness and bugs.
+
+**Delaying launch until it is "complete".** The point of an MVP is to launch with features deliberately missing. If you find yourself postponing month after month, you are building a full product under another name.
+
+**Not measuring after launch.** An MVP without measurement loses its entire benefit — you have spent part of the budget and received part of a product with no information at all.
+
+**Launching to an audience that isn't real.** Your friends and colleagues are not users; their opinions are politeness. You need strangers using the product because they actually need it.
+
+**Building infrastructure for a million users.** An MVP for a hundred users does not need an architecture that carries millions. This is the most common source of overspending in the first stage.
+
+---
+
 ## Related reading
 
 - [App development contracts](/en/blog/app-development-contract) — freezing scope in writing.
 - [Mobile app testing](/en/blog/mobile-app-testing) — what is worth testing in an MVP.
 - [Clean Architecture](/en/blog/clean-architecture-flutter) — and why it may be overkill for an MVP.
+- [Writing an RFP for software](/en/blog/writing-rfp-software) — putting the must-have boundary into a brief.
 
 ---
 
 ## Frequently asked questions
 
-### What does an MVP cost?
+### What does an MVP cost compared with the full product?
 
-Between 30% and 50% of the full product's cost. In practice: an MVP app starts at $8,000 to $25,000, and a web platform at $5,000 to $20,000. See our [Gulf app development cost guide](/en/blog/mobile-app-development-cost-gulf) for the underlying figures.
+On our published rate card as of November 2026, an MVP-sized simple app costs $5,000–$15,000 (SAR 19,000–56,500), against $15,000–$45,000 for a mid-complexity app and $45,000–$100,000 for an advanced platform. A web landing page that tests demand costs $1,500–$5,000. See our [Gulf app development cost guide](/en/blog/mobile-app-development-cost-gulf) for what moves a project between tiers.
 
-### Won't an incomplete MVP damage my reputation?
+### Won't a narrow MVP damage my reputation?
 
 An MVP isn't incomplete but **narrowly scoped**. A product solving one problem well builds a better reputation than one solving ten poorly. Damage comes from low quality, not from few features.
 
-### How long does building an MVP take?
+### How many weeks should an MVP take to build?
 
-6 to 12 weeks for most projects. If a provider tells you an MVP needs six months, the agreed scope isn't an MVP — redefine it using the three questions above.
+6 to 10 weeks for a simple app, plus about two weeks of closed testing if you publish under a new personal Google Play account. If a provider tells you an MVP needs six months, the agreed scope isn't an MVP — redefine it using the three questions above.
 
-### When do I move from MVP to full product?
+### Which signals say it is time to grow the MVP into a full product?
 
-When your data shows users returning and completing the core path, and specific requests recur for features that don't exist. Those two indicators mean you have a product worth expanding — and more importantly, you'll expand based on data rather than assumptions.
+When your data shows users returning and completing the core path, and specific requests recur for features that don't exist. Those two indicators mean you have a product worth expanding — and you will expand based on data rather than assumptions.
 
-### Do I need an MVP if I know the market well?
+### Do I need an MVP if I already run the business offline?
 
-If you know it from actual operating experience (running the business for years and knowing customer needs in detail), risk is lower and a broader build may be justified. But even then, starting with the core path gives you a faster launch and cheaper correction.
+If you know the market from years of operating it and know customer needs in detail, risk is lower and a broader build may be justified. But even then, starting with the core path gives you a faster launch and cheaper correction.
 
-### What is the biggest mistake in building an MVP?
+### What is the biggest scoping mistake during an MVP build?
 
 Expanding scope gradually during execution. You start with five features, then "let's add this small one", and three months later you've built a full product with no data at all. **Freeze the scope before starting**, and write an explicit "out of scope" list into the contract — see our [app development contract guide](/en/blog/app-development-contract).
 
 ---
 
-## Conclusion
+## Where to start
 
-**Start with an MVP in most cases** — not to save 50% of the budget, but to learn where to spend the other half.
+Write the one-sentence problem, map the shortest path to solving it, and cut everything that path survives without. Keep security and compliance in; leave the rest for the data to decide. Then measure return visits, not downloads.
 
-**Scope it with three questions:** what is the one problem? What is the shortest path to solving it? What, if removed, breaks the path?
-
-**Never defer security or compliance** — everything else can wait.
-
-**And measure return, not downloads** — a user who comes back weekly proves your product is worth expanding.
-
-**Want your idea scoped as an MVP?** [Get in touch](/en/contact) for a free scope assessment — we'll help you decide plainly what goes in and what waits. See [our previous work](/en/portfolio).
+If you have a feature list and are not sure where the line falls, [tell us about the idea](/en/contact) — we will send back a short list of what belongs in the first release, what waits, and which rate-card tier that puts you in.
