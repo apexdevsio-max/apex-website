@@ -105,7 +105,7 @@ type OgCardInput = {
 export async function renderOgCard({ locale, eyebrow, title, accent = BRAND }: OgCardInput) {
   const isAr = locale === "ar";
   const [arabicFont, latinFont] = await loadFonts();
-  const tagline = isAr ? "شركة برمجيات تعمل مع عملاء الخليج" : "Software studio for Gulf businesses";
+  const tagline = isAr ? "شركة برمجيات · بالعربية والإنجليزية" : "Software company · Arabic & English";
 
   return new ImageResponse(
     (

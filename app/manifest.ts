@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "APEX",
     short_name: "APEX",
-    description: "Apps, websites and AI systems for businesses in Saudi Arabia, the UAE and Qatar.",
+    description: "Apps, websites and AI systems, built in Arabic and English.",
     start_url: "/",
     display: "browser",
     background_color: "#ffffff",

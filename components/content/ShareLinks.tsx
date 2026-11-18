@@ -6,8 +6,8 @@ import { Check, Link2 } from "lucide-react";
 import type { Locale } from "@/lib/i18n/locale";
 
 /**
- * Share row for articles. WhatsApp first: it is where Gulf B2B links are passed
- * around. Plain links, so they work without JavaScript; only "copy" needs it.
+ * Share row for articles. WhatsApp first: it is where business links are most often passed
+ * around in the region. Plain links, so they work without JavaScript; only "copy" needs it.
  */
 export function ShareLinks({ url, title, lang }: { url: string; title: string; lang: Locale }) {
   const isAr = lang === "ar";

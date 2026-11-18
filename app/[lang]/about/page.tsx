@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isAr = lang === "ar";
   return buildPageMeta(toLocale(lang), {
-    title: isAr ? "من نحن — شركة برمجيات تعمل مع عملاء الخليج" : "About APEX — A Software Company Working With Gulf Clients",
+    title: isAr ? "من نحن — شركة برمجيات تعمل بالعربية والإنجليزية" : "About APEX — A Software Company Working in Arabic and English",
     description: isAr
-      ? "APEX شركة برمجيات مقرّها سوريا تعمل عن بُعد مع عملاء في السعودية والإمارات وقطر. كيف نعمل، ولماذا نركّز على العربية، وما الذي نبنيه."
-      : "APEX is a software company based in Syria, working remotely with clients in Saudi Arabia, the UAE and Qatar. How we work, why we focus on Arabic, and what we build.",
+      ? "APEX شركة برمجيات مقرّها سوريا تعمل عن بُعد مع عملاء حول العالم. كيف نعمل، ولماذا نركّز على العربية، وما الذي نبنيه."
+      : "APEX is a software company based in Syria, working remotely with clients around the world. How we work, why we focus on Arabic, and what we build.",
     path: `/${lang}/about`,
   });
 }
@@ -81,7 +81,7 @@ export default async function AboutPage({ params }: Props) {
 
   const facts = [
     { term: isAr ? "المقر" : "Based in", value: isAr ? "سوريا، ونعمل عن بُعد" : "Syria, working remotely" },
-    { term: isAr ? "الأسواق" : "Markets", value: isAr ? "السعودية، الإمارات، قطر" : "Saudi Arabia, UAE, Qatar" },
+    { term: isAr ? "العملاء" : "Clients", value: isAr ? "حول العالم، عن بُعد" : "Worldwide, remotely" },
     { term: isAr ? "لغات العمل" : "Working languages", value: isAr ? "العربية والإنجليزية" : "Arabic and English" },
     { term: isAr ? "الخدمات" : "Services", value: services.map((s) => s.title).join(isAr ? "، " : ", ") },
     { term: isAr ? "الأعمال الموثّقة" : "Documented projects", value: String(projects.length) },

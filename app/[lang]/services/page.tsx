@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMeta(toLocale(lang), {
     title: isAr ? "خدماتنا — تطوير الويب والتطبيقات" : "Services — Web and App Development",
     description: isAr
-      ? "تطوير المواقع والمتاجر، وتطبيقات الجوال، وحلول الذكاء الاصطناعي، وإنتاج المحتوى المرئي لعملاء في السعودية والإمارات وقطر."
-      : "Web and e-commerce development, mobile apps, AI solutions and video content for clients in Saudi Arabia, the UAE and Qatar.",
+      ? "تطوير المواقع والمتاجر، وتطبيقات الجوال، وحلول الذكاء الاصطناعي، وإنتاج المحتوى المرئي لعملاء حول العالم، بالعربية والإنجليزية."
+      : "Web and e-commerce development, mobile apps, AI solutions and video content for clients worldwide, in Arabic and English.",
     path: `/${lang}/services`,
   });
 }
@@ -117,8 +117,8 @@ export default async function ServicesPage({ params }: Props) {
             title={isAr ? "خدماتنا" : "Our services"}
             subtitle={
               isAr
-                ? "أربع خدمات نقدّمها لعملاء في السعودية والإمارات وقطر. لكل خدمة صفحة تشرح ما تشمله، وكيف نعمل، وكم تكلّف تقريباً."
-                : "Four services we provide to clients in Saudi Arabia, the UAE and Qatar. Each page explains what is included, how we work and roughly what it costs."
+                ? "أربع خدمات نقدّمها لعملاء حول العالم. لكل خدمة صفحة تشرح ما تشمله، وكيف نعمل، وكم تكلّف تقريباً."
+                : "Four services we provide to clients around the world. Each page explains what is included, how we work and roughly what it costs."
             }
           />
         </div>

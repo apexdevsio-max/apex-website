@@ -13,12 +13,8 @@ const WEBSITE_ID = `${siteUrl}/#website`;
 const AUTHOR_ID = `${siteUrl}/#author`;
 const orgRef = { "@id": ORG_ID };
 
-/** Markets served, stated the same way everywhere. */
-const AREA_SERVED = [
-  { "@type": "Country", name: "Saudi Arabia", identifier: "SA" },
-  { "@type": "Country", name: "United Arab Emirates", identifier: "AE" },
-  { "@type": "Country", name: "Qatar", identifier: "QA" },
-];
+/** The company works remotely with clients anywhere. */
+const AREA_SERVED = "Worldwide";
 
 /** Blank profiles are dropped; an empty `sameAs` is a weaker signal than none. */
 function organizationSameAs(): string[] {
@@ -46,8 +42,8 @@ export function buildOrganizationSchema(lang: Locale) {
     // A square mark meets Google's logo requirements; the wide wordmark is 360x133.
     logo: { "@type": "ImageObject", url: `${siteUrl}/icon-512.png`, width: 512, height: 512 },
     description: isAr
-      ? "شركة برمجيات مقرّها سوريا تبني تطبيقات الجوال والمواقع وأنظمة الذكاء الاصطناعي لعملاء في السعودية والإمارات وقطر، وتعمل معهم عن بُعد."
-      : "A software company based in Syria that builds mobile apps, websites and AI systems for clients in Saudi Arabia, the UAE and Qatar, working remotely.",
+      ? "شركة برمجيات مقرّها سوريا تبني تطبيقات الجوال والمواقع وأنظمة الذكاء الاصطناعي بالعربية والإنجليزية، وتعمل عن بُعد مع عملاء حول العالم."
+      : "A software company based in Syria that builds mobile apps, websites and AI systems in Arabic and English, working remotely with clients around the world.",
     email: socialLinks.email,
     address: { "@type": "PostalAddress", addressCountry: "SY" },
     areaServed: AREA_SERVED,
@@ -57,7 +53,7 @@ export function buildOrganizationSchema(lang: Locale) {
       "Web development",
       "Artificial intelligence",
       "Arabic localisation",
-      "Gulf data protection compliance",
+      "Data protection compliance",
     ],
     contactPoint: {
       "@type": "ContactPoint",
@@ -65,7 +61,6 @@ export function buildOrganizationSchema(lang: Locale) {
       email: socialLinks.email,
       contactType: "sales",
       availableLanguage: ["Arabic", "English"],
-      areaServed: ["SA", "AE", "QA"],
     },
     ...(sameAs.length ? { sameAs } : {}),
   };
@@ -173,8 +168,8 @@ export function buildBlogSchema(lang: Locale) {
     "@id": `${siteUrl}/${lang}/blog#blog`,
     name: isAr ? "مدونة APEX" : "APEX blog",
     description: isAr
-      ? "أدلة تطوير البرمجيات للسوق الخليجي: التكاليف، والامتثال، والتعريب، والذكاء الاصطناعي."
-      : "Software development guides for the Gulf: costs, compliance, Arabic localisation and AI.",
+      ? "أدلة عملية لتطوير البرمجيات: التكاليف، والامتثال، والتعريب، والذكاء الاصطناعي."
+      : "Practical software development guides: costs, compliance, Arabic localisation and AI.",
     url: `${siteUrl}/${lang}/blog`,
     inLanguage: lang,
     publisher: orgRef,

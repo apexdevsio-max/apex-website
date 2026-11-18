@@ -67,7 +67,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
     `    <title>${escapeXml(isAr ? "مدونة APEX" : "APEX blog")}</title>`,
     `    <link>${escapeXml(`${siteUrl}/${lang}/blog`)}</link>`,
     `    <description>${escapeXml(
-      isAr ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها في الخليج" : "Practical guides to app and web development in the Gulf"
+      isAr ? "أدلة عملية في تطوير التطبيقات والمواقع وتكاليفها" : "Practical guides to app and web development"
     )}</description>`,
     `    <language>${lang}</language>`,
     ...(lastBuild ? [`    <lastBuildDate>${lastBuild}</lastBuildDate>`] : []),

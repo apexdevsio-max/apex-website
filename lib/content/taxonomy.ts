@@ -32,8 +32,8 @@ export const CATEGORIES: readonly Category[] = [
     pillar: "mobile-app-development-cost",
     label: { en: "Costs & pricing", ar: "التكاليف والأسعار" },
     description: {
-      en: "What apps, websites and AI systems cost to build and run in the Gulf, with dated price ranges in USD, SAR, AED and QAR.",
-      ar: "كم يكلّف بناء التطبيقات والمواقع وأنظمة الذكاء الاصطناعي وتشغيلها في الخليج، بنطاقات أسعار مؤرخة بالدولار والريال والدرهم.",
+      en: "What apps, websites and AI systems cost to build and run, with dated price ranges in US dollars and Gulf currencies.",
+      ar: "كم يكلّف بناء التطبيقات والمواقع وأنظمة الذكاء الاصطناعي وتشغيلها، بنطاقات أسعار مؤرخة بالدولار والعملات الخليجية.",
     },
     intro: {
       en: "Every price range in these guides comes from one rate card, so the same tier costs the same on every page. Each guide states what drives the number up or down, what the ongoing costs are after launch, and when a cheaper option is the right call. Start with the mobile app cost guide; the vertical guides (clinics, delivery, real estate, e-commerce) only cover what differs from it.",
@@ -74,8 +74,8 @@ export const CATEGORIES: readonly Category[] = [
     pillar: "ai-for-business-guide",
     label: { en: "AI for business", ar: "الذكاء الاصطناعي للأعمال" },
     description: {
-      en: "Where AI is reliable enough to deploy in a Gulf business, which models handle Arabic, and what it costs to run.",
-      ar: "أين يكون الذكاء الاصطناعي موثوقاً بما يكفي للتطبيق في شركة خليجية، وأي النماذج تتعامل مع العربية، وكم يكلّف تشغيله.",
+      en: "Where AI is reliable enough to deploy in a business, which models handle Arabic, and what it costs to run.",
+      ar: "أين يكون الذكاء الاصطناعي موثوقاً بما يكفي للتطبيق في شركتك، وأي النماذج تتعامل مع العربية، وكم يكلّف تشغيله.",
     },
     intro: {
       en: "Most AI projects that stall do so because the task was not a good fit, not because the model was weak. These guides start from the task: chat assistants over your own documents, Arabic OCR, internal knowledge search, and e-commerce features. They cover model choice for Arabic, running costs per conversation, and the privacy questions to settle before any customer data reaches a third-party API.",
@@ -92,8 +92,8 @@ export const CATEGORIES: readonly Category[] = [
       ar: "الاختيار بين Flutter وReact Native والتطوير الأصيل وتطبيقات الويب التقدمية، وبناء تطبيقات تجتاز مراجعة المتاجر وتبقى سريعة.",
     },
     intro: {
-      en: "We build most Gulf business apps in Flutter, and these guides explain when that is the wrong choice. They compare the frameworks on the criteria that decide real projects (team skills, Arabic support, native features, long-term maintenance), then cover architecture, testing, performance and store requirements.",
-      ar: "نبني معظم تطبيقات الأعمال الخليجية بـ Flutter، وتشرح هذه الأدلة متى يكون ذلك خياراً خاطئاً. تقارن الأطر وفق المعايير التي تحسم المشاريع الحقيقية (مهارات الفريق، ودعم العربية، والميزات الأصيلة، والصيانة على المدى الطويل)، ثم تغطي البنية والاختبار والأداء ومتطلبات المتاجر.",
+      en: "We build most business apps in Flutter, and these guides explain when that is the wrong choice. They compare the frameworks on the criteria that decide real projects (team skills, Arabic support, native features, long-term maintenance), then cover architecture, testing, performance and store requirements.",
+      ar: "نبني معظم تطبيقات الأعمال بـ Flutter، وتشرح هذه الأدلة متى يكون ذلك خياراً خاطئاً. تقارن الأطر وفق المعايير التي تحسم المشاريع الحقيقية (مهارات الفريق، ودعم العربية، والميزات الأصيلة، والصيانة على المدى الطويل)، ثم تغطي البنية والاختبار والأداء ومتطلبات المتاجر.",
     },
   },
   {
@@ -102,8 +102,8 @@ export const CATEGORIES: readonly Category[] = [
     pillar: "shopify-vs-custom-store",
     label: { en: "Web & e-commerce", ar: "الويب والمتاجر الإلكترونية" },
     description: {
-      en: "Websites and online stores for the Gulf: platforms, hosting, speed, payment gateways and search visibility.",
-      ar: "المواقع والمتاجر الإلكترونية للسوق الخليجي: المنصات، والاستضافة، والسرعة، وبوابات الدفع، والظهور في محركات البحث.",
+      en: "Websites and online stores: platforms, hosting, speed, payment gateways and search visibility.",
+      ar: "المواقع والمتاجر الإلكترونية: المنصات، والاستضافة، والسرعة، وبوابات الدفع، والظهور في محركات البحث.",
     },
     intro: {
       en: "Whether to use Salla, Zid, Shopify, WordPress or a custom build depends on catalogue size, integrations and who will run the site after launch. These guides walk through those trade-offs, then the parts that decide whether a site performs: hosting region, page speed, local payment gateways and visibility in both search engines and AI answers.",
